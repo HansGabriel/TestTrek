@@ -76,6 +76,9 @@ importers:
       expo-auth-session:
         specifier: ^4.0.3
         version: 4.0.3(expo@48.0.10)
+      expo-document-picker:
+        specifier: ^11.5.4
+        version: 11.5.4(expo@48.0.10)
       expo-random:
         specifier: ^13.0.0
         version: 13.0.0(expo@48.0.10)
@@ -5348,6 +5351,14 @@ packages:
       expo: '*'
     dependencies:
       base64-js: 1.5.1
+      expo: 48.0.10(@babel/core@7.20.5)
+    dev: false
+
+  /expo-document-picker@11.5.4(expo@48.0.10):
+    resolution: {integrity: sha512-4lpRixi33kjoQQy9lfrGs48yFRMOgBgdnqjYWVFe85WFy/WkEoFC2E8usxcFdrIigtfy9Z+HY3/je4lHEYqyLg==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
       expo: 48.0.10(@babel/core@7.20.5)
     dev: false
 

@@ -1,14 +1,21 @@
 import React from "react";
 
-import { View, SafeAreaView } from "react-native";
+import { View, SafeAreaView, Button } from "react-native";
 
 import SignInWithOAuth from "../components/SignInWithOAuth";
+import { RootStackScreenProps } from "../types";
 
-export const SignInSignUpScreen = () => {
+export const SignInSignUpScreen = ({
+  navigation,
+}: RootStackScreenProps<"Root">) => {
   return (
     <SafeAreaView className="bg-[#2e026d] bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-      <View className="h-full w-full p-4">
+      <View className="h-full w-full justify-around p-4">
         <SignInWithOAuth />
+        <Button
+          title="Proceed to upload screen"
+          onPress={() => navigation.navigate("UploadScreen")}
+        />
       </View>
     </SafeAreaView>
   );

@@ -12,6 +12,7 @@ import { HomeScreen } from "../screens/home";
 import { MaterialInput } from "../screens/materialInput";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
+import { UploadScreen } from "../screens/uploadScreen";
 
 export default function Navigation() {
   return (
@@ -56,6 +57,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="UploadScreen"
+              component={UploadScreen}
               options={{
                 headerShown: false,
               }}
