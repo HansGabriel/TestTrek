@@ -11,7 +11,7 @@ import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
-import { UploadScreen } from "../screens/uploadScreen";
+import { UploadScreen } from "../screens/upload-screen";
 
 export default function Navigation() {
   return (
