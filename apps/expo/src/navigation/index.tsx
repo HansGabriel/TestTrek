@@ -9,6 +9,7 @@ import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
+import { MaterialInput } from "../screens/materialInput";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 
@@ -34,13 +35,22 @@ const RootNavigator = () => {
     <ClerkLoaded>
       <Stack.Navigator>
         {isSignedIn ? (
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          <>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MaterialInput"
+              component={MaterialInput}
+              options={{
+                headerTitle: "Material Input",
+              }}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen
