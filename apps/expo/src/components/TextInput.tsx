@@ -1,8 +1,14 @@
 import React, { useState, useMemo } from "react";
 import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
+import type { FC } from "react";
 
-const CustomCheckBox = ({ value, onValueChange }) => (
+interface CustomCheckBoxProps {
+  value: boolean;
+  onValueChange: (newValue: boolean) => void;
+}
+
+const CustomCheckBox: FC<CustomCheckBoxProps> = ({ value, onValueChange }) => (
   <TouchableOpacity
     style={[
       styles.checkboxBase,
