@@ -10,7 +10,7 @@ import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
-import { MaterialInput } from "../screens/materialInput";
+import { MaterialInput } from "../screens/material-input";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
