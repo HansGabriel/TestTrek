@@ -1,37 +1,87 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text, Modal } from "react-native";
+import React, { useState, useMemo } from "react";
+import { View, TextInput, Button, Text, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native";
+
+const CustomCheckBox = ({ value, onValueChange }) => (
+  <TouchableOpacity
+    style={[
+      styles.checkboxBase,
+      value ? styles.checkboxChecked : styles.checkboxUnchecked,
+    ]}
+    onPress={() => onValueChange(!value)}
+  />
+);
+
+const ControlButton = ({ label, onChange, value }) => (
+  <View style={styles.control}>
+    <CustomCheckBox value={value} onValueChange={onChange} />
+    <Text>{label}</Text>
+  </View>
+);
+
+const FontSizeButton = ({ label, onChange }) => (
+  <Button title={label} onPress={onChange} />
+);
 
 const AppTextInput = () => {
-  const [value, onChangeText] = useState("");
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderlined, setIsUnderlined] = useState(false);
+  const [isBulleted, setIsBulleted] = useState(false);
+  const [textSize, setTextSize] = useState(14);
+  const [showText, setShowText] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
+
+  const handleShowText = () => {
+    setDisplayedText(inputValue);
+    setShowText(!showText);
+  };
+
+  /* const increaseFontSize = () => setTextSize((prev) => prev + 2);
+  const decreaseFontSize = () => setTextSize((prev) => prev - 2); */
+
+  const inputStyles = useMemo(() => {
+    const computedStyles = [styles.input, { fontSize: textSize }];
+    if (isBold) computedStyles.push(styles.bold);
+    if (isItalic) computedStyles.push(styles.italic);
+    if (isUnderlined) computedStyles.push(styles.underline);
+    if (isBulleted) computedStyles.push(styles.bullet);
+    return computedStyles;
+  }, [isBold, isItalic, isUnderlined, isBulleted, textSize]);
 
   return (
     <View style={styles.container}>
+      <View style={styles.controls}>
+        <ControlButton label="Bold" onChange={setIsBold} value={isBold} />
+        <ControlButton label="Italic" onChange={setIsItalic} value={isItalic} />
+        <ControlButton
+          label="Underline"
+          onChange={setIsUnderlined}
+          value={isUnderlined}
+        />
+        <ControlButton
+          label="Bullet"
+          onChange={setIsBulleted}
+          value={isBulleted}
+        />
+        {/* <FontSizeButton
+          label="Increase Font Size"
+          onChange={increaseFontSize}
+        />
+        <FontSizeButton
+          label="Decrease Font Size"
+          onChange={decreaseFontSize}
+        /> */}
+      </View>
       <TextInput
-        editable
+        style={inputStyles}
         multiline
-        numberOfLines={4}
-        onChangeText={(text) => onChangeText(text)}
-        value={value}
-        placeholder="Type your text here..."
-        style={{ padding: 10, borderColor: "#000", borderWidth: 1 }}
+        value={inputValue}
+        onChangeText={setInputValue}
       />
-
-      <Button title="View Text" onPress={() => setModalVisible(true)} />
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{value}</Text>
-            <Button title="Close" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
+      <Button title="Show Text" onPress={handleShowText} />
+      {showText && <Text style={styles.displayedText}>{displayedText}</Text>}
     </View>
   );
 };
@@ -41,36 +91,55 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  input: {
-    borderColor: "#000000",
-    borderWidth: 1,
-    padding: 10,
+  controls: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 10,
   },
-  centeredView: {
+  control: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  input: {
     flex: 1,
+    borderColor: "gray",
+    borderWidth: 1,
+    padding: 10,
+  },
+  bold: {
+    fontWeight: "bold",
+  },
+  italic: {
+    fontStyle: "italic",
+  },
+  underline: {
+    textDecorationLine: "underline",
+  },
+  bullet: {
+    paddingLeft: 10,
+    textIndent: -10,
+  },
+  checkboxBase: {
+    width: 20,
+    height: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "grey",
+    marginRight: 5,
   },
-  modalView: {
-    width: "80%",
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+  checkboxChecked: {
+    backgroundColor: "blue",
   },
-  modalText: {
-    marginBottom: 15,
+  checkboxUnchecked: {
+    backgroundColor: "transparent",
+  },
+  displayedText: {
+    marginTop: 10,
+    fontSize: 16,
   },
 });
 

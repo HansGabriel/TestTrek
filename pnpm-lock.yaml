@@ -49,6 +49,9 @@ importers:
       '@clerk/clerk-expo':
         specifier: ^0.17.7
         version: 0.17.7(@babel/core@7.20.5)(@types/react@18.0.26)(expo-auth-session@4.0.3)(expo-web-browser@12.1.1)(react-dom@18.2.0)(react-native@0.70.5)(react@18.2.0)
+      '@react-native-community/checkbox':
+        specifier: ^0.5.16
+        version: 0.5.16(react-native@0.70.5)(react@18.2.0)
       '@react-navigation/native':
         specifier: ^6.1.7
         version: 6.1.7(react-native@0.70.5)(react@18.2.0)
@@ -2582,6 +2585,20 @@ packages:
   /@prisma/engines@4.7.1:
     resolution: {integrity: sha512-zWabHosTdLpXXlMefHmnouhXMoTB1+SCbUU3t4FCmdrtIOZcarPKU3Alto7gm/pZ9vHlGOXHCfVZ1G7OIrSbog==}
     requiresBuild: true
+
+  /@react-native-community/checkbox@0.5.16(react-native@0.70.5)(react@18.2.0):
+    resolution: {integrity: sha512-j4fmWe77EAayGnKJ52BljlN8apLT3xjxG/pJOA6HZ4ew63FiXmnY7VtxTzmvDKgSPrETdQc2lmx5mdXTAufJnw==}
+    peerDependencies:
+      react: '*'
+      react-native: '>= 0.62'
+      react-native-windows: '>=0.62'
+    peerDependenciesMeta:
+      react-native-windows:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
+    dev: false
 
   /@react-native-community/cli-clean@9.2.1:
     resolution: {integrity: sha512-dyNWFrqRe31UEvNO+OFWmQ4hmqA07bR9Ief/6NnGwx67IO9q83D5PEAf/o96ML6jhSbDwCmpPKhPwwBbsyM3mQ==}
