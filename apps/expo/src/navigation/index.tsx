@@ -10,6 +10,7 @@ import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
+import { MaterialInput } from "../screens/materialInput";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
@@ -79,6 +80,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="UploadScreen"
               component={UploadScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MaterialInput"
+              component={MaterialInput}
               options={{
                 headerShown: false,
               }}
