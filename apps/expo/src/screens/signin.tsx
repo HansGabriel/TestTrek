@@ -7,7 +7,7 @@ import { RootStackScreenProps } from "../types";
 
 export const SignInSignUpScreen = ({
   navigation,
-}: RootStackScreenProps<"Root">) => {
+}: RootStackScreenProps<"SignInSignUp">) => {
   return (
     <SafeAreaView className="bg-[#2e026d] bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       <View className="h-full w-full justify-around p-4">
