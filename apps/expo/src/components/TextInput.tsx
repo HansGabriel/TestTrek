@@ -8,6 +8,12 @@ interface CustomCheckBoxProps {
   onValueChange: (newValue: boolean) => void;
 }
 
+interface ControlButtonProps {
+  label: string;
+  onChange: (newValue: boolean) => void;
+  value: boolean;
+}
+
 const CustomCheckBox: FC<CustomCheckBoxProps> = ({ value, onValueChange }) => (
   <TouchableOpacity
     style={[
@@ -18,7 +24,7 @@ const CustomCheckBox: FC<CustomCheckBoxProps> = ({ value, onValueChange }) => (
   />
 );
 
-const ControlButton = ({ label, onChange, value }) => (
+const ControlButton: FC<ControlButtonProps> = ({ label, onChange, value }) => (
   <View style={styles.control}>
     <CustomCheckBox value={value} onValueChange={onChange} />
     <Text>{label}</Text>
