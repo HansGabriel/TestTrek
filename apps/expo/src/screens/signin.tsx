@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, SafeAreaView, Button } from "react-native";
+import { View, SafeAreaView, Button, Text } from "react-native";
 
 import SignInWithOAuth from "../components/SignInWithOAuth";
 import { RootStackScreenProps } from "../types";
