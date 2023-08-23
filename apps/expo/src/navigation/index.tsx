@@ -54,13 +54,22 @@ const RootNavigator = () => {
     <ClerkLoaded>
       <Stack.Navigator>
         {isSignedIn ? (
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          <>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MaterialInput"
+              component={MaterialInput}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen
@@ -80,13 +89,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="UploadScreen"
               component={UploadScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="MaterialInput"
-              component={MaterialInput}
               options={{
                 headerShown: false,
               }}
