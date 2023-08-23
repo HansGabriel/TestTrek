@@ -16,6 +16,10 @@ export const SignInSignUpScreen = ({
           title="Proceed to upload screen"
           onPress={() => navigation.navigate("UploadScreen")}
         />
+        <Button
+          title="Proceed to create reviewer"
+          onPress={() => navigation.navigate("CreateReviewer")}
+        />
       </View>
     </SafeAreaView>
   );
