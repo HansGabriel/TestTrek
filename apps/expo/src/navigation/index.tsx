@@ -15,6 +15,7 @@ import { WaltkthroughScreen } from "../screens/walkthrough";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
+import { CreateReviewer } from "../screens/create-reviewer";
 
 export default function Navigation() {
   return (
@@ -72,13 +73,13 @@ const RootNavigator = () => {
           </>
         ) : (
           <>
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Walkthrough"
               component={WaltkthroughScreen}
               options={{
                 headerShown: false,
               }}
-            />
+            /> */}
             <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}
@@ -91,6 +92,13 @@ const RootNavigator = () => {
               component={UploadScreen}
               options={{
                 headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateReviewer"
+              component={CreateReviewer}
+              options={{
+                title: "Create New Reviewer",
               }}
             />
           </>
