@@ -11,6 +11,7 @@ import * as React from "react";
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
 import { WaltkthroughScreen } from "../screens/walkthrough";
+import { CreateAccountScreen } from "../screens/create-account";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
@@ -67,6 +68,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Walkthrough"
               component={WaltkthroughScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateAccount"
+              component={CreateAccountScreen}
               options={{
                 headerShown: false,
               }}

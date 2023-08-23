@@ -39,6 +39,9 @@ importers:
       '@acme/api':
         specifier: '*'
         version: link:../../packages/api
+      '@acme/schema':
+        specifier: '*'
+        version: link:../../packages/schema
       '@acme/tailwind-config':
         specifier: '*'
         version: link:../../packages/config/tailwind
@@ -48,6 +51,9 @@ importers:
       '@expo-google-fonts/inter':
         specifier: ^0.2.3
         version: 0.2.3
+      '@hookform/resolvers':
+        specifier: ^3.3.0
+        version: 3.3.0(react-hook-form@7.45.4)
       '@react-navigation/native':
         specifier: ^6.1.7
         version: 6.1.7(react-native@0.70.5)(react@18.2.0)
@@ -102,6 +108,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-hook-form:
+        specifier: ^7.45.4
+        version: 7.45.4(react@18.2.0)
       react-native:
         specifier: 0.70.5
         version: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
@@ -268,6 +277,19 @@ importers:
       prisma:
         specifier: ^4.6.1
         version: 4.7.1
+      typescript:
+        specifier: ^4.9.3
+        version: 4.9.4
+
+  packages/schema:
+    dependencies:
+      zod:
+        specifier: ^3.18.0
+        version: 3.20.0
+    devDependencies:
+      dotenv-cli:
+        specifier: ^6.0.0
+        version: 6.0.0
       typescript:
         specifier: ^4.9.3
         version: 4.9.4
@@ -2223,6 +2245,14 @@ packages:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
+
+  /@hookform/resolvers@3.3.0(react-hook-form@7.45.4):
+    resolution: {integrity: sha512-tgK3nWlfFLlqhqpXZmFMP3RN5E7mlbGfnM2h2ILVsW1TNGuFSod0ePW0grlIY2GAbL4pJdtmOT4HQSZsTwOiKg==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.45.4(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.8:
@@ -4827,7 +4857,7 @@ packages:
       cross-spawn: 7.0.3
       dotenv: 16.0.3
       dotenv-expand: 8.0.3
-      minimist: 1.2.7
+      minimist: 1.2.8
     dev: true
 
   /dotenv-expand@8.0.3:
@@ -7451,7 +7481,6 @@ packages:
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
-    dev: false
 
   /minipass-collect@1.0.2:
     resolution: {integrity: sha512-6T6lH0H8OG9kITm/Jm6tdooIbogG9e0tLgpY6mphXSm/A9u8Nq1ryBG+Qspiub9LjWlBPsPS3tWQ/Botq4FdxA==}
@@ -8519,6 +8548,15 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=17.0.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-hook-form@7.45.4(react@18.2.0):
+    resolution: {integrity: sha512-HGDV1JOOBPZj10LB3+OZgfDBTn+IeEsNOKiq/cxbQAIbKaiJUe/KV8DBUzsx0Gx/7IG/orWqRRm736JwOfUSWQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
     dependencies:
       react: 18.2.0
     dev: false

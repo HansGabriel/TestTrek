@@ -13,6 +13,15 @@ module.exports = {
         "nunito-semibold": ["Nunito-SemiBold"],
         "nunito-medium": ["Nunito-Medium"],
       },
+      colors: {
+        primary: {
+          1: "#6949FF",
+          2: "#876DFF",
+          3: "#A592FF",
+          4: "#C3B6FF",
+          5: "#F0EDFF",
+        },
+      },
     },
   },
 };
