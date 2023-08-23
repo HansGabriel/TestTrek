@@ -5,11 +5,12 @@
  */
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useFonts } from "expo-font";
 import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
-import { MaterialInput } from "../screens/materialInput";
+import { WaltkthroughScreen } from "../screens/walkthrough";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
@@ -32,28 +33,42 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   const { isSignedIn } = useUser();
 
+  const [fontsLoaded] = useFonts({
+    "Nunito-Black": require("../../assets/fonts/Nunito-Black.ttf"),
+    "Nunito-Bold": require("../../assets/fonts/Nunito-Bold.ttf"),
+    "Nunito-ExtraBold": require("../../assets/fonts/Nunito-ExtraBold.ttf"),
+    "Nunito-ExtraLight": require("../../assets/fonts/Nunito-ExtraLight.ttf"),
+    "Nunito-Light": require("../../assets/fonts/Nunito-Light.ttf"),
+    "Nunito-Regular": require("../../assets/fonts/Nunito-Regular.ttf"),
+    "Nunito-SemiBold": require("../../assets/fonts/Nunito-SemiBold.ttf"),
+    "Nunito-Medium": require("../../assets/fonts/Nunito-Medium.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    // TODO: Add splash screen
+    return null;
+  }
+
   return (
     <ClerkLoaded>
       <Stack.Navigator>
         {isSignedIn ? (
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        ) : (
           <>
             <Stack.Screen
-              name="Home"
-              component={HomeScreen}
+              name="Walkthrough"
+              component={WaltkthroughScreen}
               options={{
                 headerShown: false,
               }}
             />
-            <Stack.Screen
-              name="MaterialInput"
-              component={MaterialInput}
-              options={{
-                headerTitle: "Material Input",
-              }}
-            />
-          </>
-        ) : (
-          <>
             <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}
