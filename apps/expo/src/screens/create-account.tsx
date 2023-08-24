@@ -1,4 +1,4 @@
-import { SafeAreaView, View, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
 import UserInfoForm from "../forms/UserInfoForm";
 import useGoBack from "../hooks/useGoBack";
@@ -9,8 +9,8 @@ export const CreateAccountScreen: FC = ({}) => {
   const goBack = useGoBack();
 
   return (
-    <View>
-      <View className="px-6">
+    <View className="flex-1 flex-col justify-between px-6">
+      <View>
         <View className="my-11 flex flex-row">
           <TouchableOpacity onPress={goBack}>
             <LeftArrowIcon />
