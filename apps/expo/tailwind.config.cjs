@@ -21,6 +21,9 @@ module.exports = {
           4: "#C3B6FF",
           5: "#F0EDFF",
         },
+        greyscale: {
+          50: "#FAFAFA",
+        },
       },
     },
   },

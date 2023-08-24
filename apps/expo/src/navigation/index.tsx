@@ -52,7 +52,13 @@ const RootNavigator = () => {
 
   return (
     <ClerkLoaded>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          contentStyle: {
+            backgroundColor: "white",
+          },
+        }}
+      >
         {isSignedIn ? (
           <>
             <Stack.Screen

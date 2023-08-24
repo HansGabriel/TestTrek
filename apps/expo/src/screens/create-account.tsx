@@ -9,7 +9,7 @@ export const CreateAccountScreen: FC = ({}) => {
   const goBack = useGoBack();
 
   return (
-    <SafeAreaView>
+    <View>
       <View className="px-6">
         <View className="my-11 flex flex-row">
           <TouchableOpacity onPress={goBack}>
@@ -35,6 +35,6 @@ export const CreateAccountScreen: FC = ({}) => {
           }}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };

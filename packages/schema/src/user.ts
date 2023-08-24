@@ -5,5 +5,5 @@ export const userInfoSchema = z.object({
   dateOfBirth: z.date(),
   phoneNumber: z.string().min(1).max(255),
   country: z.string().min(1).max(255),
-  age: z.number().min(1).max(255),
+  age: z.string().min(1).max(255),
 });
