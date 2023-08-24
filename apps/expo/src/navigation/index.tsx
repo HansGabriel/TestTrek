@@ -12,6 +12,7 @@ import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
 import { MaterialInput } from "../screens/material-input";
 import { WaltkthroughScreen } from "../screens/walkthrough";
+import { CreateAccountScreen } from "../screens/create-account";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
@@ -53,7 +54,13 @@ const RootNavigator = () => {
 
   return (
     <ClerkLoaded>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          contentStyle: {
+            backgroundColor: "white",
+          },
+        }}
+      >
         {isSignedIn ? (
           <>
             <Stack.Screen
@@ -80,6 +87,13 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             /> */}
+            <Stack.Screen
+              name="CreateAccount"
+              component={CreateAccountScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
             <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}

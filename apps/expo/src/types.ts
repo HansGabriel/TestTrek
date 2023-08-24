@@ -10,6 +10,7 @@ declare global {
 
 export type RootStackParamList = {
   Walkthrough: undefined;
+  CreateAccount: undefined;
   SignInSignUp: undefined;
   Home: undefined;
   UploadScreen: undefined;
