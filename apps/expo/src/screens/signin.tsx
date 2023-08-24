@@ -13,6 +13,10 @@ export const SignInSignUpScreen = ({
       <View className="h-full w-full justify-around p-4">
         <SignInWithOAuth />
         <Button
+          title="Proceed to Material Input"
+          onPress={() => navigation.navigate("MaterialInput")}
+        />
+        <Button
           title="Proceed to upload screen"
           onPress={() => navigation.navigate("UploadScreen")}
         />

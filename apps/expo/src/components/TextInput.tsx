@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text } from "react-native";
+import { View, TextInput, Button, Text, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native";
 import type { FC } from "react";
 
@@ -37,10 +37,8 @@ const AppTextInput = () => {
   const [isUnderlined, setIsUnderlined] = useState(false);
   const [isBulleted, setIsBulleted] = useState(false);
   const [showText, setShowText] = useState(false);
-  const [displayedText, setDisplayedText] = useState("");
 
   const handleShowText = () => {
-    setDisplayedText(inputValue);
     setShowText(!showText);
   };
 
@@ -71,7 +69,14 @@ const AppTextInput = () => {
         onChangeText={setInputValue}
       />
       <Button title="Show Text" onPress={handleShowText} />
-      {showText && <Text className="mt-2 text-lg">{displayedText}</Text>}
+      {showText && (
+        <ScrollView
+          className="border-1 mt-2 max-h-64 overflow-auto border-gray-300 bg-gray-100"
+          showsVerticalScrollIndicator={true}
+        >
+          <Text className="p-4 text-lg">{inputValue}</Text>
+        </ScrollView>
+      )}
     </View>
   );
 };
