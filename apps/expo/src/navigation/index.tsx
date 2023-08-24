@@ -10,11 +10,13 @@ import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
+import { MaterialInput } from "../screens/material-input";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { CreateAccountScreen } from "../screens/create-account";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
+import { CreateReviewer } from "../screens/create-reviewer";
 
 export default function Navigation() {
   return (
@@ -68,16 +70,23 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="MaterialInput"
+              component={MaterialInput}
+              options={{
+                headerShown: false,
+              }}
+            />
           </>
         ) : (
           <>
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Walkthrough"
               component={WaltkthroughScreen}
               options={{
                 headerShown: false,
               }}
-            />
+            /> */}
             <Stack.Screen
               name="CreateAccount"
               component={CreateAccountScreen}
@@ -97,6 +106,13 @@ const RootNavigator = () => {
               component={UploadScreen}
               options={{
                 headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateReviewer"
+              component={CreateReviewer}
+              options={{
+                title: "Create New Reviewer",
               }}
             />
           </>

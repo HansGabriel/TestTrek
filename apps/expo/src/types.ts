@@ -14,6 +14,8 @@ export type RootStackParamList = {
   SignInSignUp: undefined;
   Home: undefined;
   UploadScreen: undefined;
+  CreateReviewer: undefined;
+  MaterialInput: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
