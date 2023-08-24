@@ -1,11 +1,10 @@
-//Please edit this file.
-import { View, Text } from "react-native";
-import { IconlyBoldHome } from "../../components/IconlyBoldHome";
-import { IconlyLightOutlineCategory } from "../../components/IconlyLightOutlineCategory";
-import { Logo } from "../../components/Logo";
-import { IconlyLightOutlinePlus } from "../../components/IconlyLightOutlinePlus";
-import { IconlyLightOutlineProfile } from "../../components/IconlyLightOutlineProfile";
-import { HomeIndicator } from "../../components/HomeIndicator";
+import React from "react";
+import IconlyBoldHome from "../icons/HomeIcon";
+import IconlyLightOutlineCategory from "../icons/CategoryIcon";
+import Logo from "../icons/LogoIcon";
+import IconlyLightOutlinePlus from "../icons/CreateNewIcon";
+import IconlyLightOutlineProfile from "../icons/ProfileIcon";
+import HomeIndicator from "../icons/HomeIndicatorIcon";
 
 export interface BottomBarsProps {
   activeMenu: BottomBarsActiveMenu;
@@ -28,104 +27,95 @@ export enum BottomBarsComponent {
 }
 
 export function BottomBars(props: BottomBarsProps) {
-  const classes = {
-    root: [
-      styles.root,
-      props.activeMenu === BottomBarsActiveMenu.DarkProfile &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.rootActiveMenuDarkProfileComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkCreate &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.rootActiveMenuDarkCreateComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkLibrary &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.rootActiveMenuDarkLibraryComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkHome &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.rootActiveMenuDarkHomeComponentBottomBars,
-    ],
-    home: [
-      styles.home,
-      props.activeMenu === BottomBarsActiveMenu.LightLibrary &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuLightLibraryComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkProfile &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuDarkProfileComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.LightProfile &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuLightProfileComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkCreate &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuDarkCreateComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.LightCreate &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuLightCreateComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkLibrary &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuDarkLibraryComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkHome &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.homeActiveMenuDarkHomeComponentBottomBars,
-    ],
-    library: [
-      styles.library,
-      props.activeMenu === BottomBarsActiveMenu.LightLibrary &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.libraryActiveMenuLightLibraryComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.DarkLibrary &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.libraryActiveMenuDarkLibraryComponentBottomBars,
-    ],
-    create: [
-      styles.create,
-      props.activeMenu === BottomBarsActiveMenu.DarkCreate &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.createActiveMenuDarkCreateComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.LightCreate &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.createActiveMenuLightCreateComponentBottomBars,
-    ],
-    profile: [
-      styles.profile,
-      props.activeMenu === BottomBarsActiveMenu.DarkProfile &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.profileActiveMenuDarkProfileComponentBottomBars,
-      props.activeMenu === BottomBarsActiveMenu.LightProfile &&
-        props.component === BottomBarsComponent.BottomBars &&
-        styles.profileActiveMenuLightProfileComponentBottomBars,
-    ],
-  };
+  const isActive = (activeMenu: BottomBarsActiveMenu) =>
+    props.activeMenu === activeMenu &&
+    props.component === BottomBarsComponent.BottomBars;
 
   return (
-    <View
-      className={`w-[430px] flex-col items-center pt-2 ${rootClasses.join(
-        " ",
-      )}`}
+    <div
+      className={`flex w-[430px] flex-col items-center border-t border-gray-300 bg-white pt-2 
+        ${
+          isActive(BottomBarsActiveMenu.DarkProfile) &&
+          "bg-opacity-85 border-dark-3 bg-dark-dark-3 border-t backdrop-blur-[10px]"
+        } 
+        rounded-t-lg`}
     >
-      <View className="gap-4.75 h-12 flex-row items-center px-8 py-0">
-        <IconlyBoldHome />
-        <Text style={classes.home}>Home</Text>
-      </View>
-      <View style={styles.autoLayoutVertical2}>
-        <IconlyLightOutlineCategory />
-        <Text style={classes.library}>Library</Text>
-      </View>
-      <View style={styles.autoLayoutVertical3}>
-        <View style={styles.frame10626}>
-          <Logo type="Logo_Default" component="Logo" />
-        </View>
-        <Text style={styles.join}>Join</Text>
-      </View>
-      <View style={styles.autoLayoutVertical4}>
-        <IconlyLightOutlinePlus />
-        <Text style={classes.create}>Create</Text>
-      </View>
-      <View style={styles.autoLayoutVertical5}>
-        <IconlyLightOutlineProfile />
-        <Text style={classes.profile}>Profile</Text>
-      </View>
+      <div className="flex h-12 w-full items-center justify-center gap-5 px-8">
+        <div className="flex flex-grow flex-col items-center gap-0.5">
+          <IconlyBoldHome />
+          <span
+            className={`text-dark-4 font-nunito text-center text-sm font-bold 
+              ${
+                isActive(BottomBarsActiveMenu.LightLibrary) &&
+                "font-medium text-gray-500"
+              } 
+              ${isActive(BottomBarsActiveMenu.DarkHome) && "text-gray-100"} 
+              ${
+                isActive(BottomBarsActiveMenu.DarkLibrary) &&
+                "font-medium text-gray-500"
+              }`}
+          >
+            Home
+          </span>
+        </div>
+        <div className="flex flex-grow flex-col items-center gap-0.5">
+          <IconlyLightOutlineCategory />
+          <span
+            className={`font-nunito text-center text-sm font-medium text-gray-500 
+              ${
+                isActive(BottomBarsActiveMenu.LightLibrary) &&
+                "text-dark-4 font-bold"
+              } 
+              ${
+                isActive(BottomBarsActiveMenu.DarkLibrary) &&
+                "font-bold text-gray-100"
+              }`}
+          >
+            Library
+          </span>
+        </div>
+        <div className="flex flex-grow flex-col items-center gap-0.5">
+          <div className="bg-primary-500 flex items-center justify-center gap-1 rounded-full p-1">
+            <Logo type="Logo_Default" component="Logo" />
+          </div>
+          <span className="font-nunito w-full text-center text-sm font-medium text-gray-500">
+            Join
+          </span>
+        </div>
+        <div className="flex flex-grow flex-col items-center gap-0.5">
+          <IconlyLightOutlinePlus />
+          <span
+            className={`font-nunito text-center text-sm font-medium text-gray-500 
+              ${
+                isActive(BottomBarsActiveMenu.LightCreate) &&
+                "text-dark-4 font-bold"
+              } 
+              ${
+                isActive(BottomBarsActiveMenu.DarkCreate) &&
+                "font-bold text-gray-100"
+              }`}
+          >
+            Create
+          </span>
+        </div>
+        <div className="flex flex-grow flex-col items-center gap-0.5">
+          <IconlyLightOutlineProfile />
+          <span
+            className={`font-nunito text-center text-sm font-medium text-gray-500 
+              ${
+                isActive(BottomBarsActiveMenu.LightProfile) &&
+                "text-dark-4 font-bold"
+              } 
+              ${
+                isActive(BottomBarsActiveMenu.DarkProfile) &&
+                "font-bold text-gray-100"
+              }`}
+          >
+            Profile
+          </span>
+        </div>
+      </div>
       <HomeIndicator />
-    </View>
+    </div>
   );
 }
