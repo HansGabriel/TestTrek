@@ -16,6 +16,7 @@ import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
 import { CreateReviewer } from "../screens/create-reviewer";
+import { HeaderFooter } from "../screens/header-footer";
 
 export default function Navigation() {
   return (
@@ -63,13 +64,6 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
-            <Stack.Screen
-              name="MaterialInput"
-              component={MaterialInput}
-              options={{
-                headerShown: false,
-              }}
-            />
           </>
         ) : (
           <>
@@ -87,9 +81,23 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
+            {/* <Stack.Screen
+              name="HeaderFooter"
+              component={HeaderFooter}
+              options={{
+                headerShown: false,
+              }}
+            /> */}
             <Stack.Screen
               name="UploadScreen"
               component={UploadScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MaterialInput"
+              component={MaterialInput}
               options={{
                 headerShown: false,
               }}
