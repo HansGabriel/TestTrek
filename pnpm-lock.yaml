@@ -62,8 +62,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0(react-hook-form@7.45.4)
       '@react-native-community/datetimepicker':
-        specifier: ^7.4.1
-        version: 7.4.1
+        specifier: ^6.7.3
+        version: 6.7.3
       '@react-navigation/native':
         specifier: ^6.1.7
         version: 6.1.7(react-native@0.70.5)(react@18.2.0)
@@ -2854,8 +2854,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@react-native-community/datetimepicker@7.4.1:
-    resolution: {integrity: sha512-S7KdiWt0VgL93vy8sAlxPtyq8yNTRCNvoVJPkPlKzwuDY1Q5f+E0rsnNvfP0Y/UMhXAUnUo/THGR2qfrsJ9vNg==}
+  /@react-native-community/datetimepicker@6.7.3:
+    resolution: {integrity: sha512-fXWbEdHMLW/e8cts3snEsbOTbnFXfUHeO2pkiDFX3fWpFoDtUrRWvn50xbY13IJUUKHDhoJ+mj24nMRVIXfX1A==}
     dependencies:
       invariant: 2.2.4
     dev: false

@@ -1,19 +1,25 @@
 import { View, TouchableOpacity, Text } from "react-native";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
-import UserInfoForm from "../forms/UserInfoForm";
+import SignupForm from "../forms/SignupForm";
 import useGoBack from "../hooks/useGoBack";
-import { useNavigation } from "@react-navigation/native";
 
 import type { FC } from "react";
-import type { UserInfo } from "@acme/schema/src/types";
+import type { RootStackScreenProps } from "../types";
+import type { UserSignup, FullUser } from "@acme/schema/src/types";
 
-export const CreateAccountScreen: FC = ({}) => {
-  const navigation = useNavigation();
+type Props = RootStackScreenProps<"Signup">;
+
+export const SignupScreen: FC<Props> = ({ route }) => {
+  const { userInfo } = route.params;
   const goBack = useGoBack();
-  const goToSignup = (userInfo: UserInfo) => {
-    navigation.navigate("Signup", {
-      userInfo,
-    });
+
+  const handleSubmit = (userSignup: UserSignup) => {
+    const fullUserInfo: FullUser = {
+      ...userInfo,
+      ...userSignup,
+    };
+
+    console.log(fullUserInfo);
   };
 
   return (
@@ -24,8 +30,7 @@ export const CreateAccountScreen: FC = ({}) => {
             <LeftArrowIcon />
           </TouchableOpacity>
           <View className="mx-auto h-3 w-[200px]">
-            <View className="absolute left-0 top-0 h-3 w-[200px] rounded-[100px] bg-gray-200"></View>
-            <View className="bg-primary-1 absolute left-0 top-0 h-3 w-1/2 rounded-[100px]"></View>
+            <View className="bg-primary-1 absolute left-0 top-0 h-3 w-full rounded-[100px]"></View>
           </View>
         </View>
         <View className="flex flex-col items-start justify-start">
@@ -33,11 +38,11 @@ export const CreateAccountScreen: FC = ({}) => {
             Create an account ✏️
           </Text>
           <Text className="font-nunito self-stretch text-center text-lg font-normal leading-[25.20px] tracking-tight text-neutral-800">
-            Please complete your profile. Don't worry, your data will remain
-            private and only you can see it.
+            Please enter your username, email address and password. If you
+            forget it, then you have to do forgot password.
           </Text>
         </View>
-        <UserInfoForm onSubmit={goToSignup} />
+        <SignupForm onSubmit={handleSubmit} />
       </View>
     </View>
   );

@@ -13,6 +13,7 @@ import { HomeScreen } from "../screens/home";
 import { MaterialInput } from "../screens/material-input";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { CreateAccountScreen } from "../screens/create-account";
+import { SignupScreen } from "../screens/signup";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
@@ -80,16 +81,23 @@ const RootNavigator = () => {
           </>
         ) : (
           <>
-            {/* <Stack.Screen
+            <Stack.Screen
               name="Walkthrough"
               component={WaltkthroughScreen}
               options={{
                 headerShown: false,
               }}
-            /> */}
+            />
             <Stack.Screen
               name="CreateAccount"
               component={CreateAccountScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={SignupScreen}
               options={{
                 headerShown: false,
               }}
