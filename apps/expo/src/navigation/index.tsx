@@ -103,6 +103,13 @@ const RootNavigator = () => {
               }}
             />
             <Stack.Screen
+              name="CreateAccount"
+              component={CreateAccountScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}
               options={{
