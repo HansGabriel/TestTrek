@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Home: undefined;
   UploadScreen: undefined;
   CreateReviewer: undefined;
+  SplashScreen: undefined;
   MaterialInput: undefined;
 };
 
