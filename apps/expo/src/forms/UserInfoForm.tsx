@@ -77,7 +77,7 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
             <TouchableOpacity onPress={showDatePicker}>
               <View className="border-primary-1 flex flex-row items-center justify-between border-b">
                 <Text
-                  className={`font-nunito-semibold py-2 ${
+                  className={`font-nunito-bold py-2 ${
                     dateOfBirth ? "text-neutral-800" : "text-gray-400"
                   }`}
                 >
@@ -101,7 +101,7 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  className="border-primary-1 border-b py-2"
+                  className="border-primary-1 font-nunito-bold border-b py-2"
                   placeholder="School"
                   onBlur={onBlur}
                   onChangeText={onChange}
