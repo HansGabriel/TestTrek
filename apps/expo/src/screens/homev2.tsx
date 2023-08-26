@@ -87,11 +87,6 @@ export const HomeScreen = () => {
         </Text>
 
         <Button
-          title="Go to HeaderFooter"
-          onPress={() => navigation.navigate("HeaderFooter")}
-        />
-
-        <Button
           title="Go to Material Input"
           onPress={() => navigation.navigate("MaterialInput")}
         />
