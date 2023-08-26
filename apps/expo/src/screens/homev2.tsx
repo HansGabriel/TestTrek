@@ -8,6 +8,7 @@ import type { inferProcedureOutput } from "@trpc/server";
 import type { AppRouter } from "@acme/api";
 
 import { trpc } from "../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -76,12 +77,24 @@ export const HomeScreen = () => {
   const postQuery = trpc.post.all.useQuery();
   const [showPost, setShowPost] = React.useState<string | null>(null);
 
+  const navigation = useNavigation();
+
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className="bg-[#2e026d] bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       <View className="h-full w-full p-4">
         <Text className="mx-auto pb-2 text-5xl font-bold text-white">
           Create <Text className="text-[#cc66ff]">T3</Text> Turbo
         </Text>
+
+        <Button
+          title="Go to HeaderFooter"
+          onPress={() => navigation.navigate("HeaderFooter")}
+        />
+
+        <Button
+          title="Go to Material Input"
+          onPress={() => navigation.navigate("MaterialInput")}
+        />
 
         <View className="py-2">
           {showPost ? (
