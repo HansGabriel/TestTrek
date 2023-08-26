@@ -1,31 +1,30 @@
-import React from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import React, { ReactNode } from "react";
+import { TouchableOpacity, Text, View } from "react-native";
 
 interface ButtonProps {
   text: string;
   buttonColor: string;
   borderRadius?: string;
-  marginTop?: number;
-  marginBottom?: number;
-  marginLeft?: number;
-  marginRight?: number;
+  borderShadowColor?: string;
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
 }
 
 const borderRadiusSize = (size: string | undefined) => {
   let transform;
   switch (size) {
     case "medium":
-      transform = 15;
+      transform = "10px";
       break;
     case "large":
-      transform = 25;
+      transform = "20px";
       break;
     case "full":
-      transform = 50;
+      transform = "100px";
       break;
 
     default:
-      transform = 0;
+      transform = "0px";
       break;
   }
 
@@ -36,35 +35,21 @@ export const AppButton = ({
   text,
   buttonColor,
   borderRadius,
-  marginTop,
-  marginBottom,
-  marginLeft,
-  marginRight,
+  iconLeft,
+  iconRight,
+  borderShadowColor,
 }: ButtonProps) => {
-  const buttonStyles = StyleSheet.create({
-    buttonContainer: {
-      backgroundColor: buttonColor,
-      width: "100%",
-      height: "20%",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: borderRadiusSize(borderRadius),
-      elevation: 2,
-      marginTop: marginTop,
-      marginBottom: marginBottom,
-      marginLeft: marginLeft,
-      marginRight: marginRight,
-    },
-    buttonText: {
-      color: "white",
-      fontSize: 16,
-      fontWeight: "bold",
-      fontFamily: "Nunito-Regular",
-    },
-  });
   return (
-    <TouchableOpacity style={buttonStyles.buttonContainer}>
-      <Text style={buttonStyles.buttonText}>{text}</Text>
+    <TouchableOpacity className="w-80 justify-end">
+      <View
+        className={` h-[30%] w-full flex-row items-center justify-center rounded-[${borderRadiusSize(
+          borderRadius,
+        )}] border-b-4 border-${borderShadowColor} bg-${buttonColor}`}
+      >
+        {iconLeft}
+        <Text className=" font-nunito-bold text-base text-white">{text}</Text>
+        {iconRight}
+      </View>
     </TouchableOpacity>
   );
 };
