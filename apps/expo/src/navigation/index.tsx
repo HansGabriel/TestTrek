@@ -18,7 +18,6 @@ import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
 import { CreateReviewer } from "../screens/create-reviewer";
-import { HeaderFooter } from "../screens/header-footer";
 import { SplashScreen } from "../screens/splash-screen";
 
 export default function Navigation() {
@@ -69,13 +68,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="HeaderFooter"
-              component={HeaderFooter}
               options={{
                 headerShown: false,
               }}

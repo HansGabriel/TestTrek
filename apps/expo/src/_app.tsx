@@ -5,6 +5,7 @@ import { TRPCProvider } from "./utils/trpc";
 
 import { ClerkProvider } from "@clerk/clerk-expo";
 import Navigation from "./navigation";
+import AppContainer from "./containers/AppContainer";
 import { tokenCache } from "./utils/cache";
 import Constants from "expo-constants";
 
@@ -16,8 +17,10 @@ export const App = () => {
     >
       <TRPCProvider>
         <SafeAreaProvider>
-          <Navigation />
-          <StatusBar />
+          <AppContainer>
+            <Navigation />
+            <StatusBar />
+          </AppContainer>
         </SafeAreaProvider>
       </TRPCProvider>
     </ClerkProvider>

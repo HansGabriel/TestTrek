@@ -4,52 +4,19 @@ import CategoryIcon from "../icons/footer/CategoryIcon";
 import LogoIcon from "../icons/footer/LogoIcon";
 import CreateNewIcon from "../icons/footer/CreateNewIcon";
 import ProfileIcon from "../icons/footer/ProfileIcon";
-import HomeIndicatorIcon from "../icons/footer/HomeIndicatorIcon";
 
-interface FooterProps {
-  activeMenu: FooterActiveMenu;
-  component: FooterComponent;
-  onMenuSelect?: (selectedMenu: FooterActiveMenu) => void;
-}
+import type { FC } from "react";
 
-enum FooterActiveMenu {
-  LightHome = "Light_Home",
-  LightLibrary = "Light_Library",
-  LightCreate = "Light_Create",
-  LightProfile = "Light_Profile",
-  DarkHome = "Dark_Home",
-  DarkLibrary = "Dark_Library",
-  DarkCreate = "Dark_Create",
-  DarkProfile = "Dark_Profile",
-}
-
-enum FooterComponent {
-  BottomBars = "Bottom_Bars",
-}
-
-const Footer = (props: FooterProps) => {
-  const handleIconPress = (selectedMenu: FooterActiveMenu) => {
-    if (props.onMenuSelect) {
-      props.onMenuSelect(selectedMenu);
-    }
-  };
-  const isDarkBackground = [
-    FooterActiveMenu.DarkProfile,
-    FooterActiveMenu.DarkCreate,
-    FooterActiveMenu.DarkLibrary,
-    FooterActiveMenu.DarkHome,
-  ].includes(props.activeMenu);
-
-  const backgroundColor = isDarkBackground ? "bg-gray-800" : "bg-white";
+const Footer: FC = () => {
   return (
     <View
-      className={`w-96 items-center rounded-t-lg border-t-2 border-gray-200 pt-2 ${backgroundColor}`}
+      style={{
+        elevation: 10,
+      }}
+      className="items-center rounded-t-3xl border-r-[1px] border-l-[1px] border-t-[1px] border-gray-200"
     >
-      <View className="h-12 flex-row items-center justify-center space-x-5 px-8">
-        <TouchableOpacity
-          style={{ marginHorizontal: 10 }}
-          onPress={() => handleIconPress(FooterActiveMenu.LightHome)}
-        >
+      <View className="flex-row items-center justify-center space-x-5 px-8 pb-8 pt-5">
+        <TouchableOpacity style={{ marginHorizontal: 15 }}>
           <View className="flex-col items-center space-y-1">
             <HomeBoldIcon />
             <Text className="w-full text-center text-xs font-bold tracking-wider text-gray-500">
@@ -57,10 +24,7 @@ const Footer = (props: FooterProps) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginHorizontal: 10 }}
-          onPress={() => handleIconPress(FooterActiveMenu.LightLibrary)}
-        >
+        <TouchableOpacity style={{ marginHorizontal: 15 }}>
           <View className="flex-col items-center space-y-1">
             <CategoryIcon />
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
@@ -68,23 +32,17 @@ const Footer = (props: FooterProps) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginHorizontal: 10 }}
-          onPress={() => handleIconPress(FooterActiveMenu.LightCreate)}
-        >
+        <TouchableOpacity style={{ marginHorizontal: 15 }}>
           <View className="flex-col items-center space-y-1">
-            <View className="items-center justify-center space-x-1 rounded-full bg-red-500 p-1">
-              <LogoIcon type="LogoIcon_Default" component="LogoIcon" />
+            <View className="items-center justify-center space-x-1 rounded-full p-1">
+              <LogoIcon />
             </View>
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
               Join
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginHorizontal: 10 }}
-          onPress={() => handleIconPress(FooterActiveMenu.LightCreate)}
-        >
+        <TouchableOpacity style={{ marginHorizontal: 15 }}>
           <View className="flex-col items-center space-y-1">
             <CreateNewIcon />
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
@@ -92,10 +50,7 @@ const Footer = (props: FooterProps) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginHorizontal: 10 }}
-          onPress={() => handleIconPress(FooterActiveMenu.LightProfile)}
-        >
+        <TouchableOpacity style={{ marginHorizontal: 15 }}>
           <View className="flex-col items-center space-y-1">
             <ProfileIcon />
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
@@ -104,7 +59,6 @@ const Footer = (props: FooterProps) => {
           </View>
         </TouchableOpacity>
       </View>
-      <HomeIndicatorIcon />
     </View>
   );
 };
