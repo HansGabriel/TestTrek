@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { View, SafeAreaView, Text } from "react-native";
-import { TestTrekLogo } from "../icons/TestTrekIcon";
+import { TestTrekLogo } from "../icons/logos/TestTrekIcon";
 import { SkypeIndicator } from "react-native-indicators";
 import { useNavigation } from "@react-navigation/native";
 
