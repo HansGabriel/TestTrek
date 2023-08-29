@@ -2,11 +2,15 @@ import { Feather } from "@expo/vector-icons";
 import { View, Text, TouchableOpacity } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
+import { trpc } from "../utils/trpc";
 
 import type { FC } from "react";
 
 export const CreateTestScreen: FC = ({}) => {
   const goBack = useGoBack();
+
+  const { mutate: createTest, isLoading: isCreatingQuiz } =
+    trpc.test.create.useMutation();
 
   return (
     <View className="my-12 mx-6 flex-1">
@@ -20,8 +24,14 @@ export const CreateTestScreen: FC = ({}) => {
       </View>
       <CreateTestForm
         onSubmit={(data) => {
-          console.log(data);
+          createTest({
+            ...data,
+            keywords: ["math"],
+            image:
+              "https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1",
+          });
         }}
+        isCreatingQuiz={isCreatingQuiz}
       />
     </View>
   );

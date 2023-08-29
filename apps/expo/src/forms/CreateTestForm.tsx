@@ -7,6 +7,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { testDetailsSchema } from "@acme/schema/src/test";
@@ -17,15 +18,21 @@ import type { FC } from "react";
 
 interface Props {
   onSubmit: (data: TestDetails) => void;
+  isCreatingQuiz?: boolean;
 }
 
-const CreateTestForm: FC<Props> = ({ onSubmit }) => {
+const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<TestDetails>({
-    resolver: zodResolver(testDetailsSchema),
+    resolver: zodResolver(
+      testDetailsSchema.omit({
+        image: true,
+        keywords: true,
+      }),
+    ),
   });
 
   return (
@@ -142,9 +149,13 @@ const CreateTestForm: FC<Props> = ({ onSubmit }) => {
             className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
             onPress={handleSubmit(onSubmit)}
           >
-            <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-violet-600">
-              Save
-            </Text>
+            {isCreatingQuiz ? (
+              <ActivityIndicator color="violet" />
+            ) : (
+              <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-violet-600">
+                Save
+              </Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-indigo-800 bg-indigo-700 py-[18px]">
             <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
