@@ -9,8 +9,9 @@ const PlayQuiz: FC = () => {
     <View className="relative flex-1 items-center justify-center">
       <PlayQuizBackground className="absolute inset-0" />
 
-      <View className="absolute top-20 left-7">
-        <Text className="mb-2 text-black"></Text>
+      <View className="absolute top-16 left-11">
+        <Text className=" text-black"></Text>
+        <Text className="text-black"></Text>
         <PlayQuizButton />
       </View>
     </View>
