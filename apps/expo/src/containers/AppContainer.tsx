@@ -1,4 +1,3 @@
-import Footer from "../components/Footer";
 import { useUser } from "@clerk/clerk-expo";
 
 import type { FC } from "react";
@@ -10,11 +9,10 @@ interface Props {
 const AppContainer: FC<Props> = ({ children }) => {
   const { isSignedIn } = useUser();
 
-  return (
-    <>
-      {children}
-      {isSignedIn && <Footer />}
-    </>
-  );
+  if (!isSignedIn) {
+    return <>{children}</>;
+  }
+
+  return <>{children}</>;
 };
 export default AppContainer;
