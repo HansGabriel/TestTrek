@@ -21,6 +21,7 @@ export type RootStackParamList = {
   CreateReviewer: undefined;
   SplashScreen: undefined;
   MaterialInput: undefined;
+  MyLibrary: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

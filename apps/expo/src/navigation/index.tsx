@@ -19,6 +19,7 @@ import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
 import { CreateReviewer } from "../screens/create-reviewer";
 import { SplashScreen } from "../screens/splash-screen";
+import { MyLibrary } from "../screens/my-library";
 
 export default function Navigation() {
   return (
@@ -127,6 +128,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateReviewer"
               component={CreateReviewer}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MyLibrary"
+              component={MyLibrary}
               options={{
                 headerShown: false,
               }}
