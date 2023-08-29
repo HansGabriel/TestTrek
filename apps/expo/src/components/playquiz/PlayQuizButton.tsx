@@ -4,8 +4,13 @@ import type { FC } from "react";
 
 const PlayQuizButton: FC = () => {
   return (
-    <TouchableOpacity className="h-[32px] w-[113px] items-center justify-center rounded-full bg-white">
-      <Text className="text-black">Find Friends</Text>
+    <TouchableOpacity className="h-[24px] w-[100px] items-center justify-center rounded-full bg-white">
+      <Text
+        style={{ fontSize: 13, color: "#6949FF" }}
+        className="text-5xs text-black"
+      >
+        Find Friends
+      </Text>
     </TouchableOpacity>
   );
 };
