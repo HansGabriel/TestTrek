@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeHeader from "../components/headers/DiscoverHomeHeader";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
+import Footer from "../components/Footer";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -26,8 +27,8 @@ export const HomeScreen = () => {
     <SafeAreaView className="flex-1 flex-col">
       <MainHeader />
       <PlayQuiz />
-      <DiscoverHomeHeader />
       <SignOut />
+      <Footer />
     </SafeAreaView>
   );
 };
