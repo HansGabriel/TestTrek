@@ -5,6 +5,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
+import Footer from "../components/Footer";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -26,6 +27,7 @@ export const HomeScreen = () => {
       <MainHeader />
       <PlayQuiz />
       <SignOut />
+      <Footer />
     </SafeAreaView>
   );
 };
