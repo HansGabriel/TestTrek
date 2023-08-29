@@ -27,6 +27,7 @@ export const HomeScreen = () => {
     <SafeAreaView className="flex-1 flex-col">
       <MainHeader />
       <PlayQuiz />
+      <DiscoverHomeHeader />
       <SignOut />
       <Footer />
     </SafeAreaView>
