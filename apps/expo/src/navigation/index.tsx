@@ -20,6 +20,7 @@ import { UploadScreen } from "../screens/upload-screen";
 import { CreateReviewer } from "../screens/create-reviewer";
 import { SplashScreen } from "../screens/splash-screen";
 import { MyLibraryScreen } from "../screens/my-library";
+import { CreateTestScreen } from "../screens/create-test";
 
 export default function Navigation() {
   return (
@@ -69,6 +70,20 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Home"
               component={HomeScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateTest"
+              component={CreateTestScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MyLibrary"
+              component={MyLibraryScreen}
               options={{
                 headerShown: false,
               }}
@@ -128,13 +143,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateReviewer"
               component={CreateReviewer}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="MyLibraryScreen"
-              component={MyLibraryScreen}
               options={{
                 headerShown: false,
               }}
