@@ -18,9 +18,9 @@ const OtherTests = () => {
   return <LibraryTabs tabName="Other Tests" />;
 };
 
-export const MyLibrary = () => {
+export const MyLibraryScreen = () => {
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <SafeAreaView className="my-10 mx-6 flex-row items-center justify-between space-x-4">
         <View className="flex-row gap-4">
           <TinyTestTrekIcon />
@@ -60,6 +60,6 @@ export const MyLibrary = () => {
           options={{ title: "Other Tests" }}
         />
       </Tab.Navigator>
-    </>
+    </View>
   );
 };

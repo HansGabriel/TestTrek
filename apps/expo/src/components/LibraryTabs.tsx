@@ -1,13 +1,14 @@
 import React, { ReactNode } from "react";
+import type { FC } from "react";
 
 import { View, SafeAreaView, Text } from "react-native";
 
-interface LibraryTabProps {
+interface Props {
   tabName: string;
   component?: ReactNode;
 }
 
-export const LibraryTabs = ({ tabName }: LibraryTabProps) => {
+export const LibraryTabs: FC<Props> = ({ tabName }) => {
   return (
     <SafeAreaView>
       <View>
