@@ -5,8 +5,14 @@ import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
 import discoverCardList from "../../temp-data/discover/discoverCardList";
 
 import type { FC } from "react";
+import type { RouterOutputs } from "../../utils/trpc";
 
-const DiscoverHomeSection: FC = () => {
+interface Props {
+  tests: RouterOutputs["test"]["getAll"];
+}
+
+const DiscoverHomeSection: FC<Props> = ({ tests }) => {
+  console.log(tests);
   return (
     <View>
       <DiscoverHomeHeader />

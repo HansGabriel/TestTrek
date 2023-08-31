@@ -1,5 +1,6 @@
 import { createTRPCReact } from "@trpc/react-query";
 import type { AppRouter } from "@acme/api";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 /**
  * Extend this function when going to production by
  * setting the baseUrl to your production API URL.
@@ -60,3 +61,15 @@ export const TRPCProvider: React.FC<{
     </trpc.Provider>
   );
 };
+
+/**
+ * Inference helpers for input types
+ * @example type HelloInput = RouterInputs['example']['hello']
+ **/
+export type RouterInputs = inferRouterInputs<AppRouter>;
+
+/**
+ * Inference helpers for output types
+ * @example type HelloOutput = RouterOutputs['example']['hello']
+ **/
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
