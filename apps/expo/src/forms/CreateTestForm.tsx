@@ -138,10 +138,6 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
           {errors.collection && (
             <Text className="text-red-500">{errors.collection.message}</Text>
           )}
-
-          {errors.collection && (
-            <Text className="text-red-500">{errors.collection.message}</Text>
-          )}
         </View>
 
         <View className="flex flex-row items-center justify-between pb-20">

@@ -1,9 +1,18 @@
 import * as React from "react";
 import { Image, Text, View } from "react-native";
-import DiscoverHomeCardType from "../types/discoverHomeCard";
-import type { FC } from "react";
 
-const DiscoverHomeCard: FC<DiscoverHomeCardType> = (props) => {
+import type { FC } from "react";
+import type { ImageSourcePropType } from "react-native";
+
+interface Props {
+  imageSource: ImageSourcePropType;
+  title: string;
+  q: string;
+  userImageSource: ImageSourcePropType;
+  userName: string;
+}
+
+const DiscoverHomeCard: FC<Props> = (props) => {
   return (
     <View className="ml-3 h-72 w-56  items-center bg-white p-3">
       <View
