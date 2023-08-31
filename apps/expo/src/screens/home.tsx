@@ -3,6 +3,8 @@ import React from "react";
 import { Button, View } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DiscoverHomeHeader from "../components/headers/DiscoverHomeHeader";
+import DiscoverHomeSection from "../components/Discover/DiscoverHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
@@ -26,6 +28,7 @@ export const HomeScreen = () => {
     <SafeAreaView className="flex-1 flex-col">
       <MainHeader />
       <PlayQuiz />
+      <DiscoverHomeSection />
       <SignOut />
       <Footer />
     </SafeAreaView>
