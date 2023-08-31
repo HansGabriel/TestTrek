@@ -7,7 +7,6 @@ import discoverCardList from "../../temp-data/discover/discoverCardList";
 import type { FC } from "react";
 
 const DiscoverHomeSection: FC = () => {
-  console.log(discoverCardList);
   return (
     <View>
       <DiscoverHomeHeader />
