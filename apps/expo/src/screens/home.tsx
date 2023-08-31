@@ -7,6 +7,7 @@ import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
+import { trpc } from "../utils/trpc";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -23,11 +24,13 @@ const SignOut = () => {
 };
 
 export const HomeScreen = () => {
+  const { data: tests } = trpc.test.getAll.useQuery();
+
   return (
     <SafeAreaView className="flex-1 flex-col">
       <MainHeader />
       <PlayQuiz />
-      <DiscoverHomeSection />
+      {tests ? <DiscoverHomeSection tests={tests} /> : null}
       <SignOut />
       <Footer />
     </SafeAreaView>
