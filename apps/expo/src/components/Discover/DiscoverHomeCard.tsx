@@ -5,33 +5,32 @@ import type { FC } from "react";
 
 const DiscoverHomeCard: FC<DiscoverHomeCardType> = (props) => {
   return (
-    <View className="inline-flex h-64 w-48 items-center justify-start gap-3">
-      <View className="inline-flex shrink grow basis-0 flex-col items-start justify-start rounded-2xl border-b-2 border-zinc-100 bg-white">
-        <View className="relative h-36 w-48">
-          <View className="absolute left-0 top-0 h-36 w-48 bg-stone-300" />
+    <View className="ml-3 h-72 w-56  items-center bg-white p-3">
+      <View
+        style={{ borderRadius: 20 }}
+        className="flex-2 overflow-hidden border-b-2 border-gray-300 bg-white"
+      >
+        <View className="relative h-36">
+          <View className="absolute inset-0 bg-gray-400" />
           <Image
-            className="absolute left-0 top-0 h-36 w-48"
+            className="absolute inset-0 h-36 w-full object-cover"
             source={props.imageSource}
           />
-          <View className="absolute left-[139px] top-[102px] inline-flex h-6 w-12 items-end justify-end gap-2 rounded-md bg-violet-600 px-2.5 py-1.5">
-            <Text className="text-right text-xs font-semibold tracking-tight text-white">
-              {props.q}
-            </Text>
+          <View className="absolute bottom-2 right-4 h-6 w-12 items-center justify-center rounded-md bg-purple-700">
+            <Text className="text-xs font-semibold text-white">16 Qs</Text>
           </View>
         </View>
-        <View className="flex h-28 flex-col items-start justify-start gap-2 self-stretch rounded-bl-2xl rounded-br-2xl border-l border-r border-b border-zinc-100 px-4 pt-3 pb-4">
-          <Text className="self-stretch text-lg font-bold leading-7 text-neutral-800">
-            {props.title}
+        <View className=" p-4">
+          <Text className="mb-4 truncate text-lg font-bold leading-6 text-black">
+            Get Smarter with Productivity Quizz...
           </Text>
-          <View className="inline-flex items-center justify-start gap-2 self-stretch">
-            <View className="flex h-5 w-5 items-center justify-center">
-              <Image
-                className="h-5 w-5 rounded-full"
-                source={props.userImageSource}
-              />
-            </View>
-            <Text className="shrink grow basis-0 text-xs font-semibold tracking-tight text-neutral-700">
-              {props.userName}
+          <View className="flex-row items-center">
+            <Image
+              className="h-4 w-4 rounded-full"
+              source={props.userImageSource}
+            />
+            <Text className="ml-2 text-xs font-medium text-gray-600">
+              Titus Kitamura
             </Text>
           </View>
         </View>

@@ -5,7 +5,7 @@ import type { FC } from "react";
 const DiscoverHomeHeader: FC = ({}) => {
   return (
     <>
-      <View className="w-70 h-29 sticky top-0 z-50 mx-6 flex flex-row justify-between bg-white py-5">
+      <View className="w-70 h-29 sticky top-3 z-50 mx-6 flex flex-row justify-between bg-white py-5">
         <View>
           <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
             Discover
