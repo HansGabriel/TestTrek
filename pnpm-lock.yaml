@@ -141,6 +141,9 @@ importers:
       react-native-date-picker:
         specifier: ^4.2.14
         version: 4.2.14(react-native@0.70.5)(react@18.2.0)
+      react-native-dropdown-picker:
+        specifier: ^5.4.6
+        version: 5.4.6(react-native@0.70.5)(react@18.2.0)
       react-native-gesture-handler:
         specifier: ^2.9.0
         version: 2.9.0(react-native@0.70.5)(react@18.2.0)
@@ -8793,6 +8796,16 @@ packages:
       react-native: '>= 0.64.3'
     dependencies:
       prop-types: 15.8.1
+      react: 18.2.0
+      react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
+    dev: false
+
+  /react-native-dropdown-picker@5.4.6(react-native@0.70.5)(react@18.2.0):
+    resolution: {integrity: sha512-T1XBHbE++M6aRU3wFYw3MvcOuabhWZ29RK/Ivdls2r1ZkZ62iEBZknLUPeVLMX3x6iUxj4Zgr3X2DGlEGXeHsA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
       react: 18.2.0
       react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
     dev: false

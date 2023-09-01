@@ -24,6 +24,7 @@ export type RootStackParamList = {
   MyLibrary: undefined;
   CreateTest: undefined;
   Discover: undefined;
+  CreateQuestion: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

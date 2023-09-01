@@ -22,6 +22,7 @@ import { SplashScreen } from "../screens/splash-screen";
 import { MyLibraryScreen } from "../screens/my-library";
 import { CreateTestScreen } from "../screens/create-test";
 import { DiscoverScreen } from "../screens/discover";
+import { CreateQuestionScreen } from "../screens/create-question";
 
 export default function Navigation() {
   return (
@@ -92,6 +93,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Discover"
               component={DiscoverScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateQuestion"
+              component={CreateQuestionScreen}
               options={{
                 headerShown: false,
               }}
