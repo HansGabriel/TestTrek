@@ -14,32 +14,37 @@ interface Props {
 
 const DiscoverHomeCard: FC<Props> = (props) => {
   return (
-    <View className="ml-3 h-72 w-56  items-center bg-white p-3">
-      <View
-        style={{ borderRadius: 20 }}
-        className="flex-2 overflow-hidden border-b-2 border-gray-300 bg-white"
-      >
-        <View className="relative h-36">
+    <View className="h-59 ml-3 w-48 flex-shrink-0 items-center bg-white p-2">
+      <View className="flex-1 flex-shrink-0 overflow-hidden rounded-2xl border-b-2 border-gray-300 bg-white">
+        <View className="relative h-28">
           <View className="absolute inset-0 bg-gray-400" />
           <Image
-            className="absolute inset-0 h-36 w-full object-cover"
+            className="absolute inset-0 h-28 w-full object-cover"
             source={props.imageSource}
           />
-          <View className="absolute bottom-2 right-4 h-6 w-12 items-center justify-center rounded-md bg-purple-700">
+          <View className="absolute bottom-1 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
             <Text className="text-xs font-semibold text-white">16 Qs</Text>
           </View>
         </View>
-        <View className=" p-4">
-          <Text className="mb-4 truncate text-lg font-bold leading-6 text-black">
-            Get Smarter with Productivity Quizz...
+        <View className="flex-shrink-0 overflow-hidden p-3">
+          <Text
+            className="text-md mb-3 h-10 overflow-hidden truncate font-bold leading-5 text-black"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {props.title}
           </Text>
-          <View className="flex-row items-center">
+          <View className="mt-1 flex-row items-center">
             <Image
-              className="h-4 w-4 rounded-full"
+              className="h-3 w-3 flex-shrink-0 rounded-full"
               source={props.userImageSource}
             />
-            <Text className="ml-2 text-xs font-medium text-gray-600">
-              Titus Kitamura
+            <Text
+              className="ml-1.5 w-32 flex-shrink-0 truncate text-xs font-medium text-gray-600"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {props.userName}
             </Text>
           </View>
         </View>

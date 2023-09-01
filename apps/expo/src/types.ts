@@ -23,6 +23,7 @@ export type RootStackParamList = {
   MaterialInput: undefined;
   MyLibrary: undefined;
   CreateTest: undefined;
+  Discover: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

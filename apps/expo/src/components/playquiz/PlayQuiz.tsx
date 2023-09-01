@@ -6,11 +6,10 @@ import type { FC } from "react";
 
 const PlayQuiz: FC = () => {
   return (
-    <View className="relative flex-1 items-center justify-center">
-      <PlayQuizBackground className="absolute inset-0" />
-
-      <View className="absolute top-16 left-11">
-        <Text className=" text-black"></Text>
+    <View className="relative h-40 w-96">
+      <PlayQuizBackground />
+      <View className="absolute top-16 left-11 mt-16 ml-11">
+        <Text className="text-black"></Text>
         <Text className="text-black"></Text>
         <PlayQuizButton />
       </View>
