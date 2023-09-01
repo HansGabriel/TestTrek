@@ -15,7 +15,7 @@ const discoverCardList: DiscoverHomeCardType[] = [
     title: "Newwwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww2222",
     q: 1,
     userImageSource: userImage1,
-    userName: "user 2",
+    userName: "user 2222222222222222222222222222222",
   },
   {
     imageSource: image1,

@@ -14,7 +14,7 @@ interface Props {
 
 const DiscoverHomeCard: FC<Props> = (props) => {
   return (
-    <View className="ml-3 h-60 w-48 flex-shrink-0 items-center bg-white p-2">
+    <View className="h-59 ml-3 w-48 flex-shrink-0 items-center bg-white p-2">
       <View className="flex-1 flex-shrink-0 overflow-hidden rounded-2xl border-b-2 border-gray-300 bg-white">
         <View className="relative h-28">
           <View className="absolute inset-0 bg-gray-400" />
@@ -27,7 +27,11 @@ const DiscoverHomeCard: FC<Props> = (props) => {
           </View>
         </View>
         <View className="flex-shrink-0 overflow-hidden p-3">
-          <Text className="text-md mb-3 h-10 overflow-hidden truncate font-bold leading-5 text-black">
+          <Text
+            className="text-md mb-3 h-10 overflow-hidden truncate font-bold leading-5 text-black"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {props.title}
           </Text>
           <View className="mt-1 flex-row items-center">
@@ -35,7 +39,11 @@ const DiscoverHomeCard: FC<Props> = (props) => {
               className="h-3 w-3 flex-shrink-0 rounded-full"
               source={props.userImageSource}
             />
-            <Text className="ml-1.5 w-32 flex-shrink-0 truncate text-xs font-medium text-gray-600">
+            <Text
+              className="ml-1.5 w-32 flex-shrink-0 truncate text-xs font-medium text-gray-600"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {props.userName}
             </Text>
           </View>
