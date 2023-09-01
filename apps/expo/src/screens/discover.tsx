@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { SafeAreaView } from "react-native";
 import DiscoverScreenHeader from "../components/headers/DiscoverScreenHeader";
 
 export const DiscoverScreen = () => {
