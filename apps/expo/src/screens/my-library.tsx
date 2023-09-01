@@ -4,18 +4,24 @@ import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { AntDesign } from "@expo/vector-icons";
 import { LibraryTabs } from "../components/LibraryTabs";
 
+import {
+  TestsData,
+  FavoritesData,
+  OtherTestsData,
+} from "../temp-data/library-tab-contents/libraryTestsData";
+
 const Tab = createMaterialTopTabNavigator();
 
 const MyTests = () => {
-  return <LibraryTabs tabName="My Tests" />;
+  return <LibraryTabs tabData={TestsData} />;
 };
 
 const Favorites = () => {
-  return <LibraryTabs tabName="Favorites" />;
+  return <LibraryTabs tabData={FavoritesData} />;
 };
 
 const OtherTests = () => {
-  return <LibraryTabs tabName="Other Tests" />;
+  return <LibraryTabs tabData={OtherTestsData} />;
 };
 
 export const MyLibraryScreen = () => {
