@@ -21,6 +21,7 @@ import { CreateReviewer } from "../screens/create-reviewer";
 import { SplashScreen } from "../screens/splash-screen";
 import { MyLibraryScreen } from "../screens/my-library";
 import { CreateTestScreen } from "../screens/create-test";
+import { DiscoverScreen } from "../screens/discover";
 
 export default function Navigation() {
   return (
@@ -84,6 +85,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="MyLibrary"
               component={MyLibraryScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Discover"
+              component={DiscoverScreen}
               options={{
                 headerShown: false,
               }}

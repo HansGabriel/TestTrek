@@ -9,15 +9,15 @@ const SearchIcon: FC<SvgProps> = (props) => {
       <Mask
         id="a"
         maskUnits="userSpaceOnUse"
-        x={2}
-        y={2}
-        width={24}
-        height={24}
+        x={0}
+        y={0}
+        width={28}
+        height={28}
       >
         <Path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M2.333 2.333h22.723v22.724H2.333V2.332z"
+          d="M0 0h28v28H0V0z"
           fill="#fff"
         />
       </Mask>
@@ -34,13 +34,13 @@ const SearchIcon: FC<SvgProps> = (props) => {
         maskUnits="userSpaceOnUse"
         x={20}
         y={20}
-        width={6}
-        height={7}
+        width={8}
+        height={8}
       >
         <Path
           fillRule="evenodd"
           clipRule="evenodd"
-          d="M20.113 20.658h5.862v5.85h-5.862v-5.85z"
+          d="M20 20h8v8h-8v-8z"
           fill="#fff"
         />
       </Mask>
