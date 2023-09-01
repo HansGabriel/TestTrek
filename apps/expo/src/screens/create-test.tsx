@@ -13,8 +13,8 @@ export const CreateTestScreen: FC = ({}) => {
     trpc.test.create.useMutation();
 
   return (
-    <View className="mx-6 mt-12 flex-1">
-      <View className="flex flex-row items-center justify-between pb-5">
+    <View className="mt-12 flex-1">
+      <View className="mx-6  flex flex-row items-center justify-between pb-5">
         <View className="flex flex-row items-center gap-2">
           <TouchableOpacity onPress={goBack}>
             <Feather name="x" size={24} color="black" />

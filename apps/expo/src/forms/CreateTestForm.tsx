@@ -73,7 +73,7 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="flex flex-col content-end justify-between"
+          className="mx-6 flex flex-col content-end justify-between"
         >
           <View className="my-8 flex flex-col">
             <Controller
