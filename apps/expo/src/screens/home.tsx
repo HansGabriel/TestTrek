@@ -3,11 +3,11 @@ import React from "react";
 import { Button, View } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
+import DiscoverHomeSection from "../components/Discover/DiscoverHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
-import { trpc } from "../utils/trpc";
+//import { trpc } from "../utils/trpc";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -24,13 +24,18 @@ const SignOut = () => {
 };
 
 export const HomeScreen = () => {
-  const { data: tests } = trpc.test.getAll.useQuery();
+  {
+    // const { data: tests } = trpc.test.getAll.useQuery();
+  }
 
   return (
     <SafeAreaView className="flex-1 flex-col">
       <MainHeader />
       <PlayQuiz />
-      {tests ? <DiscoverHomeSection tests={tests} /> : null}
+      {
+        //{tests ? <DiscoverHomeSection tests={tests} /> : null}
+      }
+      <DiscoverHomeSection />
       <SignOut />
       <Footer />
     </SafeAreaView>
