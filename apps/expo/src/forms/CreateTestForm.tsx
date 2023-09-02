@@ -209,14 +209,14 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
             </Text>
           </View>
           {/* Horizontal Line */}
-          <View className="inline-flex h-[0px] w-[382px] items-center justify-center">
+          <View className="mx-6 inline-flex h-[0px] w-[382px] items-center justify-center">
             <View className="h-[0px] w-[382px] border border-zinc-100"></View>
           </View>
 
           {/* Cards */}
           <ScrollView className="mt-8" showsVerticalScrollIndicator={false}>
-            <View className="flex flex-col items-center gap-1">
-              <View className="flex flex-row gap-1">
+            <View className="flex flex-col items-center">
+              <View className="mx-6 flex flex-row">
                 <TouchableOpacity
                   onPress={goToCreateQuestion}
                   className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"
@@ -238,7 +238,7 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
                 </TouchableOpacity>
               </View>
 
-              <View className="flex flex-row gap-1">
+              <View className="mx-6 flex flex-row">
                 <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
                   <View className="h-10 w-10 items-center justify-center px-[7px] py-1">
                     <CheckboxIcon />
