@@ -14,6 +14,9 @@ const config = {
   eslint: {
     ignoreDuringBuilds: !!process.env.CI,
   },
+  experimental: {
+    esmExternals: false,
+  },
 };
 
 export default config;
