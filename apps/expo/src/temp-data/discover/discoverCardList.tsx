@@ -1,7 +1,20 @@
-import image1 from "./discover-images/image-source/image1.png";
-import userImage1 from "./discover-images/user-image/user-image1.png";
+/* eslint-disable @typescript-eslint/no-var-requires */
+import type { ImageSourcePropType } from "react-native";
 
-const discoverCardList = [
+const image1 = require("./discover-images/image-source/image1.png");
+const userImage1 = require("./discover-images/user-image/user-image1.png");
+
+interface Card {
+  imageSource: ImageSourcePropType;
+  title: string;
+  q: number;
+  date: Date;
+  plays: number;
+  userImageSource: ImageSourcePropType;
+  userName: string;
+}
+
+const discoverCardList: Card[] = [
   {
     imageSource: image1,
     title: "Loooooggg",
@@ -36,7 +49,7 @@ const discoverCardList = [
     date: new Date("2022-2-11"),
     plays: 5600,
     userImageSource: userImage1,
-    userName: 5600,
+    userName: "user 4",
   },
   {
     imageSource: image1,

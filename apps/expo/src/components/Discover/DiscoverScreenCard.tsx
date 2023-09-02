@@ -1,19 +1,18 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import type { ImageSourcePropType } from "react-native";
-import image1 from "../../temp-data/discover/discover-images/image-source/image1.png";
 
 interface Props {
   imageSource: ImageSourcePropType;
   title: string;
-  q: string;
+  q: number;
   date: Date;
   plays: number;
   userImageSource: ImageSourcePropType;
   userName: string;
 }
 
-function formatNumberToShortForm(num) {
+function formatNumberToShortForm(num: number) {
   if (num >= 1000000) {
     return (num / 1000000).toFixed(1) + "m";
   } else if (num >= 1000) {
@@ -89,7 +88,10 @@ const DiscoverScreenCard: React.FC<Props> = (props) => {
             </Text>
           </View>
           <View className="mt-3 flex-row items-center">
-            <Image className="h-5 w-5 rounded-full" source={image1} />
+            <Image
+              className="h-5 w-5 rounded-full"
+              source={require("../../temp-data/discover/discover-images/image-source/image1.png")}
+            />
             <Text
               className="ml-1.5 overflow-hidden truncate text-xs font-semibold text-gray-600"
               numberOfLines={1}

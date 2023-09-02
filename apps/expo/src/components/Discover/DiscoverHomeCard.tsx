@@ -7,7 +7,7 @@ import type { ImageSourcePropType } from "react-native";
 interface Props {
   imageSource: ImageSourcePropType;
   title: string;
-  q: string;
+  q: number;
   date: Date;
   plays: number;
   userImageSource: ImageSourcePropType;
