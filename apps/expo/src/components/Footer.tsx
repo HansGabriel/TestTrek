@@ -19,6 +19,10 @@ const Footer: FC = () => {
     navigation.navigate("CreateTest");
   };
 
+  const goToMyLibraryScreen = () => {
+    navigation.navigate("MyLibrary");
+  };
+
   return (
     <View className="items-center rounded-t-3xl border-r-[1px] border-l-[1px] border-t-[1px] border-gray-200">
       <View className="flex-row items-center justify-center space-x-5 px-8 pb-8 pt-5">
@@ -33,7 +37,10 @@ const Footer: FC = () => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 15 }}>
+        <TouchableOpacity
+          onPress={goToMyLibraryScreen}
+          style={{ marginHorizontal: 15 }}
+        >
           <View className="flex-col items-center space-y-1">
             <CategoryIcon />
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
