@@ -37,7 +37,6 @@ export const CreateTestScreen: FC = ({}) => {
     createTest(
       {
         ...rest,
-        keywords: ["math"],
         image: firstImage.secureUrl,
       },
       {

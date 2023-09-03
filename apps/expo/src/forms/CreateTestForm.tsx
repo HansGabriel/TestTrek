@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -13,6 +13,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { testDetailsSchema } from "@acme/schema/src/test";
 import AppTextInput from "../components/inputs/AppTextInput";
+import MultipleTextInput from "../components/inputs/MultipleTextInput";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {
   TestIcon,
@@ -47,6 +48,8 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
     ),
   });
 
+  const [keywords, setKeywords] = useState<string[]>([]);
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const snapPoints = useMemo(() => ["5%", "25%", "60%"], []);
@@ -66,8 +69,12 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
   }, []);
 
   const submitForm = (data: TestDetails) => {
-    onSubmit(data);
+    onSubmit({
+      ...data,
+      keywords,
+    });
     reset();
+    setKeywords([]);
   };
 
   return (
@@ -172,6 +179,15 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
             {errors.collection && (
               <Text className="text-red-500">{errors.collection.message}</Text>
             )}
+
+            <MultipleTextInput
+              label="Keyword"
+              textInputProps={{
+                placeholder: "Type keyword and enter",
+              }}
+              texts={keywords}
+              onChangeTexts={setKeywords}
+            />
           </View>
 
           <View className="flex flex-row items-center justify-between pb-20">
