@@ -1,5 +1,6 @@
 import formidable from "formidable";
 import cloudinary from "../../services/cloudinary";
+import { ImageFolderEnum } from "../../enums";
 
 import type { NextApiHandler } from "next";
 import type { ImageDetails } from "@acme/schema/src/types";
@@ -28,7 +29,9 @@ const handler: NextApiHandler = async (req, res) => {
       }
 
       for (const file of testImage) {
-        const result = await cloudinary.uploader.upload(file.filepath);
+        const result = await cloudinary.uploader.upload(file.filepath, {
+          folder: ImageFolderEnum.TEST,
+        });
 
         const { secure_url: secureUrl, public_id: publicId } = result;
 

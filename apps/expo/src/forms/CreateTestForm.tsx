@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { FontAwesome } from "@expo/vector-icons";
 import {
   TouchableOpacity,
   View,
@@ -22,7 +21,7 @@ import {
   CheckboxIcon,
 } from "../icons/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
-import ImagePickerExample from "../components/ImagePicker";
+import TestImagePicker from "../components/ImagePicker";
 
 import type { TestDetails } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -42,7 +41,6 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
   } = useForm<TestDetails>({
     resolver: zodResolver(
       testDetailsSchema.omit({
-        image: true,
         keywords: true,
       }),
     ),
@@ -77,23 +75,20 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
           className="mx-6 flex flex-col content-end justify-between"
         >
           <View className="my-8 flex flex-col">
-            <Controller
-              control={control}
-              render={({ field: {} }) => (
-                <TouchableOpacity className="mx-auto mb-6 h-56 w-full items-center justify-center rounded-3xl border-2 border-violet-600 bg-neutral-50">
-                  <FontAwesome
-                    name="image"
-                    size={48}
-                    color="rgba(105, 73, 255, 1)"
-                  />
-                  <Text className="font-nunito-bold mt-4 text-violet-600">
-                    Add Cover Image
-                  </Text>
-                </TouchableOpacity>
+            <View className="mb-6">
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TestImagePicker image={value} setImage={onChange} />
+                )}
+                name="image"
+              />
+              {errors.image && (
+                <Text className="mt-2 text-red-500">
+                  {errors.image.message}
+                </Text>
               )}
-              name="image"
-            />
-            <ImagePickerExample />
+            </View>
 
             <Controller
               control={control}

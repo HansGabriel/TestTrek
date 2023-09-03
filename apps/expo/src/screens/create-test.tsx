@@ -1,16 +1,43 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Feather } from "@expo/vector-icons";
 import { View, Text, TouchableOpacity } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
+import { uploadImageAsync } from "../services/upload";
+import { ImageDetails } from "@acme/schema/src/types";
 
 import type { FC } from "react";
+import type { TestDetails } from "@acme/schema/src/types";
 
 export const CreateTestScreen: FC = ({}) => {
   const goBack = useGoBack();
 
   const { mutate: createTest, isLoading: isCreatingQuiz } =
     trpc.test.create.useMutation();
+
+  const submitTestDetails = async (data: TestDetails) => {
+    const path = "http://192.168.254.102:3000/api/upload";
+    const fieldName = "testImage";
+    const imageDetails: ImageDetails[] = await uploadImageAsync({
+      path,
+      fieldName,
+      imageUri: data.image,
+    });
+    const firstImage = imageDetails[0];
+
+    if (!firstImage) {
+      return;
+    }
+
+    const { image: _, ...rest } = data;
+
+    createTest({
+      ...rest,
+      keywords: ["math"],
+      image: firstImage.secureUrl,
+    });
+  };
 
   return (
     <View className="mt-12 flex-1">
@@ -23,14 +50,7 @@ export const CreateTestScreen: FC = ({}) => {
         </View>
       </View>
       <CreateTestForm
-        onSubmit={(data) => {
-          createTest({
-            ...data,
-            keywords: ["math"],
-            image:
-              "https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1",
-          });
-        }}
+        onSubmit={submitTestDetails}
         isCreatingQuiz={isCreatingQuiz}
       />
     </View>

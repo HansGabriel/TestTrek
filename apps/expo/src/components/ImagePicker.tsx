@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { Button, Image, View } from "react-native";
+import React from "react";
+import { Image, View, TouchableOpacity, Text } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { uploadImageAsync } from "../services/upload";
-import { ImageDetails } from "@acme/schema/src/types";
 
-export default function ImagePickerExample() {
-  const [image, setImage] = useState<string | null>(null);
+import type { FC } from "react";
 
+interface Props {
+  image?: string;
+  setImage: (value: string) => void;
+  className?: string;
+}
+
+const TestImagePicker: FC<Props> = ({ image, setImage, className }) => {
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -15,31 +20,30 @@ export default function ImagePickerExample() {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets[0]?.type === "image") {
       const imageUri = result.assets[0]?.uri;
       if (imageUri) {
         setImage(imageUri);
-
-        try {
-          const uploadResult = await uploadImageAsync<ImageDetails[]>(
-            imageUri,
-            "testImage",
-          );
-
-          console.log(uploadResult);
-        } catch (error) {
-          console.log(error);
-        }
       }
     }
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button title="Pick an image from camera roll" onPress={pickImage} />
-      {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+    <TouchableOpacity onPress={pickImage} className={className}>
+      {image ? (
+        <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
+          <Image source={{ uri: image }} className="h-60 w-full rounded-3xl" />
+        </View>
+      ) : (
+        <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl border-2 border-violet-600 bg-neutral-50">
+          <FontAwesome name="image" size={48} color="rgba(105, 73, 255, 1)" />
+          <Text className="font-nunito-bold mt-4 text-violet-600">
+            Add Cover Image
+          </Text>
+        </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
-}
+};
+
+export default TestImagePicker;
