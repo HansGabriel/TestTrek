@@ -22,6 +22,7 @@ import {
   CheckboxIcon,
 } from "../icons/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
+import ImagePickerExample from "../components/ImagePicker";
 
 import type { TestDetails } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -92,6 +93,7 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
               )}
               name="image"
             />
+            <ImagePickerExample />
 
             <Controller
               control={control}
