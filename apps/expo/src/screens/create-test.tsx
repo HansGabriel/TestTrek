@@ -9,9 +9,11 @@ import { ImageDetails } from "@acme/schema/src/types";
 
 import type { FC } from "react";
 import type { TestDetails } from "@acme/schema/src/types";
+import useToast from "../hooks/useToast";
 
 export const CreateTestScreen: FC = ({}) => {
   const goBack = useGoBack();
+  const { showToast } = useToast();
 
   const { mutate: createTest, isLoading: isCreatingQuiz } =
     trpc.test.create.useMutation();
@@ -32,11 +34,21 @@ export const CreateTestScreen: FC = ({}) => {
 
     const { image: _, ...rest } = data;
 
-    createTest({
-      ...rest,
-      keywords: ["math"],
-      image: firstImage.secureUrl,
-    });
+    createTest(
+      {
+        ...rest,
+        keywords: ["math"],
+        image: firstImage.secureUrl,
+      },
+      {
+        onSuccess: () => {
+          showToast("Test created successfully");
+        },
+        onError: () => {
+          showToast("An error occurred");
+        },
+      },
+    );
   };
 
   return (

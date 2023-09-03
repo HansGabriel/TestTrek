@@ -12,7 +12,6 @@ interface Props {
 }
 
 const DiscoverHomeSection: FC<Props> = ({ tests }) => {
-  console.log(tests);
   return (
     <View>
       <DiscoverHomeHeader />

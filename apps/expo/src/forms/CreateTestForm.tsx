@@ -37,6 +37,7 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TestDetails>({
     resolver: zodResolver(
@@ -63,6 +64,11 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
       bottomSheetRef.current?.forceClose();
     }
   }, []);
+
+  const submitForm = (data: TestDetails) => {
+    onSubmit(data);
+    reset();
+  };
 
   return (
     <>
@@ -171,7 +177,7 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
           <View className="flex flex-row items-center justify-between pb-20">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit(submitForm)}
             >
               {isCreatingQuiz ? (
                 <ActivityIndicator color="violet" />
