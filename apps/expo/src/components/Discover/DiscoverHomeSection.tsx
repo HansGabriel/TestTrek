@@ -13,7 +13,7 @@ interface Props {
 
 const DiscoverHomeSection: FC<Props> = ({ tests }) => {
   const discoverCardList: Card[] = tests.map((test) => ({
-    imageSource: require(test.imageUrl),
+    imageSource: test.imageUrl,
     date: test.createdAt,
     plays: 10,
     q: 10,
