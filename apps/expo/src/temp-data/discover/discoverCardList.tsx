@@ -4,7 +4,7 @@ import type { ImageSourcePropType } from "react-native";
 const image1 = require("./discover-images/image-source/image1.png");
 const userImage1 = require("./discover-images/user-image/user-image1.png");
 
-interface Card {
+export interface Card {
   imageSource: ImageSourcePropType;
   title: string;
   q: number;
