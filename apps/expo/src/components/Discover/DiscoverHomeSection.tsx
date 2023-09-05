@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, FlatList } from "react-native";
 import DiscoverHomeCard from "./DiscoverHomeCard";
 import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
 import discoverCardList from "../../temp-data/discover/discoverCardList";
@@ -15,13 +15,17 @@ const DiscoverHomeSection: FC<Props> = ({ tests }) => {
   return (
     <View>
       <DiscoverHomeHeader />
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {discoverCardList.map((card, index) => (
-          <TouchableOpacity key={index}>
-            <DiscoverHomeCard {...card} />
+      <FlatList
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        data={discoverCardList}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity>
+            <DiscoverHomeCard {...item} />
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        )}
+      />
     </View>
   );
 };
