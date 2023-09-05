@@ -23,6 +23,7 @@ import { MyLibraryScreen } from "../screens/my-library";
 import { CreateTestScreen } from "../screens/create-test";
 import { DiscoverScreen } from "../screens/discover";
 import { CreateQuestionScreen } from "../screens/create-question";
+import { ProfileScreen } from "../screens/profile";
 
 export default function Navigation() {
   return (
@@ -104,6 +105,13 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
           </>
         ) : (
           <>
@@ -138,13 +146,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="SignInSignUp"
               component={SignInSignUpScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="MaterialInput"
-              component={MaterialInput}
               options={{
                 headerShown: false,
               }}

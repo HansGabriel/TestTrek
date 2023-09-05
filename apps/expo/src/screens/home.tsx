@@ -23,14 +23,17 @@ const SignOut = () => {
 };
 
 export const HomeScreen = () => {
-  const { data: tests } = trpc.test.getAll.useQuery();
+  //const { data: tests } = trpc.test.getAll.useQuery();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <MainHeader />
       <ScrollView>
         <PlayQuiz />
-        {tests ? <DiscoverHomeSection tests={tests} /> : null}
+        {
+          //tests ? <DiscoverHomeSection tests={tests} /> : null
+        }
+        <DiscoverHomeSection />
       </ScrollView>
       <SignOut />
       <Footer />

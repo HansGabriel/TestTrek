@@ -23,6 +23,10 @@ const Footer: FC = () => {
     navigation.navigate("MyLibrary");
   };
 
+  const goToProfileScreen = () => {
+    navigation.navigate("Profile");
+  };
+
   return (
     <View className="items-center rounded-t-3xl border-r-[1px] border-l-[1px] border-t-[1px] border-gray-200">
       <View className="flex-row items-center justify-center space-x-5 px-8 pb-8 pt-5">
@@ -69,7 +73,10 @@ const Footer: FC = () => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 15 }}>
+        <TouchableOpacity
+          style={{ marginHorizontal: 15 }}
+          onPress={goToProfileScreen}
+        >
           <View className="flex-col items-center space-y-1">
             <ProfileIcon />
             <Text className="w-full text-center text-xs font-medium tracking-wider text-gray-500">
