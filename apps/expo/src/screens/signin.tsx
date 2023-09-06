@@ -8,7 +8,9 @@ import type { FC } from "react";
 export const SigninScreen: FC = () => {
   const goBack = useGoBack();
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    console.log("Signin");
+  };
 
   return (
     <View className="flex-1 flex-col justify-between px-6">
