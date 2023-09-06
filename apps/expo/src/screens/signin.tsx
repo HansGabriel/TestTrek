@@ -17,9 +17,6 @@ export const SigninScreen: FC = () => {
           <TouchableOpacity onPress={goBack}>
             <LeftArrowIcon />
           </TouchableOpacity>
-          <View className="mx-auto h-3 w-[200px]">
-            <View className="bg-primary-1 absolute left-0 top-0 h-3 w-full rounded-[100px]"></View>
-          </View>
         </View>
         <View className="flex flex-col items-start justify-start">
           <Text className="font-nunito-bold self-stretch text-start text-[32px] font-bold leading-[51.20px] text-neutral-800">

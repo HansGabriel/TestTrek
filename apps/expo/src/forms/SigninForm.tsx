@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TextInput,
@@ -5,12 +6,15 @@ import {
   View,
   Text,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSigninSchema } from "@acme/schema/src/user";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import GoogleIcon from "../icons/GoogleIcon";
 import FacebookIcon from "../icons/FacebookIcon";
 import useSignin from "../hooks/useSignin";
+import { Ionicons } from "@expo/vector-icons";
 
 import type { UserSignup } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -20,6 +24,7 @@ interface Props {
 }
 
 const SigninForm: FC<Props> = ({ onSubmit }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const signInWithGoogle = useSignin({
     strategy: "oauth_google",
   });
@@ -35,6 +40,10 @@ const SigninForm: FC<Props> = ({ onSubmit }) => {
   } = useForm<UserSignup>({
     resolver: zodResolver(userSigninSchema),
   });
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <ScrollView
@@ -72,20 +81,44 @@ const SigninForm: FC<Props> = ({ onSubmit }) => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  className="border-primary-1 font-nunito-bold border-b py-2"
-                  placeholder="Password"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  secureTextEntry
-                />
+                <View className="border-primary-1 flex flex-row items-center justify-between border-b">
+                  <TextInput
+                    className="font-nunito-bold py-2"
+                    placeholder="Password"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    secureTextEntry={!isPasswordVisible}
+                  />
+                  <Pressable onPress={togglePasswordVisibility}>
+                    <Ionicons
+                      name={isPasswordVisible ? "ios-eye" : "ios-eye-off"}
+                      onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                      size={24}
+                      color="#6949FF"
+                    />
+                  </Pressable>
+                </View>
               )}
               name="password"
             />
             {errors.password && (
               <Text className="text-red-500">{errors.password.message}</Text>
             )}
+          </View>
+
+          <View className="mt-3 flex flex-row items-center justify-start">
+            <BouncyCheckbox
+              innerIconStyle={{
+                borderRadius: 10,
+              }}
+              fillColor="#6949FF"
+              unfillColor="#FFFFFF"
+              iconStyle={{ borderColor: "#FFFFFF", borderRadius: 10 }}
+            />
+            <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
+              Remember me
+            </Text>
           </View>
         </View>
         <View className="flex flex-row items-center justify-start gap-3">
