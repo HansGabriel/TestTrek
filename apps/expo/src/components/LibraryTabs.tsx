@@ -3,21 +3,23 @@ import type { FC } from "react";
 
 import { View, SafeAreaView, Text, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import { Keyword, Visibility } from ".prisma/client";
 
 interface ObjectProps {
-  firstName: string;
-  lastName: string;
-  thumbnails: string;
-  time: string;
-  views: string;
-  clonedBy: Array<{
-    name: string;
-    avatar: string;
-  }>;
+  id: string;
+  userId: string;
+  imageUrl: string;
+  title: string;
+  description: string;
+  collection: string;
+  visibility: Visibility;
+  keyword?: Keyword;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface ContentProps {
-  tabData: Array<ObjectProps>;
+  tabData?: Array<ObjectProps>;
 }
 
 export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
@@ -34,34 +36,18 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
                 className="h-full w-full"
                 resizeMode="cover"
                 source={{
-                  uri: item.thumbnails,
+                  uri: item.imageUrl,
                 }}
               />
             </View>
             <View className=" ml-3 w-full justify-around">
               <View>
-                <Text className=" font-nunito-bold text-lg">
-                  {item.firstName} {item.lastName}
-                </Text>
+                <Text className=" font-nunito-bold text-lg">{item.title}</Text>
               </View>
               <View className="flex-row">
-                <Text className=" mr-2">{item.time}</Text>
+                <Text className=" mr-2">{item.visibility}</Text>
                 <Text className=" mr-2">.</Text>
-                <Text className=" mr-2">{item.views} views</Text>
-              </View>
-              <View className="flex-row">
-                <Text className=" mr-3 text-xs">Cloned By:</Text>
-                {item.clonedBy.map((persons, index) => {
-                  return (
-                    <Image
-                      className=" -ml-1 h-5 w-5 rounded-full"
-                      key={index}
-                      source={{
-                        uri: persons.avatar,
-                      }}
-                    />
-                  );
-                })}
+                <Text className=" mr-2">{item.collection}</Text>
               </View>
             </View>
           </View>

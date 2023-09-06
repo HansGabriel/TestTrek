@@ -3,25 +3,28 @@ import { View, SafeAreaView, Text } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { AntDesign } from "@expo/vector-icons";
 import { LibraryTabs } from "../components/LibraryTabs";
+import { trpc } from "../utils/trpc";
 
-import {
-  TestsData,
-  FavoritesData,
-  OtherTestsData,
-} from "../temp-data/library-tab-contents/libraryTestsData";
+interface Props {
+  type: "user" | "favorite" | "other";
+  sort: "newest" | "oldest" | "alphabetical";
+}
 
 const Tab = createMaterialTopTabNavigator();
 
-const MyTests = () => {
-  return <LibraryTabs tabData={TestsData} />;
-};
+const TabContent = ({ type, sort }: Props) => {
+  const { data } = trpc.testFilter.getAll.useQuery({
+    testType: type,
+    sortBy: sort,
+  });
 
-const Favorites = () => {
-  return <LibraryTabs tabData={FavoritesData} />;
-};
-
-const OtherTests = () => {
-  return <LibraryTabs tabData={OtherTestsData} />;
+  return data?.length !== 0 ? (
+    <LibraryTabs tabData={data} />
+  ) : (
+    <View className="flex-1 items-center justify-center">
+      <Text>Empty Section</Text>
+    </View>
+  );
 };
 
 export const MyLibraryScreen = () => {
@@ -50,21 +53,15 @@ export const MyLibraryScreen = () => {
           tabBarIndicatorStyle: { backgroundColor: "rgba(105, 73, 255, 1)" },
         }}
       >
-        <Tab.Screen
-          name="MyTests"
-          component={MyTests}
-          options={{ title: "My Tests" }}
-        />
-        <Tab.Screen
-          name="Favorites"
-          component={Favorites}
-          options={{ title: "Favorites" }}
-        />
-        <Tab.Screen
-          name="Other Tests"
-          component={OtherTests}
-          options={{ title: "Other Tests" }}
-        />
+        <Tab.Screen name="MyTests" options={{ title: "My Tests" }}>
+          {() => <TabContent type="user" sort="newest" />}
+        </Tab.Screen>
+        <Tab.Screen name="Favorites" options={{ title: "Favorites" }}>
+          {() => <TabContent type="favorite" sort="newest" />}
+        </Tab.Screen>
+        <Tab.Screen name="OtherTests" options={{ title: "Other Tests" }}>
+          {() => <TabContent type="other" sort="newest" />}
+        </Tab.Screen>
       </Tab.Navigator>
     </View>
   );
