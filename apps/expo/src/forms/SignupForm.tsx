@@ -9,6 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSignupSchema } from "@acme/schema/src/user";
 import GoogleIcon from "../icons/GoogleIcon";
+import FacebookIcon from "../icons/FacebookIcon";
 import useSignin from "../hooks/useSignin";
 
 import type { UserSignup } from "@acme/schema/src/types";
@@ -22,6 +23,11 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
   const signInWithGoogle = useSignin({
     strategy: "oauth_google",
   });
+
+  const signInWithFacebook = useSignin({
+    strategy: "oauth_facebook",
+  });
+
   const {
     control,
     handleSubmit,
@@ -32,7 +38,7 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
 
   return (
     <ScrollView
-      contentInset={{ bottom: 20 }}
+      contentInset={{ bottom: 100 }}
       showsVerticalScrollIndicator={false}
     >
       <View className="flex flex-col content-end justify-between">
@@ -122,8 +128,19 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
             </Text>
           </View>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={signInWithFacebook}
+          className="mt-4 rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
+        >
+          <View className="flex flex-row items-center justify-center gap-3">
+            <FacebookIcon />
+            <Text className="font-nunito-semibold text-base leading-snug tracking-tight text-neutral-800">
+              Continue with Facebook
+            </Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-          <View className="mt-5 flex w-full flex-row items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]">
+          <View className="mt-8 flex w-full flex-row items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]">
             <Text className="font-nunito-bold shrink grow basis-0 text-center text-base leading-snug tracking-tight text-white">
               Signup
             </Text>
