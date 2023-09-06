@@ -2,7 +2,7 @@ import React from "react";
 import { Button, View, ScrollView } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
+import DiscoverHomeSection from "../components/Discover/DiscoverHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
@@ -33,7 +33,7 @@ export const HomeScreen = () => {
         {
           //tests ? <DiscoverHomeSection tests={tests} /> : null
         }
-        <DiscoverHomeSection />
+        <DiscoverHomeSection  />
       </ScrollView>
       <SignOut />
       <Footer />

@@ -25,6 +25,7 @@ export type RootStackParamList = {
   CreateTest: undefined;
   Discover: undefined;
   CreateQuestion: undefined;
+  Profile: undefined
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

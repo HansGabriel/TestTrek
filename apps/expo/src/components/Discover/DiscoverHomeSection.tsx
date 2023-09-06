@@ -8,7 +8,7 @@ import type { FC } from "react";
 import type { RouterOutputs } from "../../utils/trpc";
 
 interface Props {
-  tests: RouterOutputs["test"]["getAll"];
+  tests?: RouterOutputs["test"]["getAll"];
 }
 
 const DiscoverHomeSection: FC<Props> = ({ tests }) => {
