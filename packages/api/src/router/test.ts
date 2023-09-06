@@ -1,5 +1,6 @@
 import { router, protectedProcedure } from "../trpc";
 import { testDetailsSchema } from "@acme/schema/src/test";
+import { TRPCError } from "@trpc/server";
 
 export const testRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -29,7 +30,7 @@ export const testRouter = router({
       const { title, collection, description, image, keywords, visibility } =
         input;
 
-      const userId = ctx.auth.user?.id;
+      const userId = ctx.auth.userId;
 
       return ctx.prisma.test.create({
         data: {
@@ -45,7 +46,7 @@ export const testRouter = router({
             },
           },
           visibility,
-          userId: userId ?? "random id",
+          userId,
         },
       });
     }),
