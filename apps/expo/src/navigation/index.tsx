@@ -10,7 +10,6 @@ import * as React from "react";
 
 import { SignInSignUpScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
-import { MaterialInput } from "../screens/material-input";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { CreateAccountScreen } from "../screens/create-account";
 import { SignupScreen } from "../screens/signup";
@@ -24,6 +23,7 @@ import { CreateTestScreen } from "../screens/create-test";
 import { DiscoverScreen } from "../screens/discover";
 import { CreateQuestionScreen } from "../screens/create-question";
 import { ProfileScreen } from "../screens/profile";
+import { SettingsScreen } from "../screens/settings";
 
 export default function Navigation() {
   return (
@@ -108,6 +108,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Profile"
               component={ProfileScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
               options={{
                 headerShown: false,
               }}
