@@ -145,6 +145,9 @@ importers:
       react-native:
         specifier: 0.70.5
         version: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
+      react-native-bouncy-checkbox:
+        specifier: ^3.0.7
+        version: 3.0.7(react-native@0.70.5)(react@18.2.0)
       react-native-date-picker:
         specifier: ^4.2.14
         version: 4.2.14(react-native@0.70.5)(react@18.2.0)
@@ -9113,6 +9116,16 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: false
+
+  /react-native-bouncy-checkbox@3.0.7(react-native@0.70.5)(react@18.2.0):
+    resolution: {integrity: sha512-776TgMGt9wTpOQA1TcvFjL5VUn6o945wFYf3Ztqva62/vT2o3JAezLiP7hYh2Svd+PewfWBYSPMs4jeaSoS8Sg==}
+    peerDependencies:
+      react: '>= 16.x.x'
+      react-native: '>= 0.55.x'
+    dependencies:
+      react: 18.2.0
+      react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
     dev: false
 
   /react-native-codegen@0.70.6(@babel/preset-env@7.20.2):

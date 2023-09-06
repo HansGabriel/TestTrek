@@ -19,7 +19,7 @@ export const CreateTestScreen: FC = ({}) => {
     trpc.test.create.useMutation();
 
   const submitTestDetails = async (data: TestDetails) => {
-    const path = "http://192.168.254.102:3000/api/upload";
+    const path = "http://192.168.254.101:3000/api/upload";
     const fieldName = "testImage";
     const imageDetails: ImageDetails[] = await uploadImageAsync({
       path,

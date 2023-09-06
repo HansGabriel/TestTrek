@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TextInput,
@@ -5,12 +6,15 @@ import {
   View,
   Text,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userSignupSchema } from "@acme/schema/src/user";
+import { userSigninSchema } from "@acme/schema/src/user";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import GoogleIcon from "../icons/GoogleIcon";
 import FacebookIcon from "../icons/FacebookIcon";
 import useSignin from "../hooks/useSignin";
+import { Ionicons } from "@expo/vector-icons";
 
 import type { UserSignup } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -19,7 +23,8 @@ interface Props {
   onSubmit: (data: UserSignup) => void;
 }
 
-const SignupForm: FC<Props> = ({ onSubmit }) => {
+const SigninForm: FC<Props> = ({ onSubmit }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const signInWithGoogle = useSignin({
     strategy: "oauth_google",
   });
@@ -33,8 +38,12 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserSignup>({
-    resolver: zodResolver(userSignupSchema),
+    resolver: zodResolver(userSigninSchema),
   });
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <ScrollView
@@ -43,28 +52,6 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
     >
       <View className="flex flex-col content-end justify-between">
         <View className="my-8 flex flex-col">
-          <View className="my-2 flex flex-col">
-            <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
-              Username
-            </Text>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  className="border-primary-1 font-nunito-bold border-b py-2"
-                  placeholder="Username"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="userName"
-            />
-            {errors.userName && (
-              <Text className="text-red-500">{errors.userName.message}</Text>
-            )}
-          </View>
-
           <View className="my-2 flex flex-col">
             <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
               Email
@@ -94,20 +81,44 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
             <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  className="border-primary-1 font-nunito-bold border-b py-2"
-                  placeholder="Password"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  secureTextEntry
-                />
+                <View className="border-primary-1 flex flex-row items-center justify-between border-b">
+                  <TextInput
+                    className="font-nunito-bold py-2"
+                    placeholder="Password"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    secureTextEntry={!isPasswordVisible}
+                  />
+                  <Pressable onPress={togglePasswordVisibility}>
+                    <Ionicons
+                      name={isPasswordVisible ? "ios-eye" : "ios-eye-off"}
+                      onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                      size={24}
+                      color="#6949FF"
+                    />
+                  </Pressable>
+                </View>
               )}
               name="password"
             />
             {errors.password && (
               <Text className="text-red-500">{errors.password.message}</Text>
             )}
+          </View>
+
+          <View className="mt-3 flex flex-row items-center justify-start">
+            <BouncyCheckbox
+              innerIconStyle={{
+                borderRadius: 10,
+              }}
+              fillColor="#6949FF"
+              unfillColor="#FFFFFF"
+              iconStyle={{ borderColor: "#FFFFFF", borderRadius: 10 }}
+            />
+            <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
+              Remember me
+            </Text>
           </View>
         </View>
         <View className="flex flex-row items-center justify-start gap-3">
@@ -142,7 +153,7 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
         <TouchableOpacity onPress={handleSubmit(onSubmit)}>
           <View className="mt-8 flex w-full flex-row items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]">
             <Text className="font-nunito-bold shrink grow basis-0 text-center text-base leading-snug tracking-tight text-white">
-              Signup
+              SIGN IN
             </Text>
           </View>
         </TouchableOpacity>
@@ -151,4 +162,4 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
   );
 };
 
-export default SignupForm;
+export default SigninForm;

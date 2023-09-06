@@ -52,8 +52,9 @@ const MultipleTextInput: FC<Props> = ({
         onSubmitEditing={handleOnSubmitEditing}
       />
       <View className="mt-8 flex flex-row flex-wrap">
-        {texts?.map((text) => (
+        {texts?.map((text, idx) => (
           <TouchableOpacity
+            key={`${text}-${idx}`}
             onPress={() => handleOnRemoveText(text)}
             className="mr-3 mb-2 flex min-w-min flex-row items-center justify-center rounded-[100px] border border-violet-600 px-5 py-2"
           >

@@ -29,7 +29,7 @@ export const testRouter = router({
       const { title, collection, description, image, keywords, visibility } =
         input;
 
-      const userId = ctx.auth.user?.id;
+      const userId = ctx.auth.userId;
 
       return ctx.prisma.test.create({
         data: {
@@ -45,7 +45,7 @@ export const testRouter = router({
             },
           },
           visibility,
-          userId: userId ?? "random id",
+          userId,
         },
       });
     }),
