@@ -19,6 +19,10 @@ export const WaltkthroughScreen: FC = () => {
     navigation.navigate("CreateAccount");
   };
 
+  const goToSigninScreen = () => {
+    navigation.navigate("Signin");
+  };
+
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
       <Swiper index={1} loop={true}>
@@ -47,7 +51,10 @@ export const WaltkthroughScreen: FC = () => {
       >
         <Text className="font-nunito-bold text-white">GET STARTED</Text>
       </TouchableOpacity>
-      <TouchableOpacity className="mb-10 h-[58px] w-11/12 items-center justify-center gap-1 rounded-[100px] border-b-2 border-violet-300 bg-violet-100 px-4">
+      <TouchableOpacity
+        onPress={goToSigninScreen}
+        className="mb-10 h-[58px] w-11/12 items-center justify-center gap-1 rounded-[100px] border-b-2 border-violet-300 bg-violet-100 px-4"
+      >
         <Text className="font-nunito-bold text-violet-600">
           I ALREADY HAVE AN ACCOUNT
         </Text>

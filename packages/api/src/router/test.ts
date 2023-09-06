@@ -1,6 +1,5 @@
 import { router, protectedProcedure } from "../trpc";
 import { testDetailsSchema } from "@acme/schema/src/test";
-import { TRPCError } from "@trpc/server";
 
 export const testRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {

@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
 import * as React from "react";
 
-import { SignInSignUpScreen } from "../screens/signin";
+import { SigninScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
 import { WaltkthroughScreen } from "../screens/walkthrough";
 import { CreateAccountScreen } from "../screens/create-account";
@@ -151,8 +151,8 @@ const RootNavigator = () => {
               }}
             />
             <Stack.Screen
-              name="SignInSignUp"
-              component={SignInSignUpScreen}
+              name="Signin"
+              component={SigninScreen}
               options={{
                 headerShown: false,
               }}
