@@ -30,7 +30,7 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
         data={tabData}
         estimatedItemSize={5}
         renderItem={({ item }) => (
-          <View className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-black">
+          <View className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100">
             <View className=" w-32 items-center justify-center bg-violet-600">
               <Image
                 className="h-full w-full"
