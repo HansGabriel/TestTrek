@@ -16,6 +16,14 @@ model Post {
     content String
 }
 
+model FavoriteTest {
+    id        String   @id @default(cuid())
+    userId    String
+    testId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 model Test {
     id          String     @id @default(cuid())
     userId      String
