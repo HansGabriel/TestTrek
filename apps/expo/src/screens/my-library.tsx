@@ -3,7 +3,9 @@ import { View, SafeAreaView, Text } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { AntDesign } from "@expo/vector-icons";
 import { LibraryTabs } from "../components/LibraryTabs";
+import useGoBack from "../hooks/useGoBack";
 import { trpc } from "../utils/trpc";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface Props {
   type: "user" | "favorite" | "other";
@@ -28,13 +30,14 @@ const TabContent = ({ type, sort }: Props) => {
 };
 
 export const MyLibraryScreen = () => {
+  const goBack = useGoBack();
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView className="my-10 mx-6 flex-row items-center justify-between space-x-4">
-        <View className="flex-row gap-4">
+        <TouchableOpacity className="flex-row gap-4" onPress={goBack}>
           <TinyTestTrekIcon />
           <Text className=" font-nunito-bold text-2xl">Library</Text>
-        </View>
+        </TouchableOpacity>
         <AntDesign name="search1" size={24} color="black" />
       </SafeAreaView>
       <Tab.Navigator

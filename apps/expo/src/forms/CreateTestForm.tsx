@@ -30,9 +30,14 @@ import type { FC } from "react";
 interface Props {
   onSubmit: (data: TestDetails) => void;
   isCreatingQuiz?: boolean;
+  isUploading?: boolean;
 }
 
-const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
+const CreateTestForm: FC<Props> = ({
+  onSubmit,
+  isCreatingQuiz = false,
+  isUploading = false,
+}) => {
   const navigation = useNavigation();
 
   const {
@@ -195,8 +200,8 @@ const CreateTestForm: FC<Props> = ({ onSubmit, isCreatingQuiz = false }) => {
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
             >
-              {isCreatingQuiz ? (
-                <ActivityIndicator color="violet" />
+              {isCreatingQuiz || isUploading ? (
+                <ActivityIndicator color="black" />
               ) : (
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-violet-600">
                   Save
