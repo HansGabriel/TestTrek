@@ -39,7 +39,7 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
         estimatedItemSize={5}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View className=" mx-1 my-5">
+          <View className=" mx-4 my-5">
             <ImageBackground
               source={{ uri: item.image }}
               className=" overflow-hidden rounded-xl border-2 border-white "

@@ -11,12 +11,12 @@ interface Props {
 export const TotalAndSortHeader: FC<Props> = ({ total, tab, filter }) => {
   return (
     <View className="mt-4 w-full flex-row items-end justify-between">
-      <View>
+      <View className="mx-4">
         <Text className=" font-nunito-bold text-xl">
           {total} {tab}
         </Text>
       </View>
-      <View className="flex-row gap-2">
+      <View className="mx-2.5 flex-row gap-2">
         <Text className=" font-nunito-bold text-xl capitalize text-violet-600">
           {filter}
         </Text>

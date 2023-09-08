@@ -18,7 +18,7 @@ interface Props {
 
 const Tab = createMaterialTopTabNavigator();
 
-const TabContent = ({ type, sort, tabName }: Props) => {
+export const TabContent = ({ type, sort, tabName }: Props) => {
   const { data } = trpc.testFilter.getAll.useQuery({
     testType: type,
     sortBy: sort,
@@ -85,7 +85,7 @@ export const MyLibraryScreen = () => {
         <Tab.Screen name="MyTests" options={{ title: "My Tests" }}>
           {() => (
             <SafeAreaView className="my-6 flex-1">
-              <View className="w-full flex-row items-center justify-evenly gap-4 ">
+              <View className="w-full flex-row items-center justify-evenly gap-1 ">
                 <TouchableOpacity
                   onPress={onPressed}
                   className={`h-10 w-32 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
