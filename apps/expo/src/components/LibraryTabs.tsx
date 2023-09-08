@@ -3,7 +3,16 @@ import type { FC } from "react";
 
 import { View, SafeAreaView, Text, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import { Keyword, Visibility } from ".prisma/client";
+import {
+  Collections,
+  Keyword,
+  TestsOnCollections,
+  Visibility,
+} from ".prisma/client";
+
+interface CollectionsOnTests extends TestsOnCollections {
+  collection: Collections;
+}
 
 interface ObjectProps {
   id: string;
@@ -11,7 +20,7 @@ interface ObjectProps {
   imageUrl: string;
   title: string;
   description: string;
-  collection: string;
+  collections?: CollectionsOnTests[];
   visibility: Visibility;
   keyword?: Keyword;
   createdAt: Date;
@@ -47,7 +56,13 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
               <View className="flex-row">
                 <Text className=" mr-2">{item.visibility}</Text>
                 <Text className=" mr-2">.</Text>
-                <Text className=" mr-2">{item.collection}</Text>
+                {item.collections?.map((collectionItem, index) => {
+                  return (
+                    <Text key={index} className=" mr-2">
+                      {collectionItem.collection.title}
+                    </Text>
+                  );
+                })}
               </View>
             </View>
           </View>

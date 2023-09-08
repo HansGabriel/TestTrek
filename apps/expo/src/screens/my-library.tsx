@@ -36,6 +36,20 @@ const TabContent = ({ type, sort, tabName }: Props) => {
   );
 };
 
+const CollectionTabContent = () => {
+  const { data } = trpc.collections.getByUserId.useQuery();
+
+  return data ? (
+    <View className="flex-1">
+      <CollectionsTab tabData={data} />
+    </View>
+  ) : (
+    <View className="flex-1 items-center justify-center">
+      <Text>Empty Section</Text>
+    </View>
+  );
+};
+
 export const MyLibraryScreen = () => {
   const [pressed, setPressed] = useState(false);
 
@@ -122,7 +136,7 @@ export const MyLibraryScreen = () => {
                 </View>
               ) : (
                 <View className="flex-1">
-                  <CollectionsTab />
+                  <CollectionTabContent />
                 </View>
               )}
             </SafeAreaView>
