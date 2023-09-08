@@ -35,10 +35,6 @@ export const testFilterRouter = router({
         },
       };
 
-      console.log(isUser);
-      console.log(isOther);
-      console.log(isFavorite);
-
       return ctx.prisma.test.findMany({
         where:
           testType === "user"
@@ -60,11 +56,13 @@ export const testFilterRouter = router({
               name: true,
             },
           },
-          collection: true,
           visibility: true,
           userId: true,
           createdAt: true,
           updatedAt: true,
+          collections: {
+            include: { collection: true },
+          },
         },
       });
     }),
