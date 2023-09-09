@@ -42,9 +42,18 @@ export const testFilterRouter = router({
             : testType === "favorite"
             ? isFavorite
             : isOther,
-        orderBy: {
-          createdAt: sortBy === "newest" ? "desc" : "asc",
-        },
+        orderBy: (() => {
+          switch (sortBy) {
+            case "newest":
+              return { createdAt: "desc" };
+            case "oldest":
+              return { createdAt: "asc" };
+            case "alphabetical":
+              return { title: "asc" };
+            default:
+              return { createdAt: "desc" };
+          }
+        })(),
         select: {
           id: true,
           title: true,

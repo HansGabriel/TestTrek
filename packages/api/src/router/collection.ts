@@ -1,9 +1,10 @@
 import { collectionsSchema } from "@acme/schema/src/collection";
+import { testSortSchema } from "@acme/schema/src/testFilter";
 import { router, protectedProcedure } from "../trpc";
 
-export const collectionsRouter = router({
+export const collectionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.collections.findMany({
+    return ctx.prisma.collection.findMany({
       select: {
         id: true,
         title: true,
@@ -14,16 +15,29 @@ export const collectionsRouter = router({
     });
   }),
 
-  getByUserId: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.collections.findMany({
-      where: {
-        userId: ctx.auth.userId,
-      },
-      orderBy: {
-        title: "asc",
-      },
-    });
-  }),
+  getByUserId: protectedProcedure
+    .input(testSortSchema)
+    .query(({ ctx, input }) => {
+      console.log(input);
+
+      return ctx.prisma.collection.findMany({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        orderBy: (() => {
+          switch (input) {
+            case "newest":
+              return { createdAt: "desc" };
+            case "oldest":
+              return { createdAt: "asc" };
+            case "alphabetical":
+              return { title: "asc" };
+            default:
+              return { createdAt: "desc" };
+          }
+        })(),
+      });
+    }),
 
   create: protectedProcedure
     .input(collectionsSchema)
@@ -32,7 +46,7 @@ export const collectionsRouter = router({
 
       const userId = ctx.auth.userId;
 
-      return ctx.prisma.collections.create({
+      return ctx.prisma.collection.create({
         data: {
           title,
           imageUrl: image,

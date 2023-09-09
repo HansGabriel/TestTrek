@@ -25,15 +25,15 @@ model FavoriteTest {
 }
 
 model Test {
-    id          String               @id @default(cuid())
+    id          String             @id @default(cuid())
     userId      String
     imageUrl    String
     title       String
-    description String               @db.Text
+    description String             @db.Text
     visibility  Visibility
     keywords    Keyword[]
-    createdAt   DateTime             @default(now())
-    updatedAt   DateTime             @updatedAt
+    createdAt   DateTime           @default(now())
+    updatedAt   DateTime           @updatedAt
     collections TestOnCollection[]
 }
 
@@ -47,11 +47,13 @@ model Keyword {
 }
 
 model Collection {
-    id       String               @id @default(cuid())
-    userId   String
-    title    String
-    imageUrl String
-    tests    TestOnCollection[]
+    id        String             @id @default(cuid())
+    userId    String
+    title     String
+    imageUrl  String
+    createdAt DateTime           @default(now())
+    updatedAt DateTime           @updatedAt
+    tests     TestOnCollection[]
 }
 
 model TestOnCollection {
