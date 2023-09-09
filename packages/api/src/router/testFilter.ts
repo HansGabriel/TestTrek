@@ -45,13 +45,13 @@ export const testFilterRouter = router({
         orderBy: (() => {
           switch (sortBy) {
             case "newest":
-              return { createdAt: "desc" }; // Sort by newest first
+              return { createdAt: "desc" };
             case "oldest":
-              return { createdAt: "asc" }; // Sort by oldest first
+              return { createdAt: "asc" };
             case "alphabetical":
-              return { title: "asc" }; // Sort alphabetically by title
+              return { title: "asc" };
             default:
-              return { createdAt: "desc" }; // Default to sorting by newest
+              return { createdAt: "desc" };
           }
         })(),
         select: {
