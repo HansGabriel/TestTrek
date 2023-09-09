@@ -2,27 +2,42 @@ import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
 import DiscoverHomeCard from "./DiscoverHomeCard";
 import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
-import discoverCardList from "../../temp-data/discover/discoverCardList";
+import { trpc } from "../../utils/trpc";
 
-import type { FC } from "react";
-import type { RouterOutputs } from "../../utils/trpc";
+const DiscoverHomeSection: React.FC<Props> = () => {
+  const { data } = trpc.test.getAll.useQuery();
 
-interface Props {
-  tests?: RouterOutputs["test"]["getAll"];
-}
+  const sortedAndFilteredData = React.useMemo(() => {
+    if (data) {
+      return data
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        .slice(0, 5);
+    }
+    return [];
+  }, [data]);
 
-const DiscoverHomeSection: FC<Props> = ({ tests }) => {
   return (
     <View>
       <DiscoverHomeHeader />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={discoverCardList}
-        keyExtractor={(item, index) => index.toString()}
+        data={sortedAndFilteredData}
+        keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <DiscoverHomeCard {...item} />
+            <DiscoverHomeCard
+              imageSource={{ uri: item.imageUrl }}
+              title={item.title}
+              q={item.keywords.length}
+              date={new Date(item.createdAt)}
+              plays={0}
+              userImageSource={{ uri: "https://example.com/dummy-image.jpg" }}
+              userName={item.userId}
+            />
           </TouchableOpacity>
         )}
       />
