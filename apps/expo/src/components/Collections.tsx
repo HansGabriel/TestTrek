@@ -4,10 +4,10 @@ import type { FC } from "react";
 import { View, SafeAreaView, Text, ImageBackground } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { TotalAndSortHeader } from "./TotalAndSortHeader";
-import { Collections } from ".prisma/client";
+import { Collection } from "@prisma/client";
 
 interface CollectionProps {
-  tabData?: Collections[];
+  tabData?: Collection[];
 }
 
 export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {

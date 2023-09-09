@@ -4,14 +4,14 @@ import type { FC } from "react";
 import { View, SafeAreaView, Text, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import {
-  Collections,
+  Collection,
   Keyword,
-  TestsOnCollections,
+  TestOnCollection,
   Visibility,
-} from ".prisma/client";
+} from "@prisma/client";
 
-interface CollectionsOnTests extends TestsOnCollections {
-  collection: Collections;
+interface CollectionOnTest extends TestOnCollection {
+  collection: Collection;
 }
 
 interface ObjectProps {
@@ -20,7 +20,7 @@ interface ObjectProps {
   imageUrl: string;
   title: string;
   description: string;
-  collections?: CollectionsOnTests[];
+  collections?: CollectionOnTest[];
   visibility: Visibility;
   keyword?: Keyword;
   createdAt: Date;
