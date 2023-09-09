@@ -15,7 +15,11 @@ export const testRouter = router({
             name: true,
           },
         },
-        collection: true,
+        collections: {
+          include: {
+            collection: true,
+          },
+        },
         visibility: true,
         userId: true,
         createdAt: true,
@@ -25,16 +29,24 @@ export const testRouter = router({
   }),
   create: protectedProcedure
     .input(testDetailsSchema)
-    .mutation(({ ctx, input }) => {
-      const { title, collection, description, image, keywords, visibility } =
+    .mutation(async ({ ctx, input }) => {
+      const { title, collections, description, image, keywords, visibility } =
         input;
 
       const userId = ctx.auth.userId;
 
-      return ctx.prisma.test.create({
+      return await ctx.prisma.test.create({
         data: {
           title,
-          collection,
+          collections: {
+            create: collections.map((collectionId) => ({
+              collection: {
+                connect: {
+                  id: collectionId,
+                },
+              },
+            })),
+          },
           description,
           imageUrl: image,
           keywords: {
