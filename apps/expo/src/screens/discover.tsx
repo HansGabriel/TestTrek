@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { SafeAreaView, TouchableOpacity } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import DiscoverScreenHeader from "../components/headers/DiscoverScreenHeader";
 import DiscoverScreenCard from "../components/discover/DiscoverScreenCard";
-import discoverCardList from "../temp-data/discover/discoverCardList";
+import { trpc } from "../utils/trpc";
 
 export const DiscoverScreen = () => {
+  const { data } = trpc.test.getAll.useQuery();
+
+  const sortedAndFilteredData = useMemo(() => {
+    if (data) {
+      return data.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    }
+    return [];
+  }, [data]);
+
   return (
     <SafeAreaView className="flex-1 flex-col">
       <DiscoverScreenHeader />
       <FlashList
         showsVerticalScrollIndicator={false}
-        data={discoverCardList}
+        data={sortedAndFilteredData}
         estimatedItemSize={100}
         renderItem={({ item, index }) => (
           <TouchableOpacity key={index}>
-            <DiscoverScreenCard {...item} />
+            <DiscoverScreenCard
+              imageSource={{ uri: item.imageUrl }}
+              title={item.title}
+              q={12}
+              date={new Date(item.createdAt)}
+              plays={0}
+              userImageSource={{ uri: "https://example.com/dummy-image.jpg" }}
+              userName={item.userId}
+            />
           </TouchableOpacity>
         )}
       />
