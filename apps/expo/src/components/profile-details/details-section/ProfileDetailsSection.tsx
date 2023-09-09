@@ -67,6 +67,7 @@ const ProfileDetailsSection: FC = () => {
             )}
           </React.Fragment>
         ))}
+        <View className="w-full border-b border-[#EEEEEE]"></View>
       </View>
     </View>
   );
