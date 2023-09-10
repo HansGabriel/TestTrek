@@ -11,11 +11,11 @@ import {
   TouchableWithoutFeedback,
   Switch,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 import { BlurView } from "expo-blur";
 import useGoBack from "../hooks/useGoBack";
 import CheckboxIcon from "../icons/CheckboxIcon";
+import TestImagePicker from "../components/ImagePicker";
 
 import type { FC } from "react";
 
@@ -48,6 +48,7 @@ const choiceStyles: ChoiceStyle[] = [
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
 
+  const [image, setImage] = useState<string | undefined>(undefined);
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [questionTitle, setQuestionTitle] = useState<string>("");
@@ -137,12 +138,7 @@ export const CreateQuestionScreen: FC = () => {
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
         <View className="mt-8 mb-4 flex flex-col">
-          <TouchableOpacity className="mx-auto mb-6 h-56 w-full items-center justify-center rounded-3xl border-2 border-violet-600 bg-neutral-50">
-            <FontAwesome name="image" size={48} color="rgba(105, 73, 255, 1)" />
-            <Text className="font-nunito-bold mt-4 text-violet-600">
-              Add Cover Image
-            </Text>
-          </TouchableOpacity>
+          <TestImagePicker image={image} setImage={setImage} />
         </View>
 
         <View className="flex flex-row items-center justify-between">
@@ -248,7 +244,7 @@ export const CreateQuestionScreen: FC = () => {
             }}
           >
             <BlurView intensity={10} className="absolute inset-0">
-              <View className="flex-1 items-center justify-center bg-opacity-50 shadow-lg">
+              <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                 <View className="h-1/2 w-11/12 rounded-2xl bg-white">
                   <Text className="mt-10 text-center text-2xl font-bold">
                     Add Answer
