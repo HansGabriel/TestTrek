@@ -2,53 +2,12 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { View, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { AntDesign } from "@expo/vector-icons";
-import { LibraryTabs } from "../components/LibraryTabs";
-import { trpc } from "../utils/trpc";
 import { Feather } from "@expo/vector-icons";
 import useGoBack from "../hooks/useGoBack";
 import { useState } from "react";
-import { CollectionsTab } from "../components/Collections";
-import { TotalAndSortHeader } from "../components/TotalAndSortHeader";
-
-interface Props {
-  type: "user" | "favorite" | "other";
-  sort: "newest" | "oldest" | "alphabetical";
-  tabName: "Tests" | "Favorites" | "Other Tests";
-}
+import { HeaderAndContent } from "../components/HeaderAndContent";
 
 const Tab = createMaterialTopTabNavigator();
-
-export const TabContent = ({ type, sort, tabName }: Props) => {
-  const { data } = trpc.testFilter.getAll.useQuery({
-    testType: type,
-    sortBy: sort,
-  });
-
-  return data?.length !== 0 ? (
-    <View className="flex-1">
-      <TotalAndSortHeader total={data?.length} tab={tabName} filter={sort} />
-      <LibraryTabs tabData={data} />
-    </View>
-  ) : (
-    <View className="flex-1 items-center justify-center">
-      <Text>Empty Section</Text>
-    </View>
-  );
-};
-
-const CollectionTabContent = () => {
-  const { data } = trpc.collections.getByUserId.useQuery();
-
-  return data ? (
-    <View className="flex-1">
-      <CollectionsTab tabData={data} />
-    </View>
-  ) : (
-    <View className="flex-1 items-center justify-center">
-      <Text>Empty Section</Text>
-    </View>
-  );
-};
 
 export const MyLibraryScreen = () => {
   const [pressed, setPressed] = useState(false);
@@ -132,11 +91,11 @@ export const MyLibraryScreen = () => {
 
               {!pressed ? (
                 <View className="flex-1">
-                  <TabContent type="user" sort="newest" tabName={"Tests"} />
+                  <HeaderAndContent tab={"user"} tabType={"Test"} />
                 </View>
               ) : (
                 <View className="flex-1">
-                  <CollectionTabContent />
+                  <HeaderAndContent tab={"user"} tabType={"Collection"} />
                 </View>
               )}
             </SafeAreaView>
@@ -145,14 +104,14 @@ export const MyLibraryScreen = () => {
         <Tab.Screen name="Favorites" options={{ title: "Favorites" }}>
           {() => (
             <View className="flex-1">
-              <TabContent type="favorite" sort="newest" tabName={"Favorites"} />
+              <HeaderAndContent tab={"favorite"} tabType={"Test"} />
             </View>
           )}
         </Tab.Screen>
         <Tab.Screen name="OtherTests" options={{ title: "Other Tests" }}>
           {() => (
             <View className="flex-1">
-              <TabContent type="other" sort="newest" tabName={"Other Tests"} />
+              <HeaderAndContent tab={"other"} tabType={"Test"} />
             </View>
           )}
         </Tab.Screen>

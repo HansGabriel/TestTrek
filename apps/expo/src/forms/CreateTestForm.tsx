@@ -147,7 +147,7 @@ const CreateTestForm: FC<Props> = ({
               <Text className="text-red-500">{errors.description.message}</Text>
             )}
 
-            <Controller
+            {/* <Controller
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <AppTextInput
@@ -164,7 +164,7 @@ const CreateTestForm: FC<Props> = ({
             />
             {errors.collection && (
               <Text className="text-red-500">{errors.collection.message}</Text>
-            )}
+            )} */}
 
             <Controller
               control={control}
@@ -181,8 +181,8 @@ const CreateTestForm: FC<Props> = ({
               )}
               name="visibility"
             />
-            {errors.collection && (
-              <Text className="text-red-500">{errors.collection.message}</Text>
+            {errors.visibility && (
+              <Text className="text-red-500">{errors.visibility.message}</Text>
             )}
 
             <MultipleTextInput

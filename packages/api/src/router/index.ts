@@ -3,14 +3,14 @@ import { postRouter } from "./post";
 import { authRouter } from "./auth";
 import { testRouter } from "./test";
 import { testFilterRouter } from "./testFilter";
-import { collectionsRouter } from "./collection";
+import { collectionRouter } from "./collection";
 
 export const appRouter = router({
   post: postRouter,
   auth: authRouter,
   test: testRouter,
   testFilter: testFilterRouter,
-  collections: collectionsRouter
+  collection: collectionRouter
 });
 
 // export type definition of API

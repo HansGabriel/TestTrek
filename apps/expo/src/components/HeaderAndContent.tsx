@@ -1,0 +1,123 @@
+import { View, Text, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FC, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { TabContent } from "./TabContent";
+import { BackendTabPage } from "../types/libraryTypes";
+import { trpc } from "../utils/trpc";
+import { CollectionTabContent } from "./CollectionTabContent";
+
+interface HeaderProps {
+  tab: BackendTabPage;
+  tabType: string;
+}
+
+const sortObject = [
+  {
+    sortName: "newest",
+    icon: (
+      <MaterialCommunityIcons
+        name="sort-clock-descending"
+        size={26}
+        color={"rgba(105, 73, 255, 1)"}
+      />
+    ),
+  },
+  {
+    sortName: "oldest",
+    icon: (
+      <MaterialCommunityIcons
+        name="sort-clock-ascending"
+        size={26}
+        color={"rgba(105, 73, 255, 1)"}
+      />
+    ),
+  },
+  {
+    sortName: "alphabetical",
+    icon: (
+      <MaterialCommunityIcons
+        name="sort-alphabetical-descending"
+        size={26}
+        color={"rgba(105, 73, 255, 1)"}
+      />
+    ),
+  },
+];
+
+export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
+  const [sortType, setSortType] = useState<
+    "newest" | "oldest" | "alphabetical"
+  >("newest");
+
+  const { data: testData } = trpc.testFilter.getAll.useQuery({
+    testType: tab,
+    sortBy: sortType,
+  });
+
+  const { data: collectionData } =
+    trpc.collection.getByUserId.useQuery(sortType);
+
+  const sortItems = () => {
+    let nextSortType: "newest" | "oldest" | "alphabetical";
+
+    switch (sortType) {
+      case "newest":
+        nextSortType = "oldest";
+        break;
+      case "oldest":
+        nextSortType = "alphabetical";
+        break;
+      case "alphabetical":
+        nextSortType = "newest";
+        break;
+      default:
+        nextSortType = "newest";
+    }
+
+    setSortType(nextSortType);
+  };
+
+  return (
+    <SafeAreaView className="flex-1">
+      <View className="mt-4 w-full flex-row items-end justify-between">
+        <View className="mx-4">
+          <Text className=" font-nunito-bold text-xl">
+            {tabType === "Test" ? testData?.length : collectionData?.length}{" "}
+            {tab === "user"
+              ? tabType === "Collection"
+                ? "Collections"
+                : "Tests"
+              : tab === "favorite"
+              ? "Favorites"
+              : tab === "other"
+              ? "Other Tests"
+              : ""}
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity
+            className="mx-2.5 flex-row gap-2"
+            onPress={sortItems}
+          >
+            <Text className=" font-nunito-bold text-xl capitalize text-violet-600">
+              {sortType}
+            </Text>
+            {sortObject.map((item) => {
+              if (sortType === item.sortName) {
+                return item.icon;
+              }
+            })}
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View className="flex-1">
+        {tabType === "Test" ? (
+          <TabContent tabData={testData} />
+        ) : (
+          <CollectionTabContent tabData={collectionData} />
+        )}
+      </View>
+    </SafeAreaView>
+  );
+};
