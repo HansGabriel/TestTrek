@@ -4,7 +4,7 @@ import ProfileHeader from "../components/headers/ProfileHeader";
 import ProfileDetailsSection from "../components/profile-details/details-section/ProfileDetailsSection";
 import RectangleProfileIcon from "../icons/RectangleProfileIcon";
 import { CollectionsTab } from "../components/Collections";
-import { TabContent } from "./my-library";
+import { TabContent } from "../components/TabContent";
 import { AboutUser } from "../components/AboutUser";
 
 enum Tabs {
@@ -76,7 +76,7 @@ export const ProfileScreen = () => {
 
       {activeTab === Tabs.TESTS && (
         <View className="flex-1 px-4">
-          <TabContent type="user" sort="newest" tabName={"Tests"} />
+          <TabContent />
         </View>
       )}
       {activeTab === Tabs.COLLECTIONS && (
