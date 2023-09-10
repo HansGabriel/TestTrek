@@ -126,6 +126,9 @@ importers:
       expo-web-browser:
         specifier: ^12.1.1
         version: 12.1.1(expo@48.0.10)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       nativewind:
         specifier: ^2.0.11
         version: 2.0.11(react@18.2.0)(tailwindcss@3.2.4)
@@ -202,6 +205,9 @@ importers:
       '@babel/runtime':
         specifier: ^7.19.0
         version: 7.20.6
+      '@types/lodash':
+        specifier: ^4.14.198
+        version: 4.14.198
       '@types/react':
         specifier: ^18.0.25
         version: 18.0.26
@@ -3346,6 +3352,10 @@ packages:
     dependencies:
       '@types/node': 18.15.11
     dev: false
+
+  /@types/lodash@4.14.198:
+    resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==}
+    dev: true
 
   /@types/mime@3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
