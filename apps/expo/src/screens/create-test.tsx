@@ -7,6 +7,7 @@ import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
+import useQuestionStore from "../stores/useQuestionStore";
 
 import type { FC } from "react";
 import type { TestDetails } from "@acme/schema/src/types";
@@ -14,6 +15,7 @@ import useToast from "../hooks/useToast";
 
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
+
   const { showToast } = useToast();
 
   const [isUploading, setIsUploading] = useState<boolean>(false);

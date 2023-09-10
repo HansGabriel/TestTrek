@@ -65,6 +65,8 @@
     "react-native-svg": "^13.4.0",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.5.2",
+    "ts-pattern": "^5.0.5",
+    "type-fest": "^4.3.1",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

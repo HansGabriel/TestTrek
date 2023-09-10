@@ -8,3 +8,54 @@ export const testDetailsSchema = z.object({
   visibility: z.enum(["public", "private"]),
   keywords: z.array(z.string().min(3).max(20)),
 });
+
+export const choiceSchema = z.object({
+  id: z.string().uuid(),
+  text: z.string().min(1).max(50),
+  isCorrect: z.boolean(),
+});
+
+export const modifiedChoiceSchema = choiceSchema.merge(
+  z.object({
+    possibleAnswers: z.array(z.string().min(1).max(50)),
+  }),
+);
+
+export const questionSchema = z.discriminatedUnion("type", [
+  z.object({
+    title: z.string().min(1).max(50),
+    time: z.number().min(1).max(1000),
+    points: z.number().min(1).max(10_000),
+    type: z.literal("multiple-choice"),
+    choices: z.array(choiceSchema),
+  }),
+  z.object({
+    title: z.string().min(1).max(50),
+    time: z.number().min(1).max(1000),
+    points: z.number().min(1).max(10_000),
+    type: z.literal("true-or-false"),
+    choices: z.array(choiceSchema),
+  }),
+  z.object({
+    title: z.string().min(1).max(50),
+    time: z.number().min(1).max(1000),
+    points: z.number().min(1).max(10_000),
+    type: z.literal("multi-select"),
+    choices: z.array(choiceSchema),
+  }),
+  z.object({
+    title: z.string().min(1).max(50),
+    time: z.number().min(1).max(1000),
+    points: z.number().min(1).max(10_000),
+    type: z.literal("identification"),
+    answer: z.string().min(1).max(50),
+    possibleAnswers: z.array(z.string().min(1).max(50)),
+  }),
+  z.object({
+    title: z.string().min(1).max(50),
+    time: z.number().min(1).max(1000),
+    points: z.number().min(1).max(10_000),
+    type: z.literal("enumeration"),
+    choices: z.array(modifiedChoiceSchema),
+  }),
+]);
