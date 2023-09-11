@@ -12,5 +12,5 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   extends: ["plugin:@typescript-eslint/recommended"],
-  ignorePatterns: ["**/*.test.ts", "**/*.test.tsx"],
+  ignorePatterns: ["**/*.test.ts", "**/*.test.tsx", "vite.config.ts"],
 };
