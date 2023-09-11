@@ -18,8 +18,6 @@ export const collectionRouter = router({
   getByUserId: protectedProcedure
     .input(testSortSchema)
     .query(({ ctx, input }) => {
-      console.log(input);
-
       return ctx.prisma.collection.findMany({
         where: {
           userId: ctx.auth.userId,

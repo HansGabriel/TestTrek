@@ -18,8 +18,6 @@ export const SignupScreen: FC<Props> = ({ route }) => {
       ...userInfo,
       ...userSignup,
     };
-
-    console.log(fullUserInfo);
   };
 
   return (
