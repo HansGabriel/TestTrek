@@ -1,5 +1,6 @@
 import { View, FlatList, TouchableOpacity } from "react-native";
 import TopCollectionsHomeHeader from "../headers/TopCollectionsHomeHeader";
+import { LibraryTabs } from "../LibraryTabs";
 
 import type { FC } from "react";
 
@@ -14,10 +15,7 @@ const TopTrekersHomeSection: FC = () => {
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <TopTrekersHomeCard
-              imageSource={item.imageSource}
-              name={item.name}
-            />
+            <LibraryTabs imageSource={item.imageSource} name={item.name} />
           </TouchableOpacity>
         )}
       />
