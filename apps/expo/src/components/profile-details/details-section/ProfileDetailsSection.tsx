@@ -3,7 +3,7 @@ import { Text, View, Image, TouchableOpacity } from "react-native";
 import EditProfileButton from "../profile-buttons/EditProfileButton";
 import type { FC } from "react";
 
-const formatUsername = (fullName) => {
+const formatUsername = (fullName: string) => {
   return "@" + fullName.toLowerCase().replace(/\s+/g, "_");
 };
 

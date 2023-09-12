@@ -35,6 +35,29 @@ model Test {
     createdAt   DateTime           @default(now())
     updatedAt   DateTime           @updatedAt
     collections TestOnCollection[]
+    questions   Question[]
+}
+
+model Question {
+    id              String       @id @default(cuid())
+    testId          String
+    title           String
+    image           String?
+    time            Int
+    points          Int
+    type            QuestionType
+    test            Test         @relation(fields: [testId], references: [id])
+    choices         Choice[]
+    answer          String?
+    possibleAnswers String[]
+}
+
+model Choice {
+    id         String   @id @default(cuid())
+    questionId String
+    text       String
+    isCorrect  Boolean
+    question   Question @relation(fields: [questionId], references: [id])
 }
 
 model Keyword {
@@ -70,4 +93,12 @@ model TestOnCollection {
 enum Visibility {
     public
     private
+}
+
+enum QuestionType {
+    multiple_choice
+    true_or_false
+    multi_select
+    identification
+    enumeration
 }
