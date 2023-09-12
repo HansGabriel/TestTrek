@@ -6,6 +6,7 @@ import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSecti
 import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
+import TopCollectionsHomeSection from "../components/top-collections/TopCollectionsHomeSection";
 
 export const HomeScreen = () => {
   return (
@@ -15,6 +16,7 @@ export const HomeScreen = () => {
         <PlayQuiz />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
+        <TopCollectionsHomeSection />
       </ScrollView>
       <Footer />
     </SafeAreaView>
