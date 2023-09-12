@@ -23,6 +23,7 @@ import {
 } from "../icons/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import TestImagePicker from "../components/ImagePicker";
+import useQuestionStore from "../stores/useQuestionStore";
 
 import type { TestDetails } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -53,6 +54,10 @@ const CreateTestForm: FC<Props> = ({
     ),
   });
 
+  const questions = useQuestionStore((state) => state.questions);
+  const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
+  const setLastIndex = useQuestionStore((state) => state.setLastIndex);
+
   const [keywords, setKeywords] = useState<string[]>([]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -64,6 +69,8 @@ const CreateTestForm: FC<Props> = ({
   };
 
   const goToCreateQuestion = () => {
+    addEmptyQuestion("multiple-choice");
+    setLastIndex();
     navigation.navigate("CreateQuestion");
   };
 
