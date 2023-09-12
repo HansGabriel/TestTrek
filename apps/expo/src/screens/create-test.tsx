@@ -11,14 +11,12 @@ import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
 
 import type { FC } from "react";
-import type { TestDetails } from "@acme/schema/src/types";
+import type { TestInput } from "@acme/schema/src/types";
 import useToast from "../hooks/useToast";
 
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
   const questions = useQuestionStore((state) => state.questions);
-
-  console.log(questions);
 
   const { showToast } = useToast();
 
@@ -27,27 +25,30 @@ export const CreateTestScreen: FC = () => {
   const { mutate: createTest, isLoading: isCreatingQuiz } =
     trpc.test.create.useMutation();
 
-  const submitTestDetails = async (data: TestDetails) => {
+  const submitTestDetails = async (data: TestInput) => {
     setIsUploading(true);
-    const path = "http://192.168.254.101:3000/api/upload";
-    const fieldName = "testImage";
-    const imageDetails: ImageDetails[] = await uploadImageAsync({
-      path,
-      fieldName,
-      imageUri: data.image,
-    });
-    const firstImage = imageDetails[0];
+    // const path = "http://192.168.254.101:3000/api/upload";
+    // const fieldName = "testImage";
+    // const imageDetails: ImageDetails[] = await uploadImageAsync({
+    //   path,
+    //   fieldName,
+    //   imageUri: data.image,
+    // });
+    // const firstImage = imageDetails[0];
 
-    if (!firstImage) {
-      return;
-    }
+    // if (!firstImage) {
+    //   return;
+    // }
+
+    const imageUrl =
+      "https://media.istockphoto.com/id/1272478640/vector/retro-light-text-quiz-time-retro-light-bulb-vector-stock-illustration.jpg?s=612x612&w=0&k=20&c=ZCiSSDczdpCRGZcMzTNzStJYy8wwHomb39D0HFVjVb0=";
 
     const { image: _, ...rest } = data;
 
     createTest(
       {
         ...rest,
-        image: firstImage.secureUrl,
+        image: imageUrl,
       },
       {
         onSuccess: () => {

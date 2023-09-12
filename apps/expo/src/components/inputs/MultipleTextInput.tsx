@@ -23,6 +23,9 @@ const MultipleTextInput: FC<Props> = ({
   const [inputText, setInputText] = useState<string>("");
 
   const handleOnSubmitEditing = () => {
+    if (!inputText) {
+      return;
+    }
     if (texts.includes(inputText)) {
       showToast("Keyword already exists");
       return;
@@ -48,6 +51,7 @@ const MultipleTextInput: FC<Props> = ({
         className="border-primary-1 font-nunito-bold border-b py-2"
         {...textInputProps}
         value={inputText}
+        placeholderTextColor="#9E9E9E"
         onChangeText={setInputText}
         onSubmitEditing={handleOnSubmitEditing}
       />

@@ -12,7 +12,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { testDetailsSchema } from "@acme/schema/src/test";
+import { testInputSchema } from "@acme/schema/src/test";
 import AppTextInput from "../components/inputs/AppTextInput";
 import MultipleTextInput from "../components/inputs/MultipleTextInput";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -27,12 +27,14 @@ import TestImagePicker from "../components/ImagePicker";
 import useQuestionStore from "../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../icons/RightArrowIcon";
+import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
+import { trpc } from "../utils/trpc";
 
-import type { TestDetails } from "@acme/schema/src/types";
+import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 
 interface Props {
-  onSubmit: (data: TestDetails) => void;
+  onSubmit: (data: TestInput) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
 }
@@ -44,18 +46,22 @@ const CreateTestForm: FC<Props> = ({
 }) => {
   const navigation = useNavigation();
 
+  const { data: userCollections } = trpc.collection.getByUserId.useQuery();
+
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TestDetails>({
+  } = useForm<TestInput>({
     resolver: zodResolver(
-      testDetailsSchema.omit({
+      testInputSchema.omit({
         keywords: true,
       }),
     ),
   });
+
+  console.log(errors);
 
   const questions = useQuestionStore((state) => state.questions);
   const isLastQuestionInEdit = useQuestionStore(
@@ -91,7 +97,7 @@ const CreateTestForm: FC<Props> = ({
     }
   }, []);
 
-  const submitForm = (data: TestDetails) => {
+  const submitForm = (data: TestInput) => {
     onSubmit({
       ...data,
       keywords,
@@ -150,7 +156,6 @@ const CreateTestForm: FC<Props> = ({
                   textInputProps={{
                     onBlur,
                     placeholder: "Enter Description",
-                    multiline: true,
                     onChangeText: onChange,
                     value,
                   }}
@@ -162,38 +167,54 @@ const CreateTestForm: FC<Props> = ({
               <Text className="text-red-500">{errors.description.message}</Text>
             )}
 
-            {/* <Controller
+            <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <AppTextInput
-                  label="Collection"
-                  textInputProps={{
-                    onBlur,
-                    placeholder: "Select Collection",
-                    onChangeText: onChange,
-                    value,
-                  }}
-                />
-              )}
+              render={({ field: { onChange, value } }) => {
+                const onTextChange = (option: LabelOption) => {
+                  onChange(option.value);
+                };
+                return (
+                  <>
+                    {userCollections ? (
+                      <AppPicker
+                        label="Collection"
+                        placeholder="Select collection"
+                        options={userCollections.map((collection) => ({
+                          label: collection.title,
+                          value: collection.id,
+                        }))}
+                        selectedValue={value}
+                        setSelectedValue={onTextChange}
+                      />
+                    ) : null}
+                  </>
+                );
+              }}
               name="collection"
             />
             {errors.collection && (
               <Text className="text-red-500">{errors.collection.message}</Text>
-            )} */}
+            )}
 
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <AppTextInput
-                  label="Visible to"
-                  textInputProps={{
-                    onBlur,
-                    onChangeText: onChange,
-                    placeholder: "Select Visibility",
-                    value,
-                  }}
-                />
-              )}
+              render={({ field: { onChange, value } }) => {
+                const onTextChange = (option: LabelOption) => {
+                  onChange(option.value);
+                };
+                return (
+                  <AppPicker
+                    label="Visible to"
+                    placeholder="Select visibility"
+                    options={[
+                      { label: "public", value: "public" },
+                      { label: "private", value: "private" },
+                    ]}
+                    selectedValue={value}
+                    setSelectedValue={onTextChange}
+                  />
+                );
+              }}
               name="visibility"
             />
             {errors.visibility && (
@@ -209,51 +230,52 @@ const CreateTestForm: FC<Props> = ({
               onChangeTexts={setKeywords}
             />
           </View>
-
-          <View className="mb-10 h-full flex-1 flex-col">
-            <View className="mb-6 flex flex-row items-center justify-between">
-              <Text className="text-xl font-bold leading-loose text-neutral-800">
-                Question ({questions.length})
-              </Text>
-              <TouchableOpacity className="flex flex-row items-center gap-1">
-                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                  View All
+          {questions.length > 0 ? (
+            <View className="mb-10 h-full flex-1 flex-col">
+              <View className="mb-6 flex flex-row items-center justify-between">
+                <Text className="text-xl font-bold leading-loose text-neutral-800">
+                  Question ({questions.length})
                 </Text>
-                <RightArrowIcon />
-              </TouchableOpacity>
-            </View>
-            <FlashList
-              data={questions}
-              estimatedItemSize={10}
-              showsVerticalScrollIndicator={true}
-              renderItem={({ item: question, index }) => {
-                const isInEdit = question.inEdit;
-                if (isInEdit) return null;
-                return (
-                  <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
-                    <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
-                      <View className="relative w-[140px] self-stretch">
-                        <ImageBackground
-                          source={{ uri: question.image }}
-                          imageStyle={{
-                            borderTopLeftRadius: 12,
-                            borderBottomLeftRadius: 12,
-                          }}
-                          className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                        />
+                <TouchableOpacity className="flex flex-row items-center gap-1">
+                  <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                    View All
+                  </Text>
+                  <RightArrowIcon />
+                </TouchableOpacity>
+              </View>
+              <FlashList
+                data={questions}
+                estimatedItemSize={10}
+                showsVerticalScrollIndicator={true}
+                renderItem={({ item: question, index }) => {
+                  const isInEdit = question.inEdit;
+                  if (isInEdit) return null;
+                  return (
+                    <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
+                      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                        <View className="relative w-[140px] self-stretch">
+                          <ImageBackground
+                            source={{ uri: question.image }}
+                            imageStyle={{
+                              borderTopLeftRadius: 12,
+                              borderBottomLeftRadius: 12,
+                            }}
+                            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                          />
+                        </View>
+                        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                          {index + 1} - {question.type}
+                        </Text>
+                        <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
+                          {question.title}
+                        </Text>
                       </View>
-                      <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                        {index + 1} - {question.type}
-                      </Text>
-                      <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
-                        {question.title}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          </View>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </View>
+          ) : null}
 
           <View className="flex flex-row items-center justify-between pb-20">
             <TouchableOpacity

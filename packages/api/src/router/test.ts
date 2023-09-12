@@ -1,5 +1,5 @@
 import { router, protectedProcedure } from "../trpc";
-import { testDetailsSchema } from "@acme/schema/src/test";
+import { testInputSchema } from "@acme/schema/src/test";
 
 export const testRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -28,9 +28,9 @@ export const testRouter = router({
     });
   }),
   create: protectedProcedure
-    .input(testDetailsSchema)
+    .input(testInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const { title, collections, description, image, keywords, visibility } =
+      const { title, collection, description, image, keywords, visibility } =
         input;
 
       const userId = ctx.auth.userId;
@@ -39,13 +39,13 @@ export const testRouter = router({
         data: {
           title,
           collections: {
-            create: collections.map((collectionId) => ({
+            create: {
               collection: {
                 connect: {
-                  id: collectionId,
+                  id: collection,
                 },
               },
-            })),
+            },
           },
           description,
           imageUrl: image,

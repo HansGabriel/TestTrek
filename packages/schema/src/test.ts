@@ -9,6 +9,14 @@ export const testDetailsSchema = z.object({
   keywords: z.array(z.string().min(3).max(20)),
 });
 
+export const testInputSchema = testDetailsSchema
+  .omit({
+    collections: true,
+  })
+  .extend({
+    collection: z.string().min(3).max(100),
+  });
+
 export const choiceSchema = z.object({
   id: z.string().uuid(),
   text: z.string().min(1).max(50),
