@@ -33,8 +33,10 @@ import { trpc } from "../utils/trpc";
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 
+type FormProps = Omit<TestInput, "questions">;
+
 interface Props {
-  onSubmit: (data: TestInput) => void;
+  onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
 }
@@ -53,15 +55,14 @@ const CreateTestForm: FC<Props> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TestInput>({
+  } = useForm<FormProps>({
     resolver: zodResolver(
       testInputSchema.omit({
         keywords: true,
+        questions: true,
       }),
     ),
   });
-
-  console.log(errors);
 
   const questions = useQuestionStore((state) => state.questions);
   const isLastQuestionInEdit = useQuestionStore(
@@ -85,7 +86,7 @@ const CreateTestForm: FC<Props> = ({
       setLastIndex();
       navigation.navigate("CreateQuestion");
     } else {
-      addEmptyQuestion("multiple-choice");
+      addEmptyQuestion("multiple_choice");
       setLastIndex();
       navigation.navigate("CreateQuestion");
     }
@@ -97,7 +98,7 @@ const CreateTestForm: FC<Props> = ({
     }
   }, []);
 
-  const submitForm = (data: TestInput) => {
+  const submitForm = (data: FormProps) => {
     onSubmit({
       ...data,
       keywords,
@@ -105,6 +106,8 @@ const CreateTestForm: FC<Props> = ({
     reset();
     setKeywords([]);
   };
+
+  const readyQuestions = questions.filter((question) => !question.inEdit);
 
   return (
     <>
@@ -230,7 +233,7 @@ const CreateTestForm: FC<Props> = ({
               onChangeTexts={setKeywords}
             />
           </View>
-          {questions.length > 0 ? (
+          {readyQuestions.length > 0 ? (
             <View className="mb-10 h-full flex-1 flex-col">
               <View className="mb-6 flex flex-row items-center justify-between">
                 <Text className="text-xl font-bold leading-loose text-neutral-800">
@@ -244,12 +247,10 @@ const CreateTestForm: FC<Props> = ({
                 </TouchableOpacity>
               </View>
               <FlashList
-                data={questions}
+                data={readyQuestions}
                 estimatedItemSize={10}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
-                  const isInEdit = question.inEdit;
-                  if (isInEdit) return null;
                   return (
                     <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
                       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
@@ -350,7 +351,7 @@ const CreateTestForm: FC<Props> = ({
                     <CheckboxIcon />
                   </View>
                   <Text className="text-center text-base font-bold leading-[28.80px] text-neutral-800">
-                    Multi-Select
+                    multi_select
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">

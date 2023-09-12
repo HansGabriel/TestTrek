@@ -14,6 +14,8 @@ import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
 import useToast from "../hooks/useToast";
 
+type FormProps = Omit<TestInput, "questions">;
+
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
   const questions = useQuestionStore((state) => state.questions);
@@ -25,7 +27,7 @@ export const CreateTestScreen: FC = () => {
   const { mutate: createTest, isLoading: isCreatingQuiz } =
     trpc.test.create.useMutation();
 
-  const submitTestDetails = async (data: TestInput) => {
+  const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
     // const path = "http://192.168.254.101:3000/api/upload";
     // const fieldName = "testImage";
@@ -49,6 +51,13 @@ export const CreateTestScreen: FC = () => {
       {
         ...rest,
         image: imageUrl,
+        questions: questions
+          .filter((question) => !question.inEdit)
+          .map((question) => ({
+            ...question,
+            time: question.time ?? 60,
+            points: question.points ?? 50,
+          })),
       },
       {
         onSuccess: () => {

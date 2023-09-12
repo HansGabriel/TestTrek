@@ -27,7 +27,7 @@ import type { PartialQuestion } from "../../stores/useQuestionStore";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
-  { type: "multiple-choice" }
+  { type: "multiple_choice" }
 >;
 
 const choiceStyles: ChoiceStyle[] = [
@@ -66,7 +66,7 @@ export const CreateQuestionScreen: FC = () => {
   );
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
   const [choices, setChoices] = useState<Choice[]>(
-    question!.type === "multiple-choice"
+    question!.type === "multiple_choice"
       ? question!.choices.map((choice, idx) => ({
           id: idx,
           text: choice.text ?? "",
@@ -85,7 +85,7 @@ export const CreateQuestionScreen: FC = () => {
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     { label: "Quiz", value: "quiz" },
-    { label: "True or False", value: "true-or-false" },
+    { label: "True or False", value: "true_or_false" },
   ]);
 
   const handleTextInputFocus = () => {
@@ -125,7 +125,7 @@ export const CreateQuestionScreen: FC = () => {
       })),
       image: image,
       inEdit: false,
-      type: "multiple-choice",
+      type: "multiple_choice",
       points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
       time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
     };

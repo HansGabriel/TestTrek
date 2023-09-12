@@ -32,9 +32,9 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
       questions: [
         ...state.questions,
         match<QuestionType, PartialQuestion>(questionType)
-          .with("multiple-choice", () => ({
+          .with("multiple_choice", () => ({
             title: "",
-            type: "multiple-choice",
+            type: "multiple_choice",
             choices: [
               {
                 id: "1",
@@ -59,9 +59,9 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
             ],
             inEdit: true,
           }))
-          .with("true-or-false", () => ({
+          .with("true_or_false", () => ({
             title: "",
-            type: "true-or-false",
+            type: "true_or_false",
             choices: [
               {
                 id: "1",
@@ -76,9 +76,9 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
             ],
             inEdit: true,
           }))
-          .with("multi-select", () => ({
+          .with("multi_select", () => ({
             title: "",
-            type: "multi-select",
+            type: "multi_select",
             choices: [
               {
                 id: "1",
