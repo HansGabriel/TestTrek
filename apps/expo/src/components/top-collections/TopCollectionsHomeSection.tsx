@@ -1,21 +1,21 @@
 import { View, FlatList, TouchableOpacity } from "react-native";
 import TopCollectionsHomeHeader from "../headers/TopCollectionsHomeHeader";
-import { LibraryTabs } from "../LibraryTabs";
+import TopCollectionsHomeCard from "./TopCollectionsHomeCard";
+import { collectionData } from "../../temp-data/library-tab-contents/collectionTestData";
 
 import type { FC } from "react";
 
-const TopTrekersHomeSection: FC = () => {
+const TopCollectionsHomeSection: FC = () => {
   return (
     <View>
       <TopCollectionsHomeHeader />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={topTrekersList}
-        keyExtractor={(item, index) => item.id || index.toString()}
+        data={collectionData}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <LibraryTabs imageSource={item.imageSource} name={item.name} />
+            <TopCollectionsHomeCard imageSource={item.image} name={item.name} />
           </TouchableOpacity>
         )}
       />
@@ -23,4 +23,4 @@ const TopTrekersHomeSection: FC = () => {
   );
 };
 
-export default TopTrekersHomeSection;
+export default TopCollectionsHomeSection;

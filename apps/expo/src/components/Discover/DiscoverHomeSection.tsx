@@ -3,8 +3,9 @@ import { View, TouchableOpacity, FlatList } from "react-native";
 import DiscoverHomeCard from "./DiscoverHomeCard";
 import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
 import { trpc } from "../../utils/trpc";
+import type { FC } from "react";
 
-const DiscoverHomeSection: React.FC<Props> = () => {
+const DiscoverHomeSection: FC = () => {
   const { data } = trpc.test.getAll.useQuery();
 
   const sortedAndFilteredData = React.useMemo(() => {
