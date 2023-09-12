@@ -18,6 +18,7 @@ import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
 import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
+import useQuestionStore from "../../stores/useQuestionStore";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
@@ -39,6 +40,10 @@ const choiceStyles: ChoiceStyle[] = [
 
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
+
+  const { selectedIndex } = useQuestionStore();
+
+  console.log(selectedIndex);
 
   const [timeLimitOptions, setTimeLimitOptions] =
     useState<Option[]>(TIME_LIMIT_OPTIONS);

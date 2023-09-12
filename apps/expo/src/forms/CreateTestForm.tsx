@@ -55,6 +55,9 @@ const CreateTestForm: FC<Props> = ({
   });
 
   const questions = useQuestionStore((state) => state.questions);
+  const isLastQuestionInEdit = useQuestionStore(
+    (state) => state.isLastQuestionInEdit,
+  );
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
@@ -69,9 +72,14 @@ const CreateTestForm: FC<Props> = ({
   };
 
   const goToCreateQuestion = () => {
-    addEmptyQuestion("multiple-choice");
-    setLastIndex();
-    navigation.navigate("CreateQuestion");
+    if (isLastQuestionInEdit()) {
+      setLastIndex();
+      navigation.navigate("CreateQuestion");
+    } else {
+      addEmptyQuestion("multiple-choice");
+      setLastIndex();
+      navigation.navigate("CreateQuestion");
+    }
   };
 
   const handleSheetChanges = useCallback((index: number) => {

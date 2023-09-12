@@ -73,10 +73,14 @@ const OptionModal: FC<Props> = ({
 
               <View className="my-5 flex flex-col items-center justify-between"></View>
 
-              {chunk(options, 2).map((row) => (
-                <View className="mt-5 flex flex-row items-center justify-between gap-x-2">
+              {chunk(options, 2).map((row, idx) => (
+                <View
+                  key={idx}
+                  className="mt-5 flex flex-row items-center justify-between gap-x-2"
+                >
                   {row.map((option) => (
                     <TouchableOpacity
+                      key={option.id}
                       className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl border-b-2 ${
                         option.isSelected
                           ? "border-indigo-700 bg-violet-600"
