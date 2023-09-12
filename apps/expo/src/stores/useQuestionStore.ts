@@ -4,7 +4,7 @@ import { match } from "ts-pattern";
 import type { Question } from "@acme/schema/src/types";
 import type { SetOptional } from "type-fest";
 
-type PartialQuestion = SetOptional<Question, "points" | "time"> & {
+export type PartialQuestion = SetOptional<Question, "points" | "time"> & {
   inEdit: boolean;
 };
 
@@ -35,19 +35,72 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
           .with("multiple-choice", () => ({
             title: "",
             type: "multiple-choice",
-            choices: [],
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "3",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "4",
+                isCorrect: false,
+                text: "",
+              },
+            ],
             inEdit: true,
           }))
           .with("true-or-false", () => ({
             title: "",
             type: "true-or-false",
-            choices: [],
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+            ],
             inEdit: true,
           }))
           .with("multi-select", () => ({
             title: "",
             type: "multi-select",
-            choices: [],
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "3",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "4",
+                isCorrect: false,
+                text: "",
+              },
+            ],
             inEdit: true,
           }))
           .with("identification", () => ({

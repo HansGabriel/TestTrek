@@ -7,6 +7,7 @@ import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
+import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
 
 import type { FC } from "react";
@@ -15,6 +16,9 @@ import useToast from "../hooks/useToast";
 
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
+  const questions = useQuestionStore((state) => state.questions);
+
+  console.log(questions);
 
   const { showToast } = useToast();
 
@@ -59,7 +63,7 @@ export const CreateTestScreen: FC = () => {
   };
 
   return (
-    <View className="mt-12 flex-1">
+    <View className="mt-12">
       <View className="mx-6  flex flex-row items-center justify-between pb-5">
         <View className="flex flex-row items-center gap-2">
           <TouchableOpacity onPress={goBack}>

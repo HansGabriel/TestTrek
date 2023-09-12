@@ -19,9 +19,16 @@ import TestImagePicker from "../../components/ImagePicker";
 import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 import useQuestionStore from "../../stores/useQuestionStore";
+import OptionDropdown from "./options-dropdown";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
+import type { PartialQuestion } from "../../stores/useQuestionStore";
+
+type MultipleChoiceQuestion = Extract<
+  PartialQuestion,
+  { type: "multiple-choice" }
+>;
 
 const choiceStyles: ChoiceStyle[] = [
   {
@@ -41,27 +48,37 @@ const choiceStyles: ChoiceStyle[] = [
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
 
-  const { selectedIndex } = useQuestionStore();
+  const { selectedIndex, getSelectedQuestion, editQuestion } =
+    useQuestionStore();
 
-  console.log(selectedIndex);
+  const question = getSelectedQuestion();
 
   const [timeLimitOptions, setTimeLimitOptions] =
     useState<Option[]>(TIME_LIMIT_OPTIONS);
   const [pointOptions, setPointOptions] = useState<Option[]>(POINT_OPTIONS);
-  const [image, setImage] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<string | undefined>(question?.image);
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
   const [showPointModal, setShowPointModal] = useState<boolean>(false);
-  const [questionTitle, setQuestionTitle] = useState<string>("");
+  const [questionTitle, setQuestionTitle] = useState<string>(
+    question?.title ?? "",
+  );
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
   const [choices, setChoices] = useState<Choice[]>(
-    Array.from({ length: 4 }, (_, idx) => ({
-      id: idx,
-      text: undefined,
-      isCorrect: false,
-      styles: choiceStyles[idx]!.styles,
-    })),
+    question!.type === "multiple-choice"
+      ? question!.choices.map((choice, idx) => ({
+          id: idx,
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+          styles: choiceStyles[idx]!.styles,
+        }))
+      : Array.from({ length: 2 }, (_, idx) => ({
+          id: idx,
+          text: undefined,
+          isCorrect: false,
+          styles: choiceStyles[idx]!.styles,
+        })),
   );
 
   const [open, setOpen] = useState(false);
@@ -98,6 +115,24 @@ export const CreateQuestionScreen: FC = () => {
     );
   };
 
+  const handleSaveQuestion = () => {
+    const multipleChoiceQuestion: MultipleChoiceQuestion = {
+      title: questionTitle,
+      choices: choices.map((choice, idx) => ({
+        id: idx.toString(),
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+      })),
+      image: image,
+      inEdit: false,
+      type: "multiple-choice",
+      points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
+      time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
+    };
+    editQuestion(selectedIndex!, multipleChoiceQuestion);
+    goBack();
+  };
+
   const renderChoice = useCallback(
     (choice: Choice) => (
       <TouchableOpacity
@@ -130,13 +165,14 @@ export const CreateQuestionScreen: FC = () => {
 
   return (
     <View className="mx-6 mt-12 flex-1">
-      <View className="flex flex-row items-center justify-between pb-5">
+      <View className="z-50 flex flex-row items-center justify-between pb-5">
         <View className="flex flex-row items-center gap-2">
           <TouchableOpacity onPress={goBack}>
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl">Create Question</Text>
         </View>
+        <OptionDropdown onSave={handleSaveQuestion} onDelete={() => {}} />
       </View>
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>

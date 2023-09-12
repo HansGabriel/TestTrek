@@ -159,6 +159,9 @@ importers:
       react-native-dropdown-picker:
         specifier: ^5.4.6
         version: 5.4.6(react-native@0.70.5)(react@18.2.0)
+      react-native-element-dropdown:
+        specifier: ^2.10.0
+        version: 2.10.0(react-native@0.70.5)(react@18.2.0)
       react-native-gesture-handler:
         specifier: ^2.9.0
         version: 2.9.0(react-native@0.70.5)(react@18.2.0)
@@ -9606,6 +9609,18 @@ packages:
       react: '*'
       react-native: '*'
     dependencies:
+      react: 18.2.0
+      react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
+    dev: false
+
+  /react-native-element-dropdown@2.10.0(react-native@0.70.5)(react@18.2.0):
+    resolution: {integrity: sha512-aFjw0JbUIKGkqklHxDm8aDCZW6Q1GICP7pIHc0sllvpWpEamItzOwAMV4G1mBIKxED77Mp+nkq9p0Dhsr/faVw==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+    dependencies:
+      lodash: 4.17.21
       react: 18.2.0
       react-native: 0.70.5(patch_hash=rnbco5eodjkfp6ucueusre3z4i)(@babel/core@7.20.5)(@babel/preset-env@7.20.2)(react@18.2.0)
     dev: false

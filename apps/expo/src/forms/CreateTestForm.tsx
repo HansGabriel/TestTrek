@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   StyleSheet,
+  ImageBackground,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { testDetailsSchema } from "@acme/schema/src/test";
@@ -24,6 +25,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import TestImagePicker from "../components/ImagePicker";
 import useQuestionStore from "../stores/useQuestionStore";
+import { FlashList } from "@shopify/flash-list";
+import RightArrowIcon from "../icons/RightArrowIcon";
 
 import type { TestDetails } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -99,15 +102,12 @@ const CreateTestForm: FC<Props> = ({
 
   return (
     <>
-      <ScrollView
-        contentInset={{ bottom: 20 }}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           className="mx-6 flex flex-col content-end justify-between"
         >
-          <View className="my-8 flex flex-col">
+          <View className="mt-8 mb-2 flex flex-col">
             <View className="mb-6">
               <Controller
                 control={control}
@@ -207,6 +207,51 @@ const CreateTestForm: FC<Props> = ({
               }}
               texts={keywords}
               onChangeTexts={setKeywords}
+            />
+          </View>
+
+          <View className="mb-10 h-full flex-1 flex-col">
+            <View className="mb-6 flex flex-row items-center justify-between">
+              <Text className="text-xl font-bold leading-loose text-neutral-800">
+                Question ({questions.length})
+              </Text>
+              <TouchableOpacity className="flex flex-row items-center gap-1">
+                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                  View All
+                </Text>
+                <RightArrowIcon />
+              </TouchableOpacity>
+            </View>
+            <FlashList
+              data={questions}
+              estimatedItemSize={10}
+              showsVerticalScrollIndicator={true}
+              renderItem={({ item: question, index }) => {
+                const isInEdit = question.inEdit;
+                if (isInEdit) return null;
+                return (
+                  <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
+                    <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                      <View className="relative w-[140px] self-stretch">
+                        <ImageBackground
+                          source={{ uri: question.image }}
+                          imageStyle={{
+                            borderTopLeftRadius: 12,
+                            borderBottomLeftRadius: 12,
+                          }}
+                          className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                        />
+                      </View>
+                      <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                        {index + 1} - {question.type}
+                      </Text>
+                      <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
+                        {question.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
             />
           </View>
 
