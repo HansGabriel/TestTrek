@@ -13,7 +13,7 @@ import Svg, {
 import type { FC } from "react";
 
 const PlayQuizBackground: FC<SvgProps> = (props) => (
-  <Svg width={382} height={170} viewBox="0 0 382 170" fill="none" {...props}>
+  <Svg width={382} height={160} viewBox="0 0 382 170" fill="none" {...props}>
     <G clipPath="url(#clip0_2136_29685)">
       <Mask id="a" fill="#fff">
         <Path d="M0 40C0 21.144 0 11.716 5.858 5.858 11.716 0 21.144 0 40 0h302c18.856 0 28.284 0 34.142 5.858C382 11.716 382 21.144 382 40v90c0 18.856 0 28.284-5.858 34.142C370.284 170 360.856 170 342 170H40c-18.856 0-28.284 0-34.142-5.858C0 158.284 0 148.856 0 130V40z" />
