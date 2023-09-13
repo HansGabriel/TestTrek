@@ -45,7 +45,7 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
         )}
       />
       <View className="z-50 -mt-12 h-14 w-14 items-center self-end">
-        <AddButton screen={"CreateReviewer"} />
+        <AddButton screen={"CreateCollection"} />
       </View>
     </SafeAreaView>
   );
