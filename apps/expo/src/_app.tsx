@@ -12,17 +12,19 @@ import Constants from "expo-constants";
 export const App = () => {
   return (
     <RootSiblingParent>
-      <ClerkProvider
-        publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
-        tokenCache={tokenCache}
-      >
-        <TRPCProvider>
-          <SafeAreaProvider>
-            <Navigation />
-            <StatusBar />
-          </SafeAreaProvider>
-        </TRPCProvider>
-      </ClerkProvider>
+      <SafeAreaProvider>
+        <ClerkProvider
+          publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
+          tokenCache={tokenCache}
+        >
+          <TRPCProvider>
+            <SafeAreaProvider>
+              <Navigation />
+              <StatusBar />
+            </SafeAreaProvider>
+          </TRPCProvider>
+        </ClerkProvider>
+      </SafeAreaProvider>
     </RootSiblingParent>
   );
 };
