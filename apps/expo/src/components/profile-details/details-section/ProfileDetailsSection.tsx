@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image } from "react-native";
 import EditProfileButton from "../profile-buttons/EditProfileButton";
 import type { FC } from "react";
 

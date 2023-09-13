@@ -10,6 +10,7 @@ const SignInWithOAuth = () => {
 
   const handleSignInWithGooglePress = React.useCallback(async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow();
       if (createdSessionId) {

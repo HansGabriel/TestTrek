@@ -12,7 +12,6 @@ const TopTrekersHomeSection: FC = () => {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         data={topTrekersList}
-        keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity>
             <TopTrekersHomeCard
