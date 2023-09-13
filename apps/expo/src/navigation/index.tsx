@@ -16,7 +16,7 @@ import { SignupScreen } from "../screens/signup";
 import { RootStackParamList } from "../types";
 import { ClerkLoaded, useUser } from "@clerk/clerk-expo";
 import { UploadScreen } from "../screens/upload-screen";
-import { CreateReviewer } from "../screens/create-reviewer";
+import { CreateCollection } from "../screens/create-collection";
 import { SplashScreen } from "../screens/splash-screen";
 import { MyLibraryScreen } from "../screens/my-library";
 import { CreateTestScreen } from "../screens/create-test";
@@ -119,6 +119,13 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="CreateCollection"
+              component={CreateCollection}
+              options={{
+                headerShown: false,
+              }}
+            />
           </>
         ) : (
           <>
@@ -160,13 +167,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="UploadScreen"
               component={UploadScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="CreateReviewer"
-              component={CreateReviewer}
               options={{
                 headerShown: false,
               }}

@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 import useGoBack from "../hooks/useGoBack";
 import { useState } from "react";
 import { HeaderAndContent } from "../components/HeaderAndContent";
+import Footer from "../components/Footer";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -57,7 +58,7 @@ export const MyLibraryScreen = () => {
       >
         <Tab.Screen name="MyTests" options={{ title: "My Tests" }}>
           {() => (
-            <SafeAreaView className="my-6 flex-1">
+            <SafeAreaView className="my-5 flex-1">
               <View className="w-full flex-row items-center justify-evenly gap-1 ">
                 <TouchableOpacity
                   onPress={onPressed}
@@ -116,6 +117,7 @@ export const MyLibraryScreen = () => {
           )}
         </Tab.Screen>
       </Tab.Navigator>
+      <Footer />
     </SafeAreaView>
   );
 };

@@ -1,13 +1,13 @@
 import React from "react";
-import { View } from "react-native";
 import PlayQuizBackground from "../../icons/playquiz/PlayQuizBackground";
 import type { FC } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PlayQuiz: FC = () => {
   return (
-    <View className="mx-auto mb-3">
-      <PlayQuizBackground />
-    </View>
+    <SafeAreaView className="mb-3 items-center ">
+      <PlayQuizBackground width={"90%"} />
+    </SafeAreaView>
   );
 };
 

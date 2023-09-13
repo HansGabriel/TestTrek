@@ -17,7 +17,7 @@ import useGoBack from "../hooks/useGoBack";
 const textHeaderStyle = "font-nunito-bold mt-4";
 const textBoxStyle = "border-b border-violet-600 mt-3 text-lg font-nunito-bold";
 
-export const CreateReviewer = () => {
+export const CreateCollection = () => {
   const publication = ["Only Me", "Public"];
   const goBack = useGoBack();
   return (

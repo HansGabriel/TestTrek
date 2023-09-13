@@ -4,6 +4,7 @@ import type { FC } from "react";
 import { View, SafeAreaView, Text, ImageBackground } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Collection } from "@prisma/client";
+import { AddButton } from "./AddButton";
 
 interface CollectionProps {
   tabData?: Collection[];
@@ -18,14 +19,24 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
         estimatedItemSize={5}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View className=" mx-2 my-5">
+          <View className="mx-2 my-5">
             <ImageBackground
               source={{ uri: item.imageUrl }}
               className=" overflow-hidden rounded-xl border-2 border-white "
               imageStyle={{ opacity: 0.9 }}
             >
-              <View className="h-28 w-36 content-end items-center justify-end">
-                <Text className="font-nunito-bold my-3 max-h-[50%] max-w-[80%] rounded-2xl  bg-violet-600 p-1 text-xl text-white">
+              <View
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                }}
+              />
+              <View className="h-28 w-36 content-end items-start justify-end">
+                <Text className="font-nunito-bold text-s p-s my-3 ml-5 max-h-[50%] max-w-[80%] rounded-2xl text-white">
                   {item.title}
                 </Text>
               </View>
@@ -33,6 +44,9 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
           </View>
         )}
       />
+      <View className="z-50 -mt-12 h-14 w-14 items-center self-end">
+        <AddButton screen={"CreateReviewer"} />
+      </View>
     </SafeAreaView>
   );
 };
