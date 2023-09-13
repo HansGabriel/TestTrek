@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
@@ -73,20 +73,22 @@ export const CreateTestScreen: FC = () => {
   };
 
   return (
-    <View className="mt-12">
-      <View className="mx-6  flex flex-row items-center justify-between pb-5">
-        <View className="flex flex-row items-center gap-2">
-          <TouchableOpacity onPress={goBack}>
-            <Feather name="x" size={24} color="black" />
-          </TouchableOpacity>
-          <Text className="font-nunito-bold text-2xl">Create Test</Text>
+    <SafeAreaView className="flex-1">
+      <View className="mt-12">
+        <View className="mx-6  flex flex-row items-center justify-between">
+          <View className="flex flex-row items-center gap-2">
+            <TouchableOpacity onPress={goBack}>
+              <Feather name="x" size={24} color="black" />
+            </TouchableOpacity>
+            <Text className="font-nunito-bold text-2xl">Create Test</Text>
+          </View>
         </View>
+        <CreateTestForm
+          onSubmit={submitTestDetails}
+          isCreatingQuiz={isCreatingQuiz}
+          isUploading={isUploading}
+        />
       </View>
-      <CreateTestForm
-        onSubmit={submitTestDetails}
-        isCreatingQuiz={isCreatingQuiz}
-        isUploading={isUploading}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
