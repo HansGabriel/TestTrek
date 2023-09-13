@@ -1,7 +1,15 @@
 import * as React from "react";
-import Svg, { Rect, Path, Defs, LinearGradient, Stop } from "react-native-svg";
+import Svg, {
+  Rect,
+  Path,
+  Defs,
+  LinearGradient,
+  Stop,
+  type SvgProps,
+} from "react-native-svg";
+import type { FC } from "react";
 
-const PersonalInfoIcon = (props) => (
+const PersonalInfoIcon: FC<SvgProps> = (props) => (
   <Svg width={382} height={52} viewBox="0 0 382 56" fill="none" {...props}>
     <Rect width={56} height={56} rx={28} fill="#FF9800" fillOpacity={0.08} />
     <Path

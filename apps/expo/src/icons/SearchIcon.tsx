@@ -1,5 +1,5 @@
 import * as React from "react";
-import Svg, { Mask, Path, G, type SvgProps } from "react-native-svg";
+import Svg, { Path, type SvgProps } from "react-native-svg";
 
 import type { FC } from "react";
 

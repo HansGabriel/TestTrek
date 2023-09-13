@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import type { FC } from "react";
 
 const EditProfileButton: FC = () => {

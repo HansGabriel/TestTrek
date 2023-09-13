@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, type ImageSourcePropType } from "react-native";
 import type { FC } from "react";
 
 interface Props {

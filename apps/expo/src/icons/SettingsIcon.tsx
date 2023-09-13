@@ -6,9 +6,6 @@ const SettingsIcon: FC<SvgProps> = (props) => (
   <Svg width={28} height={28} viewBox="0 0 28 28" fill="none" {...props}>
     <Mask
       id="mask0_2679_11381"
-      style={{
-        maskType: "luminance",
-      }}
       maskUnits="userSpaceOnUse"
       x={2}
       y={2}
