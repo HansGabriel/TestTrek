@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, SafeAreaView } from "react-native";
 import EditProfileButton from "../profile-buttons/EditProfileButton";
 import type { FC } from "react";
 
@@ -21,8 +21,8 @@ const ProfileDetailsSection: FC = () => {
   const userName = formatUsername(name);
 
   return (
-    <View className="mt-2 flex-1 items-center justify-start">
-      <View className="mt-7 h-[236px] w-[382px] flex-col items-center gap-1">
+    <SafeAreaView className="mt-24 flex-1 items-center justify-center">
+      <View className=" h-[236px] w-[100%] flex-col items-center gap-1">
         <View className="w-full flex-row items-center justify-between gap-4 py-3">
           <Image
             className="h-[60px] w-[60px] rounded-full"
@@ -69,7 +69,7 @@ const ProfileDetailsSection: FC = () => {
         ))}
         <View className="w-full border-b border-[#EEEEEE]"></View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

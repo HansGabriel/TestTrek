@@ -4,7 +4,6 @@ import type { FC } from "react";
 import { View, SafeAreaView, Text, ImageBackground } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Collection } from "@prisma/client";
-import { AddButton } from "./AddButton";
 
 interface CollectionProps {
   tabData?: Collection[];
@@ -44,9 +43,6 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
           </View>
         )}
       />
-      <View className="z-50 -mt-12 h-14 w-14 items-center self-end">
-        <AddButton screen={"CreateCollection"} />
-      </View>
     </SafeAreaView>
   );
 };
