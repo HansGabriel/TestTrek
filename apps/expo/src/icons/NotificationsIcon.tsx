@@ -11,7 +11,7 @@ const NotificationsIcon: FC<SvgProps> = (props) => {
         maskUnits="userSpaceOnUse"
         x={3}
         y={1}
-        width={23}
+        width={25}
         height={21}
       >
         <Path
