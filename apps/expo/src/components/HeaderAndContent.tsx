@@ -6,6 +6,7 @@ import { TabContent } from "./TabContent";
 import { BackendTabPage } from "../types/libraryTypes";
 import { trpc } from "../utils/trpc";
 import { CollectionTabContent } from "./CollectionTabContent";
+import { AddButton } from "./AddButton";
 
 interface HeaderProps {
   tab: BackendTabPage;
@@ -115,7 +116,12 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
         {tabType === "Test" ? (
           <TabContent tabData={testData} />
         ) : (
-          <CollectionTabContent tabData={collectionData} />
+          <View className="flex-1">
+            <CollectionTabContent tabData={collectionData} />
+            <View className="z-50 -mt-12 h-14 w-14 items-center self-end">
+              <AddButton screen={"CreateCollection"} />
+            </View>
+          </View>
         )}
       </View>
     </SafeAreaView>
