@@ -32,6 +32,7 @@ import { trpc } from "../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -110,12 +111,12 @@ const CreateTestForm: FC<Props> = ({
   const readyQuestions = questions.filter((question) => !question.inEdit);
 
   return (
-    <>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          className="mx-6 flex flex-col content-end justify-between"
-        >
+    <SafeAreaView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="mx-6 flex flex-col content-end justify-between"
+      >
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View className="mt-8 mb-2 flex flex-col">
             <View className="mb-6">
               <Controller
@@ -300,8 +301,8 @@ const CreateTestForm: FC<Props> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
@@ -367,7 +368,7 @@ const CreateTestForm: FC<Props> = ({
           </ScrollView>
         </View>
       </BottomSheet>
-    </>
+    </SafeAreaView>
   );
 };
 
