@@ -18,6 +18,7 @@ const AppTextInput: FC<Props> = ({ label, textInputProps }) => {
       <TextInput
         className="border-primary-1 font-nunito-bold border-b py-2"
         onBlur={onBlur}
+        placeholderTextColor="#9E9E9E"
         onChangeText={onChangeText}
         value={value}
         {...props}

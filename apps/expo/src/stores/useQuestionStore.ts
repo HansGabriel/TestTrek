@@ -4,7 +4,9 @@ import { match } from "ts-pattern";
 import type { Question } from "@acme/schema/src/types";
 import type { SetOptional } from "type-fest";
 
-type PartialQuestion = SetOptional<Question, "points" | "time">;
+export type PartialQuestion = SetOptional<Question, "points" | "time"> & {
+  inEdit: boolean;
+};
 
 type QuestionType = Question["type"];
 
@@ -19,6 +21,7 @@ interface QuestionStore {
   deleteQuestion: (index: number) => void;
   setSelectedIndex: (index: number) => void;
   setLastIndex: () => void;
+  isLastQuestionInEdit: () => boolean;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -29,31 +32,89 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
       questions: [
         ...state.questions,
         match<QuestionType, PartialQuestion>(questionType)
-          .with("multiple-choice", () => ({
+          .with("multiple_choice", () => ({
             title: "",
-            type: "multiple-choice",
-            choices: [],
+            type: "multiple_choice",
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "3",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "4",
+                isCorrect: false,
+                text: "",
+              },
+            ],
+            inEdit: true,
           }))
-          .with("true-or-false", () => ({
+          .with("true_or_false", () => ({
             title: "",
-            type: "true-or-false",
-            choices: [],
+            type: "true_or_false",
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+            ],
+            inEdit: true,
           }))
-          .with("multi-select", () => ({
+          .with("multi_select", () => ({
             title: "",
-            type: "multi-select",
-            choices: [],
+            type: "multi_select",
+            choices: [
+              {
+                id: "1",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "2",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "3",
+                isCorrect: false,
+                text: "",
+              },
+              {
+                id: "4",
+                isCorrect: false,
+                text: "",
+              },
+            ],
+            inEdit: true,
           }))
           .with("identification", () => ({
             title: "",
             type: "identification",
             answer: "",
             possibleAnswers: [],
+            inEdit: true,
           }))
           .with("enumeration", () => ({
             title: "",
             type: "enumeration",
             choices: [],
+            inEdit: true,
           }))
           .exhaustive(),
       ],
@@ -74,6 +135,10 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
     })),
   setSelectedIndex: (index) => set({ selectedIndex: index }),
   setLastIndex: () => set({ selectedIndex: get().questions.length - 1 }),
+  isLastQuestionInEdit: () => {
+    const isInEdit = get().questions[get().questions.length - 1]?.inEdit;
+    return isInEdit ?? false;
+  },
 }));
 
 export default useQuestionStore;

@@ -7,6 +7,8 @@ import MainHeader from "../components/headers/MainHeader";
 import PlayQuiz from "../components/playquiz/PlayQuiz";
 import Footer from "../components/Footer";
 import TopCollectionsHomeSection from "../components/top-collections/TopCollectionsHomeSection";
+import TrendingTestsHomeSection from "../components/trending-tests/TrendingTestsHomeSection";
+import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSection";
 
 export const HomeScreen = () => {
   return (
@@ -17,6 +19,8 @@ export const HomeScreen = () => {
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
         <TopCollectionsHomeSection />
+        <TrendingTestsHomeSection />
+        <TopPicksHomeSection />
       </ScrollView>
       <Footer />
     </SafeAreaView>

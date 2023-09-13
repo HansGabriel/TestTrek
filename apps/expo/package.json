@@ -53,6 +53,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-date-picker": "^4.2.14",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-element-dropdown": "^2.10.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-indicators": "^0.17.0",
     "react-native-input-select": "^1.1.3",
