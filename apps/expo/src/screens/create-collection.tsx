@@ -17,7 +17,7 @@ import useGoBack from "../hooks/useGoBack";
 const textHeaderStyle = "font-nunito-bold mt-4";
 const textBoxStyle = "border-b border-violet-600 mt-3 text-lg font-nunito-bold";
 
-export const CreateReviewer = () => {
+export const CreateCollection = () => {
   const publication = ["Only Me", "Public"];
   const goBack = useGoBack();
   return (
@@ -26,7 +26,7 @@ export const CreateReviewer = () => {
         <TouchableOpacity onPress={goBack}>
           <LeftArrowIcon />
         </TouchableOpacity>
-        <Text className=" font-nunito-bold text-2xl">Create New Reviewer</Text>
+        <Text className=" font-nunito-bold text-2xl">Create New Collection</Text>
       </View>
       <View className="items-center ">
         <View className="h-56 w-80 items-center justify-center rounded-3xl border-2 border-violet-600">
@@ -38,7 +38,7 @@ export const CreateReviewer = () => {
         <View className="w-80">
           <Text className={textHeaderStyle}>Title</Text>
           <TextInput
-            placeholder="  Enter Reviewer Title"
+            placeholder="  Enter Collection Title"
             className={textBoxStyle}
           />
         </View>

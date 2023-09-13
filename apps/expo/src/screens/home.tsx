@@ -12,7 +12,7 @@ import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSecti
 
 export const HomeScreen = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView className="flex-1">
       <MainHeader />
       <ScrollView>
         <PlayQuiz />
