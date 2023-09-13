@@ -9,7 +9,7 @@ import type { FC } from "react";
 const MainHeader: FC = ({}) => {
   return (
     <>
-      <View className="sticky top-0 z-50 mx-6 flex flex-row justify-between bg-white py-5">
+      <View className="sticky top-0 z-50 mx-6 flex flex-row justify-between bg-white pt-5">
         <TouchableOpacity className="flex flex-row items-center gap-4">
           {/* Added items-center here */}
           <TinyTestTrekIcon />

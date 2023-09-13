@@ -29,7 +29,7 @@ const Footer: FC = () => {
 
   return (
     <View className="items-center rounded-t-3xl border-r-[1px] border-l-[1px] border-t-[1px] border-gray-200">
-      <View className="flex-row items-center justify-center space-x-5 px-8 pb-8 pt-5">
+      <View className="ml-14 flex-row items-center justify-center space-x-5 px-8 pt-5 pb-8">
         <TouchableOpacity
           onPress={goToHomeScreen}
           style={{ marginHorizontal: 15 }}

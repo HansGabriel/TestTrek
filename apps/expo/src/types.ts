@@ -18,7 +18,7 @@ export type RootStackParamList = {
   Signin: undefined;
   Home: undefined;
   UploadScreen: undefined;
-  CreateReviewer: undefined;
+  CreateCollection: undefined;
   SplashScreen: undefined;
   MaterialInput: undefined;
   MyLibrary: undefined;
@@ -26,6 +26,7 @@ export type RootStackParamList = {
   Discover: undefined;
   CreateQuestion: undefined;
   Profile: undefined;
+  Settings: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
