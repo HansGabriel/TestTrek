@@ -172,6 +172,7 @@ export const CreateQuestionScreen: FC = () => {
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl">Create Question</Text>
         </View>
+        {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
         <OptionDropdown onSave={handleSaveQuestion} onDelete={() => {}} />
       </View>
 

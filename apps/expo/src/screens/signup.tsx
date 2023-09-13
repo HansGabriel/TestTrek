@@ -14,6 +14,7 @@ export const SignupScreen: FC<Props> = ({ route }) => {
   const goBack = useGoBack();
 
   const handleSubmit = (userSignup: UserSignup) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fullUserInfo: FullUser = {
       ...userInfo,
       ...userSignup,
