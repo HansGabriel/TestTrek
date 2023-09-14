@@ -26,7 +26,9 @@ export const CreateCollection = () => {
         <TouchableOpacity onPress={goBack}>
           <LeftArrowIcon />
         </TouchableOpacity>
-        <Text className=" font-nunito-bold text-2xl">Create New Collection</Text>
+        <Text className=" font-nunito-bold text-2xl">
+          Create New Collection
+        </Text>
       </View>
       <View className="items-center ">
         <View className="h-56 w-80 items-center justify-center rounded-3xl border-2 border-violet-600">
@@ -71,13 +73,20 @@ export const CreateCollection = () => {
             }}
           />
         </View>
-        <View className="absolute h-[80%] w-[100%] border-b-2 border-zinc-100" />
-        <AppButton
-          text="Create"
-          buttonColor="indigo-700"
-          borderShadowColor="indigo-800"
-          borderRadius="full"
-        />
+
+        <View className="mt-4 self-center">
+          <AppButton
+            text="Create"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            marginY={16}
+            TOwidth="full"
+            Vwidth="80"
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
