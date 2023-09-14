@@ -5,8 +5,8 @@ import type { FC } from "react";
 
 const PremiumBanner: FC = () => {
   return (
-    <View className="mx-auto">
-      <PremiumBannerBackground />
+    <View className="items-center">
+      <PremiumBannerBackground width={"90%"} />
     </View>
   );
 };
