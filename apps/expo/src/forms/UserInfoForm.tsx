@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { TextInput, TouchableOpacity, View, Text, Modal } from "react-native";
+import {
+  TextInput,
+  TouchableOpacity,
+  View,
+  Text,
+  Modal,
+  SafeAreaView,
+} from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userInfoSchema } from "@acme/schema/src/user";
 import CalendarIcon from "../icons/CalendarIcon";
@@ -11,6 +18,7 @@ import { formatDate } from "../utils/helpers/date";
 
 import type { UserInfo } from "@acme/schema/src/types";
 import type { FC } from "react";
+import { AppButton } from "../components/AppButton";
 
 interface Props {
   onSubmit: (data: UserInfo) => void;
@@ -45,9 +53,9 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <View className="flex flex-col content-end justify-between">
-        <View className="mt-8 flex flex-col">
+        <View className="mt-4 flex flex-col">
           <View className="my-2 flex flex-col">
             <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
               Full name
@@ -115,14 +123,22 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
             )}
           </View>
         </View>
-        <TouchableOpacity onPress={handleSubmit(onSubmit)} className="mt-40">
-          <View className="mt-5 flex w-full flex-row items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]">
-            <Text className="font-nunito-bold shrink grow basis-0 text-center text-base leading-snug tracking-tight text-white">
-              Continue
-            </Text>
-          </View>
-        </TouchableOpacity>
       </View>
+      <View className="mt-4 self-center">
+        <AppButton
+          onPress={handleSubmit(onSubmit)}
+          text="Continue"
+          buttonColor="violet-600"
+          borderShadowColor="indigo-800"
+          borderRadius="full"
+          fontStyle="bold"
+          textColor="white"
+          marginY={16}
+          TOwidth="full"
+          Vwidth="80"
+        />
+      </View>
+
       <Modal visible={show} animationType="slide" transparent={true}>
         <View className="my-auto mx-5 flex flex-col items-center justify-between rounded-xl bg-white px-4 py-2 shadow-lg">
           <DateTimePicker
@@ -134,7 +150,7 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
           />
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
