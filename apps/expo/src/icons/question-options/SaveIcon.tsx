@@ -11,7 +11,7 @@ const SaveIcon: FC<SvgProps> = (props) => {
         maskUnits="userSpaceOnUse"
         x={2}
         y={1}
-        width={15}
+        width={17}
         height={18}
       >
         <Path
