@@ -14,6 +14,7 @@ import useSignin from "../hooks/useSignin";
 
 import type { UserSignup } from "@acme/schema/src/types";
 import type { FC } from "react";
+import { AppButton } from "../components/AppButton";
 
 interface Props {
   onSubmit: (data: UserSignup) => void;
@@ -37,12 +38,18 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
   });
 
   return (
-    <ScrollView
-      contentInset={{ bottom: 100 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View className="flex flex-col content-end justify-between">
-        <View className="my-8 flex flex-col">
+    <View style={{ height: 500 }}>
+      <ScrollView
+        contentInset={{ bottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={true}
+        nestedScrollEnabled={true}
+        contentContainerStyle={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <View className="mt-8 flex flex-col">
           <View className="my-2 flex flex-col">
             <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
               Username
@@ -110,16 +117,16 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
             )}
           </View>
         </View>
-        <View className="flex flex-row items-center justify-start gap-3">
-          <View className="h-[0px] w-[43%] border border-zinc-100"></View>
+        <View className="my-3 flex flex-row items-center justify-center gap-3">
+          <View className="w-[43%] border border-zinc-100" />
           <Text className="font-nunito-semibold text-center text-base leading-snug tracking-tight text-zinc-600">
             or
           </Text>
-          <View className="h-[0px] w-[43%] border border-zinc-100"></View>
+          <View className="w-[43%] border border-zinc-100" />
         </View>
         <TouchableOpacity
           onPress={signInWithGoogle}
-          className="mt-10 rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
+          className="mt-5 rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
         >
           <View className="flex flex-row items-center justify-center gap-3">
             <GoogleIcon />
@@ -139,15 +146,21 @@ const SignupForm: FC<Props> = ({ onSubmit }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-          <View className="mt-8 flex w-full flex-row items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]">
-            <Text className="font-nunito-bold shrink grow basis-0 text-center text-base leading-snug tracking-tight text-white">
-              Signup
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        <View className="mt-4 w-[312px] self-center">
+          <AppButton
+            onPress={handleSubmit(onSubmit)}
+            text="Signin"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="full"
+            Vwidth="full"
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
