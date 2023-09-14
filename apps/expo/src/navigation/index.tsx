@@ -24,6 +24,7 @@ import { DiscoverScreen } from "../screens/discover";
 import { CreateQuestionScreen } from "../screens/create-question";
 import { ProfileScreen } from "../screens/profile";
 import { SettingsScreen } from "../screens/settings";
+import { TestDetailsScreen } from "../screens/test-details";
 
 export default function Navigation() {
   return (
@@ -122,6 +123,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateCollection"
               component={CreateCollection}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="TestDetails"
+              component={TestDetailsScreen}
               options={{
                 headerShown: false,
               }}
