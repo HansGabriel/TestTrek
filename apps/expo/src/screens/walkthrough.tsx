@@ -26,21 +26,21 @@ export const WaltkthroughScreen: FC = () => {
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
       <Swiper index={1} loop={true}>
-        <View className="mb-8 flex-1 items-center justify-center">
-          <WalktrhoughIcon1 height={280} />
-          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-[32px] leading-[51.20px] text-neutral-800">
-            Create, share and play quizzes whenever and wherever you want
+        <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
+          <WalktrhoughIcon1 height={280} width={"90%"} />
+          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
+            Create, share and play quizzes, whenever and wherever you want
           </Text>
         </View>
-        <View className="mb-8 flex-1 items-center justify-center">
-          <WalktrhoughIcon2 height={280} />
-          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-[32px] leading-[51.20px] text-neutral-800">
+        <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
+          <WalktrhoughIcon2 height={280} width={"90%"} />
+          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
             Find fun and interesting quizzes to boost up your knowledge
           </Text>
         </View>
-        <View className="mb-8 flex-1 items-center justify-center">
-          <WalktrhoughIcon3 height={280} />
-          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-[32px] leading-[51.20px] text-neutral-800">
+        <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
+          <WalktrhoughIcon3 height={280} width={"90%"} />
+          <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
             Play and take quiz challenges together with your friends.
           </Text>
         </View>
