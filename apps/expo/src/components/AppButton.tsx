@@ -8,6 +8,13 @@ interface ButtonProps {
   borderShadowColor?: string;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
+  onPress?: () => void;
+  marginX?: number;
+  marginY?: number;
+  textColor?: string;
+  fontStyle?: string;
+  TOwidth?: string;
+  Vwidth?: string;
 }
 
 const borderRadiusSize = (size: string | undefined) => {
@@ -38,16 +45,30 @@ export const AppButton = ({
   iconLeft,
   iconRight,
   borderShadowColor,
+  onPress,
+  marginX,
+  marginY,
+  textColor,
+  fontStyle,
+  TOwidth,
+  Vwidth,
 }: ButtonProps) => {
   return (
-    <TouchableOpacity className="w-80 justify-end">
+    <TouchableOpacity
+      className={` my-${marginY} mx-${marginX} w-${TOwidth} justify-center self-center`}
+      onPress={onPress}
+    >
       <View
-        className={` h-[30%] w-full flex-row items-center justify-center rounded-[${borderRadiusSize(
+        className={` h-14 w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(
           borderRadius,
         )}] border-b-4 border-${borderShadowColor} bg-${buttonColor}`}
       >
         {iconLeft}
-        <Text className=" font-nunito-bold text-base text-white">{text}</Text>
+        <Text
+          className={` font-nunito-${fontStyle} text-base text-${textColor}`}
+        >
+          {text}
+        </Text>
         {iconRight}
       </View>
     </TouchableOpacity>

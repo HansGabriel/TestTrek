@@ -12,37 +12,37 @@ const SettingsButtons: FC = () => {
   const { signOut } = useAuth();
   return (
     <View>
-      <View className="mx-auto mt-5">
+      <View className="mt-5 w-80 self-center">
         <TouchableOpacity>
-          <PersonalInfoIcon />
+          <PersonalInfoIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
-      <View className="mx-auto mt-5">
+      <View className="mt-5 w-80 self-center">
         <TouchableOpacity>
-          <RedNotificationIcon />
+          <RedNotificationIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
-      <View className="mx-auto mt-5">
+      <View className="mt-5 w-80 self-center">
         <TouchableOpacity>
-          <MusicAndEffectsIcon />
+          <MusicAndEffectsIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
-      <View className="mx-auto mt-5">
+      <View className="mt-5 w-80 self-center">
         <TouchableOpacity>
-          <AboutIcon />
+          <AboutIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
-      <View className="mx-auto mt-5">
+      <View className="mt-5 w-80 self-center">
         <TouchableOpacity
           onPress={() => {
             signOut();
           }}
         >
-          <RedLogoutIcon />
+          <RedLogoutIcon width={"100%"} />
         </TouchableOpacity>
       </View>
     </View>
