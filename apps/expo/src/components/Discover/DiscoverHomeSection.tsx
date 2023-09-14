@@ -4,9 +4,16 @@ import DiscoverHomeCard from "./DiscoverHomeCard";
 import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const DiscoverHomeSection: FC = () => {
   const { data } = trpc.test.getAll.useQuery();
+
+  const navigation = useNavigation();
+
+  const goToTestDetailsScreen = () => {
+    navigation.navigate("TestDetails");
+  };
 
   const sortedAndFilteredData = React.useMemo(() => {
     if (data) {
@@ -29,7 +36,7 @@ const DiscoverHomeSection: FC = () => {
         data={sortedAndFilteredData}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToTestDetailsScreen}>
             <DiscoverHomeCard
               imageSource={{ uri: item.imageUrl }}
               title={item.title}

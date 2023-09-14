@@ -11,7 +11,6 @@ import {
   TouchableWithoutFeedback,
   Switch,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
