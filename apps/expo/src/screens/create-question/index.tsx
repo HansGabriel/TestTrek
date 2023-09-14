@@ -12,7 +12,6 @@ import {
   Switch,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { BlurView } from "expo-blur";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
@@ -182,71 +181,34 @@ export const CreateQuestionScreen: FC = () => {
         </View>
 
         <View className="flex flex-row items-center justify-between">
-          <View className="flex flex-row gap-2">
-            <TouchableOpacity
-              className="flex items-center justify-center rounded-[100px] bg-violet-600 px-5 py-2"
-              onPress={() => setShowTimeLimitModal(true)}
-            >
-              <Text className="text-center text-base font-semibold leading-snug tracking-tight text-white">
-                {timeLimitOptions.find((option) => option.isSelected)?.title ??
-                  "Time Limit"}
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            className="flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2"
+            onPress={() => setShowTimeLimitModal(true)}
+          >
+            <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+              {timeLimitOptions.find((option) => option.isSelected)?.title ??
+                "Time Limit"}
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              className="flex items-center justify-center rounded-[100px] bg-violet-600 px-5 py-2"
-              onPress={() => setShowPointModal(true)}
-            >
-              <Text className="text-center text-base font-semibold leading-snug tracking-tight text-white">
-                {pointOptions.find((option) => option.isSelected)?.title ??
-                  "Points"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            className="flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2"
+            onPress={() => setShowPointModal(true)}
+          >
+            <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+              {pointOptions.find((option) => option.isSelected)?.title ??
+                "Points"}
+            </Text>
+          </TouchableOpacity>
 
-          <View>
-            <DropDownPicker
-              style={{
-                borderColor: "#6949FF",
-                width: 120,
-                borderRadius: open ? 30 : 100,
-                borderWidth: 2,
-              }}
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-              placeholder="Quiz"
-              placeholderStyle={{
-                color: "#6949FF",
-                fontWeight: "bold",
-              }}
-              selectedItemLabelStyle={{
-                color: "#6949FF",
-                fontWeight: "bold",
-              }}
-              textStyle={{
-                color: "#6949FF",
-              }}
-              dropDownContainerStyle={{
-                borderColor: "#6949FF",
-                borderRadius: 20,
-                borderTopWidth: 1,
-                borderWidth: 2,
-              }}
-              TickIconComponent={() => (
-                <Feather name="check" size={24} color="#00B777" />
-              )}
-              ArrowDownIconComponent={() => (
-                <Feather name="chevron-down" size={24} color="#6949FF" />
-              )}
-              ArrowUpIconComponent={() => (
-                <Feather name="chevron-up" size={24} color="#6949FF" />
-              )}
-            />
-          </View>
+          <TouchableOpacity
+            className="items-center justify-center rounded-full border-2 border-violet-600 bg-white px-4 py-2"
+            onPress={() => {
+              // Handle button press logic here if needed
+            }}
+          >
+            <Text className="font-bold text-violet-600">Generate with AI</Text>
+          </TouchableOpacity>
         </View>
 
         <View
@@ -291,7 +253,7 @@ export const CreateQuestionScreen: FC = () => {
               setShowModal(!showModal);
             }}
           >
-            <BlurView intensity={10} className="absolute inset-0">
+            <View className="absolute inset-0 flex-1 bg-black/70">
               <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                 <View className="h-1/2 w-11/12 rounded-2xl bg-white">
                   <Text className="mt-10 text-center text-2xl font-bold">
@@ -322,7 +284,7 @@ export const CreateQuestionScreen: FC = () => {
                   </View>
                 </View>
               </View>
-            </BlurView>
+            </View>
           </TouchableWithoutFeedback>
         </Modal>
 
