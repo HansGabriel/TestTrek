@@ -10,6 +10,20 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id          String       @id @default(cuid())
+    email       String       @unique
+    userId      String       @unique
+    username    String
+    firstName   String
+    lastName    String
+    imageUrl    String?
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    tests       Test[]
+    collections Collection[]
+}
+
 model Post {
     id      String @id @default(cuid())
     title   String
@@ -36,6 +50,7 @@ model Test {
     updatedAt   DateTime           @updatedAt
     collections TestOnCollection[]
     questions   Question[]
+    user        User               @relation(fields: [userId], references: [userId])
 }
 
 model Question {
@@ -77,6 +92,7 @@ model Collection {
     createdAt DateTime           @default(now())
     updatedAt DateTime           @updatedAt
     tests     TestOnCollection[]
+    user      User               @relation(fields: [userId], references: [userId])
 }
 
 model TestOnCollection {
