@@ -17,4 +17,35 @@ export const userSigninSchema = z.object({
   password: z.string().min(8).max(255),
 });
 
+export const userWebhookSchema = z
+  .object({
+    email_addresses: z
+      .array(
+        z.object({
+          email_address: z.string(),
+        }),
+      )
+      .transform((val) => {
+        const emailAddresses = val.map((v) => v.email_address);
+        return emailAddresses[0];
+      }),
+    first_name: z.string(),
+    id: z.string(),
+    image_url: z.string().optional(),
+    last_name: z.string(),
+  })
+  .transform((val) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { email_addresses, ...rest } = val;
+
+    if (!email_addresses) {
+      throw new Error("No email address provided");
+    }
+
+    return {
+      ...rest,
+      email: email_addresses,
+    };
+  });
+
 export const fullUserSchema = userInfoSchema.merge(userSignupSchema);
