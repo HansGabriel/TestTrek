@@ -190,4 +190,68 @@ export const testRouter = router({
 
       return test;
     }),
+  getTrendingTests: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.test.findMany({
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        imageUrl: true,
+        keywords: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        collections: {
+          include: {
+            collection: true,
+          },
+        },
+        visibility: true,
+        user: {
+          select: {
+            imageUrl: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }),
+  getTopPicks: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.test.findMany({
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        imageUrl: true,
+        keywords: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        collections: {
+          include: {
+            collection: true,
+          },
+        },
+        visibility: true,
+        user: {
+          select: {
+            imageUrl: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }),
 });
