@@ -13,7 +13,7 @@ export const TestDetailsScreen = ({
   const { data: testDetails } = trpc.test.getById.useQuery({ testId });
 
   if (!testDetails) {
-    return null;
+    return <></>;
   }
 
   return (

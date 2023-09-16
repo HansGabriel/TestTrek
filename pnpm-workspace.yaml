@@ -6,3 +6,4 @@ packages:
   - packages/db
   - packages/config/*
   - packages/schema
+  - packages/utils

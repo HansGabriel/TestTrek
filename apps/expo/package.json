@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@acme/api": "*",
+    "@acme/utils": "*",
     "@acme/schema": "*",
     "@acme/tailwind-config": "*",
     "@clerk/clerk-expo": "^0.17.7",
