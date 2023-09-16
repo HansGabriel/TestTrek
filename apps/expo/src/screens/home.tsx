@@ -14,7 +14,7 @@ export const HomeScreen = () => {
   return (
     <SafeAreaView className="flex-1">
       <MainHeader />
-      <ScrollView>
+      <ScrollView className="z-0">
         <PlayQuiz />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />

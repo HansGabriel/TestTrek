@@ -134,7 +134,7 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
               </View>
             </View>
           </View>
-          <View className="mt-4 self-center">
+          <View className="mt-20 w-[312px] self-center">
             <AppButton
               onPress={handleSubmit(onSubmit)}
               text="Continue"
@@ -143,9 +143,8 @@ const UserInfoForm: FC<Props> = ({ onSubmit }) => {
               borderRadius="full"
               fontStyle="bold"
               textColor="white"
-              marginY={16}
               TOwidth="full"
-              Vwidth="80"
+              Vwidth="full"
             />
           </View>
 

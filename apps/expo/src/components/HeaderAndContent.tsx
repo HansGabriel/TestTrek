@@ -104,9 +104,9 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
             <Text className=" font-nunito-bold text-xl capitalize text-violet-600">
               {sortType}
             </Text>
-            {sortObject.map((item) => {
+            {sortObject.map((item, index) => {
               if (sortType === item.sortName) {
-                return item.icon;
+                return <View key={index}>{item.icon}</View>;
               }
             })}
           </TouchableOpacity>
