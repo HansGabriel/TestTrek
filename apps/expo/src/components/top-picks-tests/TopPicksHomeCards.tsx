@@ -5,7 +5,7 @@ import type { FC } from "react";
 import type { ImageSourcePropType } from "react-native";
 
 interface Props {
-  imageSource: ImageSourcePropType;
+  imageSource: string;
   title: string;
   q: number;
   date: Date;
@@ -22,7 +22,7 @@ const TopPicksHomeCards: FC<Props> = (props) => {
           <View className="absolute inset-0 bg-gray-400" />
           <Image
             className="absolute inset-0 h-28 w-full object-cover"
-            source={props.imageSource}
+            source={{ uri: props.imageSource }}
           />
           <View className="absolute bottom-1 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
             <Text className="text-xs font-semibold text-white">
