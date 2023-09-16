@@ -52,4 +52,16 @@ export const collectionRouter = router({
         },
       });
     }),
+  getTopCollections: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.collection.findMany({
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        userId: true,
+        imageUrl: true,
+        tests: true,
+      },
+    });
+  }),
 });

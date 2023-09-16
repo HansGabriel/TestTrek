@@ -4,7 +4,7 @@ import type { FC } from "react";
 
 interface Props {
   imageSource: string;
-  name: string;
+  title: string;
 }
 
 const TopTrekersHomeSection: FC<Props> = (props) => {
@@ -28,7 +28,7 @@ const TopTrekersHomeSection: FC<Props> = (props) => {
 
         <View className="ml-5 h-28 w-36 content-end items-start justify-end">
           <Text className="font-nunito-bold text-s p-s my-3 max-h-[50%] max-w-[80%] rounded-2xl text-white">
-            {props.name}
+            {props.title}
           </Text>
         </View>
       </ImageBackground>

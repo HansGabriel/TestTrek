@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
 import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
 import MainHeader from "../components/headers/MainHeader";
-import PlayQuiz from "../components/playquiz/PlayQuiz";
+import PlayTest from "../components/playtest/PlayTest";
 import Footer from "../components/Footer";
 import TopCollectionsHomeSection from "../components/top-collections/TopCollectionsHomeSection";
 import TrendingTestsHomeSection from "../components/trending-tests/TrendingTestsHomeSection";
@@ -15,7 +15,7 @@ export const HomeScreen = () => {
     <SafeAreaView className="flex-1">
       <MainHeader />
       <ScrollView className="z-0">
-        <PlayQuiz />
+        <PlayTest />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
         <TopCollectionsHomeSection />

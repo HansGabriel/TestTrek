@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView } from "react-native";
 import TestDetailsHeader from "../components/headers/TestDetailsHeader";
-import TestDetailsImage from "../components/test-details/TestDetailsContent";
+import TestDetailsContent from "../components/test-details/TestDetailsContent";
 import { RootStackScreenProps } from "../types";
 import { trpc } from "../utils/trpc";
 
@@ -19,7 +19,7 @@ export const TestDetailsScreen = ({
   return (
     <SafeAreaView className="flex-1 flex-col">
       <TestDetailsHeader />
-      <TestDetailsImage testDetails={testDetails} />
+      <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );
 };
