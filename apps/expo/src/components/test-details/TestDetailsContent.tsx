@@ -19,7 +19,7 @@ interface Props {
   testDetails: RouterOutputs["test"]["getById"];
 }
 
-const TestDetailsImage: FC<Props> = ({ testDetails }) => {
+const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const statsData = [
     { number: 45, label: "Questions" },
     { number: 5.6, label: "Played" },
@@ -110,4 +110,4 @@ const TestDetailsImage: FC<Props> = ({ testDetails }) => {
   );
 };
 
-export default TestDetailsImage;
+export default TestDetailsContent;

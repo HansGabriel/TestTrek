@@ -26,7 +26,7 @@ const MainHeader: FC = ({}) => {
   return (
     <View className="z-50">
       {isPressed ? (
-        <View className="sticky top-0 z-50 mt-5 flex-row justify-between self-center bg-white">
+        <View className="sticky z-50 mt-5 flex-row justify-between self-center bg-white">
           <SearchField
             searchString={query}
             onChange={updateQuery}
