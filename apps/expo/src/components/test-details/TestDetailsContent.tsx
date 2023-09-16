@@ -7,11 +7,19 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { IMAGE_PLACEHOLDER } from "../../constants";
+
+import type { FC } from "react";
+import type { RouterOutputs } from "../../utils/trpc";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-const TestDetailsImage = () => {
+interface Props {
+  testDetails: RouterOutputs["test"]["getById"];
+}
+
+const TestDetailsImage: FC<Props> = ({ testDetails }) => {
   const statsData = [
     { number: 45, label: "Questions" },
     { number: 5.6, label: "Played" },
@@ -36,12 +44,12 @@ const TestDetailsImage = () => {
             borderRadius: 20,
             resizeMode: "cover",
           }}
-          source={{ uri: "https://via.placeholder.com/352x230" }}
+          source={{ uri: testDetails?.imageUrl ?? IMAGE_PLACEHOLDER }}
         />
       </View>
 
       <Text className="font-nunito mt-3 w-[87%] break-words text-2xl font-bold leading-[38.40px] text-[#212121]">
-        Having Fun & Always Smile!
+        {testDetails?.title ?? "Test Title"}
       </Text>
 
       <View className="mt-5 w-[87%] border-b border-[#EEEEEE]"></View>
@@ -76,14 +84,14 @@ const TestDetailsImage = () => {
       <View className="w-[90%] flex-row items-center justify-between gap-4 py-3">
         <Image
           className="h-[60px] w-[60px] rounded-full"
-          source={{ uri: "https://via.placeholder.com/60x60" }}
+          source={{ uri: testDetails?.user.imageUrl ?? IMAGE_PLACEHOLDER }}
         />
         <View className="flex-grow flex-col items-start justify-center gap-0.5">
           <Text className="font-nunito-bold text-[20px] leading-[32px] text-[#212121]">
-            testname
+            {testDetails?.user.firstName} {testDetails?.user.lastName}
           </Text>
           <Text className="font-nunito-semibold text-[14px] leading-[19.6px] text-[#616161]">
-            @testname
+            @{testDetails?.user.username}
           </Text>
         </View>
         <TouchableOpacity className=" mt-5 items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
@@ -96,8 +104,7 @@ const TestDetailsImage = () => {
         Description
       </Text>
       <Text className="font-nunito text-m w-[87%] break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
-        Test Description
-        aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        {testDetails?.description ?? "N/A"}
       </Text>
     </SafeAreaView>
   );

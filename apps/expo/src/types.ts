@@ -27,7 +27,9 @@ export type RootStackParamList = {
   CreateQuestion: undefined;
   Profile: undefined;
   Settings: undefined;
-  TestDetails: undefined;
+  TestDetails: {
+    testId: string;
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

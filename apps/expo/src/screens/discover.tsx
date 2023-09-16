@@ -25,19 +25,25 @@ export const DiscoverScreen = () => {
         showsVerticalScrollIndicator={false}
         data={sortedAndFilteredData}
         estimatedItemSize={100}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity key={index}>
-            <DiscoverScreenCard
-              imageSource={{ uri: item.imageUrl }}
-              title={item.title}
-              q={12}
-              date={new Date(item.createdAt)}
-              plays={0}
-              userImageSource={{ uri: "https://example.com/dummy-image.jpg" }}
-              userName={item.userId}
-            />
-          </TouchableOpacity>
-        )}
+        renderItem={({ item, index }) => {
+          const fullName = `${item.user.firstName} ${item.user.lastName}`;
+          return (
+            <TouchableOpacity key={index}>
+              <DiscoverScreenCard
+                imageSource={{ uri: item.imageUrl }}
+                title={item.title}
+                q={12}
+                date={new Date(item.createdAt)}
+                plays={0}
+                userImageSource={{
+                  uri:
+                    item.user.imageUrl ?? "https://example.com/dummy-image.jpg",
+                }}
+                userName={fullName}
+              />
+            </TouchableOpacity>
+          );
+        }}
       />
     </SafeAreaView>
   );

@@ -11,8 +11,10 @@ const DiscoverHomeSection: FC = () => {
 
   const navigation = useNavigation();
 
-  const goToTestDetailsScreen = () => {
-    navigation.navigate("TestDetails");
+  const goToTestDetailsScreen = (testId: string) => () => {
+    navigation.navigate("TestDetails", {
+      testId,
+    });
   };
 
   const sortedAndFilteredData = React.useMemo(() => {
@@ -35,19 +37,25 @@ const DiscoverHomeSection: FC = () => {
         showsHorizontalScrollIndicator={false}
         data={sortedAndFilteredData}
         keyExtractor={(item, index) => item.id || index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={goToTestDetailsScreen}>
-            <DiscoverHomeCard
-              imageSource={{ uri: item.imageUrl }}
-              title={item.title}
-              q={item.keywords.length}
-              date={new Date(item.createdAt)}
-              plays={0}
-              userImageSource={{ uri: "https://example.com/dummy-image.jpg" }}
-              userName={item.userId}
-            />
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          const fullName = `${item.user.firstName} ${item.user.lastName}`;
+          return (
+            <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
+              <DiscoverHomeCard
+                imageSource={{ uri: item.imageUrl }}
+                title={item.title}
+                q={item.keywords.length}
+                date={new Date(item.createdAt)}
+                plays={0}
+                userImageSource={{
+                  uri:
+                    item.user.imageUrl ?? "https://example.com/dummy-image.jpg",
+                }}
+                userName={fullName}
+              />
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );

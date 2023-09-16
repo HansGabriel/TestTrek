@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { testInputSchema } from "@acme/schema/src/test";
 import { match } from "ts-pattern";
@@ -26,12 +27,55 @@ export const testRouter = router({
           },
         },
         visibility: true,
-        userId: true,
+        user: {
+          select: {
+            imageUrl: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
         createdAt: true,
         updatedAt: true,
       },
     });
   }),
+  getById: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.test.findUnique({
+        where: {
+          id: input.testId,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          keywords: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          collections: {
+            include: {
+              collection: true,
+            },
+          },
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(testInputSchema)
     .mutation(async ({ ctx, input }) => {
