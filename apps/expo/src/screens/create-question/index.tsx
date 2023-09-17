@@ -79,13 +79,6 @@ export const CreateQuestionScreen: FC = () => {
         })),
   );
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Quiz", value: "quiz" },
-    { label: "True or False", value: "true_or_false" },
-  ]);
-
   const handleTextInputFocus = () => {
     setIsTextInputFocused(true);
   };

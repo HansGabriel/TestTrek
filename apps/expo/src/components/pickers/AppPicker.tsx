@@ -6,7 +6,7 @@ import type { DropdownProps } from "react-native-element-dropdown/lib/typescript
 
 export type LabelOption = {
   label: string;
-  value: string;
+  value: string | undefined;
 };
 
 type LableOptions = DropdownProps<LabelOption>["data"];
@@ -15,7 +15,7 @@ interface Props {
   options: LableOptions;
   label: string;
   placeholder: string;
-  selectedValue: string;
+  selectedValue: string | undefined;
   setSelectedValue: (value: LabelOption) => void;
 }
 
@@ -26,6 +26,12 @@ const AppPicker: FC<Props> = ({
   selectedValue,
   setSelectedValue,
 }) => {
+  const defaultOption: LabelOption = {
+    label: "None",
+    value: undefined,
+  };
+
+  const labelOptions: LableOptions = [defaultOption, ...options];
   return (
     <View className="my-2 flex flex-col">
       <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
@@ -36,7 +42,7 @@ const AppPicker: FC<Props> = ({
           borderBottomColor: "#6949FF",
           borderBottomWidth: 1,
         }}
-        data={options}
+        data={labelOptions}
         placeholder={placeholder}
         placeholderStyle={{
           color: "#9E9E9E",

@@ -19,6 +19,7 @@ type FormProps = Omit<TestInput, "questions">;
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
   const questions = useQuestionStore((state) => state.questions);
+  const resetQuestions = useQuestionStore((state) => state.resetQuestions);
 
   const { showToast } = useToast();
 
@@ -63,10 +64,12 @@ export const CreateTestScreen: FC = () => {
         onSuccess: () => {
           setIsUploading(false);
           showToast("Test created successfully");
+          resetQuestions();
         },
         onError: () => {
           setIsUploading(false);
           showToast("An error occurred");
+          resetQuestions();
         },
       },
     );
