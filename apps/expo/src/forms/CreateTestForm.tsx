@@ -27,6 +27,7 @@ import TestImagePicker from "../components/ImagePicker";
 import useQuestionStore from "../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../icons/RightArrowIcon";
+import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
 import { trpc } from "../utils/trpc";
 
@@ -189,6 +190,7 @@ const CreateTestForm: FC<Props> = ({
                         }))}
                         selectedValue={value}
                         setSelectedValue={onTextChange}
+                        hasDefault={true}
                       />
                     ) : null}
                   </>
@@ -257,7 +259,9 @@ const CreateTestForm: FC<Props> = ({
                       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
                         <View className="relative w-[140px] self-stretch">
                           <ImageBackground
-                            source={{ uri: question.image }}
+                            source={{
+                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
+                            }}
                             imageStyle={{
                               borderTopLeftRadius: 12,
                               borderBottomLeftRadius: 12,

@@ -9,6 +9,7 @@ import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
 import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
+import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
@@ -30,21 +31,8 @@ export const CreateTestScreen: FC = () => {
 
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
-    // const path = "http://192.168.254.101:3000/api/upload";
-    // const fieldName = "testImage";
-    // const imageDetails: ImageDetails[] = await uploadImageAsync({
-    //   path,
-    //   fieldName,
-    //   imageUri: data.image,
-    // });
-    // const firstImage = imageDetails[0];
 
-    // if (!firstImage) {
-    //   return;
-    // }
-
-    const imageUrl =
-      "https://media.istockphoto.com/id/1272478640/vector/retro-light-text-quiz-time-retro-light-bulb-vector-stock-illustration.jpg?s=612x612&w=0&k=20&c=ZCiSSDczdpCRGZcMzTNzStJYy8wwHomb39D0HFVjVb0=";
+    const imageUrl = IMAGE_PLACEHOLDER_LARGE;
 
     const { image: _, ...rest } = data;
 
@@ -95,3 +83,16 @@ export const CreateTestScreen: FC = () => {
     </SafeAreaView>
   );
 };
+
+// const path = "http://192.168.254.101:3000/api/upload";
+// const fieldName = "testImage";
+// const imageDetails: ImageDetails[] = await uploadImageAsync({
+//   path,
+//   fieldName,
+//   imageUri: data.image,
+// });
+// const firstImage = imageDetails[0];
+
+// if (!firstImage) {
+//   return;
+// }

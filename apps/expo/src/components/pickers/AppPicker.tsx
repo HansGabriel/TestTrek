@@ -17,6 +17,7 @@ interface Props {
   placeholder: string;
   selectedValue: string | undefined;
   setSelectedValue: (value: LabelOption) => void;
+  hasDefault?: boolean;
 }
 
 const AppPicker: FC<Props> = ({
@@ -25,13 +26,16 @@ const AppPicker: FC<Props> = ({
   placeholder,
   selectedValue,
   setSelectedValue,
+  hasDefault = false,
 }) => {
   const defaultOption: LabelOption = {
     label: "None",
     value: undefined,
   };
 
-  const labelOptions: LableOptions = [defaultOption, ...options];
+  const labelOptions: LableOptions = hasDefault
+    ? [defaultOption, ...options]
+    : options;
   return (
     <View className="my-2 flex flex-col">
       <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
