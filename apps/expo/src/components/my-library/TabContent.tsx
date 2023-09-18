@@ -1,4 +1,4 @@
-import { Test } from ".prisma/client";
+import { Test } from "@prisma/client";
 import { View, Text } from "react-native";
 import { LibraryTabs } from "./LibraryTabs";
 

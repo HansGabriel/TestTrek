@@ -3,10 +3,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabContent } from "./TabContent";
-import { BackendTabPage } from "../types/libraryTypes";
-import { trpc } from "../utils/trpc";
-import { CollectionTabContent } from "./CollectionTabContent";
-import { AddButton } from "./AddButton";
+import { BackendTabPage } from "../../types/libraryTypes";
+import { trpc } from "../../utils/trpc";
+import { CollectionTabContent } from "../my-collections/CollectionTabContent";
+import { AddButton } from "../buttons/AddButton";
 
 interface HeaderProps {
   tab: BackendTabPage;

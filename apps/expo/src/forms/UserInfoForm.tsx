@@ -21,7 +21,7 @@ import { formatDate } from "../utils/helpers/date";
 
 import type { UserInfo } from "@acme/schema/src/types";
 import type { FC } from "react";
-import { AppButton } from "../components/AppButton";
+import { AppButton } from "../components/buttons/AppButton";
 
 interface Props {
   onSubmit: (data: UserInfo) => void;
