@@ -6,7 +6,11 @@ import EditIcon from "../../icons/EditIcon";
 
 import type { FC } from "react";
 
-const TestDetailsHeader: FC = ({}) => {
+interface Props {
+  goToEditTest: () => void;
+}
+
+const TestDetailsHeader: FC<Props> = ({ goToEditTest }) => {
   const navigation = useNavigation();
   return (
     <>
@@ -18,7 +22,7 @@ const TestDetailsHeader: FC = ({}) => {
           <XIcon />
         </TouchableOpacity>
         <View className="flex flex-row items-center gap-4">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToEditTest}>
             <EditIcon />
           </TouchableOpacity>
           <TouchableOpacity>

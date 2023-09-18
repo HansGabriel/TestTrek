@@ -73,6 +73,25 @@ export const testRouter = router({
           },
           createdAt: true,
           updatedAt: true,
+          questions: {
+            select: {
+              answer: true,
+              choices: {
+                select: {
+                  id: true,
+                  isCorrect: true,
+                  text: true,
+                },
+              },
+              id: true,
+              image: true,
+              points: true,
+              possibleAnswers: true,
+              time: true,
+              title: true,
+              type: true,
+            },
+          },
         },
       });
     }),
@@ -94,15 +113,17 @@ export const testRouter = router({
       const test = await ctx.prisma.test.create({
         data: {
           title,
-          collections: {
-            create: {
-              collection: {
-                connect: {
-                  id: collection,
+          collections: collection
+            ? {
+                create: {
+                  collection: {
+                    connect: {
+                      id: collection,
+                    },
+                  },
                 },
-              },
-            },
-          },
+              }
+            : undefined,
           description,
           imageUrl: image,
           keywords: {
@@ -113,7 +134,11 @@ export const testRouter = router({
             },
           },
           visibility,
-          userId,
+          user: {
+            connect: {
+              userId,
+            },
+          },
         },
       });
 
@@ -190,6 +215,148 @@ export const testRouter = router({
 
       return test;
     }),
+  edit: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .input(testInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const {
+        testId,
+        title,
+        collection,
+        description,
+        image,
+        keywords,
+        visibility,
+        questions,
+      } = input;
+
+      const userId = ctx.auth.userId;
+
+      await ctx.prisma.test.update({
+        where: {
+          id: testId,
+        },
+        data: {
+          collections: {
+            deleteMany: {},
+          },
+        },
+      });
+
+      const test = await ctx.prisma.test.update({
+        where: {
+          id: testId,
+        },
+        data: {
+          title,
+          collections: collection
+            ? {
+                create: {
+                  collection: {
+                    connect: {
+                      id: collection,
+                    },
+                  },
+                },
+              }
+            : undefined,
+          description,
+          imageUrl: image,
+          keywords: {
+            createMany: {
+              data: keywords.map((keyword) => ({
+                name: keyword,
+              })),
+            },
+          },
+          visibility,
+          user: {
+            connect: {
+              userId,
+            },
+          },
+        },
+      });
+
+      const questionTransactions = questions.map((question) => {
+        const { title, points, time, type, image } = question;
+
+        const baseQuestionInput: QuestionCreateInput = {
+          title,
+          points,
+          time,
+          type,
+          image,
+          test: {
+            connect: {
+              id: test.id,
+            },
+          },
+        };
+
+        const choiceQuestionInput: QuestionCreateInput = {
+          ...baseQuestionInput,
+          choices:
+            type === "true_or_false" ||
+            type === "multiple_choice" ||
+            type === "multi_select"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
+        };
+
+        const identificationQuestionInput: QuestionCreateInput = {
+          ...baseQuestionInput,
+          answer: type === "identification" ? question.answer : undefined,
+          possibleAnswers:
+            type === "identification" ? question.possibleAnswers : undefined,
+        };
+
+        const enumerationQuestionInput: QuestionCreateInput = {
+          ...baseQuestionInput,
+          choices:
+            type === "enumeration"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
+        };
+
+        // merge all the possible inputs
+        const mergedQuestionInput = match(type)
+          .with("true_or_false", () => choiceQuestionInput)
+          .with("multiple_choice", () => choiceQuestionInput)
+          .with("multi_select", () => choiceQuestionInput)
+          .with("identification", () => identificationQuestionInput)
+          .with("enumeration", () => enumerationQuestionInput)
+          .exhaustive();
+
+        return ctx.prisma.question.create({
+          data: mergedQuestionInput,
+        });
+      });
+
+      await ctx.prisma.question.deleteMany({
+        where: {
+          testId,
+        },
+      });
+
+      await ctx.prisma.$transaction(questionTransactions);
+
+      return test;
+    }),
   getTrendingTests: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.test.findMany({
       take: 5,
@@ -222,6 +389,7 @@ export const testRouter = router({
       },
     });
   }),
+
   getTopPicks: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.test.findMany({
       take: 5,

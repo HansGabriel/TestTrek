@@ -10,6 +10,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Switch,
+  Image,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -18,6 +19,7 @@ import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 import useQuestionStore from "../../stores/useQuestionStore";
 import OptionDropdown from "./options-dropdown";
+import { alertExit } from "../../hooks/useAlert";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
@@ -46,7 +48,7 @@ const choiceStyles: ChoiceStyle[] = [
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
 
-  const { selectedIndex, getSelectedQuestion, editQuestion } =
+  const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
 
   const question = getSelectedQuestion();
@@ -54,7 +56,9 @@ export const CreateQuestionScreen: FC = () => {
   const [timeLimitOptions, setTimeLimitOptions] =
     useState<Option[]>(TIME_LIMIT_OPTIONS);
   const [pointOptions, setPointOptions] = useState<Option[]>(POINT_OPTIONS);
-  const [image, setImage] = useState<string | undefined>(question?.image);
+  const [image, setImage] = useState<string | undefined>(
+    question?.image ?? undefined,
+  );
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
@@ -78,13 +82,6 @@ export const CreateQuestionScreen: FC = () => {
           styles: choiceStyles[idx]!.styles,
         })),
   );
-
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Quiz", value: "quiz" },
-    { label: "True or False", value: "true_or_false" },
-  ]);
 
   const handleTextInputFocus = () => {
     setIsTextInputFocused(true);
@@ -151,6 +148,40 @@ export const CreateQuestionScreen: FC = () => {
     [],
   );
 
+  const handleClickQuestion = (index: number) => () => {
+    setSelectedQuestionId(index);
+    const selectedQuestion = questions[index];
+
+    if (selectedQuestion?.type === "multiple_choice") {
+      setQuestionTitle(selectedQuestion.title);
+      setChoices(
+        selectedQuestion.choices.map((choice, idx) => ({
+          id: idx,
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+          styles: choiceStyles[idx]!.styles,
+        })),
+      );
+      setImage(selectedQuestion?.image ?? undefined);
+      setTimeLimitOptions((prev) =>
+        prev.map((option) => ({
+          ...option,
+          isSelected: option.value === selectedQuestion.time,
+        })),
+      );
+      setPointOptions((prev) =>
+        prev.map((option) => ({
+          ...option,
+          isSelected: option.value === selectedQuestion.points,
+        })),
+      );
+    }
+  };
+
+  const handleGoBack = () => {
+    alertExit({ handleExit: goBack });
+  };
+
   const selectedChoice = useMemo(
     () => choices[selectedQuestionId],
     [choices, selectedQuestionId],
@@ -165,7 +196,7 @@ export const CreateQuestionScreen: FC = () => {
     <View className="mx-6 mt-12 flex-1">
       <View className="z-50 flex flex-row items-center justify-between pb-5">
         <View className="flex flex-row items-center gap-2">
-          <TouchableOpacity onPress={goBack}>
+          <TouchableOpacity onPress={handleGoBack}>
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl">Create Question</Text>
@@ -304,14 +335,33 @@ export const CreateQuestionScreen: FC = () => {
         />
 
         <View className="mt-10 flex flex-row items-center justify-between border-t border-neutral-100 bg-white px-6 pt-6 pb-9">
-          <TouchableOpacity className="relative h-[58px] w-24">
-            <View className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600 bg-neutral-100"></View>
-            <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
-              <Text className="text-center text-[10px] font-bold text-white">
-                1
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <ScrollView
+            horizontal
+            className="flex flex-row gap-x-2"
+            showsHorizontalScrollIndicator={false}
+          >
+            {questions.map((question, idx) => (
+              <TouchableOpacity
+                className="relative h-[58px] w-24"
+                key={idx}
+                onPress={handleClickQuestion(idx)}
+              >
+                {question.image ? (
+                  <Image
+                    source={{ uri: question.image }}
+                    className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600"
+                  />
+                ) : (
+                  <View className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600 bg-neutral-100"></View>
+                )}
+                <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
+                  <Text className="text-center text-[10px] font-bold text-white">
+                    {idx + 1}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
           <TouchableOpacity className="inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow">
             <Feather name="plus" size={24} color="white" />
           </TouchableOpacity>
