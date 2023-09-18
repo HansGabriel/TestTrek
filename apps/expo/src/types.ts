@@ -30,6 +30,9 @@ export type RootStackParamList = {
   TestDetails: {
     testId: string;
   };
+  EditTest: {
+    testId: string;
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

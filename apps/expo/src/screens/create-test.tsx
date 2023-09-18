@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+} from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
@@ -10,6 +16,7 @@ import { ImageDetails } from "@acme/schema/src/types";
 import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
+import { useNavigation } from "@react-navigation/native";
 
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
@@ -19,6 +26,7 @@ type FormProps = Omit<TestInput, "questions">;
 
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
+  const navigation = useNavigation();
   const questions = useQuestionStore((state) => state.questions);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
 
@@ -63,12 +71,38 @@ export const CreateTestScreen: FC = () => {
     );
   };
 
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Exit",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
+    );
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", () => {
+      resetQuestions();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <SafeAreaView className="flex-1">
       <View className="mt-12">
         <View className="mx-6  flex flex-row items-center justify-between">
           <View className="flex flex-row items-center gap-2">
-            <TouchableOpacity onPress={goBack}>
+            <TouchableOpacity onPress={handleExitScreen}>
               <Feather name="x" size={24} color="black" />
             </TouchableOpacity>
             <Text className="font-nunito-bold text-2xl">Create Test</Text>

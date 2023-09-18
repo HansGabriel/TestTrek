@@ -38,12 +38,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type FormProps = Omit<TestInput, "questions">;
 
 interface Props {
+  testDetails?: FormProps;
   onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
 }
 
 const CreateTestForm: FC<Props> = ({
+  testDetails,
   onSubmit,
   isCreatingQuiz = false,
   isUploading = false,
@@ -64,6 +66,14 @@ const CreateTestForm: FC<Props> = ({
         questions: true,
       }),
     ),
+    defaultValues: {
+      title: testDetails?.title,
+      description: testDetails?.description,
+      image: testDetails?.image,
+      collection: testDetails?.collection,
+      visibility: testDetails?.visibility,
+      keywords: testDetails?.keywords,
+    },
   });
 
   const questions = useQuestionStore((state) => state.questions);
@@ -73,7 +83,9 @@ const CreateTestForm: FC<Props> = ({
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
-  const [keywords, setKeywords] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>(
+    testDetails?.keywords ?? [],
+  );
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 

@@ -8,7 +8,7 @@ export type PartialQuestion = SetOptional<Question, "points" | "time"> & {
   inEdit: boolean;
 };
 
-type QuestionType = Question["type"];
+export type QuestionType = Question["type"];
 
 interface QuestionStore {
   questions: PartialQuestion[];

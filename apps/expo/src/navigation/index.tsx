@@ -25,6 +25,7 @@ import { CreateQuestionScreen } from "../screens/create-question";
 import { ProfileScreen } from "../screens/profile";
 import { SettingsScreen } from "../screens/settings";
 import { TestDetailsScreen } from "../screens/test-details";
+import { EditTestScreen } from "../screens/edit-test";
 
 export default function Navigation() {
   return (
@@ -130,6 +131,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="TestDetails"
               component={TestDetailsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="EditTest"
+              component={EditTestScreen}
               options={{
                 headerShown: false,
               }}
