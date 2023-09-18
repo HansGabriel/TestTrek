@@ -1,20 +1,19 @@
 import * as React from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, ImageSourcePropType } from "react-native";
 
 import type { FC } from "react";
-import type { ImageSourcePropType } from "react-native";
 
 interface Props {
   imageSource: ImageSourcePropType;
   title: string;
-  q: number;
+  questions: number;
   date: Date;
   plays: number;
   userImageSource: ImageSourcePropType;
   userName: string;
 }
 
-const DiscoverHomeCard: FC<Props> = (props) => {
+const HomeTestDisplayCard: FC<Props> = (props) => {
   return (
     <View className="h-59 ml-3 w-48 flex-shrink-0 items-center bg-white p-2">
       <View className="flex-1 flex-shrink-0 overflow-hidden rounded-2xl border-b-2 border-gray-300 bg-white">
@@ -26,7 +25,7 @@ const DiscoverHomeCard: FC<Props> = (props) => {
           />
           <View className="absolute bottom-1 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
             <Text className="text-xs font-semibold text-white">
-              {props.q} Qs
+              {props.questions} Qs
             </Text>
           </View>
         </View>
@@ -57,4 +56,4 @@ const DiscoverHomeCard: FC<Props> = (props) => {
   );
 };
 
-export default DiscoverHomeCard;
+export default HomeTestDisplayCard;

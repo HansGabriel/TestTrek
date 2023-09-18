@@ -120,3 +120,16 @@ export const CreateTestScreen: FC = () => {
     </SafeAreaView>
   );
 };
+
+// const path = "http://192.168.254.101:3000/api/upload";
+// const fieldName = "testImage";
+// const imageDetails: ImageDetails[] = await uploadImageAsync({
+//   path,
+//   fieldName,
+//   imageUri: data.image,
+// });
+// const firstImage = imageDetails[0];
+
+// if (!firstImage) {
+//   return;
+// }

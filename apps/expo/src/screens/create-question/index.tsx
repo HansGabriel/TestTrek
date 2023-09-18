@@ -60,7 +60,6 @@ export const CreateQuestionScreen: FC = () => {
   const [timeLimitOptions, setTimeLimitOptions] =
     useState<Option[]>(TIME_LIMIT_OPTIONS);
   const [pointOptions, setPointOptions] = useState<Option[]>(POINT_OPTIONS);
-
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);

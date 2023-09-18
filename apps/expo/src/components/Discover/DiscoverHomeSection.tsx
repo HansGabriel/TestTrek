@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
-import DiscoverHomeCard from "./DiscoverHomeCard";
-import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
+import HomeTestDisplayCard from "../HomeTestDisplayCard";
+import SectionHeader from "../headers/SectionHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -31,7 +31,11 @@ const DiscoverHomeSection: FC = () => {
 
   return (
     <View>
-      <DiscoverHomeHeader />
+      <SectionHeader
+        title={"Discover"}
+        hasViewAll={true}
+        onViewAllPress={() => navigation.navigate("Discover")}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -41,10 +45,10 @@ const DiscoverHomeSection: FC = () => {
           const fullName = `${item.user.firstName} ${item.user.lastName}`;
           return (
             <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
-              <DiscoverHomeCard
+              <HomeTestDisplayCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
-                q={item.keywords.length}
+                questions={item.keywords.length}
                 date={new Date(item.createdAt)}
                 plays={0}
                 userImageSource={{
