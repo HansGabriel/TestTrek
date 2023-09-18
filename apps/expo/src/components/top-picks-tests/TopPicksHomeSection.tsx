@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
-import TopPicksHomeCards from "./TopPicksHomeCards";
-import TopPicksHomeHeader from "../headers/TopPicksHomeHeader";
+import HomeTestDisplayCard from "../HomeTestDisplayCard";
+import SectionHeader from "../headers/SectionHeader";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
 import { getFullName } from "@acme/utils/src/strings";
@@ -16,7 +16,7 @@ const TopPicksHomeSection: FC = () => {
 
   return (
     <View>
-      <TopPicksHomeHeader />
+      <SectionHeader title="Top Picks" hasViewAll={true} />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -31,10 +31,10 @@ const TopPicksHomeSection: FC = () => {
         }))}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <TopPicksHomeCards
-              imageSource={item.imageSource}
+            <HomeTestDisplayCard
+              imageSource={{ uri: item.imageSource }}
               title={item.title}
-              q={item.q}
+              questions={item.title.length}
               date={new Date(item.date)}
               plays={item.plays}
               userImageSource={{
