@@ -4,13 +4,19 @@ import TestDetailsHeader from "../components/headers/TestDetailsHeader";
 import TestDetailsContent from "../components/test-details/TestDetailsContent";
 import { RootStackScreenProps } from "../types";
 import { trpc } from "../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 
 export const TestDetailsScreen = ({
   route,
 }: RootStackScreenProps<"TestDetails">) => {
+  const navigation = useNavigation();
   const { testId } = route.params;
 
   const { data: testDetails } = trpc.test.getById.useQuery({ testId });
+
+  const goToEditTest = () => {
+    navigation.navigate("EditTest", { testId });
+  };
 
   if (!testDetails) {
     return <></>;
@@ -18,7 +24,7 @@ export const TestDetailsScreen = ({
 
   return (
     <SafeAreaView className="flex-1 flex-col">
-      <TestDetailsHeader />
+      <TestDetailsHeader goToEditTest={goToEditTest} />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );

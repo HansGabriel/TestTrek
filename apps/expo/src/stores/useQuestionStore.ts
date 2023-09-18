@@ -8,7 +8,7 @@ export type PartialQuestion = SetOptional<Question, "points" | "time"> & {
   inEdit: boolean;
 };
 
-type QuestionType = Question["type"];
+export type QuestionType = Question["type"];
 
 interface QuestionStore {
   questions: PartialQuestion[];
@@ -20,8 +20,10 @@ interface QuestionStore {
   editQuestion: (index: number, question: PartialQuestion) => void;
   deleteQuestion: (index: number) => void;
   setSelectedIndex: (index: number) => void;
+  setQuestions: (questions: PartialQuestion[]) => void;
   setLastIndex: () => void;
   isLastQuestionInEdit: () => boolean;
+  resetQuestions: () => void;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -134,11 +136,13 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
       questions: state.questions.filter((_, i) => i !== index),
     })),
   setSelectedIndex: (index) => set({ selectedIndex: index }),
+  setQuestions: (questions) => set({ questions }),
   setLastIndex: () => set({ selectedIndex: get().questions.length - 1 }),
   isLastQuestionInEdit: () => {
     const isInEdit = get().questions[get().questions.length - 1]?.inEdit;
     return isInEdit ?? false;
   },
+  resetQuestions: () => set({ questions: [], selectedIndex: undefined }),
 }));
 
 export default useQuestionStore;

@@ -27,6 +27,7 @@ import TestImagePicker from "../components/ImagePicker";
 import useQuestionStore from "../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../icons/RightArrowIcon";
+import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
 import { trpc } from "../utils/trpc";
 
@@ -37,12 +38,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type FormProps = Omit<TestInput, "questions">;
 
 interface Props {
+  testDetails?: FormProps;
   onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
 }
 
 const CreateTestForm: FC<Props> = ({
+  testDetails,
   onSubmit,
   isCreatingQuiz = false,
   isUploading = false,
@@ -63,16 +66,27 @@ const CreateTestForm: FC<Props> = ({
         questions: true,
       }),
     ),
+    defaultValues: {
+      title: testDetails?.title,
+      description: testDetails?.description,
+      image: testDetails?.image,
+      collection: testDetails?.collection,
+      visibility: testDetails?.visibility,
+      keywords: testDetails?.keywords,
+    },
   });
 
   const questions = useQuestionStore((state) => state.questions);
+  const setSelectedIndex = useQuestionStore((state) => state.setSelectedIndex);
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
   );
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
-  const [keywords, setKeywords] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>(
+    testDetails?.keywords ?? [],
+  );
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -91,6 +105,11 @@ const CreateTestForm: FC<Props> = ({
       setLastIndex();
       navigation.navigate("CreateQuestion");
     }
+  };
+
+  const goToEditQuestion = (questionIndex: number) => () => {
+    setSelectedIndex(questionIndex);
+    navigation.navigate("CreateQuestion");
   };
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -189,6 +208,7 @@ const CreateTestForm: FC<Props> = ({
                         }))}
                         selectedValue={value}
                         setSelectedValue={onTextChange}
+                        hasDefault={true}
                       />
                     ) : null}
                   </>
@@ -253,11 +273,17 @@ const CreateTestForm: FC<Props> = ({
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
                   return (
-                    <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
+                    <TouchableOpacity
+                      className="my-2 flex h-[105px] items-center justify-start"
+                      key={index}
+                      onPress={goToEditQuestion(index)}
+                    >
                       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
                         <View className="relative w-[140px] self-stretch">
                           <ImageBackground
-                            source={{ uri: question.image }}
+                            source={{
+                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
+                            }}
                             imageStyle={{
                               borderTopLeftRadius: 12,
                               borderBottomLeftRadius: 12,
@@ -352,7 +378,7 @@ const CreateTestForm: FC<Props> = ({
                     <CheckboxIcon />
                   </View>
                   <Text className="text-center text-base font-bold leading-[28.80px] text-neutral-800">
-                    multi_select
+                    Multi Select
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
