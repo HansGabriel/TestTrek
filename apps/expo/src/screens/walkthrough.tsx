@@ -1,10 +1,13 @@
 import React from "react";
 
 import { View, TouchableOpacity, Text, SafeAreaView } from "react-native";
+import useSignin from "../hooks/useSignin";
 
 import WalktrhoughIcon1 from "../icons/WalkthroughIcon1";
 import WalktrhoughIcon2 from "../icons/WalktrhoughIcon2";
 import WalktrhoughIcon3 from "../icons/WalkthroughIcon3";
+import GoogleIcon from "../icons/GoogleIcon";
+import FacebookIcon from "../icons/FacebookIcon";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -14,6 +17,14 @@ import type { FC } from "react";
 
 export const WaltkthroughScreen: FC = () => {
   const navigation = useNavigation();
+
+  const signInWithGoogle = useSignin({
+    strategy: "oauth_google",
+  });
+
+  const signInWithFacebook = useSignin({
+    strategy: "oauth_facebook",
+  });
 
   const goToCreateAccountScreen = () => {
     navigation.navigate("CreateAccount");
@@ -46,18 +57,26 @@ export const WaltkthroughScreen: FC = () => {
         </View>
       </Swiper>
       <TouchableOpacity
-        className="mb-5 h-[58px] w-11/12 items-center justify-center gap-1 rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4"
-        onPress={goToCreateAccountScreen}
+        onPress={signInWithGoogle}
+        className="mt-5 mb-1 w-[90%] rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
       >
-        <Text className="font-nunito-bold text-white">GET STARTED</Text>
+        <View className="flex flex-row items-center justify-center gap-3">
+          <GoogleIcon />
+          <Text className="font-nunito-semibold text-base leading-snug tracking-tight text-neutral-800">
+            Continue with Google
+          </Text>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={goToSigninScreen}
-        className="mb-10 h-[58px] w-11/12 items-center justify-center gap-1 rounded-[100px] border-b-2 border-violet-300 bg-violet-100 px-4"
+        onPress={signInWithFacebook}
+        className="mt-5 mb-5 w-[90%] rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
       >
-        <Text className="font-nunito-bold text-violet-600">
-          I ALREADY HAVE AN ACCOUNT
-        </Text>
+        <View className="flex flex-row items-center justify-center gap-3">
+          <FacebookIcon />
+          <Text className="font-nunito-semibold text-base leading-snug tracking-tight text-neutral-800">
+            Continue with Facebook
+          </Text>
+        </View>
       </TouchableOpacity>
     </SafeAreaView>
   );
