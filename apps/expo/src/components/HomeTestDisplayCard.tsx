@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, ImageSourcePropType } from "react-native";
 
 import type { FC } from "react";
-import type { ImageSourcePropType } from "react-native";
 
 interface Props {
   imageSource: ImageSourcePropType;

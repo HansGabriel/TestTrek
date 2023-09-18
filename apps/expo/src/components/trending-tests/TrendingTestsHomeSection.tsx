@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
-import TrendingTestsHomeCard from "./TrendingTestsHomeCard";
+import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
@@ -23,7 +23,6 @@ const TrendingTestsHomeSection: FC = () => {
         data={trendingTests.map((test) => ({
           imageSource: test.imageUrl,
           title: test.title,
-          q: test.title.length,
           date: test.createdAt,
           plays: test.title.length,
           userImageSource: test.user.imageUrl,
@@ -31,10 +30,10 @@ const TrendingTestsHomeSection: FC = () => {
         }))}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <TrendingTestsHomeCard
-              imageSource={item.imageSource}
+            <HomeTestDisplayCard
+              imageSource={{ uri: item.imageSource }}
               title={item.title}
-              q={item.q}
+              questions={item.title.length}
               date={new Date(item.date)}
               plays={item.plays}
               userImageSource={{

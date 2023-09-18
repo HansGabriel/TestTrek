@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
-import DiscoverHomeCard from "./DiscoverHomeCard";
+import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
@@ -45,10 +45,10 @@ const DiscoverHomeSection: FC = () => {
           const fullName = `${item.user.firstName} ${item.user.lastName}`;
           return (
             <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
-              <DiscoverHomeCard
+              <HomeTestDisplayCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
-                q={item.keywords.length}
+                questions={item.keywords.length}
                 date={new Date(item.createdAt)}
                 plays={0}
                 userImageSource={{
