@@ -1,6 +1,6 @@
 import { View, FlatList, TouchableOpacity } from "react-native";
-import TopTrekersHomeHeader from "../headers/TopTrekersHomeHeader";
 import TopTrekersHomeCard from "./TopTrekersHomeCard";
+import SectionHeader from "../headers/SectionHeader";
 
 import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
@@ -17,7 +17,7 @@ const TopTrekersHomeSection: FC = () => {
 
   return (
     <View>
-      <TopTrekersHomeHeader />
+      <SectionHeader title="Top Trekers" hasViewAll={true} />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}

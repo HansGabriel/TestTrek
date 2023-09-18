@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
 import TrendingTestsHomeCard from "./TrendingTestsHomeCard";
-import TrendingTestsHomeHeader from "../headers/TrendingTestsHomeHeader";
+import SectionHeader from "../headers/SectionHeader";
 import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import type { FC } from "react";
@@ -16,7 +16,7 @@ const TrendingTestsHomeSection: FC = () => {
 
   return (
     <View>
-      <TrendingTestsHomeHeader />
+      <SectionHeader title="Trending Tests" hasViewAll={true} />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}

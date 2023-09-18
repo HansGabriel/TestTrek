@@ -1,12 +1,16 @@
 import { View, FlatList, TouchableOpacity } from "react-native";
-import TopCollectionsHomeHeader from "../headers/TopCollectionsHomeHeader";
 import TopCollectionsHomeCard from "./TopCollectionsHomeCard";
 
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
+import SectionHeader from "../headers/SectionHeader";
+import { useNavigation } from "@react-navigation/native";
 
 const TopCollectionsHomeSection: FC = () => {
   const { data: topCollections } = trpc.collection.getTopCollections.useQuery();
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const navigation = useNavigation();
 
   if (!topCollections) {
     return <></>;
@@ -14,7 +18,7 @@ const TopCollectionsHomeSection: FC = () => {
 
   return (
     <View>
-      <TopCollectionsHomeHeader />
+      <SectionHeader title="Top Collections" hasViewAll={true} />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
 import DiscoverHomeCard from "./DiscoverHomeCard";
-import DiscoverHomeHeader from "../headers/DiscoverHomeHeader";
+import SectionHeader from "../headers/SectionHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -31,7 +31,11 @@ const DiscoverHomeSection: FC = () => {
 
   return (
     <View>
-      <DiscoverHomeHeader />
+      <SectionHeader
+        title={"Discover"}
+        hasViewAll={true}
+        onViewAllPress={() => navigation.navigate("Discover")}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
