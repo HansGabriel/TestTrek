@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  Alert,
 } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import { RootStackScreenProps } from "../types";
 import SearchComponent from "../components/search/SearchComponent";
 import { trpc } from "../utils/trpc";
+import useImageStore from "../stores/useImageStore";
 
 import type { FC } from "react";
 
@@ -20,6 +22,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
 }) => {
   const { query } = route.params;
   const goBack = useGoBack();
+  const setImage = useImageStore((state) => state.setImage);
 
   const [searchTerm, setSearchTerm] = useState<string>(query);
 
@@ -30,6 +33,26 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   const { data: imagesQuery } = trpc.image.getImagesQuery.useQuery({
     query: searchTerm,
   });
+
+  const handleImageSelect = (image: string) => {
+    Alert.alert(
+      "Set Cover Image",
+      "Are you sure you want to set this image as your cover image?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Set",
+          onPress: () => {
+            setImage(image);
+            goBack();
+          },
+        },
+      ],
+    );
+  };
 
   if (!imagesQuery) {
     return <></>;
@@ -53,11 +76,12 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
             {imagesQuery.map((image, idx) => (
               <TouchableOpacity
                 key={`${image.id}-${idx}`}
-                className="mb-4 w-1/2 px-2" // Adjusted styling for two columns
+                className="mb-4 w-1/2 px-2"
+                onPress={() => handleImageSelect(image.assetUrl)}
               >
                 <Image
                   source={{ uri: image.assetUrl }}
-                  className="h-32 w-full rounded-3xl"
+                  className="h-32 w-full rounded-3xl border border-neutral-100"
                 />
               </TouchableOpacity>
             ))}

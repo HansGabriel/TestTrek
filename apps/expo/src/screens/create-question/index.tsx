@@ -19,6 +19,7 @@ import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 import useQuestionStore from "../../stores/useQuestionStore";
 import OptionDropdown from "./options-dropdown";
+import useImageStore from "../../stores/useImageStore";
 import { alertExit } from "../../hooks/useAlert";
 
 import type { FC } from "react";
@@ -51,14 +52,15 @@ export const CreateQuestionScreen: FC = () => {
   const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
 
+  const image = useImageStore((state) => state.image);
+  const setImage = useImageStore((state) => state.setImage);
+
   const question = getSelectedQuestion();
 
   const [timeLimitOptions, setTimeLimitOptions] =
     useState<Option[]>(TIME_LIMIT_OPTIONS);
   const [pointOptions, setPointOptions] = useState<Option[]>(POINT_OPTIONS);
-  const [image, setImage] = useState<string | undefined>(
-    question?.image ?? undefined,
-  );
+
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);

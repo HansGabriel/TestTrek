@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -29,6 +29,7 @@ import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../icons/RightArrowIcon";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
+import useImageStore from "../stores/useImageStore";
 import { trpc } from "../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
@@ -51,12 +52,15 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
 }) => {
   const navigation = useNavigation();
+  const image = useImageStore((state) => state.image);
+  const setImage = useImageStore((state) => state.setImage);
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery();
 
   const {
     control,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FormProps>({
@@ -69,7 +73,7 @@ const CreateTestForm: FC<Props> = ({
     defaultValues: {
       title: testDetails?.title,
       description: testDetails?.description,
-      image: testDetails?.image,
+      image,
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords,
@@ -129,6 +133,14 @@ const CreateTestForm: FC<Props> = ({
 
   const readyQuestions = questions.filter((question) => !question.inEdit);
 
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      if (image) {
+        setValue("image", image);
+      }
+    });
+  });
+
   return (
     <SafeAreaView>
       <KeyboardAvoidingView
@@ -140,8 +152,8 @@ const CreateTestForm: FC<Props> = ({
             <View className="mb-6">
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TestImagePicker image={value} setImage={onChange} />
+                render={({ field: { value } }) => (
+                  <TestImagePicker image={value} setImage={setImage} />
                 )}
                 name="image"
               />
