@@ -6,7 +6,7 @@ import {
   fullUserSchema,
   userWebhookSchema,
 } from "./user";
-import { imageSchema } from "./image";
+import { imageSchema, stockImagesSchema } from "./image";
 import { testDetailsSchema, questionSchema, testInputSchema } from "./test";
 
 export type UserInfo = z.infer<typeof userInfoSchema>;
@@ -18,3 +18,4 @@ export type UserSignin = z.infer<typeof userSigninSchema>;
 export type Question = z.infer<typeof questionSchema>;
 export type TestInput = z.infer<typeof testInputSchema>;
 export type UserWebhook = z.infer<typeof userWebhookSchema>;
+export type StockImages = z.infer<typeof stockImagesSchema>;
