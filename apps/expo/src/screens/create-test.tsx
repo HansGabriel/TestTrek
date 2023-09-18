@@ -81,7 +81,7 @@ export const CreateTestScreen: FC = () => {
           style: "cancel",
         },
         {
-          text: "Exit",
+          text: "OK",
           onPress: () => {
             goBack();
           },

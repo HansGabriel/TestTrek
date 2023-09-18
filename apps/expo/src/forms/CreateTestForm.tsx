@@ -77,6 +77,7 @@ const CreateTestForm: FC<Props> = ({
   });
 
   const questions = useQuestionStore((state) => state.questions);
+  const setSelectedIndex = useQuestionStore((state) => state.setSelectedIndex);
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
   );
@@ -104,6 +105,11 @@ const CreateTestForm: FC<Props> = ({
       setLastIndex();
       navigation.navigate("CreateQuestion");
     }
+  };
+
+  const goToEditQuestion = (questionIndex: number) => () => {
+    setSelectedIndex(questionIndex);
+    navigation.navigate("CreateQuestion");
   };
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -267,7 +273,11 @@ const CreateTestForm: FC<Props> = ({
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
                   return (
-                    <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
+                    <TouchableOpacity
+                      className="my-2 flex h-[105px] items-center justify-start"
+                      key={index}
+                      onPress={goToEditQuestion(index)}
+                    >
                       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
                         <View className="relative w-[140px] self-stretch">
                           <ImageBackground
@@ -368,7 +378,7 @@ const CreateTestForm: FC<Props> = ({
                     <CheckboxIcon />
                   </View>
                   <Text className="text-center text-base font-bold leading-[28.80px] text-neutral-800">
-                    multi_select
+                    Multi Select
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
