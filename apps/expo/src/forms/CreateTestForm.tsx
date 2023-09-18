@@ -53,7 +53,6 @@ const CreateTestForm: FC<Props> = ({
 }) => {
   const navigation = useNavigation();
   const image = useImageStore((state) => state.image);
-  const setImage = useImageStore((state) => state.setImage);
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery();
 
@@ -73,7 +72,7 @@ const CreateTestForm: FC<Props> = ({
     defaultValues: {
       title: testDetails?.title,
       description: testDetails?.description,
-      image,
+      image: testDetails?.image ?? image,
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords,
@@ -135,7 +134,7 @@ const CreateTestForm: FC<Props> = ({
 
   useEffect(() => {
     navigation.addListener("focus", () => {
-      if (image) {
+      if (image && testDetails?.image) {
         setValue("image", image);
       }
     });
@@ -153,7 +152,7 @@ const CreateTestForm: FC<Props> = ({
               <Controller
                 control={control}
                 render={({ field: { value } }) => (
-                  <TestImagePicker image={value} setImage={setImage} />
+                  <TestImagePicker image={value} />
                 )}
                 name="image"
               />

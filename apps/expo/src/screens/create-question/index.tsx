@@ -209,7 +209,7 @@ export const CreateQuestionScreen: FC = () => {
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
         <View className="mt-8 mb-4 flex flex-col">
-          <TestImagePicker image={image} setImage={setImage} />
+          <TestImagePicker image={image} />
         </View>
 
         <View className="flex flex-row items-center justify-between">

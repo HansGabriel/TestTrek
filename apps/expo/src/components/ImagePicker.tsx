@@ -7,11 +7,10 @@ import type { FC } from "react";
 
 interface Props {
   image?: string;
-  setImage: (value: string) => void;
   className?: string;
 }
 
-const TestImagePicker: FC<Props> = ({ image, setImage, className }) => {
+const TestImagePicker: FC<Props> = ({ image, className }) => {
   const navigation = useNavigation();
   const goToImageGaller = async () => {
     navigation.navigate("AddCoverImage", {

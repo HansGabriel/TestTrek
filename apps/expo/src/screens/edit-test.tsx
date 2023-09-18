@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+} from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import useQuestionStore from "../stores/useQuestionStore";
+import useImageStore from "../stores/useImageStore";
 import { match } from "ts-pattern";
 
 import type { FC } from "react";
@@ -27,6 +34,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   const { showToast } = useToast();
   const setQuestions = useQuestionStore((state) => state.setQuestions);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
+  const resetImage = useImageStore((state) => state.resetImage);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -62,9 +70,29 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     setIsUploading(true);
   };
 
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
+    );
+  };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
+      resetImage();
     });
     return unsubscribe;
   }, [navigation]);
@@ -78,7 +106,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
       <View className="mt-12">
         <View className="mx-6  flex flex-row items-center justify-between">
           <View className="flex flex-row items-center gap-2">
-            <TouchableOpacity onPress={goBack}>
+            <TouchableOpacity onPress={handleExitScreen}>
               <Feather name="x" size={24} color="black" />
             </TouchableOpacity>
             <Text className="font-nunito-bold text-2xl">Edit Test</Text>

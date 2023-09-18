@@ -15,6 +15,7 @@ import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
 import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
+import useImageStore from "../stores/useImageStore";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 
@@ -28,6 +29,7 @@ export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
   const navigation = useNavigation();
   const questions = useQuestionStore((state) => state.questions);
+  const resetImage = useImageStore((state) => state.resetImage);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
 
   const { showToast } = useToast();
@@ -93,6 +95,7 @@ export const CreateTestScreen: FC = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
+      resetImage();
     });
     return unsubscribe;
   }, [navigation]);
@@ -117,16 +120,3 @@ export const CreateTestScreen: FC = () => {
     </SafeAreaView>
   );
 };
-
-// const path = "http://192.168.254.101:3000/api/upload";
-// const fieldName = "testImage";
-// const imageDetails: ImageDetails[] = await uploadImageAsync({
-//   path,
-//   fieldName,
-//   imageUri: data.image,
-// });
-// const firstImage = imageDetails[0];
-
-// if (!firstImage) {
-//   return;
-// }
