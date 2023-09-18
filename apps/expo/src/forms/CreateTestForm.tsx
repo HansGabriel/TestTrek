@@ -134,11 +134,11 @@ const CreateTestForm: FC<Props> = ({
 
   useEffect(() => {
     navigation.addListener("focus", () => {
-      if (image && testDetails?.image) {
+      if (image && !testDetails?.image) {
         setValue("image", image);
       }
     });
-  });
+  }, [navigation, image, setValue, testDetails]);
 
   return (
     <SafeAreaView>
