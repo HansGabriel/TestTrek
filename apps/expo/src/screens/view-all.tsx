@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView } from "react-native";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import ViewAllTestDisplay from "../components/view-all-display/view-all-test-display";
+import ViewAllTestDisplay from "../components/view-all-display/ViewAllTestDisplay";
 
 type ViewAllScreenProps = NativeStackScreenProps<RootStackParamList, "ViewAll">;
 
