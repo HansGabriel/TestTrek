@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Switch,
   Image,
+  Alert,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -54,7 +55,11 @@ export const CreateQuestionScreen: FC = () => {
 
   const questionImage = useImageStore((state) => state.questionImage);
   const setImage = useImageStore((state) => state.setImage);
+  const setQuestionImage = useImageStore((state) => state.setQuestionImage);
   const resetQuestionImage = useImageStore((state) => state.resetQuestionImage);
+  const deleteLastQuestion = useQuestionStore(
+    (state) => state.deleteLastQuestion,
+  );
 
   const question = getSelectedQuestion();
 
@@ -177,6 +182,7 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleClickQuestion = (index: number) => () => {
     setSelectedQuestionId(index);
+    setQuestionImage(questions[index]?.image ?? undefined);
     const selectedQuestion = questions[index];
 
     if (selectedQuestion?.type === "multiple_choice") {
@@ -207,7 +213,11 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleGoBack = () => {
     resetQuestionImage();
-    alertExit({ handleExit: goBack });
+    if (question?.inEdit) {
+      alertExit({ handleExit: goBack });
+    } else {
+      goBack();
+    }
   };
 
   const selectedChoice = useMemo(

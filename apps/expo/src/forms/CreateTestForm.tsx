@@ -30,6 +30,7 @@ import RightArrowIcon from "../icons/RightArrowIcon";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
 import useImageStore from "../stores/useImageStore";
+import { match } from "ts-pattern";
 import { trpc } from "../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
@@ -327,7 +328,14 @@ const CreateTestForm: FC<Props> = ({
                           />
                         </View>
                         <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                          {index + 1} - {question.type}
+                          {index + 1} -{" "}
+                          {match(question.type)
+                            .with("multiple_choice", () => "Multiple Choice")
+                            .with("true_or_false", () => "True or False")
+                            .with("multi_select", () => "Multi Select")
+                            .with("identification", () => "Identification")
+                            .with("enumeration", () => "Enumeration")
+                            .exhaustive()}
                         </Text>
                         <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
                           {question.title}
