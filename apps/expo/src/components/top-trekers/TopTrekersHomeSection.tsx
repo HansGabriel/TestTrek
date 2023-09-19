@@ -7,9 +7,12 @@ import { IMAGE_PLACEHOLDER } from "../../constants";
 import { trpc } from "../../utils/trpc";
 
 import type { FC } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const TopTrekersHomeSection: FC = () => {
   const { data: topTrekers } = trpc.user.getTop.useQuery();
+
+  const navigation = useNavigation();
 
   if (!topTrekers) {
     return <></>;
@@ -17,7 +20,13 @@ const TopTrekersHomeSection: FC = () => {
 
   return (
     <View>
-      <SectionHeader title="Top Trekers" hasViewAll={true} />
+      <SectionHeader
+        title="Top Trekers"
+        hasViewAll={true}
+        onViewAllPress={() => {
+          navigation.navigate("ViewAll", { fetchedData: "topTrekers" });
+        }}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}

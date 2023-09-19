@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native";
 import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import ViewAllTestDisplay from "../components/view-all-display/tests/ViewAllTestDisplay";
+import ViewAllUserDisplay from "../components/view-all-display/users/ViewAllUserDisplay";
 
 type ViewAllScreenProps = NativeStackScreenProps<RootStackParamList, "ViewAll">;
 
@@ -28,6 +29,13 @@ export const ViewAllScreen = ({ route }: ViewAllScreenProps) => {
       return (
         <>
           <ViewAllTestDisplay testsFor="topPicks" />
+        </>
+      );
+    }
+    case "topTrekers": {
+      return (
+        <>
+          <ViewAllUserDisplay usersFor="topUsers" />
         </>
       );
     }

@@ -56,7 +56,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
             <Text
               style={{ fontSize: 10 }}
               className=" overflow-hidden truncate font-semibold text-white"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
               {props.questions} Qs
@@ -66,7 +66,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
         <View className="flex-1 flex-col justify-center overflow-hidden border-t border-r border-b border-gray-200 px-4 py-3">
           <Text
             className="flex-1 overflow-hidden truncate text-lg font-bold leading-7 text-black"
-            numberOfLines={2}
+            numberOfLines={1}
             ellipsizeMode="tail"
           >
             {props.title}
