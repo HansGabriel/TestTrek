@@ -70,6 +70,48 @@ export const CreateQuestionScreen: FC = () => {
 
   const question = getSelectedQuestion();
 
+  const getSelectedChoices = () => {
+    if (!question) {
+      return [];
+    }
+    if (question.type === "multiple_choice") {
+      return question.choices.map((choice, idx) => ({
+        id: idx,
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+        styles: choiceStyles[idx]!.styles,
+      }));
+    }
+    return Array.from({ length: 2 }, (_, idx) => ({
+      id: idx,
+      text: undefined,
+      isCorrect: false,
+      styles: choiceStyles[idx]!.styles,
+    }));
+  };
+
+  const resetSelectedChoices = () => {
+    if (!question) {
+      return [];
+    }
+
+    if (question.type === "multiple_choice") {
+      return question.choices.map((choice, idx) => ({
+        id: idx,
+        text: undefined,
+        isCorrect: false,
+        styles: choiceStyles[idx]!.styles,
+      }));
+    }
+
+    return Array.from({ length: 2 }, (_, idx) => ({
+      id: idx,
+      text: undefined,
+      isCorrect: false,
+      styles: choiceStyles[idx]!.styles,
+    }));
+  };
+
   const [timeLimitOptions, setTimeLimitOptions] = useState<Option[]>(
     TIME_LIMIT_OPTIONS.map((option) => ({
       ...option,
@@ -90,21 +132,7 @@ export const CreateQuestionScreen: FC = () => {
     question?.title ?? "",
   );
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
-  const [choices, setChoices] = useState<Choice[]>(
-    question!.type === "multiple_choice"
-      ? question!.choices.map((choice, idx) => ({
-          id: idx,
-          text: choice.text ?? "",
-          isCorrect: choice.isCorrect,
-          styles: choiceStyles[idx]!.styles,
-        }))
-      : Array.from({ length: 2 }, (_, idx) => ({
-          id: idx,
-          text: undefined,
-          isCorrect: false,
-          styles: choiceStyles[idx]!.styles,
-        })),
-  );
+  const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -120,21 +148,7 @@ export const CreateQuestionScreen: FC = () => {
       setTimeLimitOptions(TIME_LIMIT_OPTIONS);
       setPointOptions(POINT_OPTIONS);
       setQuestionTitle("");
-      setChoices(
-        question!.type === "multiple_choice"
-          ? question!.choices.map((_, idx) => ({
-              id: idx,
-              text: undefined,
-              isCorrect: false,
-              styles: choiceStyles[idx]!.styles,
-            }))
-          : Array.from({ length: 2 }, (_, idx) => ({
-              id: idx,
-              text: undefined,
-              isCorrect: false,
-              styles: choiceStyles[idx]!.styles,
-            })),
-      );
+      setChoices(resetSelectedChoices());
       setImage(undefined);
       navigation.navigate("CreateQuestion");
     } else {
