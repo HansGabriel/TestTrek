@@ -1,6 +1,5 @@
 import { View, FlatList, TouchableOpacity } from "react-native";
-import TopCollectionsHomeCard from "./TopCollectionsHomeCard";
-
+import CollectionsCard from "../view-all-display/collections/CollectionsCard";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
 import SectionHeader from "../headers/SectionHeader";
@@ -18,7 +17,13 @@ const TopCollectionsHomeSection: FC = () => {
 
   return (
     <View>
-      <SectionHeader title="Top Collections" hasViewAll={true} />
+      <SectionHeader
+        title="Top Collections"
+        hasViewAll={true}
+        onViewAllPress={() => {
+          navigation.navigate("ViewAll", { fetchedData: "topCollections" });
+        }}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -29,8 +34,10 @@ const TopCollectionsHomeSection: FC = () => {
         }))}
         renderItem={({ item }) => (
           <TouchableOpacity>
-            <TopCollectionsHomeCard
-              imageSource={item.imageSource}
+            <CollectionsCard
+              userImage={{
+                uri: item.imageSource ?? "https://example.com/dummy-image.jpg",
+              }}
               title={item.title}
             />
           </TouchableOpacity>

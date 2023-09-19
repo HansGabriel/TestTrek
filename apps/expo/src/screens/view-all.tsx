@@ -4,6 +4,7 @@ import { RootStackParamList } from "../types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import ViewAllTestDisplay from "../components/view-all-display/tests/ViewAllTestDisplay";
 import ViewAllUserDisplay from "../components/view-all-display/users/ViewAllUserDisplay";
+import ViewAllCollectionsDisplay from "../components/view-all-display/collections/ViewAllCollectionsDisplay";
 
 type ViewAllScreenProps = NativeStackScreenProps<RootStackParamList, "ViewAll">;
 
@@ -36,6 +37,13 @@ export const ViewAllScreen = ({ route }: ViewAllScreenProps) => {
       return (
         <>
           <ViewAllUserDisplay usersFor="topUsers" />
+        </>
+      );
+    }
+    case "topCollections": {
+      return (
+        <>
+          <ViewAllCollectionsDisplay collectionsFor="topCollections" />
         </>
       );
     }
