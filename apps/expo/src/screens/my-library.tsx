@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import useGoBack from "../hooks/useGoBack";
 import { useState } from "react";
-import { HeaderAndContent } from "../components/HeaderAndContent";
+import { HeaderAndContent } from "../components/my-library/HeaderAndContent";
 import Footer from "../components/Footer";
 
 const Tab = createMaterialTopTabNavigator();

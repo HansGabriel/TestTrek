@@ -18,7 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import type { UserSignup } from "@acme/schema/src/types";
 import type { FC } from "react";
-import { AppButton } from "../components/AppButton";
+import { AppButton } from "../components/buttons/AppButton";
 
 interface Props {
   onSubmit: (data: UserSignup) => void;
