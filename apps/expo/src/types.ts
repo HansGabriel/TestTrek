@@ -23,7 +23,14 @@ export type RootStackParamList = {
   MaterialInput: undefined;
   MyLibrary: undefined;
   CreateTest: undefined;
-  Discover: undefined;
+  ViewAll: {
+    fetchedData:
+      | "discoverTests"
+      | "trendingTests"
+      | "topPicksTest"
+      | "topCollections"
+      | "topTrekers";
+  };
   CreateQuestion: undefined;
   Profile: undefined;
   Settings: undefined;

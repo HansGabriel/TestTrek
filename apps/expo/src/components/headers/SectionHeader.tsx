@@ -18,15 +18,15 @@ interface WithoutViewAllProps extends BaseProps {
 type Props = WithViewAllProps | WithoutViewAllProps;
 
 const SectionHeader: FC<Props> = (props) => {
-  if (props.hasViewAll) {
-    return (
-      <SafeAreaView>
-        <View className="w-70 h-13 sticky top-2 z-50 mx-6 flex flex-row justify-between bg-white py-2">
-          <View>
-            <Text className="font-nunito-bold text-xl leading-[30px] text-neutral-800">
-              {props.title}
-            </Text>
-          </View>
+  return (
+    <SafeAreaView>
+      <View className="w-70 h-13 sticky top-2 z-50 mx-6 flex flex-row justify-between bg-white py-2">
+        <View>
+          <Text className="font-nunito-bold text-xl leading-[30px] text-neutral-800">
+            {props.title}
+          </Text>
+        </View>
+        {props.hasViewAll && (
           <TouchableOpacity
             className="flex flex-row items-center gap-1"
             onPress={props.onViewAllPress}
@@ -36,19 +36,7 @@ const SectionHeader: FC<Props> = (props) => {
             </Text>
             <RightArrowIcon />
           </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  return (
-    <SafeAreaView>
-      <View className="w-70 h-13 sticky top-2 z-50 mx-6 flex flex-row justify-between bg-white py-2">
-        <View>
-          <Text className="font-nunito-bold text-xl leading-[30px] text-neutral-800">
-            {props.title}
-          </Text>
-        </View>
+        )}
       </View>
     </SafeAreaView>
   );

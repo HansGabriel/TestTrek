@@ -5,7 +5,7 @@ import type { ImageSourcePropType } from "react-native";
 interface Props {
   imageSource: ImageSourcePropType;
   title: string;
-  q: number;
+  questions: number;
   date: Date;
   plays: number;
   userImageSource: ImageSourcePropType;
@@ -58,7 +58,7 @@ const DiscoverScreenCard: React.FC<Props> = (props) => {
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              {props.q} Qs
+              {props.questions} Qs
             </Text>
           </View>
         </View>
