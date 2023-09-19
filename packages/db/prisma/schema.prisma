@@ -61,7 +61,7 @@ model Question {
     time            Int
     points          Int
     type            QuestionType
-    test            Test         @relation(fields: [testId], references: [id])
+    test            Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
     choices         Choice[]
     answer          String?
     possibleAnswers String[]
@@ -72,13 +72,13 @@ model Choice {
     questionId String
     text       String
     isCorrect  Boolean
-    question   Question @relation(fields: [questionId], references: [id])
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Keyword {
     id        String   @id @default(cuid())
     name      String
-    test      Test     @relation(fields: [testId], references: [id])
+    test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
     testId    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -96,9 +96,9 @@ model Collection {
 }
 
 model TestOnCollection {
-    test          Test       @relation(fields: [testId], references: [id])
+    test          Test       @relation(fields: [testId], references: [id], onDelete: Cascade)
     testId        String
-    collection    Collection @relation(fields: [collectionsId], references: [id])
+    collection    Collection @relation(fields: [collectionsId], references: [id], onDelete: Cascade)
     collectionsId String
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt

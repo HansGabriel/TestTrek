@@ -15,6 +15,7 @@ import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
 import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
+import useImageStore from "../stores/useImageStore";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 
@@ -28,6 +29,7 @@ export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
   const navigation = useNavigation();
   const questions = useQuestionStore((state) => state.questions);
+  const resetImage = useImageStore((state) => state.resetImage);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
 
   const { showToast } = useToast();
@@ -40,14 +42,9 @@ export const CreateTestScreen: FC = () => {
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
 
-    const imageUrl = IMAGE_PLACEHOLDER_LARGE;
-
-    const { image: _, ...rest } = data;
-
     createTest(
       {
-        ...rest,
-        image: imageUrl,
+        ...data,
         questions: questions
           .filter((question) => !question.inEdit)
           .map((question) => ({
@@ -61,6 +58,7 @@ export const CreateTestScreen: FC = () => {
           setIsUploading(false);
           showToast("Test created successfully");
           resetQuestions();
+          navigation.navigate("Home");
         },
         onError: () => {
           setIsUploading(false);
@@ -93,6 +91,7 @@ export const CreateTestScreen: FC = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
+      resetImage();
     });
     return unsubscribe;
   }, [navigation]);

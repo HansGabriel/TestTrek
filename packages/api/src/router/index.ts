@@ -4,6 +4,7 @@ import { authRouter } from "./auth";
 import { testRouter } from "./test";
 import { testFilterRouter } from "./testFilter";
 import { collectionRouter } from "./collection";
+import { imageRouter } from "./image";
 import { useRouter } from "./user";
 
 export const appRouter = router({
@@ -12,6 +13,7 @@ export const appRouter = router({
   test: testRouter,
   testFilter: testFilterRouter,
   collection: collectionRouter,
+  image: imageRouter,
   user: useRouter,
 });
 

@@ -19,6 +19,7 @@ import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 import useQuestionStore from "../../stores/useQuestionStore";
 import OptionDropdown from "./options-dropdown";
+import useImageStore from "../../stores/useImageStore";
 import { alertExit } from "../../hooks/useAlert";
 
 import type { FC } from "react";
@@ -51,13 +52,23 @@ export const CreateQuestionScreen: FC = () => {
   const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
 
+  const questionImage = useImageStore((state) => state.questionImage);
+  const setImage = useImageStore((state) => state.setImage);
+  const resetQuestionImage = useImageStore((state) => state.resetQuestionImage);
+
   const question = getSelectedQuestion();
 
-  const [timeLimitOptions, setTimeLimitOptions] =
-    useState<Option[]>(TIME_LIMIT_OPTIONS);
-  const [pointOptions, setPointOptions] = useState<Option[]>(POINT_OPTIONS);
-  const [image, setImage] = useState<string | undefined>(
-    question?.image ?? undefined,
+  const [timeLimitOptions, setTimeLimitOptions] = useState<Option[]>(
+    TIME_LIMIT_OPTIONS.map((option) => ({
+      ...option,
+      isSelected: option.value === question?.time,
+    })),
+  );
+  const [pointOptions, setPointOptions] = useState<Option[]>(
+    POINT_OPTIONS.map((option) => ({
+      ...option,
+      isSelected: option.value === question?.points,
+    })),
   );
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -110,6 +121,21 @@ export const CreateQuestionScreen: FC = () => {
     );
   };
 
+  const getSelectedImage = () => {
+    if (question?.image && !questionImage) {
+      return question.image;
+    }
+    if (questionImage && !question?.image) {
+      return questionImage;
+    }
+    if (question?.image && questionImage) {
+      return questionImage;
+    }
+    return undefined;
+  };
+
+  const selectedImage = getSelectedImage();
+
   const handleSaveQuestion = () => {
     const multipleChoiceQuestion: MultipleChoiceQuestion = {
       title: questionTitle,
@@ -118,13 +144,14 @@ export const CreateQuestionScreen: FC = () => {
         text: choice.text ?? "",
         isCorrect: choice.isCorrect,
       })),
-      image: image,
+      image: selectedImage,
       inEdit: false,
       type: "multiple_choice",
       points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
       time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
     };
     editQuestion(selectedIndex!, multipleChoiceQuestion);
+    resetQuestionImage();
     goBack();
   };
 
@@ -162,13 +189,13 @@ export const CreateQuestionScreen: FC = () => {
           styles: choiceStyles[idx]!.styles,
         })),
       );
-      setImage(selectedQuestion?.image ?? undefined);
-      setTimeLimitOptions((prev) =>
-        prev.map((option) => ({
-          ...option,
-          isSelected: option.value === selectedQuestion.time,
-        })),
-      );
+      setImage(selectedImage),
+        setTimeLimitOptions((prev) =>
+          prev.map((option) => ({
+            ...option,
+            isSelected: option.value === selectedQuestion.time,
+          })),
+        );
       setPointOptions((prev) =>
         prev.map((option) => ({
           ...option,
@@ -179,6 +206,7 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleGoBack = () => {
+    resetQuestionImage();
     alertExit({ handleExit: goBack });
   };
 
@@ -207,7 +235,7 @@ export const CreateQuestionScreen: FC = () => {
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
         <View className="mt-8 mb-4 flex flex-col">
-          <TestImagePicker image={image} setImage={setImage} />
+          <TestImagePicker image={selectedImage} type="question" />
         </View>
 
         <View className="flex flex-row items-center justify-between">

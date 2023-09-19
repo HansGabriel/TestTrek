@@ -1,35 +1,28 @@
 import React from "react";
 import { Image, View, TouchableOpacity, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
 import type { FC } from "react";
 
 interface Props {
   image?: string;
-  setImage: (value: string) => void;
   className?: string;
+  type?: "test" | "question";
 }
 
-const TestImagePicker: FC<Props> = ({ image, setImage, className }) => {
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+const TestImagePicker: FC<Props> = ({ image, className, type = "test" }) => {
+  const navigation = useNavigation();
 
-    if (!result.canceled && result.assets[0]?.type === "image") {
-      const imageUri = result.assets[0]?.uri;
-      if (imageUri) {
-        setImage(imageUri);
-      }
-    }
+  const goToImageGallery = () => {
+    navigation.navigate("AddCoverImage", {
+      query: "Sample Images",
+      type,
+    });
   };
 
   return (
-    <TouchableOpacity onPress={pickImage} className={className}>
+    <TouchableOpacity onPress={goToImageGallery} className={className}>
       {image ? (
         <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
           <Image source={{ uri: image }} className="h-60 w-full rounded-3xl" />

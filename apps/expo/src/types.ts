@@ -33,6 +33,10 @@ export type RootStackParamList = {
   EditTest: {
     testId: string;
   };
+  AddCoverImage: {
+    query: string;
+    type: "test" | "question";
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

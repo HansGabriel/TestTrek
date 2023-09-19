@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -29,13 +29,16 @@ import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../icons/RightArrowIcon";
 import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
+import useImageStore from "../stores/useImageStore";
 import { trpc } from "../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
+import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type FormProps = Omit<TestInput, "questions">;
+type Omitted = Omit<TestInput, "questions">;
+type FormProps = SetOptional<Omitted, "collection">;
 
 interface Props {
   testDetails?: FormProps;
@@ -51,12 +54,30 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
 }) => {
   const navigation = useNavigation();
+  const image = useImageStore((state) => state.image);
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery();
+
+  const getDisplayImage = () => {
+    if (testDetails?.image && !image) {
+      return testDetails.image;
+    }
+
+    if (image && !testDetails?.image) {
+      return image;
+    }
+
+    if (image && testDetails?.image) {
+      return image;
+    }
+
+    return undefined;
+  };
 
   const {
     control,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<FormProps>({
@@ -69,7 +90,7 @@ const CreateTestForm: FC<Props> = ({
     defaultValues: {
       title: testDetails?.title,
       description: testDetails?.description,
-      image: testDetails?.image,
+      image: getDisplayImage(),
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords,
@@ -129,6 +150,20 @@ const CreateTestForm: FC<Props> = ({
 
   const readyQuestions = questions.filter((question) => !question.inEdit);
 
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      if (image && !testDetails?.image) {
+        setValue("image", image);
+      }
+      if (testDetails?.image && !image) {
+        setValue("image", testDetails.image);
+      }
+      if (image && testDetails?.image) {
+        setValue("image", image);
+      }
+    });
+  }, [image, testDetails?.image]);
+
   return (
     <SafeAreaView>
       <KeyboardAvoidingView
@@ -140,8 +175,8 @@ const CreateTestForm: FC<Props> = ({
             <View className="mb-6">
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TestImagePicker image={value} setImage={onChange} />
+                render={({ field: { value } }) => (
+                  <TestImagePicker image={value} />
                 )}
                 name="image"
               />
