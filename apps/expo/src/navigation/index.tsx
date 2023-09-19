@@ -27,6 +27,7 @@ import { SettingsScreen } from "../screens/settings";
 import { TestDetailsScreen } from "../screens/test-details";
 import { EditTestScreen } from "../screens/edit-test";
 import { AddCoverImageScreen } from "../screens/add-cover-image";
+import { MyStatistics } from "../screens/my-statistics";
 
 export default function Navigation() {
   return (
@@ -145,6 +146,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="AddCoverImage"
               component={AddCoverImageScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MyStatistics"
+              component={MyStatistics}
               options={{
                 headerShown: false,
               }}

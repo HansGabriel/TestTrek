@@ -37,6 +37,7 @@ export type RootStackParamList = {
     query: string;
     type: "test" | "question";
   };
+  MyStatistics: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
