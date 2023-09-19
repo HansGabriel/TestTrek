@@ -13,6 +13,7 @@ import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
+import OptionsDropdown from "./create-question/options-dropdown";
 import { match } from "ts-pattern";
 
 import type { FC } from "react";
@@ -29,9 +30,11 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   route,
 }) => {
   const { testId } = route.params;
+  const trpcUtils = trpc.useContext();
   const goBack = useGoBack();
 
   const { showToast } = useToast();
+  const questions = useQuestionStore((state) => state.questions);
   const setQuestions = useQuestionStore((state) => state.setQuestions);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
   const resetImage = useImageStore((state) => state.resetImage);
@@ -63,11 +66,49 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     },
   );
 
-  const { mutate: createTest, isLoading: isCreatingQuiz } =
-    trpc.test.create.useMutation();
+  const { mutate: deleteTest } = trpc.test.delete.useMutation({
+    onSuccess: () => {
+      showToast("Test deleted successfully");
+      trpcUtils.test.getAll.invalidate();
+      navigation.navigate("Home");
+    },
+    onError: () => {
+      showToast("An error occurred");
+    },
+  });
+
+  const { mutate: editTest, isLoading: isEditingTest } =
+    trpc.test.edit.useMutation();
 
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
+
+    editTest(
+      {
+        ...data,
+        testId,
+        questions: questions
+          .filter((question) => !question.inEdit)
+          .map((question) => ({
+            ...question,
+            time: question.time ?? 60,
+            points: question.points ?? 50,
+          })),
+      },
+      {
+        onSuccess: () => {
+          setIsUploading(false);
+          showToast("Test updated successfully");
+          resetQuestions();
+          navigation.navigate("Home");
+        },
+        onError: () => {
+          setIsUploading(false);
+          showToast("An error occurred");
+          resetQuestions();
+        },
+      },
+    );
   };
 
   const handleExitScreen = () => {
@@ -89,6 +130,25 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     );
   };
 
+  const handleDeleteTest = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            deleteTest({ testId });
+          },
+        },
+      ],
+    );
+  };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
@@ -104,13 +164,14 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   return (
     <SafeAreaView className="flex-1">
       <View className="mt-12">
-        <View className="mx-6  flex flex-row items-center justify-between">
+        <View className="z-50 mx-6 flex flex-row items-center justify-between">
           <View className="flex flex-row items-center gap-2">
             <TouchableOpacity onPress={handleExitScreen}>
               <Feather name="x" size={24} color="black" />
             </TouchableOpacity>
             <Text className="font-nunito-bold text-2xl">Edit Test</Text>
           </View>
+          <OptionsDropdown onSave={() => {}} onDelete={handleDeleteTest} />
         </View>
         <CreateTestForm
           testDetails={{
@@ -121,7 +182,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
             visibility: testDetails.visibility,
           }}
           onSubmit={submitTestDetails}
-          isCreatingQuiz={isCreatingQuiz}
+          isCreatingQuiz={isEditingTest}
           isUploading={isUploading}
         />
       </View>
