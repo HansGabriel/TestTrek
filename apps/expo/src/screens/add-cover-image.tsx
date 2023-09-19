@@ -20,9 +20,10 @@ import type { FC } from "react";
 export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   route,
 }) => {
-  const { query } = route.params;
+  const { query, type } = route.params;
   const goBack = useGoBack();
   const setImage = useImageStore((state) => state.setImage);
+  const setQuestionImage = useImageStore((state) => state.setQuestionImage);
 
   const [searchTerm, setSearchTerm] = useState<string>(query);
 
@@ -46,7 +47,9 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
         {
           text: "Set",
           onPress: () => {
-            setImage(image);
+            const settingFunction =
+              type === "test" ? setImage : setQuestionImage;
+            settingFunction(image);
             goBack();
           },
         },

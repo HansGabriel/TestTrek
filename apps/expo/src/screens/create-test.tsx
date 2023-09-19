@@ -42,14 +42,9 @@ export const CreateTestScreen: FC = () => {
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
 
-    const imageUrl = IMAGE_PLACEHOLDER_LARGE;
-
-    const { image: _, ...rest } = data;
-
     createTest(
       {
-        ...rest,
-        image: imageUrl,
+        ...data,
         questions: questions
           .filter((question) => !question.inEdit)
           .map((question) => ({
@@ -63,6 +58,7 @@ export const CreateTestScreen: FC = () => {
           setIsUploading(false);
           showToast("Test created successfully");
           resetQuestions();
+          navigation.navigate("Home");
         },
         onError: () => {
           setIsUploading(false);

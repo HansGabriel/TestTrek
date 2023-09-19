@@ -56,6 +56,22 @@ const CreateTestForm: FC<Props> = ({
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery();
 
+  const getDisplayImage = () => {
+    if (testDetails?.image && !image) {
+      return testDetails.image;
+    }
+
+    if (image && !testDetails?.image) {
+      return image;
+    }
+
+    if (image && testDetails?.image) {
+      return image;
+    }
+
+    return undefined;
+  };
+
   const {
     control,
     handleSubmit,
@@ -72,7 +88,7 @@ const CreateTestForm: FC<Props> = ({
     defaultValues: {
       title: testDetails?.title,
       description: testDetails?.description,
-      image: testDetails?.image ?? image,
+      image: getDisplayImage(),
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords,
@@ -137,8 +153,14 @@ const CreateTestForm: FC<Props> = ({
       if (image && !testDetails?.image) {
         setValue("image", image);
       }
+      if (testDetails?.image && !image) {
+        setValue("image", testDetails.image);
+      }
+      if (image && testDetails?.image) {
+        setValue("image", image);
+      }
     });
-  }, [navigation, image, setValue, testDetails]);
+  }, [image, testDetails?.image]);
 
   return (
     <SafeAreaView>

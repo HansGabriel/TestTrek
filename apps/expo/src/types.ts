@@ -35,6 +35,7 @@ export type RootStackParamList = {
   };
   AddCoverImage: {
     query: string;
+    type: "test" | "question";
   };
 };
 

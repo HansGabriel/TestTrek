@@ -21,7 +21,7 @@ const SearchComponent: FC<Props> = ({ handleSearch }) => {
           value={searchTerm}
           onChangeText={(text) => setSearchTerm(text)}
           onSubmitEditing={() => handleSearch(searchTerm)}
-          className="flex-1 shrink grow basis-0 font-['Nunito'] text-base font-normal leading-snug tracking-tight text-black"
+          className="font-nunito-bold flex-1 shrink grow basis-0 text-base font-normal leading-snug tracking-tight text-black"
           placeholderTextColor={"#BDBDBD"}
         />
       </View>

@@ -8,18 +8,21 @@ import type { FC } from "react";
 interface Props {
   image?: string;
   className?: string;
+  type?: "test" | "question";
 }
 
-const TestImagePicker: FC<Props> = ({ image, className }) => {
+const TestImagePicker: FC<Props> = ({ image, className, type = "test" }) => {
   const navigation = useNavigation();
-  const goToImageGaller = async () => {
+
+  const goToImageGallery = () => {
     navigation.navigate("AddCoverImage", {
       query: "Sample Images",
+      type,
     });
   };
 
   return (
-    <TouchableOpacity onPress={goToImageGaller} className={className}>
+    <TouchableOpacity onPress={goToImageGallery} className={className}>
       {image ? (
         <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
           <Image source={{ uri: image }} className="h-60 w-full rounded-3xl" />
