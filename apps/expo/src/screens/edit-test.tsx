@@ -173,6 +173,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           </View>
           <OptionsDropdown onSave={() => {}} onDelete={handleDeleteTest} />
         </View>
+
         <CreateTestForm
           testDetails={{
             description: testDetails.description,
@@ -180,6 +181,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
             image: testDetails.imageUrl,
             keywords: testDetails.keywords.map((keyword) => keyword.name),
             visibility: testDetails.visibility,
+            collection: testDetails.collections[0]?.collectionsId,
           }}
           onSubmit={submitTestDetails}
           isCreatingQuiz={isEditingTest}

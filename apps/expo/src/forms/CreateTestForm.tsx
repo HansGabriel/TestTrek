@@ -34,9 +34,11 @@ import { trpc } from "../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
+import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type FormProps = Omit<TestInput, "questions">;
+type Omitted = Omit<TestInput, "questions">;
+type FormProps = SetOptional<Omitted, "collection">;
 
 interface Props {
   testDetails?: FormProps;
