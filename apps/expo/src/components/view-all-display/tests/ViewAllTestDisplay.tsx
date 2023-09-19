@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { SafeAreaView, TouchableOpacity } from "react-native";
-import DiscoverScreenCard from "../discover/DiscoverScreenCard";
-import ViewAllScreenHeader from "../headers/ViewAllScreenHeader";
+import ViewAllScreenTestCard from "./ViewAllScreenTestCard";
+import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
 interface Props {
   testsFor: "discover" | "trending" | "topPicks";
@@ -39,7 +39,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
           const fullName = `${item.user.firstName} ${item.user.lastName}`;
           return (
             <TouchableOpacity key={index}>
-              <DiscoverScreenCard
+              <ViewAllScreenTestCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
                 questions={12}
