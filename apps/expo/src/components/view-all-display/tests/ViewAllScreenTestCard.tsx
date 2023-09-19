@@ -91,7 +91,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
           <View className="mt-3 flex-row items-center">
             <Image
               className="h-5 w-5 rounded-full"
-              source={require("../../temp-data/discover/discover-images/image-source/image1.png")}
+              source={props.userImageSource}
             />
             <Text
               className="ml-1.5 overflow-hidden truncate text-xs font-semibold text-gray-600"

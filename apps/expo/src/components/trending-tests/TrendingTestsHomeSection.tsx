@@ -6,9 +6,12 @@ import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 
 const TrendingTestsHomeSection: FC = () => {
   const { data: trendingTests } = trpc.test.getTrendingTests.useQuery();
+
+  const navigation = useNavigation();
 
   if (!trendingTests) {
     return <></>;
@@ -16,7 +19,13 @@ const TrendingTestsHomeSection: FC = () => {
 
   return (
     <View>
-      <SectionHeader title="Trending Tests" hasViewAll={true} />
+      <SectionHeader
+        title="Trending Tests"
+        hasViewAll={true}
+        onViewAllPress={() => {
+          navigation.navigate("ViewAll", { fetchedData: "trendingTests" });
+        }}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}

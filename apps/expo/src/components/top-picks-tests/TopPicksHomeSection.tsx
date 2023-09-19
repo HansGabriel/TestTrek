@@ -6,9 +6,12 @@ import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
 import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
+import { useNavigation } from "@react-navigation/native";
 
 const TopPicksHomeSection: FC = () => {
   const { data: topPicksTest } = trpc.test.getTopPicks.useQuery();
+
+  const navigation = useNavigation();
 
   if (!topPicksTest) {
     return <></>;
@@ -16,7 +19,13 @@ const TopPicksHomeSection: FC = () => {
 
   return (
     <View>
-      <SectionHeader title="Top Picks" hasViewAll={true} />
+      <SectionHeader
+        title="Top Picks"
+        hasViewAll={true}
+        onViewAllPress={() => {
+          navigation.navigate("ViewAll", { fetchedData: "topPicksTest" });
+        }}
+      />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
