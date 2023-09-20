@@ -8,8 +8,11 @@ import { useNavigation } from "@react-navigation/native";
 const TopCollectionsHomeSection: FC = () => {
   const { data: topCollections } = trpc.collection.getTopCollections.useQuery();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const navigation = useNavigation();
+
+  const goToCollectionDetailsScreen = (collectionId: string) => () => {
+    navigation.navigate("CollectionDetails", { collectionId });
+  };
 
   if (!topCollections) {
     return <></>;
@@ -33,7 +36,7 @@ const TopCollectionsHomeSection: FC = () => {
           title: collection.title,
         }))}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToCollectionDetailsScreen(item.id)}>
             <CollectionsCard
               userImage={{
                 uri: item.imageSource ?? "https://example.com/dummy-image.jpg",

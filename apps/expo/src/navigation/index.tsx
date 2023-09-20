@@ -28,7 +28,7 @@ import { EditTestScreen } from "../screens/edit-test";
 import { ViewAllScreen } from "../screens/view-all";
 import { AddCoverImageScreen } from "../screens/add-cover-image";
 import { MyStatistics } from "../screens/my-statistics";
-
+import { CollectionDetailsScreen } from "../screens/collection-details";
 
 export default function Navigation() {
   return (
@@ -126,6 +126,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateCollection"
               component={CreateCollection}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CollectionDetails"
+              component={CollectionDetailsScreen}
               options={{
                 headerShown: false,
               }}

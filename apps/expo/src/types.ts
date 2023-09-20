@@ -37,6 +37,9 @@ export type RootStackParamList = {
   TestDetails: {
     testId: string;
   };
+  CollectionDetails: {
+    collectionId: string;
+  };
   EditTest: {
     testId: string;
   };
