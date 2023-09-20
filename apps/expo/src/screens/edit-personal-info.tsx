@@ -1,15 +1,26 @@
 import { useNavigation } from "@react-navigation/native";
+<<<<<<< HEAD
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+=======
+import React from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+>>>>>>> 9517890 (feature: edit personal info screen)
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
 import LeftArrowIcon from "../icons/LeftArrowIcon";
+<<<<<<< HEAD
+=======
+import { MoreCircleIcon } from "../icons/question-options";
+>>>>>>> 9517890 (feature: edit personal info screen)
 import { Avatar } from "@rneui/themed";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -17,6 +28,7 @@ import { userStoredSchema } from "@acme/schema/src/user";
 import { UserStored } from "@acme/schema/src/types";
 import AppTextInput from "../components/inputs/AppTextInput";
 import { ScrollView } from "react-native-gesture-handler";
+<<<<<<< HEAD
 import { trpc } from "../utils/trpc";
 import { AppButton } from "../components/buttons/AppButton";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
@@ -40,10 +52,21 @@ export const EditPersonalInfoScreen = () => {
     handleSubmit,
     formState: { errors },
     setValue,
+=======
+
+export const EditPersonalInfoScreen = () => {
+  const navigation = useNavigation();
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+>>>>>>> 9517890 (feature: edit personal info screen)
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
 
+<<<<<<< HEAD
   const { mutate: editUser } = trpc.user.editUserDetails.useMutation();
   const submitEditedData = async (updatedData: UserStored) => {
     editUser(
@@ -74,6 +97,8 @@ export const EditPersonalInfoScreen = () => {
     }
   };
 
+=======
+>>>>>>> 9517890 (feature: edit personal info screen)
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -92,6 +117,7 @@ export const EditPersonalInfoScreen = () => {
           </Text>
         </View>
         <View className="self-center">
+<<<<<<< HEAD
           <TouchableOpacity onPress={() => setEdit(!edit)}>
             {edit ? <XIcon /> : <EditIcon />}
           </TouchableOpacity>
@@ -252,6 +278,101 @@ export const EditPersonalInfoScreen = () => {
           </View>
         </SafeAreaView>
       )}
+=======
+          <TouchableOpacity>
+            <MoreCircleIcon />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className=" h-36 w-[90%] items-center justify-center self-center">
+          <Avatar
+            rounded
+            size={120}
+            source={{
+              uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+            }}
+          >
+            <Avatar.Accessory size={30} />
+          </Avatar>
+        </View>
+
+        <View className=" my-5 h-96 w-[85%] self-center">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <AppTextInput
+                label="Username"
+                textInputProps={{
+                  onBlur,
+                  placeholder: "Enter Username",
+                  onChangeText: onChange,
+                  value,
+                }}
+              />
+            )}
+            name="userName"
+          />
+          {errors.userName && (
+            <Text className="text-red-500">{errors.userName.message}</Text>
+          )}
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <AppTextInput
+                label="First Name"
+                textInputProps={{
+                  onBlur,
+                  placeholder: "Enter First Name",
+                  onChangeText: onChange,
+                  value,
+                }}
+              />
+            )}
+            name="first_name"
+          />
+          {errors.first_name && (
+            <Text className="text-red-500">{errors.first_name.message}</Text>
+          )}
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <AppTextInput
+                label="Last Name"
+                textInputProps={{
+                  onBlur,
+                  placeholder: "Enter Last Name",
+                  onChangeText: onChange,
+                  value,
+                }}
+              />
+            )}
+            name="last_name"
+          />
+          {errors.last_name && (
+            <Text className="text-red-500">{errors.last_name.message}</Text>
+          )}
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <AppTextInput
+                label="Email Address"
+                textInputProps={{
+                  onBlur,
+                  placeholder: "Enter Email Address",
+                  onChangeText: onChange,
+                  value,
+                }}
+              />
+            )}
+            name="email"
+          />
+          {errors.email && (
+            <Text className="text-red-500">{errors.email.message}</Text>
+          )}
+        </View>
+      </ScrollView>
+>>>>>>> 9517890 (feature: edit personal info screen)
     </KeyboardAvoidingView>
   );
 };

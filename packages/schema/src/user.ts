@@ -18,11 +18,20 @@ export const userSigninSchema = z.object({
 });
 
 export const userStoredSchema = z.object({
+<<<<<<< HEAD
   email: z.string().email({ message: "Not a valid email" }),
   user_name: z.string().min(1, "Username is required"),
   first_name: z.string().min(1, "First Name is required"),
   image_url: z.string().optional(),
   last_name: z.string().min(1, "Last Name is required"),
+=======
+  email: z.string().email(),
+  userName: z.string(),
+  first_name: z.string(),
+  id: z.string(),
+  image_url: z.string().optional(),
+  last_name: z.string(),
+>>>>>>> 9517890 (feature: edit personal info screen)
 });
 
 export const userWebhookSchema = z

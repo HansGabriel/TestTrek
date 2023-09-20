@@ -26,6 +26,10 @@ export const useRouter = router({
         take: limit,
       });
     }),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9517890 (feature: edit personal info screen)
   getUserDetails: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findFirst({
       where: {
@@ -33,6 +37,7 @@ export const useRouter = router({
       },
     });
   }),
+<<<<<<< HEAD
 
   editUserDetails: protectedProcedure
     .input(userStoredSchema)
@@ -52,4 +57,6 @@ export const useRouter = router({
         },
       });
     }),
+=======
+>>>>>>> 9517890 (feature: edit personal info screen)
 });
