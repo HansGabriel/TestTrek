@@ -4,7 +4,6 @@ import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
-import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 
