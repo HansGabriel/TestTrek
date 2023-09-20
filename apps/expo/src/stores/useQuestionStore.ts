@@ -24,6 +24,7 @@ interface QuestionStore {
   setLastIndex: () => void;
   isLastQuestionInEdit: () => boolean;
   resetQuestions: () => void;
+  deleteLastQuestion: () => void;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -143,6 +144,10 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
     return isInEdit ?? false;
   },
   resetQuestions: () => set({ questions: [], selectedIndex: undefined }),
+  deleteLastQuestion: () =>
+    set((state) => ({
+      questions: state.questions.slice(0, state.questions.length - 1),
+    })),
 }));
 
 export default useQuestionStore;

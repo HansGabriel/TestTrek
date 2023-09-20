@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -11,15 +11,19 @@ import {
   TouchableWithoutFeedback,
   Switch,
   Image,
+  StyleSheet,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
 import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
-import useQuestionStore from "../../stores/useQuestionStore";
 import OptionDropdown from "./options-dropdown";
 import useImageStore from "../../stores/useImageStore";
+import BottomSheet from "@gorhom/bottom-sheet";
+import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
+import useQuestionStore from "../../stores/useQuestionStore";
+import { useNavigation } from "@react-navigation/native";
 import { alertExit } from "../../hooks/useAlert";
 
 import type { FC } from "react";
@@ -48,15 +52,65 @@ const choiceStyles: ChoiceStyle[] = [
 
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
+  const navigation = useNavigation();
 
   const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
 
   const questionImage = useImageStore((state) => state.questionImage);
   const setImage = useImageStore((state) => state.setImage);
+  const setQuestionImage = useImageStore((state) => state.setQuestionImage);
   const resetQuestionImage = useImageStore((state) => state.resetQuestionImage);
+  const deleteQuestion = useQuestionStore((state) => state.deleteQuestion);
+  const isLastQuestionInEdit = useQuestionStore(
+    (state) => state.isLastQuestionInEdit,
+  );
+  const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
+  const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
   const question = getSelectedQuestion();
+
+  const getSelectedChoices = () => {
+    if (!question) {
+      return [];
+    }
+    if (question.type === "multiple_choice") {
+      return question.choices.map((choice, idx) => ({
+        id: idx,
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+        styles: choiceStyles[idx]!.styles,
+      }));
+    }
+    return Array.from({ length: 2 }, (_, idx) => ({
+      id: idx,
+      text: undefined,
+      isCorrect: false,
+      styles: choiceStyles[idx]!.styles,
+    }));
+  };
+
+  const resetSelectedChoices = () => {
+    if (!question) {
+      return [];
+    }
+
+    if (question.type === "multiple_choice") {
+      return question.choices.map((choice, idx) => ({
+        id: idx,
+        text: undefined,
+        isCorrect: false,
+        styles: choiceStyles[idx]!.styles,
+      }));
+    }
+
+    return Array.from({ length: 2 }, (_, idx) => ({
+      id: idx,
+      text: undefined,
+      isCorrect: false,
+      styles: choiceStyles[idx]!.styles,
+    }));
+  };
 
   const [timeLimitOptions, setTimeLimitOptions] = useState<Option[]>(
     TIME_LIMIT_OPTIONS.map((option) => ({
@@ -78,21 +132,37 @@ export const CreateQuestionScreen: FC = () => {
     question?.title ?? "",
   );
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
-  const [choices, setChoices] = useState<Choice[]>(
-    question!.type === "multiple_choice"
-      ? question!.choices.map((choice, idx) => ({
-          id: idx,
-          text: choice.text ?? "",
-          isCorrect: choice.isCorrect,
-          styles: choiceStyles[idx]!.styles,
-        }))
-      : Array.from({ length: 2 }, (_, idx) => ({
-          id: idx,
-          text: undefined,
-          isCorrect: false,
-          styles: choiceStyles[idx]!.styles,
-        })),
-  );
+  const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const snapPoints = useMemo(() => ["5%", "25%", "60%"], []);
+
+  const openBottomSheet = () => {
+    bottomSheetRef.current?.expand();
+  };
+
+  const goToCreateQuestion = () => {
+    if (isLastQuestionInEdit()) {
+      setLastIndex();
+      setTimeLimitOptions(TIME_LIMIT_OPTIONS);
+      setPointOptions(POINT_OPTIONS);
+      setQuestionTitle("");
+      setChoices(resetSelectedChoices());
+      setImage(undefined);
+      navigation.navigate("CreateQuestion");
+    } else {
+      addEmptyQuestion("multiple_choice");
+      setLastIndex();
+      navigation.navigate("CreateQuestion");
+    }
+  };
+
+  const handleSheetChanges = useCallback((index: number) => {
+    if (index === 0) {
+      bottomSheetRef.current?.forceClose();
+    }
+  }, []);
 
   const handleTextInputFocus = () => {
     setIsTextInputFocused(true);
@@ -177,6 +247,7 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleClickQuestion = (index: number) => () => {
     setSelectedQuestionId(index);
+    setQuestionImage(questions[index]?.image ?? undefined);
     const selectedQuestion = questions[index];
 
     if (selectedQuestion?.type === "multiple_choice") {
@@ -207,7 +278,16 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleGoBack = () => {
     resetQuestionImage();
-    alertExit({ handleExit: goBack });
+    if (question?.inEdit) {
+      alertExit({ handleExit: goBack });
+    } else {
+      goBack();
+    }
+  };
+
+  const handleDelete = () => {
+    deleteQuestion(selectedIndex!);
+    goBack();
   };
 
   const selectedChoice = useMemo(
@@ -230,7 +310,7 @@ export const CreateQuestionScreen: FC = () => {
           <Text className="font-nunito-bold text-2xl">Create Question</Text>
         </View>
         {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-        <OptionDropdown onSave={handleSaveQuestion} onDelete={() => {}} />
+        <OptionDropdown onSave={handleSaveQuestion} onDelete={handleDelete} />
       </View>
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
@@ -390,11 +470,36 @@ export const CreateQuestionScreen: FC = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <TouchableOpacity className="inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow">
+          <TouchableOpacity
+            className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow"
+            onPress={openBottomSheet}
+          >
             <Feather name="plus" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        style={styles.bottomSheetContainer}
+      >
+        <ChoiceBottomSheet goToCreateQuestion={goToCreateQuestion} />
+      </BottomSheet>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  bottomSheetContainer: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+});
