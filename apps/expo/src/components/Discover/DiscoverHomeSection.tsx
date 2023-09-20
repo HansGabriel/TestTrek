@@ -7,7 +7,7 @@ import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const DiscoverHomeSection: FC = () => {
-  const { data } = trpc.test.getAll.useQuery();
+  const { data } = trpc.test.getDiscoverTests.useQuery();
 
   const navigation = useNavigation();
 
@@ -17,29 +17,19 @@ const DiscoverHomeSection: FC = () => {
     });
   };
 
-  const sortedAndFilteredData = React.useMemo(() => {
-    if (data) {
-      return data
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )
-        .slice(0, 5);
-    }
-    return [];
-  }, [data]);
-
   return (
     <View>
       <SectionHeader
         title={"Discover"}
         hasViewAll={true}
-        onViewAllPress={() => navigation.navigate("Discover")}
+        onViewAllPress={() =>
+          navigation.navigate("ViewAll", { fetchedData: "discoverTests" })
+        }
       />
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={sortedAndFilteredData}
+        data={data}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => {
           const fullName = `${item.user.firstName} ${item.user.lastName}`;

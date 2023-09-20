@@ -1,11 +1,12 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import type { ImageSourcePropType } from "react-native";
+import { FC } from "react";
 
 interface Props {
   imageSource: ImageSourcePropType;
   title: string;
-  q: number;
+  questions: number;
   date: Date;
   plays: number;
   userImageSource: ImageSourcePropType;
@@ -34,7 +35,7 @@ function dayDifference(dateFrom: Date, dateTo: Date) {
   return Math.round(Math.abs((dateFrom.getTime() - dateTo.getTime()) / oneDay));
 }
 
-const DiscoverScreenCard: React.FC<Props> = (props) => {
+const ViewAllScreenTestCard: FC<Props> = (props) => {
   const monthsAgo = monthDifference(new Date(props.date), new Date());
   const daysAgo = dayDifference(new Date(props.date), new Date());
 
@@ -55,17 +56,17 @@ const DiscoverScreenCard: React.FC<Props> = (props) => {
             <Text
               style={{ fontSize: 10 }}
               className=" overflow-hidden truncate font-semibold text-white"
-              numberOfLines={2}
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {props.q} Qs
+              {props.questions} Qs
             </Text>
           </View>
         </View>
         <View className="flex-1 flex-col justify-center overflow-hidden border-t border-r border-b border-gray-200 px-4 py-3">
           <Text
             className="flex-1 overflow-hidden truncate text-lg font-bold leading-7 text-black"
-            numberOfLines={2}
+            numberOfLines={1}
             ellipsizeMode="tail"
           >
             {props.title}
@@ -90,7 +91,7 @@ const DiscoverScreenCard: React.FC<Props> = (props) => {
           <View className="mt-3 flex-row items-center">
             <Image
               className="h-5 w-5 rounded-full"
-              source={require("../../temp-data/discover/discover-images/image-source/image1.png")}
+              source={props.userImageSource}
             />
             <Text
               className="ml-1.5 overflow-hidden truncate text-xs font-semibold text-gray-600"
@@ -106,4 +107,4 @@ const DiscoverScreenCard: React.FC<Props> = (props) => {
   );
 };
 
-export default DiscoverScreenCard;
+export default ViewAllScreenTestCard;

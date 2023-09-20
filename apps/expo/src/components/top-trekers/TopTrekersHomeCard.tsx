@@ -8,7 +8,7 @@ interface Props {
 
 const TopTrekersHomeCard: FC<Props> = (props) => {
   return (
-    <View className="h-21 ml-6 w-20 flex-shrink-0 flex-col items-center justify-center p-2">
+    <View className="h-21 mx-3 w-20 flex-shrink-0 flex-col items-center justify-center p-2">
       <View className="relative h-20 w-20">
         <Image
           className="absolute top-0 left-0 h-20 w-20 rounded-full"

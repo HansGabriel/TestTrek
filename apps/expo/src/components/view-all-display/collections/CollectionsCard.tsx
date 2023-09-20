@@ -1,17 +1,17 @@
-import { View, ImageBackground, Text } from "react-native";
+import { View, ImageBackground, Text, ImageSourcePropType } from "react-native";
 
 import type { FC } from "react";
 
 interface Props {
-  imageSource: string;
+  userImage: ImageSourcePropType;
   title: string;
 }
 
-const TopTrekersHomeSection: FC<Props> = (props) => {
+const CollectionsCard: FC<Props> = (props) => {
   return (
-    <View className="my-2 ml-6">
+    <View className="my-2 mx-3">
       <ImageBackground
-        source={{ uri: props.imageSource }}
+        source={props.userImage}
         className="overflow-hidden rounded-xl border-2 border-white"
         style={{ position: "relative" }}
       >
@@ -36,4 +36,4 @@ const TopTrekersHomeSection: FC<Props> = (props) => {
   );
 };
 
-export default TopTrekersHomeSection;
+export default CollectionsCard;
