@@ -43,7 +43,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
               <ViewAllScreenTestCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
-                questions={12}
+                questions={item.questions.length}
                 date={new Date(item.createdAt)}
                 plays={0}
                 userImageSource={{

@@ -2,7 +2,6 @@ import * as React from "react";
 import { View, TouchableOpacity, FlatList } from "react-native";
 import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
-import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
@@ -29,26 +28,19 @@ const TrendingTestsHomeSection: FC = () => {
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={trendingTests.map((test) => ({
-          imageSource: test.imageUrl,
-          title: test.title,
-          date: test.createdAt,
-          plays: test.title.length,
-          userImageSource: test.user.imageUrl,
-          userName: getFullName(test.user.firstName, test.user.lastName),
-        }))}
+        data={trendingTests}
         renderItem={({ item }) => (
           <TouchableOpacity>
             <HomeTestDisplayCard
-              imageSource={{ uri: item.imageSource }}
+              imageSource={{ uri: item.imageUrl }}
               title={item.title}
-              questions={item.title.length}
-              date={new Date(item.date)}
-              plays={item.plays}
+              questions={item.questions.length}
+              date={new Date(item.createdAt)}
+              plays={0}
               userImageSource={{
-                uri: item.userImageSource ?? IMAGE_PLACEHOLDER,
+                uri: item.user.imageUrl ?? IMAGE_PLACEHOLDER,
               }}
-              userName={item.userName}
+              userName={`${item.user.firstName} ${item.user.lastName}`}
             />
           </TouchableOpacity>
         )}

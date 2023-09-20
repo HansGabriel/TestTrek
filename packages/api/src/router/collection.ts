@@ -1,5 +1,4 @@
 import { collectionsSchema } from "@acme/schema/src/collection";
-import { testSortSchema } from "@acme/schema/src/testFilter";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 

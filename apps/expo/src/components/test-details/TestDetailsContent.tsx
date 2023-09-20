@@ -48,7 +48,11 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
         />
       </View>
 
-      <Text className="font-nunito mt-3 w-[87%] break-words text-2xl font-bold leading-[38.40px] text-[#212121]">
+      <Text
+        className="font-nunito mt-3 w-[87%] break-words text-2xl font-bold leading-[38.40px] text-[#212121]"
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
         {testDetails?.title ?? "Test Title"}
       </Text>
 
