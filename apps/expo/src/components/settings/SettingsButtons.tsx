@@ -7,13 +7,17 @@ import AboutIcon from "../../icons/settings/AboutIcon";
 import RedLogoutIcon from "../../icons/settings/RedLogoutIcon";
 import { useAuth } from "@clerk/clerk-expo";
 import type { FC } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const SettingsButtons: FC = () => {
   const { signOut } = useAuth();
+  const navigation = useNavigation();
   return (
     <View>
       <View className="mt-5 w-80 self-center">
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("EditPersonalInfo")}
+        >
           <PersonalInfoIcon width={"100%"} />
         </TouchableOpacity>
       </View>

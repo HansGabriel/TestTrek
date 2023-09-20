@@ -17,6 +17,15 @@ export const userSigninSchema = z.object({
   password: z.string().min(8).max(255),
 });
 
+export const userStoredSchema = z.object({
+  email: z.string().email(),
+  userName: z.string(),
+  first_name: z.string(),
+  id: z.string(),
+  image_url: z.string().optional(),
+  last_name: z.string(),
+});
+
 export const userWebhookSchema = z
   .object({
     email_addresses: z
