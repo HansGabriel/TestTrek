@@ -1,6 +1,7 @@
 import { collectionsSchema } from "@acme/schema/src/collection";
 import { testSortSchema } from "@acme/schema/src/testFilter";
 import { router, protectedProcedure } from "../trpc";
+import { z } from "zod";
 
 export const collectionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -15,25 +16,144 @@ export const collectionRouter = router({
     });
   }),
 
-  getByUserId: protectedProcedure
-    .input(testSortSchema)
+  getByCollectionId: protectedProcedure
+    .input(z.object({ collectionId: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.collection.findMany({
+      return ctx.prisma.collection.findUnique({
         where: {
-          userId: ctx.auth.userId,
+          id: input.collectionId,
+        },
+        select: {
+          id: true,
+          title: true,
+          imageUrl: true,
+          userId: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+          tests: {
+            select: {
+              test: {
+                select: {
+                  id: true,
+                  title: true,
+                  imageUrl: true,
+                  description: true,
+                  visibility: true,
+                  keywords: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                  questions: {
+                    select: {
+                      answer: true,
+                      choices: {
+                        select: {
+                          id: true,
+                          isCorrect: true,
+                          text: true,
+                        },
+                      },
+                      id: true,
+                      image: true,
+                      points: true,
+                      possibleAnswers: true,
+                      time: true,
+                      title: true,
+                      type: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
+
+  getTestsInCollection: protectedProcedure
+    .input(
+      z.object({
+        collectionId: z.string(),
+        sortType: z.union([
+          z.literal("newest"),
+          z.literal("oldest"),
+          z.literal("alphabetical"),
+        ]),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.testOnCollection.findMany({
+        where: {
+          collectionsId: input.collectionId,
         },
         orderBy: (() => {
-          switch (input) {
+          switch (input.sortType) {
             case "newest":
-              return { createdAt: "desc" };
+              return { test: { createdAt: "desc" } };
             case "oldest":
-              return { createdAt: "asc" };
+              return { test: { createdAt: "asc" } };
             case "alphabetical":
-              return { title: "asc" };
+              return { test: { title: "asc" } };
             default:
-              return { createdAt: "desc" };
+              return { test: { createdAt: "desc" } };
           }
         })(),
+        select: {
+          test: {
+            select: {
+              id: true,
+              title: true,
+              imageUrl: true,
+              description: true,
+              visibility: true,
+              createdAt: true,
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  firstName: true,
+                  lastName: true,
+                  imageUrl: true,
+                },
+              },
+              keywords: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              questions: {
+                select: {
+                  answer: true,
+                  choices: {
+                    select: {
+                      id: true,
+                      isCorrect: true,
+                      text: true,
+                    },
+                  },
+                  id: true,
+                  image: true,
+                  points: true,
+                  possibleAnswers: true,
+                  time: true,
+                  title: true,
+                  type: true,
+                },
+              },
+            },
+          },
+        },
       });
     }),
 
