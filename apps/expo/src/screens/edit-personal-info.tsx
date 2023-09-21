@@ -17,17 +17,29 @@ import { userStoredSchema } from "@acme/schema/src/user";
 import { UserStored } from "@acme/schema/src/types";
 import AppTextInput from "../components/inputs/AppTextInput";
 import { ScrollView } from "react-native-gesture-handler";
+import { trpc } from "../utils/trpc";
+import { AppButton } from "../components/buttons/AppButton";
 
 export const EditPersonalInfoScreen = () => {
+  const { data: userDetails } = trpc.user.getUserDetails.useQuery();
   const navigation = useNavigation();
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
+    defaultValues: {
+      first_name: userDetails?.firstName,
+      last_name: userDetails?.lastName,
+      userName: userDetails?.username,
+      email: userDetails?.email,
+    },
   });
+
+  const submitEditedData = (data: UserStored) => {
+    console.log(data);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -53,19 +65,19 @@ export const EditPersonalInfoScreen = () => {
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className=" h-36 w-[90%] items-center justify-center self-center">
+        <View className=" h-30 w-[90%] items-center justify-center self-center">
           <Avatar
             rounded
             size={120}
             source={{
-              uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+              uri: `${userDetails?.imageUrl}`,
             }}
           >
             <Avatar.Accessory size={30} />
           </Avatar>
         </View>
 
-        <View className=" my-5 h-96 w-[85%] self-center">
+        <View className=" mt-5 h-[60%] w-[85%] self-center">
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -138,6 +150,19 @@ export const EditPersonalInfoScreen = () => {
           {errors.email && (
             <Text className="text-red-500">{errors.email.message}</Text>
           )}
+        </View>
+        <View className="my-10">
+          <AppButton
+            text="Submit"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="full"
+            Vwidth="80"
+            onPress={handleSubmit(submitEditedData)}
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
