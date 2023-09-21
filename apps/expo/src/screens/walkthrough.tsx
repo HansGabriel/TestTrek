@@ -16,8 +16,6 @@ import Swiper from "react-native-swiper";
 import type { FC } from "react";
 
 export const WaltkthroughScreen: FC = () => {
-  const navigation = useNavigation();
-
   const signInWithGoogle = useSignin({
     strategy: "oauth_google",
   });
@@ -26,33 +24,25 @@ export const WaltkthroughScreen: FC = () => {
     strategy: "oauth_facebook",
   });
 
-  const goToCreateAccountScreen = () => {
-    navigation.navigate("CreateAccount");
-  };
-
-  const goToSigninScreen = () => {
-    navigation.navigate("Signin");
-  };
-
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
       <Swiper index={1} loop={true}>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon1 height={280} width={"90%"} />
+          <WalktrhoughIcon1 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
-            Create, share and play quizzes, whenever and wherever you want
+            Create, share and play tests, whenever and wherever you want
           </Text>
         </View>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon2 height={280} width={"90%"} />
+          <WalktrhoughIcon2 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
-            Find fun and interesting quizzes to boost up your knowledge
+            Find fun and interesting tests to boost up your knowledge
           </Text>
         </View>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon3 height={280} width={"90%"} />
+          <WalktrhoughIcon3 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
-            Play and take quiz challenges together with your friends.
+            Play and take test challenges together with your friends.
           </Text>
         </View>
       </Swiper>
