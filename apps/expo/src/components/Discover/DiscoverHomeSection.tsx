@@ -38,7 +38,7 @@ const DiscoverHomeSection: FC = () => {
               <HomeTestDisplayCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
-                questions={item.keywords.length}
+                questions={item.questions.length}
                 date={new Date(item.createdAt)}
                 plays={0}
                 userImageSource={{

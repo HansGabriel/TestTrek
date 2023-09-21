@@ -17,8 +17,7 @@ export const ViewAllUserDisplay: FC<Props> = (props) => {
   if (props.usersFor == "topUsers") {
     const { data } = trpc.user.getTop.useQuery();
     fetchedData = data;
-    headerTitle = "Top Users";
-    console.log("Top Users");
+    headerTitle = "Top Trekers";
   }
 
   return (

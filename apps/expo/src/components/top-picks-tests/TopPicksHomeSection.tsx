@@ -4,7 +4,6 @@ import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import type { FC } from "react";
 import { trpc } from "../../utils/trpc";
-import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 
@@ -29,27 +28,19 @@ const TopPicksHomeSection: FC = () => {
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={topPicksTest.map((test) => ({
-          imageSource: test.imageUrl,
-          title: test.title,
-          q: test.title.length,
-          date: test.createdAt,
-          plays: test.title.length,
-          userImageSource: test.user.imageUrl,
-          userName: getFullName(test.user.firstName, test.user.lastName),
-        }))}
+        data={topPicksTest}
         renderItem={({ item }) => (
           <TouchableOpacity>
             <HomeTestDisplayCard
-              imageSource={{ uri: item.imageSource }}
+              imageSource={{ uri: item.imageUrl }}
               title={item.title}
-              questions={item.title.length}
-              date={new Date(item.date)}
-              plays={item.plays}
+              questions={item.questions.length}
+              date={new Date(item.createdAt)}
+              plays={0}
               userImageSource={{
                 uri: "https://example.com/dummy-image.jpg" ?? IMAGE_PLACEHOLDER,
               }}
-              userName={item.userName}
+              userName={`${item.user.firstName} ${item.user.lastName}`}
             />
           </TouchableOpacity>
         )}

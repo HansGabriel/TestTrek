@@ -21,6 +21,25 @@ export const testRouter = router({
             name: true,
           },
         },
+        questions: {
+          select: {
+            answer: true,
+            choices: {
+              select: {
+                id: true,
+                isCorrect: true,
+                text: true,
+              },
+            },
+            id: true,
+            image: true,
+            points: true,
+            possibleAnswers: true,
+            time: true,
+            title: true,
+            type: true,
+          },
+        },
         collections: {
           include: {
             collection: true,
@@ -374,6 +393,25 @@ export const testRouter = router({
             name: true,
           },
         },
+        questions: {
+          select: {
+            answer: true,
+            choices: {
+              select: {
+                id: true,
+                isCorrect: true,
+                text: true,
+              },
+            },
+            id: true,
+            image: true,
+            points: true,
+            possibleAnswers: true,
+            time: true,
+            title: true,
+            type: true,
+          },
+        },
         collections: {
           include: {
             collection: true,
@@ -407,6 +445,25 @@ export const testRouter = router({
             name: true,
           },
         },
+        questions: {
+          select: {
+            answer: true,
+            choices: {
+              select: {
+                id: true,
+                isCorrect: true,
+                text: true,
+              },
+            },
+            id: true,
+            image: true,
+            points: true,
+            possibleAnswers: true,
+            time: true,
+            title: true,
+            type: true,
+          },
+        },
         collections: {
           include: {
             collection: true,
@@ -438,6 +495,25 @@ export const testRouter = router({
           select: {
             id: true,
             name: true,
+          },
+        },
+        questions: {
+          select: {
+            answer: true,
+            choices: {
+              select: {
+                id: true,
+                isCorrect: true,
+                text: true,
+              },
+            },
+            id: true,
+            image: true,
+            points: true,
+            possibleAnswers: true,
+            time: true,
+            title: true,
+            type: true,
           },
         },
         collections: {

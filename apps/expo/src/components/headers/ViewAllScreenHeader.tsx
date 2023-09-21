@@ -20,7 +20,11 @@ const ViewAllScreenHeader: FC<Props> = (props) => {
               onPress={() => navigation.navigate("Home")}
             >
               <LeftArrowIcon />
-              <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+              <Text
+                className="font-nunito-bold w-4/5 text-2xl leading-[38.40px] text-neutral-800"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {props.title}
               </Text>
             </TouchableOpacity>

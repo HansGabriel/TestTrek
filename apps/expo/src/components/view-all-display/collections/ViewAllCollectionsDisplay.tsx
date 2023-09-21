@@ -4,6 +4,7 @@ import CollectionsCard from "./CollectionsCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
 import { trpc } from "../../../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   collectionsFor: "topCollections";
@@ -14,11 +15,17 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
   let fetchedData = data;
   let headerTitle = "";
 
+  const navigation = useNavigation();
+
   if (props.collectionsFor == "topCollections") {
     const { data } = trpc.collection.getTopCollections.useQuery();
     fetchedData = data;
     headerTitle = "Top Collections";
   }
+
+  const goToCollectionDetailsScreen = (collectionId: string) => () => {
+    navigation.navigate("CollectionDetails", { collectionId });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -34,7 +41,9 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
             const nextItem = fetchedData[index + 1];
             return (
               <View key={index} className="flex-row justify-between">
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={goToCollectionDetailsScreen(item.id)}
+                >
                   <CollectionsCard
                     userImage={{
                       uri:
@@ -44,7 +53,9 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
                   />
                 </TouchableOpacity>
                 {nextItem && (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={goToCollectionDetailsScreen(item.id)}
+                  >
                     <CollectionsCard
                       userImage={{
                         uri:
