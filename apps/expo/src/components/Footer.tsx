@@ -1,15 +1,22 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { HomeLightIcon } from "../icons/footer/HomeIcons";
-import CategoryIcon from "../icons/footer/CategoryIcon";
+import { HomeLightIcon, HomeBoldIcon } from "../icons/footer/HomeIcons";
+import {
+  CategoryBoldIcon,
+  CategoryLightIcon,
+} from "../icons/footer/CategoryIcons";
 import CreateNewIcon from "../icons/footer/CreateNewIcon";
-import ProfileIcon from "../icons/footer/ProfileIcon";
-import { useNavigation } from "@react-navigation/native";
+import {
+  ProfileBoldIcon,
+  ProfileLightIcon,
+} from "../icons/footer/ProfileIcons";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import type { FC } from "react";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 
 const Footer: FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
 
   const goToHomeScreen = () => {
     navigation.navigate("Home");
@@ -35,7 +42,7 @@ const Footer: FC = () => {
           style={{ marginHorizontal: 15 }}
         >
           <View className="flex-col items-center space-y-1">
-            <HomeLightIcon />
+            {route.name === "Home" ? <HomeBoldIcon /> : <HomeLightIcon />}
             <Text className="text-center text-xs font-bold tracking-wider text-gray-500">
               Home
             </Text>
@@ -46,7 +53,11 @@ const Footer: FC = () => {
           style={{ marginHorizontal: 15 }}
         >
           <View className="flex-col items-center space-y-1">
-            <CategoryIcon />
+            {route.name === "MyLibrary" ? (
+              <CategoryBoldIcon />
+            ) : (
+              <CategoryLightIcon />
+            )}
             <Text className=" text-center text-xs font-medium tracking-wider text-gray-500">
               Library
             </Text>
@@ -77,7 +88,11 @@ const Footer: FC = () => {
           onPress={goToProfileScreen}
         >
           <View className="flex-col items-center space-y-1">
-            <ProfileIcon />
+            {route.name === "Profile" ? (
+              <ProfileBoldIcon />
+            ) : (
+              <ProfileLightIcon />
+            )}
             <Text className=" text-center text-xs font-medium tracking-wider text-gray-500">
               Profile
             </Text>
