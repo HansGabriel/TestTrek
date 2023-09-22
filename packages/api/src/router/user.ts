@@ -26,6 +26,7 @@ export const useRouter = router({
         take: limit,
       });
     }),
+
   getUserDetails: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findFirst({
       where: {

@@ -31,7 +31,6 @@ import { MyStatistics } from "../screens/my-statistics";
 import { EditPersonalInfoScreen } from "../screens/edit-personal-info";
 import { CollectionDetailsScreen } from "../screens/collection-details";
 
-
 export default function Navigation() {
   return (
     <NavigationContainer>

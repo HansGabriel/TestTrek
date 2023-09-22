@@ -43,7 +43,6 @@ export const EditPersonalInfoScreen = () => {
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
-
   const { mutate: editUser } = trpc.user.editUserDetails.useMutation();
   const submitEditedData = async (updatedData: UserStored) => {
     editUser(
