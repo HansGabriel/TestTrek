@@ -29,6 +29,7 @@ import { UserStored } from "@acme/schema/src/types";
 import AppTextInput from "../components/inputs/AppTextInput";
 import { ScrollView } from "react-native-gesture-handler";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { trpc } from "../utils/trpc";
 import { AppButton } from "../components/buttons/AppButton";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
@@ -53,19 +54,30 @@ export const EditPersonalInfoScreen = () => {
     formState: { errors },
     setValue,
 =======
+=======
+import { trpc } from "../utils/trpc";
+import { AppButton } from "../components/buttons/AppButton";
+>>>>>>> 809e4d1 (feature: edit personal info mutation)
 
 export const EditPersonalInfoScreen = () => {
+  const { data: userDetails } = trpc.user.getUserDetails.useQuery();
   const navigation = useNavigation();
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
 >>>>>>> 9517890 (feature: edit personal info screen)
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
+    defaultValues: {
+      first_name: userDetails?.firstName,
+      last_name: userDetails?.lastName,
+      userName: userDetails?.username,
+      email: userDetails?.email,
+    },
   });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const { mutate: editUser } = trpc.user.editUserDetails.useMutation();
   const submitEditedData = async (updatedData: UserStored) => {
@@ -99,6 +111,12 @@ export const EditPersonalInfoScreen = () => {
 
 =======
 >>>>>>> 9517890 (feature: edit personal info screen)
+=======
+  const submitEditedData = (data: UserStored) => {
+    console.log(data);
+  };
+
+>>>>>>> 809e4d1 (feature: edit personal info mutation)
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -285,19 +303,19 @@ export const EditPersonalInfoScreen = () => {
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className=" h-36 w-[90%] items-center justify-center self-center">
+        <View className=" h-30 w-[90%] items-center justify-center self-center">
           <Avatar
             rounded
             size={120}
             source={{
-              uri: "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
+              uri: `${userDetails?.imageUrl}`,
             }}
           >
             <Avatar.Accessory size={30} />
           </Avatar>
         </View>
 
-        <View className=" my-5 h-96 w-[85%] self-center">
+        <View className=" mt-5 h-[60%] w-[85%] self-center">
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -370,6 +388,19 @@ export const EditPersonalInfoScreen = () => {
           {errors.email && (
             <Text className="text-red-500">{errors.email.message}</Text>
           )}
+        </View>
+        <View className="my-10">
+          <AppButton
+            text="Submit"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="full"
+            Vwidth="80"
+            onPress={handleSubmit(submitEditedData)}
+          />
         </View>
       </ScrollView>
 >>>>>>> 9517890 (feature: edit personal info screen)
