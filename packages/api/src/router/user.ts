@@ -27,9 +27,12 @@ export const useRouter = router({
       });
     }),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 9517890 (feature: edit personal info screen)
+=======
+>>>>>>> f943163 (feature: added loader and image upload)
   getUserDetails: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findFirst({
       where: {
@@ -38,6 +41,9 @@ export const useRouter = router({
     });
   }),
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f943163 (feature: added loader and image upload)
 
   editUserDetails: protectedProcedure
     .input(userStoredSchema)
@@ -57,6 +63,9 @@ export const useRouter = router({
         },
       });
     }),
+<<<<<<< HEAD
 =======
 >>>>>>> 9517890 (feature: edit personal info screen)
+=======
+>>>>>>> f943163 (feature: added loader and image upload)
 });
