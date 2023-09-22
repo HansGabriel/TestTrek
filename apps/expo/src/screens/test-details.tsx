@@ -24,7 +24,7 @@ export const TestDetailsScreen = ({
     return (
       <>
         <SafeAreaView>
-          <LoadingHeader title="Loding..." />
+          <LoadingHeader title="Loading..." />
         </SafeAreaView>
       </>
     );
