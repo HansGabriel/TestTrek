@@ -17,6 +17,10 @@ const DiscoverHomeSection: FC = () => {
     });
   };
 
+  if (!data) {
+    return <></>;
+  }
+
   return (
     <View>
       <SectionHeader

@@ -5,6 +5,8 @@ import TestDetailsContent from "../components/test-details/TestDetailsContent";
 import { RootStackScreenProps } from "../types";
 import { trpc } from "../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
+import ViewAllScreenHeader from "../components/headers/ViewAllScreenHeader";
+import LoadingHeader from "../components/headers/LoadingHeader";
 
 export const TestDetailsScreen = ({
   route,
@@ -19,7 +21,13 @@ export const TestDetailsScreen = ({
   };
 
   if (!testDetails) {
-    return <></>;
+    return (
+      <>
+        <SafeAreaView>
+          <LoadingHeader title="Loding..." />
+        </SafeAreaView>
+      </>
+    );
   }
 
   return (

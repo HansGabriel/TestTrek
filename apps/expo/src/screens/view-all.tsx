@@ -47,7 +47,8 @@ export const ViewAllScreen = ({ route }: ViewAllScreenProps) => {
         </>
       );
     }
+    default: {
+      return <SafeAreaView className="flex-1 flex-col"></SafeAreaView>;
+    }
   }
-
-  return <SafeAreaView className="flex-1 flex-col"></SafeAreaView>;
 };

@@ -4,6 +4,7 @@ import { RootStackScreenProps } from "../types";
 import { trpc } from "../utils/trpc";
 import ViewAllScreenHeader from "../components/headers/ViewAllScreenHeader";
 import { CollectionTestHeaderAndContent } from "../components/collection-details/CollectionTestHeaderAndContent";
+import LoadingHeader from "../components/headers/LoadingHeader";
 
 export const CollectionDetailsScreen = ({
   route,
@@ -18,7 +19,7 @@ export const CollectionDetailsScreen = ({
   if (!collectionDetails) {
     return (
       <SafeAreaView>
-        <ViewAllScreenHeader title="Loading..." />
+        <LoadingHeader title="Loading..." />
       </SafeAreaView>
     );
   }
