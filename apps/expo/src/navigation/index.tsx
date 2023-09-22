@@ -29,11 +29,7 @@ import { ViewAllScreen } from "../screens/view-all";
 import { AddCoverImageScreen } from "../screens/add-cover-image";
 import { MyStatistics } from "../screens/my-statistics";
 import { EditPersonalInfoScreen } from "../screens/edit-personal-info";
-<<<<<<< HEAD
 import { CollectionDetailsScreen } from "../screens/collection-details";
-
-=======
->>>>>>> 9517890 (feature: edit personal info screen)
 
 export default function Navigation() {
   return (
