@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import type { ImageSourcePropType } from "react-native";
-import { getTimeAgo } from "../../../functions/getTimeAgo";
+import { getTimeAgo } from "../../../functions/timeAgo";
 import { FC } from "react";
 
 interface Props {
