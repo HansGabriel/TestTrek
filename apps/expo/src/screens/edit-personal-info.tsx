@@ -23,9 +23,6 @@ import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import EditIcon from "../icons/EditIcon";
 import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
-import * as DocumentPicker from "expo-document-picker";
-import { DocumentPickerType } from "../types/documentPickerType";
-import { Feather } from "@expo/vector-icons";
 
 export const EditPersonalInfoScreen = () => {
   const { data: userDetails, refetch: refetchData } =
@@ -39,7 +36,6 @@ export const EditPersonalInfoScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
@@ -61,16 +57,6 @@ export const EditPersonalInfoScreen = () => {
     );
 
     setEdit(false);
-  };
-
-  const selectFile = async () => {
-    const result = await DocumentPicker.getDocumentAsync();
-    if (!result.canceled) {
-      const { uri, mimeType } = result as DocumentPickerType;
-      if (mimeType === "image/jpeg") {
-        setValue("image_url", uri);
-      }
-    }
   };
 
   return (
@@ -110,28 +96,7 @@ export const EditPersonalInfoScreen = () => {
                   source={{
                     uri: value,
                   }}
-                >
-                  {edit ? (
-                    <TouchableOpacity
-                      onPress={selectFile}
-                      style={{
-                        width: 35,
-                        height: 35,
-                        backgroundColor: "rgba(105, 73, 255, 1)",
-                        borderRadius: 17.5,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "absolute",
-                        right: 0,
-                        bottom: 0,
-                      }}
-                    >
-                      <Feather name="edit" size={20} color="white" />
-                    </TouchableOpacity>
-                  ) : (
-                    ""
-                  )}
-                </Avatar>
+                />
               )}
             />
           </View>
