@@ -68,9 +68,7 @@ export const CreateCollection = () => {
             defaultButtonText="Only Me"
             dropdownIconPosition="right"
             data={publication}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-            }}
+            onSelect={(selectedItem, index) => {}}
           />
         </View>
 
