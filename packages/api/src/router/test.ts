@@ -546,4 +546,23 @@ export const testRouter = router({
         },
       });
     }),
+
+  play: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.play.create({
+        data: {
+          player: {
+            connect: {
+              userId: ctx.auth.userId,
+            },
+          },
+          test: {
+            connect: {
+              id: input.testId,
+            },
+          },
+        },
+      });
+    }),
 });

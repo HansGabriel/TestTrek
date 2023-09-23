@@ -30,6 +30,7 @@ import { AddCoverImageScreen } from "../screens/add-cover-image";
 import { MyStatistics } from "../screens/my-statistics";
 import { EditPersonalInfoScreen } from "../screens/edit-personal-info";
 import { CollectionDetailsScreen } from "../screens/collection-details";
+import { PlayTestScreen } from "../screens/play-test";
 
 export default function Navigation() {
   return (
@@ -176,6 +177,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="EditPersonalInfo"
               component={EditPersonalInfoScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="PlayTest"
+              component={PlayTestScreen}
               options={{
                 headerShown: false,
               }}

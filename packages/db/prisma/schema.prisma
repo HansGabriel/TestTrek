@@ -22,6 +22,7 @@ model User {
     updatedAt   DateTime     @updatedAt
     tests       Test[]
     collections Collection[]
+    plays       Play[]
 }
 
 model Post {
@@ -51,6 +52,7 @@ model Test {
     collections TestOnCollection[]
     questions   Question[]
     user        User               @relation(fields: [userId], references: [userId])
+    plays       Play[]
 }
 
 model Question {
@@ -104,6 +106,16 @@ model TestOnCollection {
     updatedAt     DateTime   @updatedAt
 
     @@id([testId, collectionsId])
+}
+
+model Play {
+    id        String   @id @default(cuid())
+    testId    String
+    playerId  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    player    User     @relation(fields: [playerId], references: [userId])
+    test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
 }
 
 enum Visibility {

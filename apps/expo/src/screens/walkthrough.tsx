@@ -9,8 +9,6 @@ import WalktrhoughIcon3 from "../icons/WalkthroughIcon3";
 import GoogleIcon from "../icons/GoogleIcon";
 import FacebookIcon from "../icons/FacebookIcon";
 
-import { useNavigation } from "@react-navigation/native";
-
 import Swiper from "react-native-swiper";
 
 import type { FC } from "react";
