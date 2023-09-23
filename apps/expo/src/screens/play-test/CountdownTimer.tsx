@@ -1,54 +1,60 @@
-import { useEffect } from "react";
+import { useEffect, forwardRef, useImperativeHandle } from "react";
 import { View, Text } from "react-native";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
 
-import type { FC } from "react";
-
 type Props = {
   index: number;
-  timeInSeconds: number;
+  timeInSeconds?: number;
   handleTimeUp?: () => void;
 };
 
-const CountdownTimer: FC<Props> = ({
-  index,
-  timeInSeconds = 60,
-  handleTimeUp,
-}) => {
-  const { seconds, restart } = useTimer({
-    expiryTimestamp: dayjs().add(timeInSeconds, "second").toDate(),
-    onExpire: () => {
-      handleTimeUp?.();
-    },
-  });
+export type CountdownTimerRef = {
+  pauseTimer: () => void;
+};
 
-  const remainingPercentage = seconds / timeInSeconds;
+const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
+  ({ index, timeInSeconds = 60, handleTimeUp }, ref) => {
+    const { seconds, restart, pause } = useTimer({
+      expiryTimestamp: dayjs().add(timeInSeconds, "second").toDate(),
+      onExpire: () => {
+        handleTimeUp?.();
+      },
+    });
 
-  useEffect(() => {
-    restart(dayjs().add(timeInSeconds, "second").toDate());
-  }, [timeInSeconds, index]);
+    const remainingPercentage = seconds / timeInSeconds;
 
-  return (
-    <View className="mt-5 flex h-4 w-full items-center justify-center gap-x-3">
-      <View className="relative h-4 w-full">
-        <View className="absolute left-0 top-0 h-4 w-full">
-          <View className="absolute left-0 top-0 h-4 w-full rounded-[100px] bg-zinc-100" />
-          <View
-            className={`absolute left-0 top-0 h-4 w-full rounded-[100px] ${calculateColor(
-              remainingPercentage,
-            )}`}
-            style={{ width: `${remainingPercentage * 100}%` }}
-          >
-            <Text className="font-nunito-bold my-auto ml-auto mr-3 text-end text-xs font-bold tracking-tight text-white">
-              {seconds}
-            </Text>
+    useImperativeHandle(ref, () => ({
+      pauseTimer() {
+        pause();
+      },
+    }));
+
+    useEffect(() => {
+      restart(dayjs().add(timeInSeconds, "second").toDate());
+    }, [timeInSeconds, index]);
+
+    return (
+      <View className="mt-5 flex h-4 w-full items-center justify-center gap-x-3">
+        <View className="relative h-4 w-full">
+          <View className="absolute left-0 top-0 h-4 w-full">
+            <View className="absolute left-0 top-0 h-4 w-full rounded-[100px] bg-zinc-100" />
+            <View
+              className={`absolute left-0 top-0 h-4 w-full rounded-[100px] ${calculateColor(
+                remainingPercentage,
+              )}`}
+              style={{ width: `${remainingPercentage * 100}%` }}
+            >
+              <Text className="font-nunito-bold my-auto ml-auto mr-3 text-end text-xs font-bold tracking-tight text-white">
+                {seconds}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  );
-};
+    );
+  },
+);
 
 export default CountdownTimer;
 

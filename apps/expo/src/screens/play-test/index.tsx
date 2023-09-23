@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   StatusBar,
+  Alert,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { MoreCircleIcon } from "../../icons/question-options";
@@ -13,8 +14,9 @@ import CheckboxIcon from "../../icons/CheckboxIcon";
 import { trpc } from "../../utils/trpc";
 import { AppButton } from "../../components/buttons/AppButton";
 import { RouterOutputs } from "../../utils/trpc";
-import CountdownTimer from "./CountdownTimer";
+import CountdownTimer, { type CountdownTimerRef } from "./CountdownTimer";
 import UpperBar, { type UpperBarRef } from "./UpperBar";
+import { match } from "ts-pattern";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
@@ -69,8 +71,13 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 }) => {
   const { testId } = route.params;
   const upperBarRef = useRef<UpperBarRef>(null);
+  const countdownTimerRef = useRef<CountdownTimerRef>(null);
 
+  const [modalType, setModalType] = useState<"correct" | "incorrect">(
+    "incorrect",
+  );
   const [index, setIndex] = useState<number>(0);
+  const [isDone, setIsDone] = useState<boolean>(false);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
 
@@ -103,20 +110,43 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     if (!question) {
       return;
     }
-    if (question.type === "multiple_choice") {
-      const newChoices = choices.map((choice) => ({
-        ...choice,
-        isSelected: choice.id === choiceId,
-      })) as ModifiedChoices;
 
-      setChoices(newChoices);
-    }
+    Alert.alert("Confirm", "Are you sure you want to submit your answer?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          if (question.type === "multiple_choice") {
+            const selectedChoice = choices.find(
+              (choice) => choice.id === choiceId,
+            );
+            if (selectedChoice) {
+              if (selectedChoice.isCorrect) {
+                setModalType("correct");
+              } else {
+                setModalType("incorrect");
+              }
+            } else {
+              setModalType("incorrect");
+            }
+          }
+
+          countdownTimerRef.current?.pauseTimer();
+          showUpperBar();
+          setIsDone(true);
+        },
+      },
+    ]);
   };
 
   const renderChoice = (choice: ModifiedChoice) => {
     return (
       <TouchableOpacity
         key={choice.id}
+        disabled={isDone}
         className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${choice.styles} p-5`}
         onPress={handlePressChoice(choice.id)}
       >
@@ -132,8 +162,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     );
   };
 
-  const hasOneChoiceSelected = choices.some((choice) => choice.isSelected);
-
   const handleGoToNextQuestion = () => {
     if (index + 1 >= totalQuestions) {
       setIndex(0);
@@ -145,6 +173,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     if (singleQuestion) {
       setChoices(getSelectedChoices(singleQuestion));
     }
+
+    setIsDone(false);
   };
 
   const showUpperBar = () => {
@@ -152,10 +182,25 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   };
 
   const handleTimeUp = () => {
+    if (!question) {
+      return;
+    }
+
+    if (question.type === "multiple_choice") {
+      const selectedChoice = choices.find((choice) => choice.isSelected);
+      if (selectedChoice) {
+        if (selectedChoice.isCorrect) {
+          setModalType("correct");
+        } else {
+          setModalType("incorrect");
+        }
+      } else {
+        setModalType("incorrect");
+      }
+    }
+
     showUpperBar();
-    setTimeout(() => {
-      handleGoToNextQuestion();
-    }, 5000);
+    setIsDone(true);
   };
 
   return (
@@ -177,6 +222,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 index={index}
                 timeInSeconds={question.time}
                 handleTimeUp={handleTimeUp}
+                ref={countdownTimerRef}
               />
             ) : null}
             <View className="mt-8 mb-4 flex flex-col">
@@ -207,7 +253,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               {choices[3] ? renderChoice(choices[3]) : <></>}
             </View>
 
-            {hasOneChoiceSelected && (
+            {isDone && (
               <>
                 <AppButton
                   onPress={handleGoToNextQuestion}
@@ -226,7 +272,19 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           </View>
         </ScrollView>
       </SafeAreaView>
-      <UpperBar type="incorrect" message="Incorrect!" ref={upperBarRef} />
+      {match(modalType)
+        .with("correct", () => (
+          <UpperBar
+            type="correct"
+            value={question?.points ?? 0}
+            ref={upperBarRef}
+          />
+        ))
+
+        .with("incorrect", () => (
+          <UpperBar type="incorrect" ref={upperBarRef} />
+        ))
+        .exhaustive()}
       <StatusBar
         barStyle={
           upperBarRef.current?.isVisible ? "light-content" : "dark-content"

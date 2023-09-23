@@ -15,7 +15,7 @@ type Props =
     }
   | {
       type: "incorrect";
-      message: string;
+      message?: string;
     };
 
 const UpperBar = forwardRef<UpperBarRef, Props>((props, ref) => {
@@ -62,7 +62,14 @@ const UpperBar = forwardRef<UpperBarRef, Props>((props, ref) => {
           onPress={hideUpperBar}
         >
           <ImageBackground
-            source={require("../../../assets/images/incorrect-background.png")}
+            source={match(type)
+              .with("correct", () =>
+                require("../../../assets/images/correct-background.png"),
+              )
+              .with("incorrect", () =>
+                require("../../../assets/images/incorrect-background.png"),
+              )
+              .exhaustive()}
             resizeMode="cover"
             className="h-full w-full flex-col items-center justify-center gap-y-5"
           >
@@ -73,7 +80,11 @@ const UpperBar = forwardRef<UpperBarRef, Props>((props, ref) => {
                 .exhaustive()}
             </Text>
             <View className="inline-flex h-[45px] w-[177px] items-center justify-center rounded-[100px] bg-white px-6 py-2.5">
-              <Text className="font-nunito-bold text-center text-lg font-bold leading-[25.20px] tracking-tight text-rose-500">
+              <Text
+                className={`font-nunito-bold text-center text-lg font-bold leading-[25.20px] tracking-tight ${
+                  type === "correct" ? "text-emerald-500" : "text-rose-500"
+                }`}
+              >
                 {match(props)
                   .with(
                     {
@@ -85,7 +96,7 @@ const UpperBar = forwardRef<UpperBarRef, Props>((props, ref) => {
                     {
                       type: "incorrect",
                     },
-                    (props) => props.message,
+                    (props) => props.message ?? "That was close",
                   )
                   .exhaustive()}
               </Text>
