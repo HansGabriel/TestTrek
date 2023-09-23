@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   SafeAreaView,
   View,
@@ -7,15 +6,15 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
 import { MoreCircleIcon } from "../../icons/question-options";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import { trpc } from "../../utils/trpc";
 import { AppButton } from "../../components/buttons/AppButton";
+import { RouterOutputs } from "../../utils/trpc";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
-import type { Choice } from "../create-question/types";
 import type { ChoiceStyle } from "../create-question/types";
 
 const choiceStyles: ChoiceStyle[] = [
@@ -33,6 +32,35 @@ const choiceStyles: ChoiceStyle[] = [
   },
 ];
 
+type Question = NonNullable<
+  RouterOutputs["play"]["getTest"]
+>["test"]["questions"][number];
+
+const getSelectedChoices = (question: Question) => {
+  if (!question) {
+    return [];
+  }
+  if (question.type === "multiple_choice") {
+    return question.choices.map((choice, idx) => ({
+      id: idx,
+      text: choice.text ?? "",
+      isCorrect: choice.isCorrect,
+      styles: choiceStyles[idx]?.styles ?? "",
+      isSelected: false,
+    }));
+  }
+  return Array.from({ length: 2 }, (_, idx) => ({
+    id: idx,
+    text: undefined,
+    isCorrect: false,
+    styles: choiceStyles[idx]?.styles ?? "",
+    isSelected: false,
+  }));
+};
+
+type ModifiedChoices = ReturnType<typeof getSelectedChoices>;
+type ModifiedChoice = ModifiedChoices[number];
+
 export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   route,
 }) => {
@@ -40,6 +68,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [index, setIndex] = useState<number>(0);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
+
+  const singleQuestion = testDetails?.test.questions[index];
+  const questionChoices = singleQuestion
+    ? getSelectedChoices(singleQuestion)
+    : [];
+
+  const [choices, setChoices] = useState<ModifiedChoices>(questionChoices);
+
+  useEffect(() => {
+    const questions = testDetails?.test.questions;
+    const singleQuestion = questions?.[index];
+    if (questions && singleQuestion) {
+      setChoices(getSelectedChoices(singleQuestion));
+    }
+  }, [index, testDetails?.test.questions]);
 
   if (!testDetails) {
     return <></>;
@@ -51,28 +94,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
   const totalQuestions = questions.length;
 
-  const getSelectedChoices = () => {
-    if (!question) {
-      return [];
-    }
-    if (question.type === "multiple_choice") {
-      return question.choices.map((choice, idx) => ({
-        id: idx,
-        text: choice.text ?? "",
-        isCorrect: choice.isCorrect,
-        styles: choiceStyles[idx]!.styles,
-      }));
-    }
-    return Array.from({ length: 2 }, (_, idx) => ({
-      id: idx,
-      text: undefined,
-      isCorrect: false,
-      styles: choiceStyles[idx]!.styles,
-    }));
-  };
-
-  const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
-
   const handlePressChoice = (choiceId: number) => () => {
     if (!question) {
       return;
@@ -80,21 +101,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     if (question.type === "multiple_choice") {
       const newChoices = choices.map((choice) => ({
         ...choice,
-        isCorrect: choice.id === choiceId,
-      }));
+        isSelected: choice.id === choiceId,
+      })) as ModifiedChoices;
 
       setChoices(newChoices);
     }
   };
 
-  const renderChoice = useCallback(
-    (choice: Choice) => (
+  const renderChoice = (choice: ModifiedChoice) => {
+    return (
       <TouchableOpacity
         key={choice.id}
         className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${choice.styles} p-5`}
         onPress={handlePressChoice(choice.id)}
       >
-        {choice.isCorrect && (
+        {choice.isSelected && (
           <View className="absolute right-2 top-2 h-5 w-5">
             <CheckboxIcon />
           </View>
@@ -103,18 +124,20 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           {choice.text}
         </Text>
       </TouchableOpacity>
-    ),
-    [],
-  );
+    );
+  };
 
-  const hasOneChoiceSelected = choices.some((choice) => choice.isCorrect);
+  const hasOneChoiceSelected = choices.some((choice) => choice.isSelected);
 
   const handleGoToNextQuestion = () => {
     if (index + 1 >= totalQuestions) {
       setIndex(0);
     }
     setIndex((prevIndex) => prevIndex + 1);
-    setChoices(getSelectedChoices());
+    const singleQuestion = questions[index + 1];
+    if (singleQuestion) {
+      setChoices(getSelectedChoices(singleQuestion));
+    }
   };
 
   return (
@@ -149,13 +172,13 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           </View>
 
           <View className="mt-5 flex flex-row items-center justify-between">
-            {renderChoice(choices[0]!)}
-            {renderChoice(choices[1]!)}
+            {choices[0] ? renderChoice(choices[0]) : <></>}
+            {choices[1] ? renderChoice(choices[1]) : <></>}
           </View>
 
           <View className="mt-5 flex flex-row items-center justify-between">
-            {renderChoice(choices[2]!)}
-            {renderChoice(choices[3]!)}
+            {choices[2] ? renderChoice(choices[2]) : <></>}
+            {choices[3] ? renderChoice(choices[3]) : <></>}
           </View>
 
           {hasOneChoiceSelected && (

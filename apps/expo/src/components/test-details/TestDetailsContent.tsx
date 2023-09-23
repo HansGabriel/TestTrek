@@ -47,7 +47,6 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const { id: testId } = testDetails;
 
   const handlePlayTest = () => {
-    console.log("Play Test");
     playTest({
       testId,
     });
