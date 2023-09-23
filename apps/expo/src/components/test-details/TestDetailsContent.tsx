@@ -26,6 +26,8 @@ interface Props {
 const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const navigation = useNavigation();
 
+  const totalQuestions = testDetails?.questions.length ?? 0;
+
   const { mutate: playTest } = trpc.test.play.useMutation({
     onSuccess: (data) => {
       navigation.navigate("PlayTest", {
@@ -35,7 +37,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   });
 
   const statsData = [
-    { number: 45, label: "Questions" },
+    { number: totalQuestions, label: "Questions" },
     { number: 5.6, label: "Played" },
     { number: 16.8, label: "Favorited" },
   ];

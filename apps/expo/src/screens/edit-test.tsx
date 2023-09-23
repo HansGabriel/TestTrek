@@ -69,7 +69,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   const { mutate: deleteTest } = trpc.test.delete.useMutation({
     onSuccess: () => {
       showToast("Test deleted successfully");
-      trpcUtils.test.getAll.invalidate();
+      trpcUtils.test.invalidate();
       navigation.navigate("Home");
     },
     onError: () => {
