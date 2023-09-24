@@ -38,17 +38,17 @@ export const useRouter = router({
   editUserDetails: protectedProcedure
     .input(userStoredSchema)
     .mutation(async ({ ctx, input }) => {
-      const { user_name, first_name, last_name, email } = input;
+      const { userName, firstName, lastName, email } = input;
 
       return ctx.prisma.user.update({
         where: {
           userId: ctx.auth.userId,
         },
         data: {
-          username: user_name,
-          firstName: first_name,
-          lastName: last_name,
-          email: email,
+          username: userName,
+          firstName,
+          lastName,
+          email,
         },
       });
     }),
