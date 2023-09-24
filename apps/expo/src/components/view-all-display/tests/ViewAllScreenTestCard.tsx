@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import type { ImageSourcePropType } from "react-native";
+import { getTimeAgo } from "../../../functions/timeAgo";
 import { FC } from "react";
 
 interface Props {
@@ -13,36 +14,9 @@ interface Props {
   userName: string;
 }
 
-function formatNumberToShortForm(num: number) {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "m";
-  } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "k";
-  }
-  return num.toString();
-}
-
-function monthDifference(dateFrom: Date, dateTo: Date) {
-  return (
-    (dateTo.getFullYear() - dateFrom.getFullYear()) * 12 +
-    dateTo.getMonth() -
-    dateFrom.getMonth()
-  );
-}
-
-function dayDifference(dateFrom: Date, dateTo: Date) {
-  const oneDay = 24 * 60 * 60 * 1000;
-  return Math.round(Math.abs((dateFrom.getTime() - dateTo.getTime()) / oneDay));
-}
-
 const ViewAllScreenTestCard: FC<Props> = (props) => {
-  const monthsAgo = monthDifference(new Date(props.date), new Date());
-  const daysAgo = dayDifference(new Date(props.date), new Date());
+  const timeAgo = getTimeAgo(new Date(props.date), new Date());
 
-  const timeAgo =
-    monthsAgo === 0
-      ? `${daysAgo} day${daysAgo !== 1 ? "s" : ""} ago`
-      : `${monthsAgo} month${monthsAgo !== 1 ? "s" : ""} ago`;
   return (
     <View className="w-90 mx-3 my-3 h-28 flex-row items-center">
       <View className="h-28 flex-1 flex-row items-center overflow-hidden rounded-lg bg-white">
@@ -85,7 +59,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {formatNumberToShortForm(props.plays)} plays
+              {props.plays} plays
             </Text>
           </View>
           <View className="mt-3 flex-row items-center">
