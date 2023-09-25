@@ -1,15 +1,24 @@
 import React from "react";
 import type { FC } from "react";
 
-import { View, SafeAreaView, Text, ImageBackground } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { Collection } from "@prisma/client";
+import { useNavigation } from "@react-navigation/native";
 
 interface CollectionProps {
   tabData?: Collection[];
 }
 
 export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView className="flex-1">
       <FlashList
@@ -18,7 +27,12 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
         estimatedItemSize={5}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <View className="mx-2 my-5">
+          <TouchableOpacity
+            className="mx-2 my-5"
+            onPress={() =>
+              navigation.navigate("EditCollection", { collectionId: item.id })
+            }
+          >
             <ImageBackground
               source={{ uri: item.imageUrl }}
               className=" overflow-hidden rounded-xl border-2 border-white "
@@ -40,7 +54,7 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
                 </Text>
               </View>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>

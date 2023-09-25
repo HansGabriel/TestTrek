@@ -2,18 +2,30 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { View, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import useGoBack from "../hooks/useGoBack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HeaderAndContent } from "../components/my-library/HeaderAndContent";
 import Footer from "../components/Footer";
 import SearchIcon from "../icons/SearchIcon";
 import { SearchField } from "../components/search/SearchField";
 import Animated, { SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
+import { trpc } from "../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createMaterialTopTabNavigator();
 
 export const MyLibraryScreen = () => {
+  const { refetch: refetchTests } = trpc.testFilter.getAll.useQuery({
+    testType: "user",
+    sortBy: "newest",
+  });
+
+  const { refetch: refetchCollections } = trpc.collection.getByUserId.useQuery({
+    sortBy: "newest",
+  });
+
   const [pressed, setPressed] = useState(false);
+  const navigation = useNavigation();
 
   const onPressed = () => {
     setPressed(!pressed);
@@ -39,6 +51,15 @@ export const MyLibraryScreen = () => {
     setIsSearchPressed(!isSearchPressed);
     setIsClicked(false);
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      refetchCollections();
+      refetchTests();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const goBack = useGoBack();
   return (

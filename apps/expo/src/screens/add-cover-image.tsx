@@ -24,6 +24,10 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   const goBack = useGoBack();
   const setImage = useImageStore((state) => state.setImage);
   const setQuestionImage = useImageStore((state) => state.setQuestionImage);
+  const setCollectionImage = useImageStore((state) => state.setCollectionImage);
+  const setEditCollectionImage = useImageStore(
+    (state) => state.setEditCollectionImage,
+  );
 
   const [searchTerm, setSearchTerm] = useState<string>(query);
 
@@ -48,7 +52,13 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
           text: "Set",
           onPress: () => {
             const settingFunction =
-              type === "test" ? setImage : setQuestionImage;
+              type === "test"
+                ? setImage
+                : type === "collection"
+                ? setCollectionImage
+                : type === "editCollection"
+                ? setEditCollectionImage
+                : setQuestionImage;
             settingFunction(image);
             goBack();
           },
