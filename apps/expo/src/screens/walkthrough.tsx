@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import { View, TouchableOpacity, Text, SafeAreaView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  SafeAreaView,
+  Animated,
+} from "react-native";
 import useSignin from "../hooks/useSignin";
 
 import WalktrhoughIcon1 from "../icons/WalkthroughIcon1";
@@ -22,13 +28,47 @@ export const WaltkthroughScreen: FC = () => {
     strategy: "oauth_facebook",
   });
 
+  const activeDotWidth = useRef(new Animated.Value(8)).current;
+
+  const animateDot = () => {
+    activeDotWidth.setValue(8);
+
+    Animated.timing(activeDotWidth, {
+      toValue: 32,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handleIndexChanged = () => {
+    animateDot();
+  };
+
   return (
     <SafeAreaView className="flex-1 items-center bg-white">
-      <Swiper index={1} loop={true}>
+      <Swiper
+        index={1}
+        loop={true}
+        onIndexChanged={handleIndexChanged}
+        activeDot={
+          <Animated.View
+            style={[
+              { width: activeDotWidth },
+              {
+                height: 8,
+                backgroundColor: "#6949FF",
+                borderRadius: 50,
+                marginHorizontal: 3,
+                marginVertical: 3,
+              },
+            ]}
+          />
+        }
+      >
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
           <WalktrhoughIcon1 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
-            Create, share and play tests, whenever and wherever you want
+            Create and play tests whenever and wherever you want
           </Text>
         </View>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
@@ -40,7 +80,7 @@ export const WaltkthroughScreen: FC = () => {
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
           <WalktrhoughIcon3 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
-            Play and take test challenges together with your friends.
+            Play and take test challenges from other trekers.
           </Text>
         </View>
       </Swiper>

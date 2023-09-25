@@ -32,6 +32,7 @@ import { EditPersonalInfoScreen } from "../screens/edit-personal-info";
 import { CollectionDetailsScreen } from "../screens/collection-details";
 import { PlayTestScreen } from "../screens/play-test";
 import { EditCollection } from "../screens/edit-collection";
+import { ScoreboardScreen } from "../screens/scoreboard";
 
 export default function Navigation() {
   return (
@@ -77,6 +78,13 @@ const RootNavigator = () => {
       >
         {isSignedIn ? (
           <>
+            <Stack.Screen
+              name="Scoreboard"
+              component={ScoreboardScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
             <Stack.Screen
               name="Home"
               component={HomeScreen}
