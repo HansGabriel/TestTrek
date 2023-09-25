@@ -15,6 +15,68 @@ export const collectionRouter = router({
     });
   }),
 
+  getByUserId: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.collection.findMany({
+      where: {
+        userId: ctx.auth.userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        imageUrl: true,
+        userId: true,
+        user: {
+          select: {
+            imageUrl: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+        tests: {
+          select: {
+            test: {
+              select: {
+                id: true,
+                title: true,
+                imageUrl: true,
+                description: true,
+                visibility: true,
+                keywords: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                questions: {
+                  select: {
+                    answer: true,
+                    choices: {
+                      select: {
+                        id: true,
+                        isCorrect: true,
+                        text: true,
+                      },
+                    },
+                    id: true,
+                    image: true,
+                    points: true,
+                    possibleAnswers: true,
+                    time: true,
+                    title: true,
+                    type: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }),
+
   getByCollectionId: protectedProcedure
     .input(z.object({ collectionId: z.string() }))
     .query(({ ctx, input }) => {

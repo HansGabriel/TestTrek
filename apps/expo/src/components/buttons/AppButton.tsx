@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, View } from "react-native";
 
 interface ButtonProps {
   text: string;
+  classNameValue?: string;
   buttonColor: string;
   borderRadius?: string;
   borderShadowColor?: string;
@@ -40,6 +41,7 @@ const borderRadiusSize = (size: string | undefined) => {
 
 export const AppButton = ({
   text,
+  classNameValue,
   buttonColor,
   borderRadius,
   iconLeft,
@@ -55,13 +57,13 @@ export const AppButton = ({
 }: ButtonProps) => {
   return (
     <TouchableOpacity
-      className={` my-${marginY} mx-${marginX} w-${TOwidth} justify-center self-center`}
+      className={`my-${marginY} mx-${marginX} w-${TOwidth} $ self-cente justify-center`}
       onPress={onPress}
     >
       <View
         className={` h-14 w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(
           borderRadius,
-        )}] border-b-4 border-${borderShadowColor} bg-${buttonColor}`}
+        )}] border-b-4 border-${borderShadowColor} bg-${buttonColor} ${classNameValue}`}
       >
         {iconLeft}
         <Text

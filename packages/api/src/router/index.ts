@@ -6,6 +6,7 @@ import { testFilterRouter } from "./testFilter";
 import { collectionRouter } from "./collection";
 import { imageRouter } from "./image";
 import { useRouter } from "./user";
+import { playRouter } from "./play";
 
 export const appRouter = router({
   post: postRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   collection: collectionRouter,
   image: imageRouter,
   user: useRouter,
+  play: playRouter,
 });
 
 // export type definition of API
