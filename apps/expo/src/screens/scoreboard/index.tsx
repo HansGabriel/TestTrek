@@ -6,16 +6,16 @@ import DownloadIcon from "../../icons/DownloadIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { FlashList } from "@shopify/flash-list";
+import useGoBack from "../../hooks/useGoBack";
+import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
+import XIcon from "../../icons/XIcon";
 
 import topTrekersList from "../../temp-data/top-trekers/topTrekersList";
 
-import XIcon from "../../icons/XIcon";
-
 import type { FC } from "react";
 
-interface Props {}
-
-export const ScoreboardScreen: FC<Props> = ({}) => {
+export const ScoreboardScreen: FC = () => {
+  const goBack = useGoBack();
   const [isShowinConfetti, setIsShowingConfetti] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,6 +25,12 @@ export const ScoreboardScreen: FC<Props> = ({}) => {
     }, 5000);
   }, []);
 
+  const firstPlaceTreker = topTrekersList[0];
+  const secondPlaceTreker = topTrekersList[1];
+  const thirdPlaceTreker = topTrekersList[2];
+
+  const remainingTrekers = topTrekersList.slice(3);
+
   return (
     <>
       <View className="flex-1">
@@ -33,7 +39,7 @@ export const ScoreboardScreen: FC<Props> = ({}) => {
           style={{ width: "100%", height: "100%", position: "absolute" }}
         />
         <View className="justify-cente z-50 mb-5 mt-10 flex flex-row items-center justify-center">
-          <TouchableOpacity className="absolute left-4">
+          <TouchableOpacity className="absolute left-4" onPress={goBack}>
             <XIcon color="white" colorFill="#fff" />
           </TouchableOpacity>
 
@@ -42,34 +48,102 @@ export const ScoreboardScreen: FC<Props> = ({}) => {
           </Text>
         </View>
 
-        <View className="absolute top-[40%] left-5 transform">
-          <PodiumComponent />
-          <View className="flex h-[200px] w-full flex-col bg-white px-4">
-            <FlashList
-              data={topTrekersList}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item, index }) => {
-                return (
-                  <View className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2">
-                    <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
-                      {index + 1}
-                    </Text>
-                    <Image
-                      source={item.imageSource}
-                      className="mr-5 h-12 w-12 rounded-full"
-                    />
-                    <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-neutral-800">
-                      {item.name}
-                    </Text>
-                    <Text className="font-nunito-bold ml-auto text-center text-xl font-bold leading-loose text-neutral-800">
-                      3433
-                    </Text>
-                  </View>
-                );
-              }}
-              estimatedItemSize={7}
-            />
+        {firstPlaceTreker && (
+          <View className="absolute top-[13%] z-50 w-full">
+            <View className="relative flex flex-col items-center gap-y-3 pb-10">
+              <Image
+                source={firstPlaceTreker.imageSource}
+                className="mx-2 h-[72px] w-[72px] rounded-full"
+              />
+              <View className="absolute top-[55px]">
+                <GoldMedalIcon />
+              </View>
+              <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
+                {firstPlaceTreker.name}
+              </Text>
+              <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
+                <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
+                  3,645
+                </Text>
+              </View>
+            </View>
           </View>
+        )}
+
+        {secondPlaceTreker && (
+          <View className="absolute left-8 top-[18%] z-50">
+            <View className="relative flex flex-col items-center gap-y-3 pb-10">
+              <Image
+                source={secondPlaceTreker.imageSource}
+                className="mx-2 h-[72px] w-[72px] rounded-full"
+              />
+              <View className="absolute top-[55px]">
+                <SilverMedalIcon />
+              </View>
+              <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
+                {secondPlaceTreker.name}
+              </Text>
+              <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
+                <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
+                  3,645
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {thirdPlaceTreker && (
+          <View className="absolute right-8 top-[23%] z-50">
+            <View className="relative flex flex-col items-center gap-y-3 pb-10">
+              <Image
+                source={thirdPlaceTreker.imageSource}
+                className="mx-2 h-[72px] w-[72px] rounded-full"
+              />
+              <View className="absolute top-[55px]">
+                <BronzeMedalIcon />
+              </View>
+              <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
+                {thirdPlaceTreker.name}
+              </Text>
+              <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
+                <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
+                  3,645
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        <View className="absolute top-[40%] left-4 transform">
+          <PodiumComponent />
+          {remainingTrekers.length > 0 && (
+            <View className="flex h-[200px] w-full flex-col bg-white px-4">
+              <FlashList
+                data={remainingTrekers}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item, index }) => {
+                  return (
+                    <View className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2">
+                      <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
+                        {index + 1}
+                      </Text>
+                      <Image
+                        source={item.imageSource}
+                        className="mr-5 h-12 w-12 rounded-full"
+                      />
+                      <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-neutral-800">
+                        {item.name}
+                      </Text>
+                      <Text className="font-nunito-bold ml-auto text-center text-xl font-bold leading-loose text-neutral-800">
+                        3433
+                      </Text>
+                    </View>
+                  );
+                }}
+                estimatedItemSize={7}
+              />
+            </View>
+          )}
         </View>
       </View>
 
