@@ -11,6 +11,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { MoreCircleIcon } from "../../icons/question-options";
 import CheckboxIcon from "../../icons/CheckboxIcon";
+import CloseSquareIcon from "../../icons/CloseSquareIcon";
 import { trpc } from "../../utils/trpc";
 import { AppButton } from "../../components/buttons/AppButton";
 import { RouterOutputs } from "../../utils/trpc";
@@ -143,18 +144,23 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   };
 
   const renderChoice = (choice: ModifiedChoice) => {
+    const doneStyle = choice.isCorrect
+      ? "border-emerald-600 bg-emerald-500"
+      : "border-rose-500 bg-rose-600";
     return (
       <TouchableOpacity
         key={choice.id}
         disabled={isDone}
-        className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${choice.styles} p-5`}
+        className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
+          isDone ? doneStyle : choice.styles
+        } p-5`}
         onPress={handlePressChoice(choice.id)}
       >
-        {choice.isSelected && (
+        {isDone ? (
           <View className="absolute right-2 top-2 h-5 w-5">
-            <CheckboxIcon />
+            {choice.isCorrect ? <CheckboxIcon /> : <CloseSquareIcon />}
           </View>
-        )}
+        ) : null}
         <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
           {choice.text}
         </Text>
@@ -174,6 +180,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       setChoices(getSelectedChoices(singleQuestion));
     }
 
+    upperBarRef.current?.hide();
     setIsDone(false);
   };
 
