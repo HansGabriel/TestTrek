@@ -117,6 +117,9 @@ importers:
       expo-document-picker:
         specifier: ^11.5.4
         version: 11.5.4(expo@48.0.10)
+      expo-file-system:
+        specifier: ^15.6.0
+        version: 15.6.0(expo@48.0.10)
       expo-font:
         specifier: ^11.4.0
         version: 11.4.0(expo@48.0.10)
@@ -5017,7 +5020,7 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       cloudinary-core: 2.13.0(lodash@4.17.21)
-      core-js: 3.32.1
+      core-js: 3.32.2
       lodash: 4.17.21
       q: 1.5.1
     dev: false
@@ -5224,8 +5227,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /core-js@3.32.1:
-    resolution: {integrity: sha512-lqufgNn9NLnESg5mQeYsxQP5w7wrViSj0jr/kv6ECQiByzQkrn1MKvV0L3acttpDqfQrHLwr2KCMgX5b8X+lyQ==}
+  /core-js@3.32.2:
+    resolution: {integrity: sha512-pxXSw1mYZPDGvTQqEc5vgIb83jGQKFGYWY76z4a7weZXUolw3G+OvpZqSRcfYOoOVUQJYEPsWeQK8pKEnUtWxQ==}
     requiresBuild: true
     dev: false
 
@@ -6241,6 +6244,15 @@ packages:
 
   /expo-file-system@15.2.2(expo@48.0.10):
     resolution: {integrity: sha512-LFkOLcWwlmnjkURxZ3/0ukS35OswX8iuQknLHRHeyk8mUA8fpRPPelD/a1lS+yclqfqavMJmTXVKM1Nsq5XVMA==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.10(@babel/core@7.20.5)
+      uuid: 3.4.0
+    dev: false
+
+  /expo-file-system@15.6.0(expo@48.0.10):
+    resolution: {integrity: sha512-a2hvSWPQLgzw6/u7QuVjVs44Zqgkq3EQJ94tUpw9GbAxj2RsdS3tPnzakBb3Mc6VoQ2Aop6FIgSKeYCeYJAzsg==}
     peerDependencies:
       expo: '*'
     dependencies:

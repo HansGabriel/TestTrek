@@ -23,9 +23,6 @@ import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import EditIcon from "../icons/EditIcon";
 import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
-import * as DocumentPicker from "expo-document-picker";
-import { DocumentPickerType } from "../types/documentPickerType";
-import { Feather } from "@expo/vector-icons";
 
 export const EditPersonalInfoScreen = () => {
   const { data: userDetails, refetch: refetchData } =
@@ -39,7 +36,6 @@ export const EditPersonalInfoScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
@@ -61,16 +57,6 @@ export const EditPersonalInfoScreen = () => {
     );
 
     setEdit(false);
-  };
-
-  const selectFile = async () => {
-    const result = await DocumentPicker.getDocumentAsync();
-    if (!result.canceled) {
-      const { uri, mimeType } = result as DocumentPickerType;
-      if (mimeType === "image/jpeg") {
-        setValue("image_url", uri);
-      }
-    }
   };
 
   return (
@@ -100,7 +86,7 @@ export const EditPersonalInfoScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className=" h-30 w-[90%] items-center justify-center self-center">
             <Controller
-              name="image_url"
+              name="imageUrl"
               control={control}
               defaultValue={`${userDetails?.imageUrl}`}
               render={({ field: { value } }) => (
@@ -110,35 +96,14 @@ export const EditPersonalInfoScreen = () => {
                   source={{
                     uri: value,
                   }}
-                >
-                  {edit ? (
-                    <TouchableOpacity
-                      onPress={selectFile}
-                      style={{
-                        width: 35,
-                        height: 35,
-                        backgroundColor: "rgba(105, 73, 255, 1)",
-                        borderRadius: 17.5,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "absolute",
-                        right: 0,
-                        bottom: 0,
-                      }}
-                    >
-                      <Feather name="edit" size={20} color="white" />
-                    </TouchableOpacity>
-                  ) : (
-                    ""
-                  )}
-                </Avatar>
+                />
               )}
             />
           </View>
 
           <View className=" mt-5 h-[60%] w-[85%] self-center">
             <Controller
-              name="user_name"
+              name="userName"
               control={control}
               defaultValue={`${userDetails?.username}`}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -154,11 +119,11 @@ export const EditPersonalInfoScreen = () => {
                 />
               )}
             />
-            {errors.user_name && (
-              <Text className="text-red-500">{errors.user_name.message}</Text>
+            {errors.userName && (
+              <Text className="text-red-500">{errors.userName.message}</Text>
             )}
             <Controller
-              name="first_name"
+              name="firstName"
               control={control}
               defaultValue={`${userDetails?.firstName}`}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -174,11 +139,11 @@ export const EditPersonalInfoScreen = () => {
                 />
               )}
             />
-            {errors.first_name && (
-              <Text className="text-red-500">{errors.first_name.message}</Text>
+            {errors.firstName && (
+              <Text className="text-red-500">{errors.firstName.message}</Text>
             )}
             <Controller
-              name="last_name"
+              name="lastName"
               control={control}
               defaultValue={`${userDetails?.lastName}`}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -194,8 +159,8 @@ export const EditPersonalInfoScreen = () => {
                 />
               )}
             />
-            {errors.last_name && (
-              <Text className="text-red-500">{errors.last_name.message}</Text>
+            {errors.lastName && (
+              <Text className="text-red-500">{errors.lastName.message}</Text>
             )}
             <Controller
               name="email"
