@@ -12,7 +12,6 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import type { FC } from "react";
-import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 
 const Footer: FC = () => {
   const navigation = useNavigation();
@@ -63,15 +62,7 @@ const Footer: FC = () => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 15 }}>
-          <View className="flex-col items-center space-y-1">
-            <TinyTestTrekIcon />
 
-            <Text className="text-center text-xs font-medium tracking-wider text-gray-500">
-              Play
-            </Text>
-          </View>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={goToCreateTestScreen}
           style={{ marginHorizontal: 15 }}
