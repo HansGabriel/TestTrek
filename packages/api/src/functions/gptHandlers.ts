@@ -3,7 +3,7 @@ export interface MCQPrompt {
   choices: { text: string; isCorrect: boolean }[];
 }
 
-export interface MultiSelectPrompt {
+export interface MultiselectPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
 }
@@ -108,7 +108,7 @@ export const parseEnumerationResponse = (generatedMessage: string) => {
 
 export const parseMultiselectResponse = (
   generatedMessage: string,
-): MultiSelectPrompt => {
+): MultiselectPrompt => {
   const lines = generatedMessage.split("\n").map((line) => line.trim());
 
   let question = "";
