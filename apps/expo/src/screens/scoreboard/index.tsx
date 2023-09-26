@@ -135,8 +135,9 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           </View>
         )}
 
-        <View className="absolute top-[40%] left-4 transform">
-          <PodiumComponent />
+        <View className=" top-[25%]">
+          <PodiumComponent width={"90%"} style={{ alignSelf: "center"}} />
+
           {remainingTrekers.length > 0 && (
             <View className="flex h-[200px] w-full flex-col bg-white px-4">
               <FlashList

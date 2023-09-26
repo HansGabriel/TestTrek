@@ -4,7 +4,13 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-import { View, SafeAreaView, Text, Image } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  Text,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import {
   Collection,
@@ -15,6 +21,7 @@ import {
   User,
 } from "@prisma/client";
 import { Avatar } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 interface CollectionOnTest extends TestOnCollection {
   collection: Collection;
@@ -43,6 +50,8 @@ interface ContentProps {
 }
 
 export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView className="flex-1">
       <FlashList
@@ -50,7 +59,12 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
         data={tabData}
         estimatedItemSize={5}
         renderItem={({ item }) => (
-          <View className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100">
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("TestDetails", { testId: item.id })
+            }
+            className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100"
+          >
             <View className=" w-32 items-center justify-center bg-violet-600">
               <Image
                 className="h-full w-full"
@@ -99,7 +113,7 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>
