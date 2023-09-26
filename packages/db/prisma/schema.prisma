@@ -110,13 +110,16 @@ model TestOnCollection {
 }
 
 model Play {
-    id        String   @id @default(cuid())
-    testId    String
-    playerId  String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    player    User     @relation(fields: [playerId], references: [userId])
-    test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+    id         String   @id @default(cuid())
+    testId     String
+    playerId   String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    player     User     @relation(fields: [playerId], references: [userId])
+    test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+    isFinished Boolean  @default(false)
+    score      Int?
+    time       Int?
 }
 
 enum Visibility {

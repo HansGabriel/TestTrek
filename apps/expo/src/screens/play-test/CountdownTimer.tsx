@@ -11,6 +11,7 @@ type Props = {
 
 export type CountdownTimerRef = {
   pauseTimer: () => void;
+  elapsedTime: number;
 };
 
 const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
@@ -23,11 +24,13 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
     });
 
     const remainingPercentage = seconds / timeInSeconds;
+    const elapsedTime = timeInSeconds - seconds;
 
     useImperativeHandle(ref, () => ({
       pauseTimer() {
         pause();
       },
+      elapsedTime,
     }));
 
     useEffect(() => {
