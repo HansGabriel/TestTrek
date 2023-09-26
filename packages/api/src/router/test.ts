@@ -577,24 +577,28 @@ export const testRouter = router({
       const playsWithHighestScore = await ctx.prisma
         .$queryRaw<PlayersHighscore>(Prisma.sql`
           SELECT
+            DISTINCT ON ("Play"."playerId")
             "User"."firstName",
             "User"."imageUrl",
+            "Play"."playerId" AS "id",
             MAX("Play"."score") AS "highScore"
           FROM
             "Play"
           JOIN
             "User"
           ON
-            "Play"."playerId" = "User"."id"
+            "Play"."playerId" = "User"."userId"
           WHERE
             "Play"."isFinished" = TRUE
             AND "Play"."testId" = ${testId}
           GROUP BY
+            "Play"."playerId",
             "User"."firstName",
             "User"."imageUrl"
           ORDER BY
+            "Play"."playerId",
             "highScore" DESC;
-      `);
+        `);
 
       return playsWithHighestScore;
     }),

@@ -6,20 +6,17 @@ import DownloadIcon from "../../icons/DownloadIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { FlashList } from "@shopify/flash-list";
-import useGoBack from "../../hooks/useGoBack";
 import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
 import XIcon from "../../icons/XIcon";
 import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
 
-// import topTrekersList from "../../temp-data/top-trekers/topTrekersList";
-
 import type { FC } from "react";
 
 export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
+  navigation,
   route,
 }) => {
-  const goBack = useGoBack();
   const { testId } = route.params;
   const [isShowinConfetti, setIsShowingConfetti] = useState<boolean>(false);
 
@@ -38,6 +35,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
     return <></>;
   }
 
+  const goToHome = () => {
+    navigation.navigate("Home");
+  };
+
   const firstPlaceTreker = topTrekersList[0];
   const secondPlaceTreker = topTrekersList[1];
   const thirdPlaceTreker = topTrekersList[2];
@@ -52,7 +53,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           style={{ width: "100%", height: "100%", position: "absolute" }}
         />
         <View className="justify-cente z-50 mb-5 mt-10 flex flex-row items-center justify-center">
-          <TouchableOpacity className="absolute left-4" onPress={goBack}>
+          <TouchableOpacity className="absolute left-4" onPress={goToHome}>
             <XIcon color="white" colorFill="#fff" />
           </TouchableOpacity>
 
@@ -143,7 +144,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item: user, index }) => {
                   return (
-                    <View className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2">
+                    <View
+                      key={user.id}
+                      className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2"
+                    >
                       <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
                         {index + 1}
                       </Text>
