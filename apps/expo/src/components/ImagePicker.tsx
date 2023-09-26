@@ -8,7 +8,7 @@ import type { FC } from "react";
 interface Props {
   image?: string;
   className?: string;
-  type?: "test" | "question";
+  type?: "test" | "question" | "collection" | "editCollection";
 }
 
 const TestImagePicker: FC<Props> = ({ image, className, type = "test" }) => {

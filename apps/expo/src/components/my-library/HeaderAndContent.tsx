@@ -56,8 +56,9 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
     sortBy: sortType,
   });
 
-  const { data: collectionData } =
-    trpc.collection.getByUserId.useQuery(sortType);
+  const { data: collectionData } = trpc.collection.getByUserId.useQuery({
+    sortBy: sortType,
+  });
 
   const sortItems = () => {
     let nextSortType: "newest" | "oldest" | "alphabetical";

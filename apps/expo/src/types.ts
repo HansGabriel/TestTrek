@@ -19,6 +19,9 @@ export type RootStackParamList = {
   Home: undefined;
   UploadScreen: undefined;
   CreateCollection: undefined;
+  EditCollection: {
+    collectionId: string;
+  };
   SplashScreen: undefined;
   MaterialInput: undefined;
   MyLibrary: undefined;
@@ -45,7 +48,7 @@ export type RootStackParamList = {
   };
   AddCoverImage: {
     query: string;
-    type: "test" | "question";
+    type: "test" | "question" | "collection" | "editCollection";
   };
   MyStatistics: undefined;
   EditPersonalInfo: undefined;
