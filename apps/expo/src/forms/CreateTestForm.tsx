@@ -52,7 +52,9 @@ const CreateTestForm: FC<Props> = ({
   const navigation = useNavigation();
   const image = useImageStore((state) => state.image);
 
-  const { data: userCollections } = trpc.collection.getByUserId.useQuery();
+  const { data: userCollections } = trpc.collection.getByUserId.useQuery({
+    sortBy: "alphabetical",
+  });
 
   const getDisplayImage = () => {
     if (testDetails?.image && !image) {

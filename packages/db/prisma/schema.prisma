@@ -87,14 +87,15 @@ model Keyword {
 }
 
 model Collection {
-    id        String             @id @default(cuid())
-    userId    String
-    title     String
-    imageUrl  String
-    createdAt DateTime           @default(now())
-    updatedAt DateTime           @updatedAt
-    tests     TestOnCollection[]
-    user      User               @relation(fields: [userId], references: [userId])
+    id         String             @id @default(cuid())
+    userId     String
+    title      String
+    imageUrl   String
+    createdAt  DateTime           @default(now())
+    updatedAt  DateTime           @updatedAt
+    tests      TestOnCollection[]
+    user       User               @relation(fields: [userId], references: [userId])
+    visibility Visibility         @default(private)
 }
 
 model TestOnCollection {

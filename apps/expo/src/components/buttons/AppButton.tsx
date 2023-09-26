@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 
 interface ButtonProps {
   text: string;
@@ -16,6 +16,7 @@ interface ButtonProps {
   fontStyle?: string;
   TOwidth?: string;
   Vwidth?: string;
+  isLoading?: boolean;
 }
 
 const borderRadiusSize = (size: string | undefined) => {
@@ -54,6 +55,7 @@ export const AppButton = ({
   fontStyle,
   TOwidth,
   Vwidth,
+  isLoading = false,
 }: ButtonProps) => {
   return (
     <TouchableOpacity
@@ -69,7 +71,7 @@ export const AppButton = ({
         <Text
           className={` font-nunito-${fontStyle} text-base text-${textColor}`}
         >
-          {text}
+          {isLoading ? <ActivityIndicator color={"black"} /> : text}
         </Text>
         {iconRight}
       </View>
