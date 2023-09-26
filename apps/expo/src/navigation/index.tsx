@@ -79,13 +79,6 @@ const RootNavigator = () => {
         {isSignedIn ? (
           <>
             <Stack.Screen
-              name="Scoreboard"
-              component={ScoreboardScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
               name="Home"
               component={HomeScreen}
               options={{
@@ -200,6 +193,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="PlayTest"
               component={PlayTestScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Scoreboard"
+              component={ScoreboardScreen}
               options={{
                 headerShown: false,
               }}
