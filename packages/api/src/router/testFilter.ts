@@ -72,6 +72,11 @@ export const testFilterRouter = router({
           collections: {
             include: { collection: true },
           },
+          plays: {
+            include: {
+              player: true,
+            },
+          },
         },
       });
     }),

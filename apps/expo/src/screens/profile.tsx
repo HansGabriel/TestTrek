@@ -22,8 +22,9 @@ export const ProfileScreen = () => {
     sortBy: "newest",
   });
 
-  const { data: collectionData } =
-    trpc.collection.getByUserId.useQuery("newest");
+  const { data: collectionData } = trpc.collection.getByUserId.useQuery({
+    sortBy: "newest",
+  });
 
   const changeButtonColor = (tab: Tabs) => {
     return activeTab === tab ? "bg-violet-600" : "bg-white";
