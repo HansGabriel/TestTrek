@@ -14,19 +14,18 @@ interface Props {
 
 const ChoiceBottomSheet: FC<Props> = ({ goToCreateQuestion }) => {
   return (
-    <View className="flex-1 bg-white pt-10 shadow shadow-black">
-      <View className="flex flex-row items-center justify-center pb-5">
+    <View className="flex-1 bg-white pt-2 shadow shadow-black">
+      <View className="flex flex-row items-center justify-center">
         <Text className="text-center text-2xl font-semibold leading-[38.40px] text-neutral-800">
           Add Question
         </Text>
       </View>
+
       {/* Horizontal Line */}
-      <View className="mx-6 inline-flex h-[0px] w-[382px] items-center justify-center">
-        <View className="h-[0px] w-[382px] border border-zinc-100"></View>
-      </View>
+      <View className="h-[0px] w-[382px] border border-zinc-100 my-5" />
 
       {/* Cards */}
-      <ScrollView className="mt-8" showsVerticalScrollIndicator={false}>
+      <ScrollView  showsVerticalScrollIndicator={false}>
         <View className="flex flex-col items-center">
           <View className="mx-6 flex flex-row">
             <TouchableOpacity
