@@ -552,6 +552,52 @@ export const testRouter = router({
     });
   }),
 
+  getDetails: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const test = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      const isOwner = test?.user.userId === ctx.auth.userId;
+
+      const totalQuestions = await ctx.prisma.question.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalPlays = await ctx.prisma.play.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalFavorites = await ctx.prisma.userOnFavoriteTest.count({
+        where: {
+          testId,
+        },
+      });
+
+      return {
+        isOwner,
+        totalQuestions,
+        totalPlays,
+        totalFavorites,
+      };
+    }),
+
   delete: protectedProcedure
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -616,5 +662,82 @@ export const testRouter = router({
         `);
 
       return playsWithHighestScore;
+    }),
+
+  getIsFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .output(z.boolean())
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          favoritedUsers: {
+            where: {
+              userId: ctx.auth.userId,
+            },
+          },
+        },
+      });
+
+      if (!favorite) {
+        return false;
+      }
+
+      const isSingleFavorite = favorite.favoritedUsers.length === 1;
+      if (!isSingleFavorite) {
+        return false;
+      }
+
+      const user = favorite.favoritedUsers[0];
+      if (!user) {
+        return false;
+      }
+
+      return user.userId === ctx.auth.userId;
+    }),
+
+  toggleFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.userOnFavoriteTest.findUnique({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
+          },
+        },
+      });
+
+      if (!favorite) {
+        return ctx.prisma.userOnFavoriteTest.create({
+          data: {
+            test: {
+              connect: {
+                id: testId,
+              },
+            },
+            user: {
+              connect: {
+                userId: ctx.auth.userId,
+              },
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.userOnFavoriteTest.delete({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
+          },
+        },
+      });
     }),
 });

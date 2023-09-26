@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { AppButton } from "../buttons/AppButton";
 import { trpc } from "../../utils/trpc";
@@ -26,7 +27,9 @@ interface Props {
 const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const navigation = useNavigation();
 
-  const totalQuestions = testDetails?.questions.length ?? 0;
+  const { data: testStatistics } = trpc.test.getDetails.useQuery({
+    testId: testDetails?.id ?? "",
+  });
 
   const { mutate: playTest } = trpc.test.play.useMutation({
     onSuccess: (data) => {
@@ -37,15 +40,18 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
     },
   });
 
-  const statsData = [
-    { number: totalQuestions, label: "Questions" },
-    { number: 5.6, label: "Played" },
-    { number: 16.8, label: "Favorited" },
-  ];
-
-  if (!testDetails) {
+  if (!testDetails || !testStatistics) {
     return <></>;
   }
+
+  const { isOwner, totalQuestions, totalPlays, totalFavorites } =
+    testStatistics;
+
+  const statsData = [
+    { number: totalQuestions, label: "Questions" },
+    { number: totalPlays, label: "Played" },
+    { number: totalFavorites, label: "Favorited" },
+  ];
 
   const { id: testId } = testDetails;
 
@@ -84,14 +90,16 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {testDetails?.title ?? "Test Title"}
+          <Text className="font-nunito-bold w-[382px] text-2xl font-bold leading-[38.40px] text-neutral-800">
+            {testDetails.title}
+          </Text>
         </Text>
 
         <View className="mt-5 w-[87%] border-b border-[#EEEEEE]"></View>
 
         {Array.from({ length: 2 }).map((_, rowIndex) => (
           <React.Fragment key={rowIndex}>
-            <View className="w-[87%] flex-row items-center justify-between py-1">
+            <View className="w-[90%] flex-row items-center justify-between py-1">
               {statsData
                 .slice(rowIndex * 3, rowIndex * 3 + 3)
                 .map((stat, columnIndex) => (
@@ -131,16 +139,18 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           </View>
           <TouchableOpacity className=" mt-5 items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
             <Text className="font-nunito-semibold text-center text-[12px] leading-[19.6px] text-white">
-              Edit Profile
+              {isOwner ? "You" : "View"}
             </Text>
           </TouchableOpacity>
         </View>
         <Text className="font-nunito mt-3 w-[87%] break-words text-xl font-bold leading-[32px] text-[#212121]">
           Description
         </Text>
-        <Text className="font-nunito text-m mb-10 w-[87%] break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
+        <Text className="font-nunito text-m mb-6 w-[87%] break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
           {testDetails?.description ?? "N/A"}
         </Text>
+
+        <HiddenQuestionSection />
 
         <AppButton
           onPress={handlePlayTest}
@@ -158,5 +168,16 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
     </SafeAreaView>
   );
 };
+
+const HiddenQuestionSection: FC = () => (
+  <View className="mb-5 inline-flex h-[88px] w-[382px] flex-col items-center justify-center gap-2 rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
+    <View className="inline-flex h-7 w-7 items-center justify-center px-[2.33px] pt-[4.67px] pb-[3.18px]">
+      <Ionicons name="ios-eye-off-outline" size={24} color="black" />
+    </View>
+    <Text className="font-nunito self-stretch text-center text-sm font-semibold leading-tight tracking-tight text-neutral-500">
+      Question content is not visible
+    </Text>
+  </View>
+);
 
 export default TestDetailsContent;

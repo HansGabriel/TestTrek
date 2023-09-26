@@ -11,18 +11,19 @@ datasource db {
 }
 
 model User {
-    id          String       @id @default(cuid())
-    email       String       @unique
-    userId      String       @unique
-    username    String
-    firstName   String
-    lastName    String
-    imageUrl    String?
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
-    tests       Test[]
-    collections Collection[]
-    plays       Play[]
+    id            String               @id @default(cuid())
+    email         String               @unique
+    userId        String               @unique
+    username      String
+    firstName     String
+    lastName      String
+    imageUrl      String?
+    createdAt     DateTime             @default(now())
+    updatedAt     DateTime             @updatedAt
+    tests         Test[]
+    collections   Collection[]
+    plays         Play[]
+    favoriteTests UserOnFavoriteTest[]
 }
 
 model Post {
@@ -31,28 +32,32 @@ model Post {
     content String
 }
 
-model FavoriteTest {
-    id        String   @id @default(cuid())
+model UserOnFavoriteTest {
     userId    String
     testId    String
+    user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@id([userId, testId])
 }
 
 model Test {
-    id          String             @id @default(cuid())
-    userId      String
-    imageUrl    String
-    title       String
-    description String             @db.Text
-    visibility  Visibility
-    keywords    Keyword[]
-    createdAt   DateTime           @default(now())
-    updatedAt   DateTime           @updatedAt
-    collections TestOnCollection[]
-    questions   Question[]
-    user        User               @relation(fields: [userId], references: [userId])
-    plays       Play[]
+    id             String               @id @default(cuid())
+    userId         String
+    imageUrl       String
+    title          String
+    description    String               @db.Text
+    visibility     Visibility
+    keywords       Keyword[]
+    createdAt      DateTime             @default(now())
+    updatedAt      DateTime             @updatedAt
+    collections    TestOnCollection[]
+    questions      Question[]
+    user           User                 @relation(fields: [userId], references: [userId])
+    plays          Play[]
+    favoritedUsers UserOnFavoriteTest[]
 }
 
 model Question {
