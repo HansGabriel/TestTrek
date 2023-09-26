@@ -31,7 +31,7 @@ export const TestDetailsScreen = ({
 
   return (
     <SafeAreaView className="flex-1 flex-col">
-      <TestDetailsHeader goToEditTest={goToEditTest} />
+      <TestDetailsHeader testId={testId} goToEditTest={goToEditTest} />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );

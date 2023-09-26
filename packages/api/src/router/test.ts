@@ -617,4 +617,81 @@ export const testRouter = router({
 
       return playsWithHighestScore;
     }),
+
+  getIsFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .output(z.boolean())
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          favoritedUsers: {
+            where: {
+              userId: ctx.auth.userId,
+            },
+          },
+        },
+      });
+
+      if (!favorite) {
+        return false;
+      }
+
+      const isSingleFavorite = favorite.favoritedUsers.length === 1;
+      if (!isSingleFavorite) {
+        return false;
+      }
+
+      const user = favorite.favoritedUsers[0];
+      if (!user) {
+        return false;
+      }
+
+      return user.userId === ctx.auth.userId;
+    }),
+
+  toggleFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.userOnFavoriteTest.findUnique({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
+          },
+        },
+      });
+
+      if (!favorite) {
+        return ctx.prisma.userOnFavoriteTest.create({
+          data: {
+            test: {
+              connect: {
+                id: testId,
+              },
+            },
+            user: {
+              connect: {
+                userId: ctx.auth.userId,
+              },
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.userOnFavoriteTest.delete({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
+          },
+        },
+      });
+    }),
 });
