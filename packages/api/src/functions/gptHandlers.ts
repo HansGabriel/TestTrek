@@ -3,10 +3,9 @@ export interface MCQPrompt {
   choices: { text: string; isCorrect: boolean }[];
 }
 
-export interface MultiselectPrompt {
+export interface MultiSelectPrompt {
   question: string;
-  options: string[];
-  correctAnswers: number[];
+  choices: { text: string; isCorrect: boolean }[];
 }
 
 export interface IdentificationPrompt {
@@ -21,7 +20,12 @@ export interface TrueOrFalsePrompt {
 
 export const generatePromptForType = (
   message: string,
-  questionType: string,
+  questionType:
+    | "multipleChoice"
+    | "identification"
+    | "trueOrFalse"
+    | "multiselect"
+    | "enumeration",
 ): string => {
   switch (questionType) {
     case "multipleChoice":
@@ -30,13 +34,10 @@ export const generatePromptForType = (
       return `Create an identification question based on: "${message}". Format as: Question: [Your question here]\nAnswer: [Your answer here]`;
     case "trueOrFalse":
       return `Based on the information "${message}", generate a true or false question. Format as: Question: [Your question here]\nAnswer: [True/False]`;
-
+    case "multiselect":
+      return `Create a multiselect question about: "${message}" with 4 choices. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`;
     case "enumeration":
       return `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`;
-
-    case "multiselect":
-      return `Provide a multiselect question based on "${message}" with 4 options. Format as: Question: [Your question here]\nOptions: [Option1, Option2, ...]\nCorrect Answers: [Option numbers of correct answers, e.g., 1,3, ...]`;
-
     default:
       return `Please provide information based on: "${message}"`;
   }
@@ -107,33 +108,45 @@ export const parseEnumerationResponse = (generatedMessage: string) => {
 
 export const parseMultiselectResponse = (
   generatedMessage: string,
-): MultiselectPrompt => {
+): MultiSelectPrompt => {
   const lines = generatedMessage.split("\n").map((line) => line.trim());
 
   let question = "";
-  const options: string[] = [];
-  const correctAnswers: number[] = [];
+  const choices: { text: string; isCorrect: boolean }[] = [];
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
       const q = line.replace("Question:", "").trim();
       if (q) question = q;
-    } else if (line.startsWith("Options:")) {
-      const opt = line
-        .replace("Options:", "")
-        .split(",")
-        .map((o) => o.trim().replace(/^\d+\.\s*/, "")); // <-- this line ensures the option numbers are removed
-      options.push(...opt);
-    } else if (line.startsWith("Correct Answers:")) {
-      const ans = line
-        .replace("Correct Answers:", "")
-        .split(",")
-        .map((a) => parseInt(a.trim()));
-      correctAnswers.push(...ans);
+    } else if (line.startsWith("Option")) {
+      const optionMatch = line.match(/^Option (\d): (.+)$/);
+      if (optionMatch) {
+        const [, index, text] = optionMatch;
+        const optionText = text?.trim();
+        const optionIndex = index ? parseInt(index, 10) - 1 : -1;
+        if (optionText && optionIndex >= 0) {
+          choices[optionIndex] = {
+            text: optionText,
+            isCorrect: false,
+          };
+        }
+      }
+    } else if (line.startsWith("Correct Answers: Options")) {
+      const correctIndicesMatch = line.match(/\d+/g);
+      if (correctIndicesMatch) {
+        correctIndicesMatch.forEach((indexMatch) => {
+          const correctIndex = parseInt(indexMatch, 10) - 1;
+          const choice = choices[correctIndex];
+          if (choice) choice.isCorrect = true;
+        });
+      }
     }
   });
 
-  return { question, options, correctAnswers };
+  return {
+    question,
+    choices,
+  };
 };
 
 export const parseIdentificationResponse = (

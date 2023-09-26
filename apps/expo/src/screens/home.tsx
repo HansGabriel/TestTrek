@@ -22,13 +22,12 @@ export const HomeScreen = () => {
         questionType: "multiselect",
       });
 
-      setMutationResult(data); // Store the mutation result in local state
+      setMutationResult(data);
     } catch (error) {
       console.error("Full error object:", error);
     }
   };
 
-  // Display the result in an alert when mutationResult changes
   useEffect(() => {
     if (mutationResult) {
       Alert.alert("Generated Question", JSON.stringify(mutationResult));
