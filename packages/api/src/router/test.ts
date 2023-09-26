@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { testInputSchema } from "@acme/schema/src/test";
-import { match } from "ts-pattern";
 import { playersHighscoreSchema } from "@acme/schema/src/play";
 
 import { Prisma } from "@acme/db";
@@ -218,14 +217,22 @@ export const testRouter = router({
               : undefined,
         };
 
-        // merge all the possible inputs
-        const mergedQuestionInput = match(type)
-          .with("true_or_false", () => choiceQuestionInput)
-          .with("multiple_choice", () => choiceQuestionInput)
-          .with("multi_select", () => choiceQuestionInput)
-          .with("identification", () => identificationQuestionInput)
-          .with("enumeration", () => enumerationQuestionInput)
-          .exhaustive();
+        let mergedQuestionInput: QuestionCreateInput;
+        switch (type) {
+          case "true_or_false":
+          case "multiple_choice":
+          case "multi_select":
+            mergedQuestionInput = choiceQuestionInput;
+            break;
+          case "identification":
+            mergedQuestionInput = identificationQuestionInput;
+            break;
+          case "enumeration":
+            mergedQuestionInput = enumerationQuestionInput;
+            break;
+          default:
+            throw new Error("Invalid question type");
+        }
 
         return ctx.prisma.question.create({
           data: mergedQuestionInput,
@@ -357,14 +364,22 @@ export const testRouter = router({
               : undefined,
         };
 
-        // merge all the possible inputs
-        const mergedQuestionInput = match(type)
-          .with("true_or_false", () => choiceQuestionInput)
-          .with("multiple_choice", () => choiceQuestionInput)
-          .with("multi_select", () => choiceQuestionInput)
-          .with("identification", () => identificationQuestionInput)
-          .with("enumeration", () => enumerationQuestionInput)
-          .exhaustive();
+        let mergedQuestionInput: QuestionCreateInput;
+        switch (type) {
+          case "true_or_false":
+          case "multiple_choice":
+          case "multi_select":
+            mergedQuestionInput = choiceQuestionInput;
+            break;
+          case "identification":
+            mergedQuestionInput = identificationQuestionInput;
+            break;
+          case "enumeration":
+            mergedQuestionInput = enumerationQuestionInput;
+            break;
+          default:
+            throw new Error("Invalid question type");
+        }
 
         return ctx.prisma.question.create({
           data: mergedQuestionInput,
