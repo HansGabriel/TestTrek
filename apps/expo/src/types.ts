@@ -50,9 +50,12 @@ export type RootStackParamList = {
   MyStatistics: undefined;
   EditPersonalInfo: undefined;
   PlayTest: {
+    playId: string;
     testId: string;
   };
-  Scoreboard: undefined;
+  Scoreboard: {
+    testId: string;
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

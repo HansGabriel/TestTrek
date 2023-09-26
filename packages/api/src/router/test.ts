@@ -2,8 +2,10 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { testInputSchema } from "@acme/schema/src/test";
 import { match } from "ts-pattern";
+import { playersHighscoreSchema } from "@acme/schema/src/play";
 
-import type { Prisma } from "@acme/db";
+import { Prisma } from "@acme/db";
+import type { PlayersHighscore } from "@acme/schema/src/types";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -564,5 +566,36 @@ export const testRouter = router({
           },
         },
       });
+    }),
+
+  getScoreboard: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .output(playersHighscoreSchema)
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const playsWithHighestScore = await ctx.prisma
+        .$queryRaw<PlayersHighscore>(Prisma.sql`
+          SELECT
+            "User"."firstName",
+            "User"."imageUrl",
+            MAX("Play"."score") AS "highScore"
+          FROM
+            "Play"
+          JOIN
+            "User"
+          ON
+            "Play"."playerId" = "User"."id"
+          WHERE
+            "Play"."isFinished" = TRUE
+            AND "Play"."testId" = ${testId}
+          GROUP BY
+            "User"."firstName",
+            "User"."imageUrl"
+          ORDER BY
+            "highScore" DESC;
+      `);
+
+      return playsWithHighestScore;
     }),
 });

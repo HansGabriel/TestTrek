@@ -9,14 +9,23 @@ import { FlashList } from "@shopify/flash-list";
 import useGoBack from "../../hooks/useGoBack";
 import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
 import XIcon from "../../icons/XIcon";
+import { trpc } from "../../utils/trpc";
+import { RootStackScreenProps } from "../../types";
 
-import topTrekersList from "../../temp-data/top-trekers/topTrekersList";
+// import topTrekersList from "../../temp-data/top-trekers/topTrekersList";
 
 import type { FC } from "react";
 
-export const ScoreboardScreen: FC = () => {
+export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
+  route,
+}) => {
   const goBack = useGoBack();
+  const { testId } = route.params;
   const [isShowinConfetti, setIsShowingConfetti] = useState<boolean>(false);
+
+  const { data: topTrekersList } = trpc.test.getScoreboard.useQuery({
+    testId,
+  });
 
   useEffect(() => {
     setIsShowingConfetti(true);
@@ -24,6 +33,10 @@ export const ScoreboardScreen: FC = () => {
       setIsShowingConfetti(false);
     }, 5000);
   }, []);
+
+  if (!topTrekersList) {
+    return <></>;
+  }
 
   const firstPlaceTreker = topTrekersList[0];
   const secondPlaceTreker = topTrekersList[1];
@@ -52,18 +65,20 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute top-[13%] z-50 w-full">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={firstPlaceTreker.imageSource}
+                source={{
+                  uri: firstPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <GoldMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {firstPlaceTreker.name}
+                {firstPlaceTreker.firstName}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {firstPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
@@ -74,18 +89,21 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute left-8 top-[18%] z-50">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={secondPlaceTreker.imageSource}
+                source={{
+                  uri: secondPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <SilverMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {secondPlaceTreker.name}
+                {secondPlaceTreker.firstName}
               </Text>
+
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {secondPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
@@ -96,18 +114,20 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute right-8 top-[23%] z-50">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={thirdPlaceTreker.imageSource}
+                source={{
+                  uri: thirdPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <BronzeMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {thirdPlaceTreker.name}
+                {thirdPlaceTreker.firstName}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {thirdPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
@@ -121,21 +141,23 @@ export const ScoreboardScreen: FC = () => {
               <FlashList
                 data={remainingTrekers}
                 showsVerticalScrollIndicator={false}
-                renderItem={({ item, index }) => {
+                renderItem={({ item: user, index }) => {
                   return (
                     <View className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2">
                       <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
                         {index + 1}
                       </Text>
                       <Image
-                        source={item.imageSource}
+                        source={{
+                          uri: user.imageUrl,
+                        }}
                         className="mr-5 h-12 w-12 rounded-full"
                       />
                       <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-neutral-800">
-                        {item.name}
+                        {user.firstName}
                       </Text>
                       <Text className="font-nunito-bold ml-auto text-center text-xl font-bold leading-loose text-neutral-800">
-                        3433
+                        {user.highScore}
                       </Text>
                     </View>
                   );

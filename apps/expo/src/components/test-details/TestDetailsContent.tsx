@@ -31,6 +31,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const { mutate: playTest } = trpc.test.play.useMutation({
     onSuccess: (data) => {
       navigation.navigate("PlayTest", {
+        playId: data.id,
         testId: data.testId,
       });
     },
