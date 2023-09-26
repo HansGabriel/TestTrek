@@ -31,6 +31,7 @@ import { MyStatistics } from "../screens/my-statistics";
 import { EditPersonalInfoScreen } from "../screens/edit-personal-info";
 import { CollectionDetailsScreen } from "../screens/collection-details";
 import { PlayTestScreen } from "../screens/play-test";
+import { EditCollection } from "../screens/edit-collection";
 import { ScoreboardScreen } from "../screens/scoreboard";
 
 export default function Navigation() {
@@ -136,6 +137,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateCollection"
               component={CreateCollection}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="EditCollection"
+              component={EditCollection}
               options={{
                 headerShown: false,
               }}

@@ -1,91 +1,187 @@
-import React from "react";
+import { collectionsSchema } from "@acme/schema/src/collection";
+import { Collections } from "@acme/schema/src/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import {
   View,
-  SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
-import { AppButton } from "../components/buttons/AppButton";
-import { FontAwesome } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import SelectDropdown from "react-native-select-dropdown";
-import LeftArrowIcon from "../icons/LeftArrowIcon";
+import TestImagePicker from "../components/ImagePicker";
+import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
+import AppTextInput from "../components/inputs/AppTextInput";
 import useGoBack from "../hooks/useGoBack";
-
-const textHeaderStyle = "font-nunito-bold mt-4";
-const textBoxStyle = "border-b border-violet-600 mt-3 text-lg font-nunito-bold";
+import LeftArrowIcon from "../icons/LeftArrowIcon";
+import { AppButton } from "../components/buttons/AppButton";
+import useImageStore from "../stores/useImageStore";
+import { useNavigation } from "@react-navigation/native";
+import { trpc } from "../utils/trpc";
+import useToast from "../hooks/useToast";
 
 export const CreateCollection = () => {
-  const publication = ["Only Me", "Public"];
   const goBack = useGoBack();
+  const image = useImageStore((state) => state.collectionImage);
+  const resetCollectionImage = useImageStore(
+    (state) => state.resetCollectionImage,
+  );
+  const navigation = useNavigation();
+  const {
+    mutate: createCollection,
+    isLoading: IsCreatingCollection,
+    reset,
+  } = trpc.collection.create.useMutation();
+
+  const { showToast } = useToast();
+
+  const getDisplayImage = () => {
+    if (image) {
+      return image;
+    }
+    return undefined;
+  };
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<Collections>({
+    resolver: zodResolver(collectionsSchema),
+    defaultValues: {
+      title: "",
+      visibility: undefined,
+      image: getDisplayImage(),
+    },
+  });
+
+  const submitCollectionData = (createdData: Collections) => {
+    createCollection(
+      {
+        ...createdData,
+      },
+      {
+        onSuccess: () => {
+          showToast("Collection added successfully");
+          resetCollectionImage();
+          reset();
+          navigation.navigate("MyLibrary");
+        },
+        onError: () => {
+          showToast(`An error occurred`);
+          resetCollectionImage();
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    navigation.addListener("focus", () => {
+      if (image) {
+        setValue("image", image);
+      }
+    });
+  }, [image]);
+
   return (
-    <SafeAreaView className="flex-1">
-      <View className="my-10 mx-6 flex-row items-center space-x-4">
-        <TouchableOpacity onPress={goBack}>
-          <LeftArrowIcon />
-        </TouchableOpacity>
-        <Text className=" font-nunito-bold text-2xl">
-          Create New Collection
-        </Text>
-      </View>
-      <View className="items-center ">
-        <View className="h-56 w-80 items-center justify-center rounded-3xl border-2 border-violet-600">
-          <FontAwesome name="image" size={48} color="rgba(105, 73, 255, 1)" />
-          <Text className="font-nunito-bold mt-4 text-violet-600">
-            Add Cover Image
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1"
+    >
+      <View className="mx-5 mt-7 flex  flex-row justify-between bg-white py-5">
+        <View className="flex-row gap-4 self-center">
+          <TouchableOpacity
+            onPress={goBack}
+            className="flex flex-row items-center self-center"
+          >
+            <LeftArrowIcon />
+          </TouchableOpacity>
+          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+            Create New Collection
           </Text>
         </View>
-        <View className="w-80">
-          <Text className={textHeaderStyle}>Title</Text>
-          <TextInput
-            placeholder="  Enter Collection Title"
-            className={textBoxStyle}
-          />
-        </View>
+      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className={"w-[90%] self-center"}
+      >
+        <View className="mt-8 mb-2 flex flex-col">
+          <View className="mb-6">
+            <Controller
+              control={control}
+              render={({ field: { value } }) => (
+                <TestImagePicker image={value} type="collection" />
+              )}
+              name="image"
+            />
+            {errors.image && (
+              <Text className="mt-2 text-red-500">{errors.image.message}</Text>
+            )}
+          </View>
 
-        <View className="w-80">
-          <Text className={textHeaderStyle}>Visible to</Text>
-          <SelectDropdown
-            renderDropdownIcon={() => (
-              <MaterialIcons
-                name="keyboard-arrow-down"
-                size={24}
-                color="black"
+          <Controller
+            name="title"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <AppTextInput
+                label="Title"
+                textInputProps={{
+                  onBlur,
+                  placeholder: "Enter Title",
+                  onChangeText: onChange,
+                  value,
+                }}
               />
             )}
-            buttonStyle={{
-              width: "100%",
-              backgroundColor: "rgb(245 245 244)",
-              borderBottomColor: "rgb(124 58 237)",
-              borderBottomWidth: 1,
-            }}
-            buttonTextStyle={{
-              fontFamily: "Nunito-Bold",
-              textAlign: "left",
-            }}
-            defaultButtonText="Only Me"
-            dropdownIconPosition="right"
-            data={publication}
-            onSelect={(selectedItem, index) => {}}
           />
-        </View>
+          {errors.title && (
+            <Text className="text-red-500">{errors.title.message}</Text>
+          )}
 
-        <View className="mt-4 self-center">
-          <AppButton
-            text="Create"
-            buttonColor="violet-600"
-            borderShadowColor="indigo-800"
-            borderRadius="full"
-            fontStyle="bold"
-            textColor="white"
-            marginY={16}
-            TOwidth="full"
-            Vwidth="80"
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              const onTextChange = (option: LabelOption) => {
+                onChange(option.value);
+              };
+              return (
+                <AppPicker
+                  label="Visible to"
+                  placeholder="Select visibility"
+                  options={[
+                    { label: "public", value: "public" },
+                    { label: "private", value: "private" },
+                  ]}
+                  selectedValue={value}
+                  setSelectedValue={onTextChange}
+                />
+              );
+            }}
+            name="visibility"
           />
+          {errors.visibility && (
+            <Text className="text-red-500">{errors.visibility.message}</Text>
+          )}
+          <View className="my-10">
+            <AppButton
+              text="Create"
+              buttonColor="violet-600"
+              borderShadowColor="indigo-800"
+              borderRadius="full"
+              fontStyle="bold"
+              textColor="white"
+              TOwidth="full"
+              Vwidth="80"
+              onPress={handleSubmit(submitCollectionData)}
+              isLoading={IsCreatingCollection}
+            />
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };

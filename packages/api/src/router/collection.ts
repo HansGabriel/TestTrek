@@ -1,4 +1,7 @@
-import { collectionsSchema } from "@acme/schema/src/collection";
+import {
+  collectionSortSchema,
+  collectionsSchema,
+} from "@acme/schema/src/collection";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -15,67 +18,84 @@ export const collectionRouter = router({
     });
   }),
 
-  getByUserId: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.collection.findMany({
-      where: {
-        userId: ctx.auth.userId,
-      },
-      select: {
-        id: true,
-        title: true,
-        imageUrl: true,
-        userId: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
+  getByUserId: protectedProcedure
+    .input(collectionSortSchema)
+    .query(({ ctx, input }) => {
+      const { sortBy } = input;
+
+      return ctx.prisma.collection.findMany({
+        where: {
+          userId: ctx.auth.userId,
         },
-        createdAt: true,
-        updatedAt: true,
-        tests: {
-          select: {
-            test: {
-              select: {
-                id: true,
-                title: true,
-                imageUrl: true,
-                description: true,
-                visibility: true,
-                keywords: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-                questions: {
-                  select: {
-                    answer: true,
-                    choices: {
-                      select: {
-                        id: true,
-                        isCorrect: true,
-                        text: true,
-                      },
+        orderBy: (() => {
+          switch (sortBy) {
+            case "newest":
+              return { createdAt: "desc" };
+            case "oldest":
+              return { createdAt: "asc" };
+            case "alphabetical":
+              return { title: "asc" };
+            default:
+              return { createdAt: "desc" };
+          }
+        })(),
+        select: {
+          id: true,
+          title: true,
+          imageUrl: true,
+          userId: true,
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+          tests: {
+            select: {
+              test: {
+                select: {
+                  id: true,
+                  title: true,
+                  imageUrl: true,
+                  description: true,
+                  visibility: true,
+                  keywords: {
+                    select: {
+                      id: true,
+                      name: true,
                     },
-                    id: true,
-                    image: true,
-                    points: true,
-                    possibleAnswers: true,
-                    time: true,
-                    title: true,
-                    type: true,
+                  },
+                  questions: {
+                    select: {
+                      answer: true,
+                      choices: {
+                        select: {
+                          id: true,
+                          isCorrect: true,
+                          text: true,
+                        },
+                      },
+                      id: true,
+                      image: true,
+                      points: true,
+                      possibleAnswers: true,
+                      time: true,
+                      title: true,
+                      type: true,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
-    });
-  }),
+      });
+    }),
 
   getByCollectionId: protectedProcedure
     .input(z.object({ collectionId: z.string() }))
@@ -89,6 +109,7 @@ export const collectionRouter = router({
           title: true,
           imageUrl: true,
           userId: true,
+          visibility: true,
           user: {
             select: {
               imageUrl: true,
@@ -221,7 +242,7 @@ export const collectionRouter = router({
   create: protectedProcedure
     .input(collectionsSchema)
     .mutation(({ ctx, input }) => {
-      const { title, image } = input;
+      const { title, image, visibility } = input;
 
       const userId = ctx.auth.userId;
 
@@ -230,6 +251,32 @@ export const collectionRouter = router({
           title,
           imageUrl: image,
           userId,
+          visibility,
+        },
+      });
+    }),
+
+  editCollection: protectedProcedure
+    .input(collectionsSchema)
+    .input(z.object({ collectionId: z.string() }))
+    .mutation(({ ctx, input }) => {
+      const { image, title, visibility, collectionId } = input;
+
+      const userId = ctx.auth.userId;
+
+      return ctx.prisma.collection.update({
+        where: {
+          id: collectionId,
+        },
+        data: {
+          title,
+          imageUrl: image,
+          visibility,
+          user: {
+            connect: {
+              userId,
+            },
+          },
         },
       });
     }),
