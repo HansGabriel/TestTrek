@@ -552,6 +552,52 @@ export const testRouter = router({
     });
   }),
 
+  getDetails: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const test = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      const isOwner = test?.user.userId === ctx.auth.userId;
+
+      const totalQuestions = await ctx.prisma.question.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalPlays = await ctx.prisma.play.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalFavorites = await ctx.prisma.userOnFavoriteTest.count({
+        where: {
+          testId,
+        },
+      });
+
+      return {
+        isOwner,
+        totalQuestions,
+        totalPlays,
+        totalFavorites,
+      };
+    }),
+
   delete: protectedProcedure
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {

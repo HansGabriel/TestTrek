@@ -26,6 +26,9 @@ const TestDetailsHeader: FC<Props> = ({ testId, goToEditTest }) => {
         return;
       }
       trpcUtils.test.getIsFavorite.invalidate({ testId });
+      trpcUtils.test.getDetails.invalidate({
+        testId,
+      });
       showToast(!isFavorite ? "Added to favorites" : "Removed from favorites");
     },
     onError: (err) => {
