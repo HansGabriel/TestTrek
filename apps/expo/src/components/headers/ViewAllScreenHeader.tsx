@@ -17,7 +17,7 @@ const ViewAllScreenHeader: FC<Props> = (props) => {
           <View className="mx-6 flex flex-row justify-between bg-white py-5">
             <TouchableOpacity
               className="flex flex-row items-center gap-2"
-              onPress={() => navigation.navigate("Home")}
+              onPress={() => navigation.goBack()}
             >
               <LeftArrowIcon />
               <Text
