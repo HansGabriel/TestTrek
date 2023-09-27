@@ -47,6 +47,16 @@ export const ViewAllScreen = ({ route }: ViewAllScreenProps) => {
         </>
       );
     }
+    case "questions": {
+      return (
+        <>
+          <ViewAllTestDisplay
+            testsFor="questions"
+            testId={route.params.testId}
+          />
+        </>
+      );
+    }
     default: {
       return <SafeAreaView className="flex-1 flex-col"></SafeAreaView>;
     }

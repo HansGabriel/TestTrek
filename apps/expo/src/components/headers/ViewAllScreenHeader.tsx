@@ -2,14 +2,15 @@ import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import SearchIcon from "../../icons/SearchIcon";
 import type { FC } from "react";
-import { useNavigation } from "@react-navigation/native";
+
+import useGoBack from "../../hooks/useGoBack";
 
 interface Props {
   title?: string;
 }
 
 const ViewAllScreenHeader: FC<Props> = (props) => {
-  const navigation = useNavigation();
+  const goBack = useGoBack();
   return (
     <>
       <SafeAreaView>
@@ -17,7 +18,7 @@ const ViewAllScreenHeader: FC<Props> = (props) => {
           <View className="mx-6 flex flex-row justify-between bg-white py-5">
             <TouchableOpacity
               className="flex flex-row items-center gap-2"
-              onPress={() => navigation.navigate("Home")}
+              onPress={goBack}
             >
               <LeftArrowIcon />
               <Text

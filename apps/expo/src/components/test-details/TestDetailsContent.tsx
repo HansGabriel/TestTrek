@@ -6,17 +6,23 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { AppButton } from "../buttons/AppButton";
 import { trpc } from "../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
+import RightArrowIcon from "../../icons/RightArrowIcon";
+
+import { match } from "ts-pattern";
+import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 
 import type { FC } from "react";
 import type { RouterOutputs } from "../../utils/trpc";
 import { ScrollView } from "react-native-gesture-handler";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
+import { FlashList } from "@shopify/flash-list";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -59,6 +65,10 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const { isOwner, totalQuestions, totalPlays, totalFavorites } =
     testStatistics;
 
+  const { questions } = testDetails;
+
+  const firstTenQuestions = questions.slice(0, 10);
+
   const statsData = [
     { number: totalQuestions, label: "Questions" },
     { number: totalPlays, label: "Played" },
@@ -69,6 +79,13 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
 
   const handlePlayTest = () => {
     playTest({
+      testId,
+    });
+  };
+
+  const goToViewAllQuestions = () => {
+    navigation.navigate("ViewAll", {
+      fetchedData: "questions",
       testId,
     });
   };
@@ -138,7 +155,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
 
         <View className="w-[100%] flex-row items-center justify-evenly self-center py-3">
           <Image
-            className="h-[60px] w-[60px] rounded-full"
+            className="mr-3 h-[60px] w-[60px] rounded-full"
             source={{ uri: testDetails?.user.imageUrl ?? IMAGE_PLACEHOLDER }}
           />
           <View className="mx-1 flex-grow flex-col items-start justify-center">
@@ -149,20 +166,93 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
               @{testDetails?.user.username}
             </Text>
           </View>
-          <TouchableOpacity className=" mt-5 items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
-            <Text className="font-nunito-semibold text-center text-xs leading-[19.6px] text-white">
-              {isOwner ? "You" : "View"}
-            </Text>
-          </TouchableOpacity>
+          {isOwner ? (
+            <TouchableOpacity className="inline-flex h-8 w-14 items-center justify-center rounded-[100px] border-2 border-violet-600 px-4 py-1.5">
+              <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
+                You
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity className=" mt-5 items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
+              <Text className="font-nunito-semibold text-center text-xs leading-[19.6px] text-white">
+                View
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
-        <Text className="font-nunito mt-3 w-[87%] break-words text-xl font-bold leading-[32px] text-[#212121]">
+        <Text className="font-nunito-bold mt-3 break-words text-xl font-bold leading-[32px] text-[#212121]">
           Description
         </Text>
-        <Text className="font-nunito text-m mb-6 w-[87%] break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
+        <Text className="font-nunito text-m mb-6 break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
           {testDetails?.description ?? "N/A"}
         </Text>
 
-        <HiddenQuestionSection />
+        {isOwner && questions.length > 0 ? (
+          <View className="mb-10 h-full flex-1 flex-col">
+            <View className="mb-6 flex flex-row items-center justify-between">
+              <Text className="text-xl font-bold leading-loose text-neutral-800">
+                Question ({questions.length})
+              </Text>
+              <TouchableOpacity
+                className="flex flex-row items-center gap-1"
+                onPress={goToViewAllQuestions}
+              >
+                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                  View All
+                </Text>
+                <RightArrowIcon />
+              </TouchableOpacity>
+            </View>
+
+            <SafeAreaView className="min-h-full flex-1">
+              <FlashList
+                estimatedItemSize={10}
+                data={firstTenQuestions}
+                showsVerticalScrollIndicator={true}
+                renderItem={({ item: question, index }) => {
+                  return (
+                    <TouchableOpacity
+                      className="my-2 flex h-[105px] items-center justify-start"
+                      key={index}
+                    >
+                      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                        <View className="relative w-[140px] self-stretch">
+                          <ImageBackground
+                            source={{
+                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
+                            }}
+                            imageStyle={{
+                              borderTopLeftRadius: 12,
+                              borderBottomLeftRadius: 12,
+                            }}
+                            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                          />
+                        </View>
+                        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                          {index + 1} -{" "}
+                          {match(question.type)
+                            .with("multiple_choice", () => "Multiple Choice")
+                            .with("true_or_false", () => "True or False")
+                            .with("multi_select", () => "Multi Select")
+                            .with("identification", () => "Identification")
+                            .with("enumeration", () => "Enumeration")
+                            .exhaustive()}
+                        </Text>
+                        <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
+                          {question.title}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </SafeAreaView>
+          </View>
+        ) : (
+          <>
+            <HiddenQuestionSection />
+          </>
+        )}
 
         <AppButton
           onPress={handlePlayTest}
