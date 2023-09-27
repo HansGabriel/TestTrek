@@ -14,12 +14,15 @@ export const TestDetailsScreen = ({
   const { testId } = route.params;
 
   const { data: testDetails } = trpc.test.getById.useQuery({ testId });
+  const { data: testStatistics } = trpc.test.getDetails.useQuery({
+    testId: testDetails?.id ?? "",
+  });
 
   const goToEditTest = () => {
     navigation.navigate("EditTest", { testId });
   };
 
-  if (!testDetails) {
+  if (!testDetails || !testStatistics) {
     return (
       <SafeAreaView className="mt-28 flex-1">
         <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
@@ -34,9 +37,15 @@ export const TestDetailsScreen = ({
     );
   }
 
+  const { isOwner } = testStatistics;
+
   return (
     <SafeAreaView className="flex-1 flex-col">
-      <TestDetailsHeader testId={testId} goToEditTest={goToEditTest} />
+      <TestDetailsHeader
+        showEditIcon={isOwner}
+        testId={testId}
+        goToEditTest={goToEditTest}
+      />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );

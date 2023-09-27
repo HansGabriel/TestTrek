@@ -146,7 +146,9 @@ const CreateTestForm: FC<Props> = ({
     setKeywords([]);
   };
 
-  const readyQuestions = questions.filter((question) => !question.inEdit);
+  const readyQuestions = questions
+    .filter((question) => !question.inEdit)
+    .slice(0, 10);
 
   useEffect(() => {
     navigation.addListener("focus", () => {
@@ -161,6 +163,14 @@ const CreateTestForm: FC<Props> = ({
       }
     });
   }, [image, testDetails?.image]);
+
+  const goToViewAllQuestions = () => {
+    navigation.navigate("ViewAll", {
+      fetchedData: "questions",
+      type: "questions",
+      questions: questions.filter((question) => !question.inEdit),
+    });
+  };
 
   return (
     <SafeAreaView>
@@ -287,22 +297,27 @@ const CreateTestForm: FC<Props> = ({
               onChangeTexts={setKeywords}
             />
           </View>
-          {readyQuestions.length > 0 ? (
-            <View className="mb-10 h-full flex-1 flex-col">
-              <View className="mb-6 flex flex-row items-center justify-between">
-                <Text className="text-xl font-bold leading-loose text-neutral-800">
-                  Question ({questions.length})
+
+          <View className="mb-10 h-full flex-1 flex-col">
+            <View className="mb-6 flex flex-row items-center justify-between">
+              <Text className="text-xl font-bold leading-loose text-neutral-800">
+                Question ({questions.length})
+              </Text>
+              <TouchableOpacity
+                className="flex flex-row items-center gap-1"
+                onPress={goToViewAllQuestions}
+              >
+                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                  View All
                 </Text>
-                <TouchableOpacity className="flex flex-row items-center gap-1">
-                  <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                    View All
-                  </Text>
-                  <RightArrowIcon />
-                </TouchableOpacity>
-              </View>
+                <RightArrowIcon />
+              </TouchableOpacity>
+            </View>
+
+            <SafeAreaView className="min-h-full flex-1">
               <FlashList
-                data={readyQuestions}
                 estimatedItemSize={10}
+                data={readyQuestions}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
                   return (
@@ -342,8 +357,8 @@ const CreateTestForm: FC<Props> = ({
                   );
                 }}
               />
-            </View>
-          ) : null}
+            </SafeAreaView>
+          </View>
 
           <View className="flex flex-row items-center justify-between pb-20">
             <TouchableOpacity
