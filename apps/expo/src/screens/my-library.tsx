@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { View, SafeAreaView, Text, TouchableOpacity } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
-import useGoBack from "../hooks/useGoBack";
 import { useEffect, useState } from "react";
 import { HeaderAndContent } from "../components/my-library/HeaderAndContent";
 import Footer from "../components/Footer";
@@ -15,8 +14,18 @@ import { useNavigation } from "@react-navigation/native";
 const Tab = createMaterialTopTabNavigator();
 
 export const MyLibraryScreen = () => {
-  const { refetch: refetchTests } = trpc.testFilter.getAll.useQuery({
+  const { refetch: refetchUserTests } = trpc.testFilter.getAll.useQuery({
     testType: "user",
+    sortBy: "newest",
+  });
+
+  const { refetch: refetchFavoriteTests } = trpc.testFilter.getAll.useQuery({
+    testType: "favorite",
+    sortBy: "newest",
+  });
+
+  const { refetch: refetchOtherTests } = trpc.testFilter.getAll.useQuery({
+    testType: "other",
     sortBy: "newest",
   });
 
@@ -55,13 +64,14 @@ export const MyLibraryScreen = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       refetchCollections();
-      refetchTests();
+      refetchUserTests();
+      refetchFavoriteTests();
+      refetchOtherTests();
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  const goBack = useGoBack();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <SafeAreaView className="mx-6 mt-10 flex-row items-center justify-between space-x-4">
@@ -82,7 +92,10 @@ export const MyLibraryScreen = () => {
             exiting={SlideOutLeft}
           >
             <View className="flex-row gap-4">
-              <TouchableOpacity onPress={goBack} className="self-center">
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Home")}
+                className="self-center"
+              >
                 <LeftArrowIcon />
               </TouchableOpacity>
               <TinyTestTrekIcon />

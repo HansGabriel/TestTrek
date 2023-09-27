@@ -9,6 +9,7 @@ import {
 } from "./user";
 import { imageSchema, stockImagesSchema } from "./image";
 import { testDetailsSchema, questionSchema, testInputSchema } from "./test";
+import { playersHighscoreSchema } from "./play";
 import { collectionsSchema } from "./collection";
 
 export type UserInfo = z.infer<typeof userInfoSchema>;
@@ -22,4 +23,5 @@ export type TestInput = z.infer<typeof testInputSchema>;
 export type UserWebhook = z.infer<typeof userWebhookSchema>;
 export type StockImages = z.infer<typeof stockImagesSchema>;
 export type UserStored = z.infer<typeof userStoredSchema>;
+export type PlayersHighscore = z.infer<typeof playersHighscoreSchema>;
 export type Collections = z.infer<typeof collectionsSchema>;

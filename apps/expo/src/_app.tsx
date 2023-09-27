@@ -8,23 +8,26 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import Navigation from "./navigation";
 import { tokenCache } from "./utils/cache";
 import Constants from "expo-constants";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export const App = () => {
   return (
     <RootSiblingParent>
-      <SafeAreaProvider>
-        <ClerkProvider
-          publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
-          tokenCache={tokenCache}
-        >
-          <TRPCProvider>
-            <SafeAreaProvider>
-              <Navigation />
-              <StatusBar />
-            </SafeAreaProvider>
-          </TRPCProvider>
-        </ClerkProvider>
-      </SafeAreaProvider>
+      <GestureHandlerRootView className="flex-1">
+        <SafeAreaProvider>
+          <ClerkProvider
+            publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
+            tokenCache={tokenCache}
+          >
+            <TRPCProvider>
+              <SafeAreaProvider>
+                <Navigation />
+                <StatusBar />
+              </SafeAreaProvider>
+            </TRPCProvider>
+          </ClerkProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </RootSiblingParent>
   );
 };

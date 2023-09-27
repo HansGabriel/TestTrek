@@ -18,6 +18,7 @@ import { RouterOutputs } from "../../utils/trpc";
 import CountdownTimer, { type CountdownTimerRef } from "./CountdownTimer";
 import UpperBar, { type UpperBarRef } from "./UpperBar";
 import { match } from "ts-pattern";
+import { useNavigation } from "@react-navigation/native";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
@@ -70,7 +71,8 @@ type ModifiedChoice = ModifiedChoices[number];
 export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   route,
 }) => {
-  const { testId } = route.params;
+  const navigation = useNavigation();
+  const { playId, testId } = route.params;
   const upperBarRef = useRef<UpperBarRef>(null);
   const countdownTimerRef = useRef<CountdownTimerRef>(null);
 
@@ -79,8 +81,17 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   );
   const [index, setIndex] = useState<number>(0);
   const [isDone, setIsDone] = useState<boolean>(false);
+  const [points, setPoints] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
+  const { mutate: finishTest } = trpc.play.finishTest.useMutation({
+    onSuccess: () => {
+      navigation.navigate("Scoreboard", {
+        testId: testId,
+      });
+    },
+  });
 
   const singleQuestion = testDetails?.test.questions[index];
   const questionChoices = singleQuestion
@@ -104,8 +115,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const { questions } = testDetails.test;
 
   const question = questions[index];
-
   const totalQuestions = questions.length;
+  const isLastQuestion = index + 1 === totalQuestions;
 
   const handlePressChoice = (choiceId: number) => () => {
     if (!question) {
@@ -126,6 +137,10 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             );
             if (selectedChoice) {
               if (selectedChoice.isCorrect) {
+                const elapsedTime =
+                  countdownTimerRef.current?.elapsedTime ?? question.time;
+                setPoints((prevPoints) => prevPoints + question.points);
+                setTime((prevTime) => prevTime + elapsedTime);
                 setModalType("correct");
               } else {
                 setModalType("incorrect");
@@ -170,7 +185,12 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
   const handleGoToNextQuestion = () => {
     if (index + 1 >= totalQuestions) {
-      setIndex(0);
+      finishTest({
+        playId,
+        score: points,
+        time,
+      });
+      return;
     } else {
       setIndex((prevIndex) => prevIndex + 1);
     }
@@ -197,6 +217,10 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       const selectedChoice = choices.find((choice) => choice.isSelected);
       if (selectedChoice) {
         if (selectedChoice.isCorrect) {
+          const elapsedTime =
+            countdownTimerRef.current?.elapsedTime ?? question.time;
+          setPoints((prevPoints) => prevPoints + question.points);
+          setTime((prevTime) => prevTime + elapsedTime);
           setModalType("correct");
         } else {
           setModalType("incorrect");
@@ -264,7 +288,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               <>
                 <AppButton
                   onPress={handleGoToNextQuestion}
-                  text="Next"
+                  text={isLastQuestion ? "Finish" : "Next Question"}
                   classNameValue="my-10"
                   buttonColor="violet-600"
                   borderShadowColor="indigo-800"

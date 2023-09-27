@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { testInputSchema } from "@acme/schema/src/test";
-import { match } from "ts-pattern";
+import { playersHighscoreSchema } from "@acme/schema/src/play";
 
-import type { Prisma } from "@acme/db";
+import { Prisma } from "@acme/db";
+import type { PlayersHighscore } from "@acme/schema/src/types";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -216,14 +217,22 @@ export const testRouter = router({
               : undefined,
         };
 
-        // merge all the possible inputs
-        const mergedQuestionInput = match(type)
-          .with("true_or_false", () => choiceQuestionInput)
-          .with("multiple_choice", () => choiceQuestionInput)
-          .with("multi_select", () => choiceQuestionInput)
-          .with("identification", () => identificationQuestionInput)
-          .with("enumeration", () => enumerationQuestionInput)
-          .exhaustive();
+        let mergedQuestionInput: QuestionCreateInput;
+        switch (type) {
+          case "true_or_false":
+          case "multiple_choice":
+          case "multi_select":
+            mergedQuestionInput = choiceQuestionInput;
+            break;
+          case "identification":
+            mergedQuestionInput = identificationQuestionInput;
+            break;
+          case "enumeration":
+            mergedQuestionInput = enumerationQuestionInput;
+            break;
+          default:
+            throw new Error("Invalid question type");
+        }
 
         return ctx.prisma.question.create({
           data: mergedQuestionInput,
@@ -355,14 +364,22 @@ export const testRouter = router({
               : undefined,
         };
 
-        // merge all the possible inputs
-        const mergedQuestionInput = match(type)
-          .with("true_or_false", () => choiceQuestionInput)
-          .with("multiple_choice", () => choiceQuestionInput)
-          .with("multi_select", () => choiceQuestionInput)
-          .with("identification", () => identificationQuestionInput)
-          .with("enumeration", () => enumerationQuestionInput)
-          .exhaustive();
+        let mergedQuestionInput: QuestionCreateInput;
+        switch (type) {
+          case "true_or_false":
+          case "multiple_choice":
+          case "multi_select":
+            mergedQuestionInput = choiceQuestionInput;
+            break;
+          case "identification":
+            mergedQuestionInput = identificationQuestionInput;
+            break;
+          case "enumeration":
+            mergedQuestionInput = enumerationQuestionInput;
+            break;
+          default:
+            throw new Error("Invalid question type");
+        }
 
         return ctx.prisma.question.create({
           data: mergedQuestionInput,
@@ -535,6 +552,52 @@ export const testRouter = router({
     });
   }),
 
+  getDetails: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const test = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      const isOwner = test?.user.userId === ctx.auth.userId;
+
+      const totalQuestions = await ctx.prisma.question.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalPlays = await ctx.prisma.play.count({
+        where: {
+          testId,
+        },
+      });
+
+      const totalFavorites = await ctx.prisma.userOnFavoriteTest.count({
+        where: {
+          testId,
+        },
+      });
+
+      return {
+        isOwner,
+        totalQuestions,
+        totalPlays,
+        totalFavorites,
+      };
+    }),
+
   delete: protectedProcedure
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -561,6 +624,118 @@ export const testRouter = router({
             connect: {
               id: input.testId,
             },
+          },
+        },
+      });
+    }),
+
+  getScoreboard: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .output(playersHighscoreSchema)
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const playsWithHighestScore = await ctx.prisma
+        .$queryRaw<PlayersHighscore>(Prisma.sql`
+          SELECT
+            DISTINCT ON ("Play"."playerId")
+            "User"."firstName",
+            "User"."imageUrl",
+            "Play"."playerId" AS "id",
+            MAX("Play"."score") AS "highScore"
+          FROM
+            "Play"
+          JOIN
+            "User"
+          ON
+            "Play"."playerId" = "User"."userId"
+          WHERE
+            "Play"."isFinished" = TRUE
+            AND "Play"."testId" = ${testId}
+          GROUP BY
+            "Play"."playerId",
+            "User"."firstName",
+            "User"."imageUrl"
+          ORDER BY
+            "Play"."playerId",
+            "highScore" DESC;
+        `);
+
+      return playsWithHighestScore;
+    }),
+
+  getIsFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .output(z.boolean())
+    .query(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          favoritedUsers: {
+            where: {
+              userId: ctx.auth.userId,
+            },
+          },
+        },
+      });
+
+      if (!favorite) {
+        return false;
+      }
+
+      const isSingleFavorite = favorite.favoritedUsers.length === 1;
+      if (!isSingleFavorite) {
+        return false;
+      }
+
+      const user = favorite.favoritedUsers[0];
+      if (!user) {
+        return false;
+      }
+
+      return user.userId === ctx.auth.userId;
+    }),
+
+  toggleFavorite: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const favorite = await ctx.prisma.userOnFavoriteTest.findUnique({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
+          },
+        },
+      });
+
+      if (!favorite) {
+        return ctx.prisma.userOnFavoriteTest.create({
+          data: {
+            test: {
+              connect: {
+                id: testId,
+              },
+            },
+            user: {
+              connect: {
+                userId: ctx.auth.userId,
+              },
+            },
+          },
+        });
+      }
+
+      return ctx.prisma.userOnFavoriteTest.delete({
+        where: {
+          userId_testId: {
+            userId: ctx.auth.userId,
+            testId: testId,
           },
         },
       });

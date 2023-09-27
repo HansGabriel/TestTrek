@@ -6,17 +6,23 @@ import DownloadIcon from "../../icons/DownloadIcon";
 import ShareIcon from "../../icons/ShareIcon";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { FlashList } from "@shopify/flash-list";
-import useGoBack from "../../hooks/useGoBack";
 import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
 import XIcon from "../../icons/XIcon";
-
-import topTrekersList from "../../temp-data/top-trekers/topTrekersList";
+import { trpc } from "../../utils/trpc";
+import { RootStackScreenProps } from "../../types";
 
 import type { FC } from "react";
 
-export const ScoreboardScreen: FC = () => {
-  const goBack = useGoBack();
+export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
+  navigation,
+  route,
+}) => {
+  const { testId } = route.params;
   const [isShowinConfetti, setIsShowingConfetti] = useState<boolean>(false);
+
+  const { data: topTrekersList } = trpc.test.getScoreboard.useQuery({
+    testId,
+  });
 
   useEffect(() => {
     setIsShowingConfetti(true);
@@ -24,6 +30,14 @@ export const ScoreboardScreen: FC = () => {
       setIsShowingConfetti(false);
     }, 5000);
   }, []);
+
+  if (!topTrekersList) {
+    return <></>;
+  }
+
+  const goToHome = () => {
+    navigation.navigate("Home");
+  };
 
   const firstPlaceTreker = topTrekersList[0];
   const secondPlaceTreker = topTrekersList[1];
@@ -39,7 +53,7 @@ export const ScoreboardScreen: FC = () => {
           style={{ width: "100%", height: "100%", position: "absolute" }}
         />
         <View className="justify-cente z-50 mb-5 mt-10 flex flex-row items-center justify-center">
-          <TouchableOpacity className="absolute left-4" onPress={goBack}>
+          <TouchableOpacity className="absolute left-4" onPress={goToHome}>
             <XIcon color="white" colorFill="#fff" />
           </TouchableOpacity>
 
@@ -52,18 +66,20 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute top-[13%] z-50 w-full">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={firstPlaceTreker.imageSource}
+                source={{
+                  uri: firstPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <GoldMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {firstPlaceTreker.name}
+                {firstPlaceTreker.firstName}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {firstPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
@@ -74,18 +90,21 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute left-8 top-[18%] z-50">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={secondPlaceTreker.imageSource}
+                source={{
+                  uri: secondPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <SilverMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {secondPlaceTreker.name}
+                {secondPlaceTreker.firstName}
               </Text>
+
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {secondPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
@@ -96,46 +115,54 @@ export const ScoreboardScreen: FC = () => {
           <View className="absolute right-8 top-[23%] z-50">
             <View className="relative flex flex-col items-center gap-y-3 pb-10">
               <Image
-                source={thirdPlaceTreker.imageSource}
+                source={{
+                  uri: thirdPlaceTreker.imageUrl,
+                }}
                 className="mx-2 h-[72px] w-[72px] rounded-full"
               />
               <View className="absolute top-[55px]">
                 <BronzeMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {thirdPlaceTreker.name}
+                {thirdPlaceTreker.firstName}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
-                  3,645
+                  {thirdPlaceTreker.highScore}
                 </Text>
               </View>
             </View>
           </View>
         )}
 
-        <View className="absolute top-[40%] left-4 transform">
-          <PodiumComponent />
+        <View className=" top-[25%]">
+          <PodiumComponent width={"90%"} style={{ alignSelf: "center"}} />
+
           {remainingTrekers.length > 0 && (
             <View className="flex h-[200px] w-full flex-col bg-white px-4">
               <FlashList
                 data={remainingTrekers}
                 showsVerticalScrollIndicator={false}
-                renderItem={({ item, index }) => {
+                renderItem={({ item: user, index }) => {
                   return (
-                    <View className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2">
+                    <View
+                      key={user.id}
+                      className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2"
+                    >
                       <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
                         {index + 1}
                       </Text>
                       <Image
-                        source={item.imageSource}
+                        source={{
+                          uri: user.imageUrl,
+                        }}
                         className="mr-5 h-12 w-12 rounded-full"
                       />
                       <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-neutral-800">
-                        {item.name}
+                        {user.firstName}
                       </Text>
                       <Text className="font-nunito-bold ml-auto text-center text-xl font-bold leading-loose text-neutral-800">
-                        3433
+                        {user.highScore}
                       </Text>
                     </View>
                   );

@@ -26,4 +26,24 @@ export const playRouter = router({
         },
       });
     }),
+  finishTest: protectedProcedure
+    .input(
+      z.object({
+        playId: z.string(),
+        score: z.number().int(),
+        time: z.number().int(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.play.update({
+        where: {
+          id: input.playId,
+        },
+        data: {
+          score: input.score,
+          time: input.time,
+          isFinished: true,
+        },
+      });
+    }),
 });
