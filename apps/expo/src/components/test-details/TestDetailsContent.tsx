@@ -86,6 +86,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const goToViewAllQuestions = () => {
     navigation.navigate("ViewAll", {
       fetchedData: "questions",
+      type: "testId",
       testId,
     });
   };

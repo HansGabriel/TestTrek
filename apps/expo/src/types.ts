@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { UserInfo } from "@acme/schema/src/types";
+import type { PartialQuestion } from "./stores/useQuestionStore";
 
 declare global {
   namespace ReactNavigation {
@@ -37,7 +38,13 @@ export type RootStackParamList = {
       }
     | {
         fetchedData: "questions";
+        type: "testId";
         testId: string;
+      }
+    | {
+        fetchedData: "questions";
+        type: "questions";
+        questions: PartialQuestion[];
       };
   CreateQuestion: undefined;
   Profile: undefined;
