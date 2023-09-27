@@ -18,7 +18,7 @@ export const testFilterRouter = router({
         },
       };
 
-      const favoriteTestIds = await ctx.prisma.favoriteTest
+      const favoriteTestIds = await ctx.prisma.userOnFavoriteTest
         .findMany({
           where: {
             userId: ctx.auth.userId,

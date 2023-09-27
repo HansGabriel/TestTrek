@@ -51,7 +51,7 @@ const TestDetailsHeader: FC<Props> = ({ testId, goToEditTest }) => {
       <View className="sticky top-9 z-50 mx-6 mb-10 flex flex-row justify-between bg-white py-5">
         <TouchableOpacity
           className="flex flex-row items-center gap-4"
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("MyLibrary")}
         >
           <XIcon />
         </TouchableOpacity>
