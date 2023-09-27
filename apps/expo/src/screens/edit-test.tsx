@@ -149,6 +149,10 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     );
   };
 
+  const handleOnSave = () => {
+    console.log("save");
+  };
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
@@ -171,7 +175,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
             </TouchableOpacity>
             <Text className="font-nunito-bold text-2xl">Edit Test</Text>
           </View>
-          <OptionsDropdown onSave={() => {}} onDelete={handleDeleteTest} />
+          <OptionsDropdown onSave={handleOnSave} onDelete={handleDeleteTest} />
         </View>
 
         <CreateTestForm

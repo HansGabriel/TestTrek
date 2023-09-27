@@ -15,7 +15,6 @@ import { RouterOutputs } from "../../../utils/trpc";
 import { match } from "ts-pattern";
 import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 
-
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
 
 type Props =
@@ -116,7 +115,10 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
                 renderItem={({ item, index }) => {
                   const fullName = `${item.user.firstName} ${item.user.lastName}`;
                   return (
-                    <TouchableOpacity key={index} onPress={goToTestDetailsScreen(item.id)}>
+                    <TouchableOpacity
+                      key={index}
+                      onPress={goToTestDetailsScreen(item.id)}
+                    >
                       <ViewAllScreenTestCard
                         imageSource={{ uri: item.imageUrl }}
                         title={item.title}
