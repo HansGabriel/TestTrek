@@ -1,10 +1,11 @@
 import * as React from "react";
-import { View, TouchableOpacity, FlatList } from "react-native";
+import { View, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
 import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { SkeletonLoader } from "../loaders/SkeletonLoader";
 
 const DiscoverHomeSection: FC = () => {
   const { data } = trpc.test.getDiscoverTests.useQuery();
@@ -18,7 +19,18 @@ const DiscoverHomeSection: FC = () => {
   };
 
   if (!data) {
-    return <></>;
+    return (
+      <SafeAreaView className="flex-1">
+        <View className="h-[90%] w-[90%] items-center space-y-10 self-center py-4">
+          <View className="h-[25%] w-[100%] items-center justify-evenly">
+            <SkeletonLoader isCircular={false} width={"100%"} height={25} />
+          </View>
+          <View className="h-[1%] w-[100%] items-center justify-evenly">
+            <SkeletonLoader isCircular={false} width={"100%"} height={50} />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (
