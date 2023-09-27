@@ -58,7 +58,7 @@ export const questionSchema = z.discriminatedUnion("type", [
 export const testDetailsSchema = z.object({
   image: z.string(),
   title: z.string().min(5).max(50),
-  description: z.string().min(10).max(100),
+  description: z.string().min(10).max(1000),
   collections: z.array(z.string().min(3).max(100)),
   visibility: z.enum(["public", "private"]),
   keywords: z.array(z.string().min(3).max(20)),
@@ -67,7 +67,7 @@ export const testDetailsSchema = z.object({
 export const testInputSchema = z.object({
   image: z.string(),
   title: z.string().min(5).max(50),
-  description: z.string().min(10).max(100),
+  description: z.string().min(10).max(1000),
   collection: z.string().min(3).max(100).optional(),
   visibility: z.enum(["public", "private"]),
   keywords: z.array(z.string().min(3).max(20)),

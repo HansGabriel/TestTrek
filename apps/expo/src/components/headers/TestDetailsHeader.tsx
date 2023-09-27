@@ -11,10 +11,15 @@ import type { FC } from "react";
 
 interface Props {
   testId: string;
+  showEditIcon?: boolean;
   goToEditTest: () => void;
 }
 
-const TestDetailsHeader: FC<Props> = ({ testId, goToEditTest }) => {
+const TestDetailsHeader: FC<Props> = ({
+  testId,
+  showEditIcon = false,
+  goToEditTest,
+}) => {
   const trpcUtils = trpc.useContext();
   const navigation = useNavigation();
   const { showToast } = useToast();
@@ -56,9 +61,11 @@ const TestDetailsHeader: FC<Props> = ({ testId, goToEditTest }) => {
           <XIcon />
         </TouchableOpacity>
         <View className="flex flex-row items-center gap-4">
-          <TouchableOpacity onPress={goToEditTest}>
-            <EditIcon />
-          </TouchableOpacity>
+          {showEditIcon && (
+            <TouchableOpacity onPress={goToEditTest}>
+              <EditIcon />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={handleToggleFavorite}>
             {isFavorite ? <SelectedStarIcon /> : <StarIcon />}
           </TouchableOpacity>
