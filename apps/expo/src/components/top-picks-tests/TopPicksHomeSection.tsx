@@ -12,6 +12,12 @@ const TopPicksHomeSection: FC = () => {
 
   const navigation = useNavigation();
 
+  const goToTestDetailsScreen = (testId: string) => () => {
+    navigation.navigate("TestDetails", {
+      testId,
+    });
+  };
+
   if (!topPicksTest) {
     return <></>;
   }
@@ -30,7 +36,7 @@ const TopPicksHomeSection: FC = () => {
         showsHorizontalScrollIndicator={false}
         data={topPicksTest}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
             <HomeTestDisplayCard
               imageSource={{ uri: item.imageUrl }}
               title={item.title}

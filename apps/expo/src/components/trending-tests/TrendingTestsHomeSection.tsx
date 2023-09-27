@@ -12,6 +12,12 @@ const TrendingTestsHomeSection: FC = () => {
 
   const navigation = useNavigation();
 
+  const goToTestDetailsScreen = (testId: string) => () => {
+    navigation.navigate("TestDetails", {
+      testId,
+    });
+  };
+
   if (!trendingTests) {
     return <></>;
   }
@@ -30,7 +36,7 @@ const TrendingTestsHomeSection: FC = () => {
         showsHorizontalScrollIndicator={false}
         data={trendingTests}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
             <HomeTestDisplayCard
               imageSource={{ uri: item.imageUrl }}
               title={item.title}
