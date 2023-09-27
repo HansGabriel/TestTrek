@@ -12,9 +12,9 @@ import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSecti
 
 export const HomeScreen = () => {
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView style={{ flex: 1 }}>
       <MainHeader />
-      <ScrollView className="z-0">
+      <ScrollView>
         <PlayTest />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />

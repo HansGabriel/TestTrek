@@ -7,6 +7,7 @@ import { collectionRouter } from "./collection";
 import { imageRouter } from "./image";
 import { useRouter } from "./user";
 import { playRouter } from "./play";
+import { gptApiRouter } from "./gptApi";
 
 export const appRouter = router({
   post: postRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   image: imageRouter,
   user: useRouter,
   play: playRouter,
+  gptApi: gptApiRouter,
 });
 
 // export type definition of API
