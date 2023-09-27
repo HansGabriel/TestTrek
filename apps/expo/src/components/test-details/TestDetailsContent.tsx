@@ -168,8 +168,8 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
             </Text>
           </View>
           {isOwner ? (
-            <TouchableOpacity className="inline-flex h-8 w-14 items-center justify-center rounded-[100px] border-2 border-violet-600 px-4 py-1.5">
-              <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
+            <TouchableOpacity className="inline-flex h-7 w-14 items-center justify-center rounded-[100px] border-2 border-violet-600 py-1.5">
+              <Text className="font-nunito-bold text-center text-xs font-semibold leading-tight tracking-tight text-violet-600">
                 You
               </Text>
             </TouchableOpacity>
