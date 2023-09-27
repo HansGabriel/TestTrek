@@ -1,10 +1,10 @@
 import React from "react";
-import { SafeAreaView, Image } from "react-native";
+import { SafeAreaView, Image, View } from "react-native";
 import { RootStackScreenProps } from "../types";
 import { trpc } from "../utils/trpc";
 import ViewAllScreenHeader from "../components/headers/ViewAllScreenHeader";
 import { CollectionTestHeaderAndContent } from "../components/collection-details/CollectionTestHeaderAndContent";
-import LoadingHeader from "../components/headers/LoadingHeader";
+import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 
 export const CollectionDetailsScreen = ({
   route,
@@ -18,8 +18,15 @@ export const CollectionDetailsScreen = ({
 
   if (!collectionDetails) {
     return (
-      <SafeAreaView>
-        <LoadingHeader title="Loading..." />
+      <SafeAreaView className="mt-28 flex-1">
+        <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
+          <View className=" h-[50%] w-[100%] items-center justify-center">
+            <SkeletonLoader isCircular={true} width={"100%"} height={"100%"} />
+          </View>
+          <View className="h-[25%] w-[100%] items-center justify-evenly">
+            <SkeletonLoader isCircular={false} width={"100%"} height={25} />
+          </View>
+        </View>
       </SafeAreaView>
     );
   }
