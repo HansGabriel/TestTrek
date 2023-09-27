@@ -30,6 +30,10 @@ const TopTrekersHomeSection: FC = () => {
     );
   }
 
+  if (!topTrekers.length) {
+    <></>;
+  }
+
   return (
     <View>
       <SectionHeader

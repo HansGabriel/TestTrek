@@ -6,6 +6,7 @@ import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
+import HomeEmptyTest from "../home-empty-section/EmptyTest";
 
 const DiscoverHomeSection: FC = () => {
   const { data } = trpc.test.getDiscoverTests.useQuery();
@@ -29,6 +30,14 @@ const DiscoverHomeSection: FC = () => {
             <SkeletonLoader isCircular={false} width={"100%"} height={50} />
           </View>
         </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <SafeAreaView className="flex-1">
+        <HomeEmptyTest />
       </SafeAreaView>
     );
   }

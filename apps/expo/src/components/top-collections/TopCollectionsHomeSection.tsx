@@ -5,6 +5,7 @@ import { trpc } from "../../utils/trpc";
 import SectionHeader from "../headers/SectionHeader";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
+import HomeEmptyCollection from "../home-empty-section/EmptyCollection";
 
 const TopCollectionsHomeSection: FC = () => {
   const { data: topCollections } = trpc.collection.getTopCollections.useQuery();
@@ -26,6 +27,14 @@ const TopCollectionsHomeSection: FC = () => {
             <SkeletonLoader isCircular={false} width={"100%"} height={50} />
           </View>
         </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!topCollections.length) {
+    return (
+      <SafeAreaView className="flex-1">
+        <HomeEmptyCollection />
       </SafeAreaView>
     );
   }
