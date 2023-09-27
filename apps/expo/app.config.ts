@@ -5,7 +5,8 @@ const CLERK_PUBLISHABLE_KEY =
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "expo",
-  slug: "expo",
+  owner: "mathbasher",
+  slug: "testtrek",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
@@ -21,10 +22,13 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "your.bundle.identifier",
+    bundleIdentifier: "com.mathbasher.testtrek",
     backgroundColor: "#fff",
+    buildNumber: "1",
   },
   android: {
+    package: "com.mathbasher.testtrek",
+    versionCode: 1,
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
       backgroundColor: "#fff",
@@ -32,7 +36,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   },
   extra: {
     eas: {
-      projectId: "your-project-id",
+      projectId: "4579adb5-86ec-4cf7-a864-1b299c7a84ca",
     },
     CLERK_PUBLISHABLE_KEY,
   },
