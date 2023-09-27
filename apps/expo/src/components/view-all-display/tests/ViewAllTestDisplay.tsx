@@ -10,6 +10,7 @@ import ViewAllScreenTestCard from "./ViewAllScreenTestCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
 import { trpc } from "../../../utils/trpc";
+import { useNavigation } from "@react-navigation/native";
 import { RouterOutputs } from "../../../utils/trpc";
 import { match } from "ts-pattern";
 import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
@@ -40,6 +41,8 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
   let fetchedData: FetchedData = undefined;
   let headerTitle = "";
 
+  const navigation = useNavigation();
+
   if (props.testsFor == "discover") {
     const { data } = trpc.test.getDiscoverTests.useQuery();
     fetchedData = data;
@@ -69,6 +72,12 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
     fetchedData = data;
     headerTitle = "";
   }
+
+  const goToTestDetailsScreen = (testId: string) => () => {
+    navigation.navigate("TestDetails", {
+      testId,
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 flex-col">
@@ -106,7 +115,10 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
                 renderItem={({ item, index }) => {
                   const fullName = `${item.user.firstName} ${item.user.lastName}`;
                   return (
-                    <TouchableOpacity key={index}>
+                    <TouchableOpacity
+                      key={index}
+                      onPress={goToTestDetailsScreen(item.id)}
+                    >
                       <ViewAllScreenTestCard
                         imageSource={{ uri: item.imageUrl }}
                         title={item.title}
