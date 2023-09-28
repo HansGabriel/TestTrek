@@ -63,7 +63,7 @@ const OptionModal: FC<Props> = ({
       }}
     >
       <TouchableWithoutFeedback onPress={handleClose}>
-        <View className="absolute inset-0 flex-1 bg-black/70">
+        <View className="absolute inset-0 flex-1 bg-black/70 w-[100%] h-[100%]">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
             <View className="flex h-3/4 w-11/12 items-center rounded-2xl bg-white">
               <Text className="mt-10 text-center text-2xl font-bold">
@@ -101,7 +101,7 @@ const OptionModal: FC<Props> = ({
               ))}
 
               <TouchableOpacity
-                className="mt-auto mb-5 h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]"
+                className="mb-5 mt-auto h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]"
                 onPress={handleClose}
               >
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
