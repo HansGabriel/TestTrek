@@ -11,66 +11,44 @@ interface Props {
 }
 
 export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
-  const { data } = trpc.collection.getTopCollections.useQuery();
-  let fetchedData = data;
-  let headerTitle = "";
-
   const navigation = useNavigation();
 
-  if (props.collectionsFor == "topCollections") {
-    const { data } = trpc.collection.getTopCollections.useQuery();
-    fetchedData = data;
-    headerTitle = "Top Collections";
-  }
+  const { data: topCollections } = trpc.collection.getTopCollections.useQuery();
 
   const goToCollectionDetailsScreen = (collectionId: string) => () => {
     navigation.navigate("CollectionDetails", { collectionId });
   };
 
+  const formatTitle = (title: string) => {
+    let format = "";
+
+    if (title === "topCollections") {
+      format = "Top Collections";
+    }
+
+    return format;
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ViewAllScreenHeader title={headerTitle} />
+      <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
       <FlashList
         showsVerticalScrollIndicator={false}
-        data={fetchedData}
+        numColumns={2}
+        data={topCollections}
         estimatedItemSize={200}
         renderItem={({ item, index }) => {
-          if (!fetchedData) return <></>;
-
-          if (index % 2 === 0) {
-            const nextItem = fetchedData[index + 1];
-            return (
-              <View key={index} className="flex-row justify-between">
-                <TouchableOpacity
-                  onPress={goToCollectionDetailsScreen(item.id)}
-                >
-                  <CollectionsCard
-                    userImage={{
-                      uri:
-                        item.imageUrl ?? "https://example.com/dummy-image.jpg",
-                    }}
-                    title={item.title}
-                  />
-                </TouchableOpacity>
-                {nextItem && (
-                  <TouchableOpacity
-                    onPress={goToCollectionDetailsScreen(item.id)}
-                  >
-                    <CollectionsCard
-                      userImage={{
-                        uri:
-                          nextItem.imageUrl ??
-                          "https://example.com/dummy-image.jpg",
-                      }}
-                      title={nextItem.title}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-            );
-          } else {
-            return <></>;
-          }
+          return (
+            <SafeAreaView className="flex-1">
+              <TouchableOpacity onPress={goToCollectionDetailsScreen(item.id)}>
+                <CollectionsCard
+                  key={index}
+                  userImage={{ uri: item.imageUrl }}
+                  title={item.title}
+                />
+              </TouchableOpacity>
+            </SafeAreaView>
+          );
         }}
       />
     </SafeAreaView>
