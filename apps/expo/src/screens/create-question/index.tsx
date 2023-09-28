@@ -391,7 +391,7 @@ export const CreateQuestionScreen: FC = () => {
               setShowModal(!showModal);
             }}
           >
-            <View className="absolute inset-0 flex-1 bg-black/70">
+            <View className="absolute inset-0 flex-1 bg-black/70 w-[100%] h-[100%]">
               <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                 <View className="h-1/2 w-11/12 rounded-2xl bg-white">
                   <Text className="mt-10 text-center text-2xl font-bold">
