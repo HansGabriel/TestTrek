@@ -2,72 +2,73 @@ import React from "react";
 import { Text, View, Image, SafeAreaView } from "react-native";
 import EditProfileButton from "../profile-buttons/EditProfileButton";
 import type { FC } from "react";
+import { Collection, Test, User } from "@prisma/client";
 
-const formatUsername = (fullName: string) => {
-  return "@" + fullName.toLowerCase().replace(/\s+/g, "_");
-};
+interface PlayObject {
+  _count: {
+    playerId: number;
+  };
+}
 
-const ProfileDetailsSection: FC = () => {
-  const statsData = [
-    { number: 45, label: "Tests" },
-    { number: 5.6, label: "Plays" },
-    { number: 16.8, label: "Players" },
-    { number: 7, label: "Collections" },
-    { number: 372.5, label: "Followers" },
-    { number: 269, label: "Following" },
-  ];
+interface ProfileProps {
+  userDetails?: User | null;
+  testDetails?: Test[];
+  collectionDetails?: Collection[];
+  totalPlays?: PlayObject;
+}
 
-  const name = "Andrew Ainsley";
-  const userName = formatUsername(name);
+const ProfileDetailsSection: FC<ProfileProps> = ({
+  userDetails,
+  testDetails,
+  collectionDetails,
+  totalPlays,
+}) => {
+  if (!userDetails) {
+    return <></>;
+  }
 
   return (
-    <SafeAreaView className="mt-24 flex-1 items-center justify-center">
-      <View className=" h-[236px] w-[100%] flex-col items-center gap-1">
-        <View className="w-full flex-row items-center justify-between gap-4 py-3">
-          <Image
-            className="h-[60px] w-[60px] rounded-full"
-            source={{ uri: "https://via.placeholder.com/60x60" }}
-          />
-          <View className="flex-grow flex-col items-start justify-center gap-0.5">
-            <Text className="font-nunito-bold text-[20px] leading-[32px] text-[#212121]">
-              {name}
-            </Text>
-            <Text className="font-nunito-semibold text-[14px] leading-[19.6px] text-[#616161]">
-              {userName}
-            </Text>
-          </View>
-          <EditProfileButton />
-        </View>
-
-        <View className="w-full border-b border-[#EEEEEE]"></View>
-
-        {Array.from({ length: 2 }).map((_, rowIndex) => (
-          <React.Fragment key={rowIndex}>
-            <View className="w-full flex-row items-center justify-between py-1">
-              {statsData
-                .slice(rowIndex * 3, rowIndex * 3 + 3)
-                .map((stat, columnIndex) => (
-                  <React.Fragment key={stat.label}>
-                    <View className="w-1/3 flex-col items-center justify-center py-2">
-                      <Text className="font-nunito-bold text-[20px] leading-[32px] text-[#212121]">
-                        {stat.number}
-                      </Text>
-                      <Text className="font-nunito-semibold text-[16px] leading-[22.4px] text-[#424242]">
-                        {stat.label}
-                      </Text>
-                    </View>
-                    {columnIndex !== 2 && (
-                      <View className="h-4/5 self-center border-l border-[#EEEEEE]"></View>
-                    )}
-                  </React.Fragment>
-                ))}
+    <SafeAreaView className="flex-1">
+      <View className="w-[90%] flex-col items-center self-center">
+        <View className="my-3 w-[100%] flex-row items-center justify-between self-center">
+          <View className="flex-grow flex-row">
+            <Image
+              className="h-[60px] w-[60px] rounded-full"
+              source={{ uri: userDetails?.imageUrl?.toString() }}
+            />
+            <View className="mx-2">
+              <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
+                {userDetails?.firstName} {userDetails?.lastName}
+              </Text>
+              <Text className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]">
+                @{userDetails?.username}
+              </Text>
             </View>
-            {rowIndex !== 1 && (
-              <View className="w-full border-b border-[#EEEEEE]"></View>
-            )}
-          </React.Fragment>
-        ))}
-        <View className="w-full border-b border-[#EEEEEE]"></View>
+          </View>
+          <View>
+            <EditProfileButton />
+          </View>
+        </View>
+        <View className="my-3 w-80 flex-row justify-evenly border-t border-b border-[#EEEEEE]">
+          <View className="items-center px-2 py-2">
+            <Text className=" font-nunito-bold text-2xl">
+              {testDetails?.length}
+            </Text>
+            <Text className=" font-nunito-medium text-base">Tests</Text>
+          </View>
+          <View className="items-center justify-center border-l border-r border-[#EEEEEE] px-5 py-2">
+            <Text className=" font-nunito-bold text-2xl">
+              {collectionDetails?.length}
+            </Text>
+            <Text className=" font-nunito-medium text-base">Collections</Text>
+          </View>
+          <View className="items-center px-2 py-2">
+            <Text className=" font-nunito-bold text-2xl">
+              {totalPlays?._count.playerId}
+            </Text>
+            <Text className=" font-nunito-medium text-base">Plays</Text>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
