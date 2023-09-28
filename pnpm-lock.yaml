@@ -117,18 +117,9 @@ importers:
       expo-document-picker:
         specifier: ^11.2.2
         version: 11.2.2(expo@48.0.10)
-      expo-file-system:
-        specifier: ^15.2.2
-        version: 15.2.2(expo@48.0.10)
       expo-font:
         specifier: ^11.1.1
         version: 11.1.1(expo@48.0.10)
-      expo-image:
-        specifier: ^1.0.1
-        version: 1.0.1(expo@48.0.10)
-      expo-image-picker:
-        specifier: ^14.1.1
-        version: 14.1.1(expo@48.0.10)
       expo-linear-gradient:
         specifier: ^12.1.2
         version: 12.1.2(expo@48.0.10)
@@ -263,7 +254,7 @@ importers:
         specifier: ^8.4.19
         version: 8.4.20
       tailwindcss:
-        specifier: ^3.3.2
+        specifier: 3.3.2
         version: 3.3.2
       typescript:
         specifier: ^4.9.3
@@ -3590,7 +3581,7 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
-      '@tanstack/react-query': 4.19.1(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query': 4.19.1(react-dom@18.2.0)(react-native@0.71.8)(react@18.2.0)
       '@trpc/client': 10.5.0(@trpc/server@10.5.0)
       '@trpc/server': 10.5.0
       react: 18.2.0
@@ -6196,31 +6187,6 @@ packages:
     dependencies:
       expo: 48.0.10(@babel/core@7.20.5)
       fontfaceobserver: 2.3.0
-    dev: false
-
-  /expo-image-loader@4.1.1(expo@48.0.10):
-    resolution: {integrity: sha512-ciEHVokU0f6w0eTxdRxLCio6tskMsjxWIoV92+/ZD37qePUJYMfEphPhu1sruyvMBNR8/j5iyOvPFVGTfO8oxA==}
-    peerDependencies:
-      expo: '*'
-    dependencies:
-      expo: 48.0.10(@babel/core@7.20.5)
-    dev: false
-
-  /expo-image-picker@14.1.1(expo@48.0.10):
-    resolution: {integrity: sha512-SvWtnkLW7jp5Ntvk3lVcRQmhFYja8psmiR7O6P/+7S6f4llt3vaFwb4I3+pUXqJxxpi7BHc2+95qOLf0SFOIag==}
-    peerDependencies:
-      expo: '*'
-    dependencies:
-      expo: 48.0.10(@babel/core@7.20.5)
-      expo-image-loader: 4.1.1(expo@48.0.10)
-    dev: false
-
-  /expo-image@1.0.1(expo@48.0.10):
-    resolution: {integrity: sha512-h3xDHaw3ZWzOKar1eFXY4CsFgDstw6fo5Tzv6BXXs+Zte5betPMb567f8zCNnhpkr7UCo5CN7Cg92o+lqzdvRA==}
-    peerDependencies:
-      expo: '*'
-    dependencies:
-      expo: 48.0.10(@babel/core@7.20.5)
     dev: false
 
   /expo-keep-awake@12.0.1(expo@48.0.10):
