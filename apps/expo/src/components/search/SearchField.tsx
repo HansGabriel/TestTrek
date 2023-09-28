@@ -5,7 +5,6 @@ import { SearchBar } from "@rneui/themed";
 import SearchIcon from "../../icons/SearchIcon";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
-import { SearchContent } from "./SearchContent";
 
 interface FieldProps {
   searchString: string;
@@ -75,13 +74,15 @@ export const SearchField: FC<FieldProps> = ({
           }
         />
       </Animated.View>
-      {clicked ? (
+      {/* Don't remove this. This is for displaying search contents */}
+      
+      {/* {clicked ? (
         <View className="z-50 flex-1">
           <SearchContent query={searchString} />
         </View>
       ) : (
         ""
-      )}
+      )} */}
     </View>
   );
 };
