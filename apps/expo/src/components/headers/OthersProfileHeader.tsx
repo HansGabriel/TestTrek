@@ -1,11 +1,10 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
-import SettingsIcon from "../../icons/SettingsIcon";
 
 import type { FC } from "react";
 
-const ProfileHeader: FC = ({}) => {
+const OthersProfileHeader: FC = ({}) => {
   const navigation = useNavigation();
   return (
     <>
@@ -19,14 +18,9 @@ const ProfileHeader: FC = ({}) => {
             Profile
           </Text>
         </TouchableOpacity>
-        <View className="flex flex-row items-center gap-4">
-          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-            <SettingsIcon />
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );
 };
 
-export default ProfileHeader;
+export default OthersProfileHeader;

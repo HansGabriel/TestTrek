@@ -9,17 +9,25 @@ import {
 } from "react-native";
 
 import type { FC } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
+  userId: string;
   userImage: ImageSourcePropType;
   name: string;
   userName: string;
 }
 
 const ViewAllUserCard: FC<Props> = (props) => {
+  const navigation = useNavigation();
+
+  const goToOthersProfileScreen = (userId: string) => () => {
+    navigation.navigate("OthersProfile", { userId });
+  };
+
   return (
     <SafeAreaView>
-      <View className="w-[90%] flex-row items-center justify-between gap-4 py-3 px-3">
+      <View className="w-[90%] flex-row items-center justify-between gap-4 px-3 py-3">
         <Image
           className="h-[77.5%] w-[17.5%] rounded-full"
           source={props.userImage}
@@ -43,7 +51,10 @@ const ViewAllUserCard: FC<Props> = (props) => {
           </View>
         </View>
 
-        <TouchableOpacity className="h-[40%] w-[20%] items-center justify-center rounded-[100px] border-2 border-violet-600 bg-violet-600">
+        <TouchableOpacity
+          className="h-[40%] w-[20%] items-center justify-center rounded-[100px] border-2 border-violet-600 bg-violet-600"
+          onPress={goToOthersProfileScreen(props.userId)}
+        >
           <Text className="font-nunito-semibold text-xs text-white">View</Text>
         </TouchableOpacity>
       </View>

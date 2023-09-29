@@ -9,3 +9,8 @@ export const collectionsSchema = z.object({
 export const collectionSortSchema = z.object({
   sortBy: z.enum(["newest", "oldest", "alphabetical"]).optional(),
 });
+
+export const collectionByUserIdSchema = z.object({
+  userId: z.string(),
+  sortBy: z.enum(["newest", "oldest", "alphabetical"]).optional(),
+});
