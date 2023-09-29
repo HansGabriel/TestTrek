@@ -83,6 +83,7 @@ const RootNavigator = () => {
               component={HomeScreen}
               options={{
                 headerShown: false,
+                animation: "none",
               }}
             />
             <Stack.Screen
@@ -97,6 +98,7 @@ const RootNavigator = () => {
               component={MyLibraryScreen}
               options={{
                 headerShown: false,
+                animation: "none",
               }}
             />
             <Stack.Screen
@@ -118,6 +120,7 @@ const RootNavigator = () => {
               component={ProfileScreen}
               options={{
                 headerShown: false,
+                animation: "none",
               }}
             />
             <Stack.Screen
