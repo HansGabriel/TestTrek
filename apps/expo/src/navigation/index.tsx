@@ -33,6 +33,8 @@ import { CollectionDetailsScreen } from "../screens/collection-details";
 import { PlayTestScreen } from "../screens/play-test";
 import { EditCollection } from "../screens/edit-collection";
 import { ScoreboardScreen } from "../screens/scoreboard";
+import { MusicAndEffectsScreen } from "../screens/settings/MusicSettings";
+import { AboutTestTrekScreen } from "../screens/settings/AboutTestTrek";
 
 export default function Navigation() {
   return (
@@ -200,6 +202,20 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Scoreboard"
               component={ScoreboardScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MusicAndEffects"
+              component={MusicAndEffectsScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="AboutTestTrek"
+              component={AboutTestTrekScreen}
               options={{
                 headerShown: false,
               }}

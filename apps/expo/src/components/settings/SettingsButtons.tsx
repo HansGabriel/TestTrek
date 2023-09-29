@@ -5,15 +5,18 @@ import RedNotificationIcon from "../../icons/settings/RedNotificationIcon";
 import MusicAndEffectsIcon from "../../icons/settings/MusicAndEffectsIcon";
 import AboutIcon from "../../icons/settings/AboutIcon";
 import RedLogoutIcon from "../../icons/settings/RedLogoutIcon";
-import { useAuth } from "@clerk/clerk-expo";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-const SettingsButtons: FC = () => {
-  const { signOut } = useAuth();
+interface LogoutProps {
+  openBottomSheet: () => void;
+}
+
+const SettingsButtons: FC<LogoutProps> = ({ openBottomSheet }) => {
   const navigation = useNavigation();
+
   return (
-    <View>
+    <View className="flex-1 self-center">
       <View className="mt-5 w-80 self-center">
         <TouchableOpacity
           onPress={() => navigation.navigate("EditPersonalInfo")}
@@ -29,23 +32,21 @@ const SettingsButtons: FC = () => {
       </View>
 
       <View className="mt-5 w-80 self-center">
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("MusicAndEffects")}
+        >
           <MusicAndEffectsIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
       <View className="mt-5 w-80 self-center">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("AboutTestTrek")}>
           <AboutIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 
       <View className="mt-5 w-80 self-center">
-        <TouchableOpacity
-          onPress={() => {
-            signOut();
-          }}
-        >
+        <TouchableOpacity onPress={openBottomSheet}>
           <RedLogoutIcon width={"100%"} />
         </TouchableOpacity>
       </View>
