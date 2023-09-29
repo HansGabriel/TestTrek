@@ -7,7 +7,6 @@ import {
   ScrollView,
 } from "react-native";
 import OthersProfileHeader from "../components/headers/OthersProfileHeader";
-import ProfileDetailsSection from "../components/profile-details/details-section/ProfileDetailsSection";
 import RectangleProfileIcon from "../icons/RectangleProfileIcon";
 import { CollectionsTab } from "../components/my-collections/Collections";
 import { TabContent } from "../components/my-library/TabContent";
@@ -15,6 +14,7 @@ import { AboutUser } from "../components/AboutUser";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { RootStackScreenProps } from "../types";
+import OthersProfileDetailsSection from "../components/profile-details/details-section/OthersProfileDetailsSection";
 
 enum Tabs {
   TESTS,
@@ -64,7 +64,7 @@ export const OthersProfileScreen = ({
           >
             <View className="flex-1 items-center">
               <RectangleProfileIcon width={"90%"} />
-              <ProfileDetailsSection
+              <OthersProfileDetailsSection
                 userDetails={userData}
                 testDetails={testData}
                 collectionDetails={collectionData}
