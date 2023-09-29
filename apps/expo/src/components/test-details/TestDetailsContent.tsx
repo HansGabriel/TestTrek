@@ -161,10 +161,29 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           />
           <View className="mx-1 flex-grow flex-col items-start justify-center">
             <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
-              {testDetails?.user.firstName} {testDetails?.user.lastName}
+              {testDetails?.user.firstName.length > 10 ||
+              testDetails?.user.lastName.length > 10 ? (
+                <>
+                  {testDetails?.user.firstName.slice(0, 10)}
+                  {testDetails?.user.firstName.length > 10 ? "..." : ""}
+                  {"\n"}
+                  {testDetails?.user.lastName.slice(0, 10)}
+                  {testDetails?.user.lastName.length > 10 ? "..." : ""}
+                </>
+              ) : (
+                `${testDetails?.user.firstName} ${testDetails?.user.lastName}`
+              )}
             </Text>
             <Text className="font-nunito-semibold text-[14px] leading-[19.6px] text-[#616161]">
-              @{testDetails?.user.username}
+              @
+              {testDetails?.user.username.length > 20 ? (
+                <>
+                  {testDetails?.user.username.slice(0, 20)}
+                  {testDetails?.user.username.length > 20 ? "..." : ""}
+                </>
+              ) : (
+                `${testDetails?.user.username}`
+              )}
             </Text>
           </View>
           {isOwner ? (

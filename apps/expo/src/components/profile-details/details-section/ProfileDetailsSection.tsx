@@ -38,10 +38,29 @@ const ProfileDetailsSection: FC<ProfileProps> = ({
             />
             <View className="mx-2">
               <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
-                {userDetails?.firstName} {userDetails?.lastName}
+                {userDetails?.firstName.length > 10 ||
+                userDetails?.lastName.length > 10 ? (
+                  <>
+                    {userDetails?.firstName.slice(0, 10)}
+                    {userDetails?.firstName.length > 10 ? "..." : ""}
+                    {"\n"}
+                    {userDetails?.lastName.slice(0, 10)}
+                    {userDetails?.lastName.length > 10 ? "..." : ""}
+                  </>
+                ) : (
+                  `${userDetails?.firstName} ${userDetails?.lastName}`
+                )}
               </Text>
               <Text className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]">
-                @{userDetails?.username}
+                @
+                {userDetails.username.length > 20 ? (
+                  <>
+                    {userDetails.username.slice(0, 20)}
+                    {userDetails.username.length > 20 ? "..." : ""}
+                  </>
+                ) : (
+                  `${userDetails.username}`
+                )}
               </Text>
             </View>
           </View>

@@ -9,7 +9,7 @@ interface Props {
 
 const CollectionsCard: FC<Props> = (props) => {
   return (
-    <View className="my-2 mx-3">
+    <View className="my-3 mx-3">
       <ImageBackground
         source={props.userImage}
         className="overflow-hidden rounded-xl border-2 border-white"

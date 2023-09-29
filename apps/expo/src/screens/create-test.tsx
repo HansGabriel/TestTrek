@@ -11,7 +11,6 @@ import {
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
-import { uploadImageAsync } from "../services/upload";
 import { ImageDetails } from "@acme/schema/src/types";
 import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
