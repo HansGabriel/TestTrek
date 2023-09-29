@@ -9,3 +9,9 @@ export const testFiltersSchema = z.object({
   testType: testTypeSchema,
   sortBy: testSortSchema,
 });
+
+export const testByUserIdSchema = z.object({
+  userId: z.string(),
+  sortBy: testSortSchema,
+  testType: testTypeSchema,
+});

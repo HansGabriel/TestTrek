@@ -48,6 +48,7 @@ export type RootStackParamList = {
       };
   CreateQuestion: undefined;
   Profile: undefined;
+  OthersProfile: { userId: string };
   Settings: undefined;
   TestDetails: {
     testId: string;

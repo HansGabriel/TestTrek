@@ -15,6 +15,10 @@ const TopTrekersHomeSection: FC = () => {
 
   const navigation = useNavigation();
 
+  const goToOthersProfileScreen = (userId: string) => () => {
+    navigation.navigate("OthersProfile", { userId });
+  };
+
   if (!topTrekers) {
     return (
       <SafeAreaView className="flex-1">
@@ -46,18 +50,14 @@ const TopTrekersHomeSection: FC = () => {
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={topTrekers.map((treker) => ({
-          id: treker.id,
-          name: getFullName(treker.firstName, treker.lastName),
-          imageSource: treker.imageUrl,
-        }))}
+        data={topTrekers}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={goToOthersProfileScreen(item.userId)}>
             <TopTrekersHomeCard
               imageSource={{
-                uri: item.imageSource ?? IMAGE_PLACEHOLDER,
+                uri: item.imageUrl ?? IMAGE_PLACEHOLDER,
               }}
-              name={item.name}
+              name={getFullName(item.firstName, item.lastName)}
             />
           </TouchableOpacity>
         )}

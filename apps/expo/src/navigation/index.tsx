@@ -33,6 +33,7 @@ import { CollectionDetailsScreen } from "../screens/collection-details";
 import { PlayTestScreen } from "../screens/play-test";
 import { EditCollection } from "../screens/edit-collection";
 import { ScoreboardScreen } from "../screens/scoreboard";
+import { OthersProfileScreen } from "../screens/others-profile";
 
 export default function Navigation() {
   return (
@@ -122,6 +123,13 @@ const RootNavigator = () => {
               options={{
                 headerShown: false,
                 animation: "fade",
+              }}
+            />
+            <Stack.Screen
+              name="OthersProfile"
+              component={OthersProfileScreen}
+              options={{
+                headerShown: false,
               }}
             />
             <Stack.Screen

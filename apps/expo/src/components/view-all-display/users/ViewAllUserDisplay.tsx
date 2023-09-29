@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { SafeAreaView, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native";
 import ViewAllUserCard from "./ViewAllUserCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
@@ -37,6 +37,7 @@ export const ViewAllUserDisplay: FC<Props> = (props) => {
 
           return (
             <ViewAllUserCard
+              userId={item.userId}
               userImage={{
                 uri: item.imageUrl ?? "https://example.com/dummy-image.jpg",
               }}
