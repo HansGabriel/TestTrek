@@ -35,6 +35,7 @@ import { EditCollection } from "../screens/edit-collection";
 import { ScoreboardScreen } from "../screens/scoreboard";
 import { MusicAndEffectsScreen } from "../screens/settings/MusicSettings";
 import { AboutTestTrekScreen } from "../screens/settings/AboutTestTrek";
+import { OthersProfileScreen } from "../screens/others-profile";
 
 export default function Navigation() {
   return (
@@ -85,6 +86,7 @@ const RootNavigator = () => {
               component={HomeScreen}
               options={{
                 headerShown: false,
+                animation: "fade",
               }}
             />
             <Stack.Screen
@@ -92,6 +94,7 @@ const RootNavigator = () => {
               component={CreateTestScreen}
               options={{
                 headerShown: false,
+                animation: "fade",
               }}
             />
             <Stack.Screen
@@ -99,6 +102,7 @@ const RootNavigator = () => {
               component={MyLibraryScreen}
               options={{
                 headerShown: false,
+                animation: "fade",
               }}
             />
             <Stack.Screen
@@ -118,6 +122,14 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Profile"
               component={ProfileScreen}
+              options={{
+                headerShown: false,
+                animation: "fade",
+              }}
+            />
+            <Stack.Screen
+              name="OthersProfile"
+              component={OthersProfileScreen}
               options={{
                 headerShown: false,
               }}

@@ -21,11 +21,26 @@ export const useRouter = router({
       return ctx.prisma.user.findMany({
         select: {
           id: true,
+          userId: true,
           imageUrl: true,
           firstName: true,
           lastName: true,
         },
         take: limit,
+      });
+    }),
+
+  getUserById: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.user.findUnique({
+        where: {
+          userId: input.userId,
+        },
       });
     }),
 
@@ -36,6 +51,21 @@ export const useRouter = router({
       },
     });
   }),
+
+  getPlaysByUserId: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { userId } = input;
+
+      return ctx.prisma.play.aggregate({
+        _count: {
+          playerId: true,
+        },
+        where: {
+          playerId: userId,
+        },
+      });
+    }),
 
   getUserPlays: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.play.aggregate({

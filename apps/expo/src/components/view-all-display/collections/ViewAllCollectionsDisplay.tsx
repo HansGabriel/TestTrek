@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, TouchableOpacity } from "react-native";
 import CollectionsCard from "./CollectionsCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
