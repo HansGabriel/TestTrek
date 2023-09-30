@@ -5,8 +5,8 @@ const CLERK_PUBLISHABLE_KEY =
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "expo",
-  owner: "mathbasher",
   slug: "testtrek",
+  scheme: "testtrek",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/icon.png",
