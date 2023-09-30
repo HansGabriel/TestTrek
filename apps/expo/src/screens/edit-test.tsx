@@ -15,6 +15,7 @@ import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
 import OptionsDropdown from "./create-question/options-dropdown";
 import { match } from "ts-pattern";
+import { mapZodError } from "../utils/helpers/zod";
 
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
@@ -102,9 +103,9 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           resetQuestions();
           navigation.navigate("Home");
         },
-        onError: () => {
+        onError: (error) => {
           setIsUploading(false);
-          showToast("An error occurred");
+          showToast(mapZodError(error));
           resetQuestions();
         },
       },

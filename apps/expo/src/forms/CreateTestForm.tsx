@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import { useCallback, useMemo, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -32,6 +32,8 @@ import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import type { FieldError } from "react-hook-form";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -81,7 +83,6 @@ const CreateTestForm: FC<Props> = ({
   } = useForm<FormProps>({
     resolver: zodResolver(
       testInputSchema.omit({
-        keywords: true,
         questions: true,
       }),
     ),
@@ -91,7 +92,7 @@ const CreateTestForm: FC<Props> = ({
       image: getDisplayImage(),
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
-      keywords: testDetails?.keywords,
+      keywords: testDetails?.keywords ?? [],
     },
   });
 
@@ -104,10 +105,6 @@ const CreateTestForm: FC<Props> = ({
   );
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
-
-  const [keywords, setKeywords] = useState<string[]>(
-    testDetails?.keywords ?? [],
-  );
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -142,10 +139,8 @@ const CreateTestForm: FC<Props> = ({
   const submitForm = (data: FormProps) => {
     onSubmit({
       ...data,
-      keywords,
     });
     reset();
-    setKeywords([]);
   };
 
   const readyQuestions = questions.slice(0, 10);
@@ -170,6 +165,22 @@ const CreateTestForm: FC<Props> = ({
       type: "questions",
       questions: questions,
     });
+  };
+
+  const renderKeywordError = () => {
+    if (errors.keywords !== undefined) {
+      const keywordsList = errors.keywords as FieldError[];
+      const error = keywordsList
+        .filter((error) => error !== undefined)
+        .map((error) => error.message);
+
+      const uniqueErrors = [...new Set(error)];
+      return uniqueErrors.map((error, index) => (
+        <Text key={index} className="text-red-500">
+          {error}
+        </Text>
+      ));
+    }
   };
 
   return (
@@ -288,14 +299,25 @@ const CreateTestForm: FC<Props> = ({
               <Text className="text-red-500">{errors.visibility.message}</Text>
             )}
 
-            <MultipleTextInput
-              label="Keyword"
-              textInputProps={{
-                placeholder: "Type keyword and enter",
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <>
+                    <MultipleTextInput
+                      label="Keyword"
+                      textInputProps={{
+                        placeholder: "Type keyword and enter",
+                      }}
+                      texts={value}
+                      onChangeTexts={onChange}
+                    />
+                  </>
+                );
               }}
-              texts={keywords}
-              onChangeTexts={setKeywords}
+              name="keywords"
             />
+            {renderKeywordError()}
           </View>
 
           {questions.length > 0 && (
