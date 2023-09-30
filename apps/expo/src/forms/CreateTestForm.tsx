@@ -95,7 +95,9 @@ const CreateTestForm: FC<Props> = ({
     },
   });
 
-  const questions = useQuestionStore((state) => state.questions);
+  const questions = useQuestionStore((state) => state.questions).filter(
+    (questions) => !questions.inEdit,
+  );
   const setSelectedIndex = useQuestionStore((state) => state.setSelectedIndex);
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
@@ -146,9 +148,7 @@ const CreateTestForm: FC<Props> = ({
     setKeywords([]);
   };
 
-  const readyQuestions = questions
-    .filter((question) => !question.inEdit)
-    .slice(0, 10);
+  const readyQuestions = questions.slice(0, 10);
 
   useEffect(() => {
     navigation.addListener("focus", () => {
@@ -168,7 +168,7 @@ const CreateTestForm: FC<Props> = ({
     navigation.navigate("ViewAll", {
       fetchedData: "questions",
       type: "questions",
-      questions: questions.filter((question) => !question.inEdit),
+      questions: questions,
     });
   };
 
@@ -179,7 +179,7 @@ const CreateTestForm: FC<Props> = ({
         className="mx-6 flex flex-col content-end justify-between"
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="mt-8 mb-2 flex flex-col">
+          <View className="mb-2 mt-8 flex flex-col">
             <View className="mb-6">
               <Controller
                 control={control}
@@ -298,67 +298,75 @@ const CreateTestForm: FC<Props> = ({
             />
           </View>
 
-          <View className="mb-10 h-full flex-1 flex-col">
-            <View className="mb-6 flex flex-row items-center justify-between">
-              <Text className="text-xl font-bold leading-loose text-neutral-800">
-                Question ({questions.length})
-              </Text>
-              <TouchableOpacity
-                className="flex flex-row items-center gap-1"
-                onPress={goToViewAllQuestions}
-              >
-                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                  View All
-                </Text>
-                <RightArrowIcon />
-              </TouchableOpacity>
-            </View>
+          {questions.length > 0 && (
+            <>
+              <View className="mb-10 h-full flex-1 flex-col">
+                <View className="mb-6 flex flex-row items-center justify-between">
+                  <Text className="text-xl font-bold leading-loose text-neutral-800">
+                    Question ({questions.length})
+                  </Text>
+                  <TouchableOpacity
+                    className="flex flex-row items-center gap-1"
+                    onPress={goToViewAllQuestions}
+                  >
+                    <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                      View All
+                    </Text>
+                    <RightArrowIcon />
+                  </TouchableOpacity>
+                </View>
 
-            <SafeAreaView className="min-h-full flex-1">
-              <FlashList
-                estimatedItemSize={10}
-                data={readyQuestions}
-                showsVerticalScrollIndicator={true}
-                renderItem={({ item: question, index }) => {
-                  return (
-                    <TouchableOpacity
-                      className="my-2 flex h-[105px] items-center justify-start"
-                      key={index}
-                      onPress={goToEditQuestion(index)}
-                    >
-                      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
-                        <View className="relative w-[140px] self-stretch">
-                          <ImageBackground
-                            source={{
-                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                            }}
-                            imageStyle={{
-                              borderTopLeftRadius: 12,
-                              borderBottomLeftRadius: 12,
-                            }}
-                            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                          />
-                        </View>
-                        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                          {index + 1} -{" "}
-                          {match(question.type)
-                            .with("multiple_choice", () => "Multiple Choice")
-                            .with("true_or_false", () => "True or False")
-                            .with("multi_select", () => "Multi Select")
-                            .with("identification", () => "Identification")
-                            .with("enumeration", () => "Enumeration")
-                            .exhaustive()}
-                        </Text>
-                        <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
-                          {question.title}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }}
-              />
-            </SafeAreaView>
-          </View>
+                <SafeAreaView className="min-h-full flex-1">
+                  <FlashList
+                    estimatedItemSize={10}
+                    data={readyQuestions}
+                    showsVerticalScrollIndicator={true}
+                    renderItem={({ item: question, index }) => {
+                      return (
+                        <TouchableOpacity
+                          className="my-2 flex h-[105px] items-center justify-start"
+                          key={index}
+                          onPress={goToEditQuestion(index)}
+                        >
+                          <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                            <View className="relative w-[140px] self-stretch">
+                              <ImageBackground
+                                source={{
+                                  uri:
+                                    question.image ?? IMAGE_PLACEHOLDER_LARGE,
+                                }}
+                                imageStyle={{
+                                  borderTopLeftRadius: 12,
+                                  borderBottomLeftRadius: 12,
+                                }}
+                                className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                              />
+                            </View>
+                            <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                              {index + 1} -{" "}
+                              {match(question.type)
+                                .with(
+                                  "multiple_choice",
+                                  () => "Multiple Choice",
+                                )
+                                .with("true_or_false", () => "True or False")
+                                .with("multi_select", () => "Multi Select")
+                                .with("identification", () => "Identification")
+                                .with("enumeration", () => "Enumeration")
+                                .exhaustive()}
+                            </Text>
+                            <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
+                              {question.title}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+                </SafeAreaView>
+              </View>
+            </>
+          )}
 
           <View className="flex flex-row items-center justify-between pb-20">
             <TouchableOpacity
