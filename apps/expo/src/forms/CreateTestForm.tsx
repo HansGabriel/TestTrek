@@ -227,25 +227,6 @@ const CreateTestForm: FC<Props> = ({
 
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <AppTextInput
-                  label="Description"
-                  textInputProps={{
-                    onBlur,
-                    placeholder: "Enter Description",
-                    onChangeText: onChange,
-                    value,
-                  }}
-                />
-              )}
-              name="description"
-            />
-            {errors.description && (
-              <Text className="text-red-500">{errors.description.message}</Text>
-            )}
-
-            <Controller
-              control={control}
               render={({ field: { onChange, value } }) => {
                 const onTextChange = (option: LabelOption) => {
                   onChange(option.value);
@@ -318,6 +299,29 @@ const CreateTestForm: FC<Props> = ({
               name="keywords"
             />
             {renderKeywordError()}
+
+            <View className="mb-6">
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <AppTextInput
+                    label="Description"
+                    type="textarea"
+                    textInputProps={{
+                      onBlur,
+                      onChangeText: onChange,
+                      value,
+                    }}
+                  />
+                )}
+                name="description"
+              />
+              {errors.description && (
+                <Text className="text-red-500">
+                  {errors.description.message}
+                </Text>
+              )}
+            </View>
           </View>
 
           {questions.length > 0 && (
