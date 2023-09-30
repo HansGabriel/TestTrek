@@ -1,23 +1,27 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import type { FC } from "react";
-import { useNavigation } from "@react-navigation/native";
+import useGoBack from "../../hooks/useGoBack";
 
-const SettingsHeader: FC = ({}) => {
-  const navigation = useNavigation();
+interface HeaderProps {
+  screenName: string;
+}
+
+const SettingsHeader: FC<HeaderProps> = ({ screenName }) => {
+  const goBack = useGoBack();
   return (
     <>
-      <View className="pt-9">
-        <View className="mx-6 flex flex-row justify-between bg-white py-5">
+      <View className="mx-5 mt-7 flex  flex-row justify-between py-5">
+        <View className="flex-row gap-4 self-center">
           <TouchableOpacity
-            className="flex flex-row items-center gap-2"
-            onPress={() => navigation.navigate("Profile")}
+            onPress={goBack}
+            className="flex flex-row items-center self-center"
           >
             <LeftArrowIcon />
-            <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-              Settings
-            </Text>
           </TouchableOpacity>
+          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+            {screenName}
+          </Text>
         </View>
       </View>
     </>

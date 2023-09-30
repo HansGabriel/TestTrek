@@ -6,15 +6,15 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import ProfileHeader from "../components/headers/ProfileHeader";
-import ProfileDetailsSection from "../components/profile-details/details-section/ProfileDetailsSection";
+import OthersProfileHeader from "../components/headers/OthersProfileHeader";
 import RectangleProfileIcon from "../icons/RectangleProfileIcon";
 import { CollectionsTab } from "../components/my-collections/Collections";
 import { TabContent } from "../components/my-library/TabContent";
 import { AboutUser } from "../components/AboutUser";
-import Footer from "../components/Footer";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
+import { RootStackScreenProps } from "../types";
+import OthersProfileDetailsSection from "../components/profile-details/details-section/OthersProfileDetailsSection";
 
 enum Tabs {
   TESTS,
@@ -22,19 +22,27 @@ enum Tabs {
   ABOUT,
 }
 
-export const ProfileScreen = () => {
+export const OthersProfileScreen = ({
+  route,
+}: RootStackScreenProps<"OthersProfile">) => {
   const [activeTab, setActiveTab] = useState(Tabs.TESTS);
-  const { data: userData } = trpc.user.getUserDetails.useQuery();
-  const { data: testData } = trpc.testFilter.getAll.useQuery({
+  const { userId } = route.params;
+  const { data: userData } = trpc.user.getUserById.useQuery({ userId: userId });
+  const { data: testData } = trpc.testFilter.getByUserId.useQuery({
+    userId: userId,
     testType: "user",
     sortBy: "newest",
   });
 
-  const { data: collectionData } = trpc.collection.getByUserId.useQuery({
-    sortBy: "newest",
-  });
+  const { data: collectionData } =
+    trpc.collection.getCollectionsByUserId.useQuery({
+      userId: userId,
+      sortBy: "newest",
+    });
 
-  const { data: totalUserPlays } = trpc.user.getUserPlays.useQuery();
+  const { data: totalUserPlays } = trpc.user.getPlaysByUserId.useQuery({
+    userId: userId,
+  });
 
   const changeButtonColor = (tab: Tabs) => {
     return activeTab === tab ? "bg-violet-600" : "bg-white";
@@ -48,7 +56,7 @@ export const ProfileScreen = () => {
     <SafeAreaView className="flex-1">
       {userData ? (
         <View className="flex-1">
-          <ProfileHeader />
+          <OthersProfileHeader />
           <ScrollView
             showsVerticalScrollIndicator={false}
             stickyHeaderIndices={[1]}
@@ -56,7 +64,7 @@ export const ProfileScreen = () => {
           >
             <View className="flex-1 items-center">
               <RectangleProfileIcon width={"90%"} />
-              <ProfileDetailsSection
+              <OthersProfileDetailsSection
                 userDetails={userData}
                 testDetails={testData}
                 collectionDetails={collectionData}
@@ -117,7 +125,6 @@ export const ProfileScreen = () => {
               {activeTab === Tabs.ABOUT && <AboutUser />}
             </View>
           </ScrollView>
-          <Footer />
         </View>
       ) : (
         <View className="mt-20 h-[90%] w-[90%] items-center space-y-10 self-center">
@@ -127,9 +134,6 @@ export const ProfileScreen = () => {
           <View className="h-[50.7%] w-[100%] items-center justify-evenly">
             <SkeletonLoader isCircular={false} width={"100%"} height={20} />
             <SkeletonLoader isCircular={false} width={"100%"} height={20} />
-          </View>
-          <View>
-            <Footer />
           </View>
         </View>
       )}

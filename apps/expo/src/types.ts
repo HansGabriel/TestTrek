@@ -48,6 +48,7 @@ export type RootStackParamList = {
       };
   CreateQuestion: undefined;
   Profile: undefined;
+  OthersProfile: { userId: string };
   Settings: undefined;
   TestDetails: {
     testId: string;
@@ -71,6 +72,8 @@ export type RootStackParamList = {
   Scoreboard: {
     testId: string;
   };
+  MusicAndEffects: undefined;
+  AboutTestTrek: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

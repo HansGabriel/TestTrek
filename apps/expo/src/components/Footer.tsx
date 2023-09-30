@@ -38,7 +38,7 @@ const Footer: FC = () => {
       <View className="flex-row items-center space-x-5 px-8 pt-5 pb-8">
         <TouchableOpacity
           onPress={goToHomeScreen}
-          style={{ marginHorizontal: 15 }}
+          style={{ marginHorizontal: 25 }}
         >
           <View className="flex-col items-center space-y-1">
             {route.name === "Home" ? <HomeBoldIcon /> : <HomeLightIcon />}
@@ -49,7 +49,7 @@ const Footer: FC = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={goToMyLibraryScreen}
-          style={{ marginHorizontal: 15 }}
+          style={{ marginHorizontal: 25 }}
         >
           <View className="flex-col items-center space-y-1">
             {route.name === "MyLibrary" ? (
@@ -65,7 +65,7 @@ const Footer: FC = () => {
 
         <TouchableOpacity
           onPress={goToCreateTestScreen}
-          style={{ marginHorizontal: 15 }}
+          style={{ marginHorizontal: 25 }}
         >
           <View className="flex-col items-center space-y-1">
             <CreateNewIcon />
@@ -75,7 +75,7 @@ const Footer: FC = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ marginHorizontal: 15 }}
+          style={{ marginHorizontal: 25 }}
           onPress={goToProfileScreen}
         >
           <View className="flex-col items-center space-y-1">
