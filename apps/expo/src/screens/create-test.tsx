@@ -97,7 +97,7 @@ export const CreateTestScreen: FC = () => {
   return (
     <SafeAreaView className="flex-1">
       <View className="mt-12">
-        <View className="mx-6  flex flex-row items-center justify-between">
+        <View className="-z-[100] mx-6 flex flex-row items-center justify-between">
           <View className="flex flex-row items-center gap-2">
             <TouchableOpacity onPress={handleExitScreen}>
               <Feather name="x" size={24} color="black" />

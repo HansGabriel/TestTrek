@@ -314,7 +314,7 @@ export const CreateQuestionScreen: FC = () => {
       </View>
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
-        <View className="mt-8 mb-4 flex flex-col">
+        <View className="mb-4 mt-8 flex flex-col">
           <TestImagePicker image={selectedImage} type="question" />
         </View>
 
@@ -378,6 +378,22 @@ export const CreateQuestionScreen: FC = () => {
           {renderChoice(choices[3]!)}
         </View>
 
+        <TouchableOpacity
+          className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-2 ${
+            false
+              ? "border-violet-700 bg-violet-600"
+              : "border-gray-300 bg-gray-200"
+          } py-[18px]`}
+        >
+          <Text
+            className={`shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight ${
+              false ? "text-white" : "text-gray-500"
+            }`}
+          >
+            Save
+          </Text>
+        </TouchableOpacity>
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -391,7 +407,7 @@ export const CreateQuestionScreen: FC = () => {
               setShowModal(!showModal);
             }}
           >
-            <View className="absolute inset-0 flex-1 bg-black/70 w-[100%] h-[100%]">
+            <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
               <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                 <View className="h-1/2 w-11/12 rounded-2xl bg-white">
                   <Text className="mt-10 text-center text-2xl font-bold">
@@ -442,7 +458,7 @@ export const CreateQuestionScreen: FC = () => {
           setIsVisible={setShowPointModal}
         />
 
-        <View className="mt-10 flex flex-row items-center justify-between border-t border-neutral-100 bg-white px-6 pt-6 pb-9">
+        <View className="mt-10 flex flex-row items-center justify-between border-t border-neutral-100 bg-white px-6 pb-9 pt-6">
           <ScrollView
             horizontal
             className="flex flex-row gap-x-2"

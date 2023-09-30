@@ -65,11 +65,69 @@ export const testDetailsSchema = z.object({
 });
 
 export const testInputSchema = z.object({
-  image: z.string(),
-  title: z.string().min(5).max(50),
-  description: z.string().min(10).max(1000),
-  collection: z.string().min(3).max(100).optional(),
-  visibility: z.enum(["public", "private"]),
-  keywords: z.array(z.string().min(3).max(20)),
-  questions: z.array(questionSchema),
+  image: z.string({
+    errorMap: () => ({
+      message: "Image is required",
+    }),
+  }),
+  title: z
+    .string({
+      errorMap: () => ({
+        message: "Title is required",
+      }),
+    })
+    .min(5, {
+      message: "Title must be at least 5 characters",
+    })
+    .max(50, {
+      message: "Title must be at most 50 characters",
+    }),
+  description: z
+    .string({
+      errorMap: () => ({
+        message: "Description is required",
+      }),
+    })
+    .min(10, {
+      message: "Description must be at least 10 characters",
+    })
+    .max(1000, {
+      message: "Description must be at most 1000 characters",
+    }),
+  collection: z
+    .string({
+      errorMap: () => ({
+        message: "Collection is required",
+      }),
+    })
+    .min(3, {
+      message: "Collection must be at least 3 characters",
+    })
+    .max(100, {
+      message: "Collection must be at most 100 characters",
+    })
+    .optional(),
+  visibility: z.enum(["public", "private"], {
+    errorMap: () => ({
+      message: "Visibility is required",
+    }),
+  }),
+  keywords: z.array(
+    z
+      .string()
+      .min(3, {
+        message: "Keyword must be at least 3 characters",
+      })
+      .max(20, {
+        message: "Keyword must be at most 20 characters",
+      }),
+  ),
+  questions: z
+    .array(questionSchema)
+    .min(1, {
+      message: "At least one question is required",
+    })
+    .max(100, {
+      message: "At most 100 questions are allowed",
+    }),
 });

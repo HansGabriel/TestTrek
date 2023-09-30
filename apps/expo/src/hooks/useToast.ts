@@ -15,14 +15,12 @@ const useToast = () => {
         paddingHorizontal: 40,
         paddingVertical: 16,
       },
-      textColor: "#12D18E",
+      textColor: "#fff",
       textStyle: {
         fontSize: 16,
         fontWeight: "bold",
       },
-      shadowColor: "#9E9E9E",
-      backgroundColor: "#fff",
-      opacity: 1,
+      opacity: 0.7,
     });
   };
 

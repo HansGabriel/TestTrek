@@ -22,10 +22,10 @@ const ChoiceBottomSheet: FC<Props> = ({ goToCreateQuestion }) => {
       </View>
 
       {/* Horizontal Line */}
-      <View className="h-[0px] w-[382px] border border-zinc-100 my-5" />
+      <View className="my-5 h-[0px] w-[382px] border border-zinc-100" />
 
       {/* Cards */}
-      <ScrollView  showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex flex-col items-center">
           <View className="mx-6 flex flex-row">
             <TouchableOpacity

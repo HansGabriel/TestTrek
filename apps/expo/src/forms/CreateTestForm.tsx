@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import { useCallback, useMemo, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -32,6 +32,8 @@ import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import type { FieldError } from "react-hook-form";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -81,7 +83,6 @@ const CreateTestForm: FC<Props> = ({
   } = useForm<FormProps>({
     resolver: zodResolver(
       testInputSchema.omit({
-        keywords: true,
         questions: true,
       }),
     ),
@@ -91,21 +92,19 @@ const CreateTestForm: FC<Props> = ({
       image: getDisplayImage(),
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
-      keywords: testDetails?.keywords,
+      keywords: testDetails?.keywords ?? [],
     },
   });
 
-  const questions = useQuestionStore((state) => state.questions);
+  const questions = useQuestionStore((state) => state.questions).filter(
+    (questions) => !questions.inEdit,
+  );
   const setSelectedIndex = useQuestionStore((state) => state.setSelectedIndex);
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
   );
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
-
-  const [keywords, setKeywords] = useState<string[]>(
-    testDetails?.keywords ?? [],
-  );
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -140,15 +139,11 @@ const CreateTestForm: FC<Props> = ({
   const submitForm = (data: FormProps) => {
     onSubmit({
       ...data,
-      keywords,
     });
     reset();
-    setKeywords([]);
   };
 
-  const readyQuestions = questions
-    .filter((question) => !question.inEdit)
-    .slice(0, 10);
+  const readyQuestions = questions.slice(0, 10);
 
   useEffect(() => {
     navigation.addListener("focus", () => {
@@ -168,8 +163,24 @@ const CreateTestForm: FC<Props> = ({
     navigation.navigate("ViewAll", {
       fetchedData: "questions",
       type: "questions",
-      questions: questions.filter((question) => !question.inEdit),
+      questions: questions,
     });
+  };
+
+  const renderKeywordError = () => {
+    if (errors.keywords !== undefined) {
+      const keywordsList = errors.keywords as FieldError[];
+      const error = keywordsList
+        .filter((error) => error !== undefined)
+        .map((error) => error.message);
+
+      const uniqueErrors = [...new Set(error)];
+      return uniqueErrors.map((error, index) => (
+        <Text key={index} className="text-red-500">
+          {error}
+        </Text>
+      ));
+    }
   };
 
   return (
@@ -179,7 +190,7 @@ const CreateTestForm: FC<Props> = ({
         className="mx-6 flex flex-col content-end justify-between"
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="mt-8 mb-2 flex flex-col">
+          <View className="mb-2 mt-8 flex flex-col">
             <View className="mb-6">
               <Controller
                 control={control}
@@ -212,25 +223,6 @@ const CreateTestForm: FC<Props> = ({
             />
             {errors.title && (
               <Text className="text-red-500">{errors.title.message}</Text>
-            )}
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <AppTextInput
-                  label="Description"
-                  textInputProps={{
-                    onBlur,
-                    placeholder: "Enter Description",
-                    onChangeText: onChange,
-                    value,
-                  }}
-                />
-              )}
-              name="description"
-            />
-            {errors.description && (
-              <Text className="text-red-500">{errors.description.message}</Text>
             )}
 
             <Controller
@@ -288,77 +280,119 @@ const CreateTestForm: FC<Props> = ({
               <Text className="text-red-500">{errors.visibility.message}</Text>
             )}
 
-            <MultipleTextInput
-              label="Keyword"
-              textInputProps={{
-                placeholder: "Type keyword and enter",
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <>
+                    <MultipleTextInput
+                      label="Keyword"
+                      textInputProps={{
+                        placeholder: "Type keyword and enter",
+                      }}
+                      texts={value}
+                      onChangeTexts={onChange}
+                    />
+                  </>
+                );
               }}
-              texts={keywords}
-              onChangeTexts={setKeywords}
+              name="keywords"
             />
-          </View>
+            {renderKeywordError()}
 
-          <View className="mb-10 h-full flex-1 flex-col">
-            <View className="mb-6 flex flex-row items-center justify-between">
-              <Text className="text-xl font-bold leading-loose text-neutral-800">
-                Question ({questions.length})
-              </Text>
-              <TouchableOpacity
-                className="flex flex-row items-center gap-1"
-                onPress={goToViewAllQuestions}
-              >
-                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                  View All
-                </Text>
-                <RightArrowIcon />
-              </TouchableOpacity>
-            </View>
-
-            <SafeAreaView className="min-h-full flex-1">
-              <FlashList
-                estimatedItemSize={10}
-                data={readyQuestions}
-                showsVerticalScrollIndicator={true}
-                renderItem={({ item: question, index }) => {
-                  return (
-                    <TouchableOpacity
-                      className="my-2 flex h-[105px] items-center justify-start"
-                      key={index}
-                      onPress={goToEditQuestion(index)}
-                    >
-                      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
-                        <View className="relative w-[140px] self-stretch">
-                          <ImageBackground
-                            source={{
-                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                            }}
-                            imageStyle={{
-                              borderTopLeftRadius: 12,
-                              borderBottomLeftRadius: 12,
-                            }}
-                            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                          />
-                        </View>
-                        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                          {index + 1} -{" "}
-                          {match(question.type)
-                            .with("multiple_choice", () => "Multiple Choice")
-                            .with("true_or_false", () => "True or False")
-                            .with("multi_select", () => "Multi Select")
-                            .with("identification", () => "Identification")
-                            .with("enumeration", () => "Enumeration")
-                            .exhaustive()}
-                        </Text>
-                        <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
-                          {question.title}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }}
+            <View className="mb-6">
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <AppTextInput
+                    label="Description"
+                    type="textarea"
+                    textInputProps={{
+                      onBlur,
+                      onChangeText: onChange,
+                      value,
+                    }}
+                  />
+                )}
+                name="description"
               />
-            </SafeAreaView>
+              {errors.description && (
+                <Text className="text-red-500">
+                  {errors.description.message}
+                </Text>
+              )}
+            </View>
           </View>
+
+          {questions.length > 0 && (
+            <>
+              <View className="mb-10 h-full flex-1 flex-col">
+                <View className="mb-6 flex flex-row items-center justify-between">
+                  <Text className="text-xl font-bold leading-loose text-neutral-800">
+                    Question ({questions.length})
+                  </Text>
+                  <TouchableOpacity
+                    className="flex flex-row items-center gap-1"
+                    onPress={goToViewAllQuestions}
+                  >
+                    <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                      View All
+                    </Text>
+                    <RightArrowIcon />
+                  </TouchableOpacity>
+                </View>
+
+                <SafeAreaView className="min-h-full flex-1">
+                  <FlashList
+                    estimatedItemSize={10}
+                    data={readyQuestions}
+                    showsVerticalScrollIndicator={true}
+                    renderItem={({ item: question, index }) => {
+                      return (
+                        <TouchableOpacity
+                          className="my-2 flex h-[105px] items-center justify-start"
+                          key={index}
+                          onPress={goToEditQuestion(index)}
+                        >
+                          <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                            <View className="relative w-[140px] self-stretch">
+                              <ImageBackground
+                                source={{
+                                  uri:
+                                    question.image ?? IMAGE_PLACEHOLDER_LARGE,
+                                }}
+                                imageStyle={{
+                                  borderTopLeftRadius: 12,
+                                  borderBottomLeftRadius: 12,
+                                }}
+                                className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                              />
+                            </View>
+                            <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                              {index + 1} -{" "}
+                              {match(question.type)
+                                .with(
+                                  "multiple_choice",
+                                  () => "Multiple Choice",
+                                )
+                                .with("true_or_false", () => "True or False")
+                                .with("multi_select", () => "Multi Select")
+                                .with("identification", () => "Identification")
+                                .with("enumeration", () => "Enumeration")
+                                .exhaustive()}
+                            </Text>
+                            <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
+                              {question.title}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+                </SafeAreaView>
+              </View>
+            </>
+          )}
 
           <View className="flex flex-row items-center justify-between pb-20">
             <TouchableOpacity
