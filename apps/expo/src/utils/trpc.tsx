@@ -29,7 +29,7 @@ const getBaseUrl = (environment?: "development" | "production") => {
    * you don't have anything else running on it, or you'd have to change it.
    */
 
-  if (environment === "development") {
+  if (environment === "production") {
     return VERCEL_URL;
   }
   const localhost = Constants.manifest?.debuggerHost?.split(":")[0];
