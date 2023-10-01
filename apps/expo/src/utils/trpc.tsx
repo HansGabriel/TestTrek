@@ -20,13 +20,18 @@ import { useAuth } from "@clerk/clerk-expo";
  * A set of typesafe hooks for consuming your API.
  */
 export const trpc = createTRPCReact<AppRouter>();
+const VERCEL_URL = "https://test-trek-nextjs.vercel.app";
 
-const getBaseUrl = () => {
+const getBaseUrl = (environment?: "development" | "production") => {
   /**
    * Gets the IP address of your host-machine. If it cannot automatically find it,
    * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
    * you don't have anything else running on it, or you'd have to change it.
    */
+
+  if (environment === "development") {
+    return VERCEL_URL;
+  }
   const localhost = Constants.manifest?.debuggerHost?.split(":")[0];
   if (!localhost)
     throw new Error("failed to get localhost, configure it manually");
@@ -49,7 +54,7 @@ export const TRPCProvider: React.FC<{
               Authorization: authToken ?? undefined,
             };
           },
-          url: `${getBaseUrl()}/api/trpc`,
+          url: `${getBaseUrl("production")}/api/trpc`,
         }),
       ],
     }),

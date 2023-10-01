@@ -27,12 +27,12 @@ export const SettingsScreen = () => {
     <SafeAreaView
       className="flex-1 flex-col"
       style={{
-        backgroundColor: isModalOpen ? "#9ca3af" : "white",
+        backgroundColor: isModalOpen ? "#09101D" : "white",
       }}
     >
       <View
         className={`flex-1 flex-col ${
-          isModalOpen ? " z-30 opacity-50" : "z-50"
+          isModalOpen ? " z-30 opacity-70" : "z-50"
         }`}
         pointerEvents={`${isModalOpen ? "none" : "auto"}`}
       >

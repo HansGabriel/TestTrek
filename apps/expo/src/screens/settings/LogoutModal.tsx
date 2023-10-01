@@ -49,8 +49,8 @@ export const LogoutModal: FC<LogoutProps> = ({
           <View className="mt-3 w-[90%] flex-row items-center justify-between self-center">
             <AppButton
               text="Cancel"
-              buttonColor="white"
-              borderShadowColor="indigo-800"
+              buttonColor="violet-100"
+              borderShadowColor="violet-300"
               borderRadius="full"
               fontStyle="bold"
               textColor="violet-600"
