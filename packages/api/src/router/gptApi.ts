@@ -9,6 +9,7 @@ import {
   generatePromptForType,
 } from "../functions/gptHandlers";
 import "dotenv/config";
+import { questionSchema } from "@acme/schema/src/question";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
@@ -24,6 +25,7 @@ export const gptApiRouter = router({
         ]),
       }),
     )
+    .output(questionSchema)
     .mutation(async ({ input }) => {
       const { message, questionType } = input;
       const apiKey = process.env.GPT_KEY;
@@ -56,10 +58,6 @@ export const gptApiRouter = router({
       const generatedMessage = data.choices[0].message.content;
 
       let answer;
-
-      console.log("GPT-3 Response:", data);
-
-      console.log(generatedMessage);
 
       switch (questionType) {
         case "multipleChoice":

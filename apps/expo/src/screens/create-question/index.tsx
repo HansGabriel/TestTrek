@@ -12,6 +12,7 @@ import {
   Switch,
   Image,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -25,6 +26,8 @@ import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
 import useQuestionStore from "../../stores/useQuestionStore";
 import { useNavigation } from "@react-navigation/native";
 import { alertExit } from "../../hooks/useAlert";
+import { trpc } from "../../utils/trpc";
+import { match } from "ts-pattern";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
@@ -157,6 +160,30 @@ export const CreateQuestionScreen: FC = () => {
       navigation.navigate("CreateQuestion");
     }
   };
+
+  const { mutate: generateQuestion, isLoading: isGenerating } =
+    trpc.gptApi.generateQuestion.useMutation({
+      onSuccess: (data) => {
+        match(data)
+          .with(
+            {
+              type: "multipleChoice",
+            },
+            (data) => {
+              setQuestionTitle(data.question);
+              setChoices(
+                data.choices.map((choice, idx) => ({
+                  id: idx,
+                  text: choice.text ?? "",
+                  isCorrect: choice.isCorrect,
+                  styles: choiceStyles[idx]!.styles,
+                })),
+              );
+            },
+          )
+          .run();
+      },
+    });
 
   const handleSheetChanges = useCallback((index: number) => {
     if (index === 0) {
@@ -342,10 +369,21 @@ export const CreateQuestionScreen: FC = () => {
           <TouchableOpacity
             className="items-center justify-center rounded-full border-2 border-violet-600 bg-white px-4 py-2"
             onPress={() => {
-              // Handle button press logic here if needed
+              generateQuestion({
+                message: "Question should be about who killed JFK",
+
+                questionType: "multipleChoice",
+              });
             }}
+            disabled={isGenerating}
           >
-            <Text className="font-bold text-violet-600">Generate with AI</Text>
+            {isGenerating ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <Text className="font-bold text-violet-600">
+                Generate with AI
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
 

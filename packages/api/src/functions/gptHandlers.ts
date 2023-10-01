@@ -1,21 +1,25 @@
 export interface MCQPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
+  type: "multipleChoice";
 }
 
 export interface MultiselectPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
+  type: "multiselect";
 }
 
 export interface IdentificationPrompt {
   question: string;
   answer: string;
+  type: "identification";
 }
 
 export interface TrueOrFalsePrompt {
   question: string;
   answer: boolean;
+  type: "trueOrFalse";
 }
 
 export const generatePromptForType = (
@@ -81,6 +85,7 @@ export const parseMultipleChoiceResponse = (
   return {
     question,
     choices,
+    type: "multipleChoice",
   };
 };
 
@@ -146,6 +151,7 @@ export const parseMultiselectResponse = (
   return {
     question,
     choices,
+    type: "multiselect",
   };
 };
 
@@ -167,7 +173,7 @@ export const parseIdentificationResponse = (
     }
   });
 
-  return { question, answer };
+  return { question, answer, type: "identification" };
 };
 
 export const parseTrueOrFalseResponse = (
@@ -188,5 +194,5 @@ export const parseTrueOrFalseResponse = (
     }
   });
 
-  return { question, answer };
+  return { question, answer, type: "trueOrFalse" };
 };
