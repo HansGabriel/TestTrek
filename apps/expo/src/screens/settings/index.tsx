@@ -2,7 +2,6 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import React, { useCallback, useRef, useState } from "react";
 import { SafeAreaView, View } from "react-native";
 import SettingsHeader from "../../components/headers/SettingsHeader";
-import PremiumBanner from "../../components/settings/PremiumBanner";
 import SettingsButtons from "../../components/settings/SettingsButtons";
 import { LogoutModal } from "./LogoutModal";
 
@@ -37,7 +36,6 @@ export const SettingsScreen = () => {
         pointerEvents={`${isModalOpen ? "none" : "auto"}`}
       >
         <SettingsHeader screenName={"Settings"} />
-        <PremiumBanner />
         <SettingsButtons openBottomSheet={openBottomSheet} />
       </View>
       <LogoutModal
