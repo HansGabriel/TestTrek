@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -19,7 +19,7 @@ import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
 import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
-import OptionDropdown from "./options-dropdown";
+import QuestionOptionsDropdown from "./question-options-dropdown";
 import useImageStore from "../../stores/useImageStore";
 import BottomSheet from "@gorhom/bottom-sheet";
 import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
@@ -28,6 +28,9 @@ import { useNavigation } from "@react-navigation/native";
 import { alertExit } from "../../hooks/useAlert";
 import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
+import useError from "./hooks";
+import useToast from "../../hooks/useToast";
+import useToggleImageStore from "../../stores/useToggleImageStore";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
@@ -56,9 +59,12 @@ const choiceStyles: ChoiceStyle[] = [
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
   const navigation = useNavigation();
+  const { showToast } = useToast();
+  const isImageVisible = useToggleImageStore((state) => state.isVisible);
 
   const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
+  const { errorState, checkErrors, resetErrors } = useError();
 
   const questionImage = useImageStore((state) => state.questionImage);
   const setImage = useImageStore((state) => state.setImage);
@@ -129,11 +135,13 @@ export const CreateQuestionScreen: FC = () => {
   );
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
   const [showPointModal, setShowPointModal] = useState<boolean>(false);
   const [questionTitle, setQuestionTitle] = useState<string>(
     question?.title ?? "",
   );
+  const [aiQuestion, setAiQuestion] = useState<string>("");
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
   const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
 
@@ -182,6 +190,9 @@ export const CreateQuestionScreen: FC = () => {
             },
           )
           .run();
+
+        setAiQuestion("");
+        setShowQuestionModal(false);
       },
     });
 
@@ -234,6 +245,17 @@ export const CreateQuestionScreen: FC = () => {
   const selectedImage = getSelectedImage();
 
   const handleSaveQuestion = () => {
+    resetErrors();
+    const errors = checkErrors({
+      answers: choices,
+      choices: choices.map((choice) => choice.text),
+      points: pointOptions,
+      timeLimits: timeLimitOptions,
+      title: questionTitle,
+    });
+    if (errors) {
+      return;
+    }
     const multipleChoiceQuestion: MultipleChoiceQuestion = {
       title: questionTitle,
       choices: choices.map((choice, idx) => ({
@@ -247,29 +269,33 @@ export const CreateQuestionScreen: FC = () => {
       points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
       time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
     };
+    resetErrors();
     editQuestion(selectedIndex!, multipleChoiceQuestion);
     resetQuestionImage();
-    goBack();
+    showToast("Question saved!");
   };
 
-  const renderChoice = useCallback(
-    (choice: Choice) => (
-      <TouchableOpacity
-        key={choice.id}
-        className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${choice.styles} p-5`}
-        onPress={handleOpenModal(choice.id)}
-      >
-        {choice.isCorrect && (
-          <View className="absolute right-2 top-2 h-5 w-5">
-            <CheckboxIcon />
-          </View>
-        )}
-        <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
-          {choice.text ? choice.text : "Add answer"}
-        </Text>
-      </TouchableOpacity>
-    ),
-    [],
+  const renderChoice = (choice: Choice) => (
+    <TouchableOpacity
+      key={choice.id}
+      className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
+        choice.styles
+      } ${
+        errorState.choicesError[choice.id]?.length !== undefined
+          ? "border-2 border-red-500"
+          : ""
+      } p-5`}
+      onPress={handleOpenModal(choice.id)}
+    >
+      {choice.isCorrect && (
+        <View className="absolute right-2 top-2 h-5 w-5">
+          <CheckboxIcon />
+        </View>
+      )}
+      <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
+        {choice.text ? choice.text : "Add answer"}
+      </Text>
+    </TouchableOpacity>
   );
 
   const handleClickQuestion = (index: number) => () => {
@@ -317,6 +343,13 @@ export const CreateQuestionScreen: FC = () => {
     goBack();
   };
 
+  const handleGenerateQuestion = () => {
+    generateQuestion({
+      message: aiQuestion,
+      questionType: "multipleChoice",
+    });
+  };
+
   const selectedChoice = useMemo(
     () => choices[selectedQuestionId],
     [choices, selectedQuestionId],
@@ -326,6 +359,10 @@ export const CreateQuestionScreen: FC = () => {
     () => choices.filter((choice) => choice.isCorrect).length >= 1,
     [choices],
   );
+
+  useEffect(() => {
+    console.log("errorState", errorState);
+  }, [errorState]);
 
   return (
     <View className="mx-6 mt-12 flex-1">
@@ -337,17 +374,28 @@ export const CreateQuestionScreen: FC = () => {
           <Text className="font-nunito-bold text-2xl">Create Question</Text>
         </View>
         {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-        <OptionDropdown onSave={handleSaveQuestion} onDelete={handleDelete} />
+        <QuestionOptionsDropdown
+          onSave={() => {
+            handleSaveQuestion();
+            goBack();
+          }}
+          onDelete={handleDelete}
+        />
       </View>
 
       <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
-        <View className="mb-4 mt-8 flex flex-col">
-          <TestImagePicker image={selectedImage} type="question" />
-        </View>
-
+        {isImageVisible && (
+          <View className="mb-4 mt-8 flex flex-col">
+            <TestImagePicker image={selectedImage} type="question" />
+          </View>
+        )}
         <View className="flex flex-row items-center justify-between">
           <TouchableOpacity
-            className="flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2"
+            className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
+              errorState.timeLimitError !== null
+                ? "border-2 border-red-500"
+                : ""
+            }`}
             onPress={() => setShowTimeLimitModal(true)}
           >
             <Text className="text-center font-semibold leading-snug tracking-tight text-white">
@@ -357,7 +405,9 @@ export const CreateQuestionScreen: FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            className="flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2"
+            className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
+              errorState.pointsError !== null ? "border-2 border-red-500" : ""
+            }`}
             onPress={() => setShowPointModal(true)}
           >
             <Text className="text-center font-semibold leading-snug tracking-tight text-white">
@@ -368,22 +418,9 @@ export const CreateQuestionScreen: FC = () => {
 
           <TouchableOpacity
             className="items-center justify-center rounded-full border-2 border-violet-600 bg-white px-4 py-2"
-            onPress={() => {
-              generateQuestion({
-                message: "Question should be about who killed JFK",
-
-                questionType: "multipleChoice",
-              });
-            }}
-            disabled={isGenerating}
+            onPress={() => setShowQuestionModal(true)}
           >
-            {isGenerating ? (
-              <ActivityIndicator size="small" />
-            ) : (
-              <Text className="font-bold text-violet-600">
-                Generate with AI
-              </Text>
-            )}
+            <Text className="font-bold text-violet-600">Generate with AI</Text>
           </TouchableOpacity>
         </View>
 
@@ -394,6 +431,7 @@ export const CreateQuestionScreen: FC = () => {
               ? "border-2 border-violet-600 bg-white"
               : "shadow-none"
           }
+          ${errorState.titleError !== null ? "border-2 border-red-500" : ""}
         `}
         >
           <TextInput
@@ -417,17 +455,10 @@ export const CreateQuestionScreen: FC = () => {
         </View>
 
         <TouchableOpacity
-          className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-2 ${
-            false
-              ? "border-violet-700 bg-violet-600"
-              : "border-gray-300 bg-gray-200"
-          } py-[18px]`}
+          className="mt-10 w-full items-center justify-center rounded-[100px] border-b-2 border-violet-700 bg-violet-600 py-[18px]"
+          onPress={handleSaveQuestion}
         >
-          <Text
-            className={`shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight ${
-              false ? "text-white" : "text-gray-500"
-            }`}
-          >
+          <Text className="text-center text-base font-bold text-white">
             Save
           </Text>
         </TouchableOpacity>
@@ -473,6 +504,50 @@ export const CreateQuestionScreen: FC = () => {
                         hasOneCorrectAnswer && !selectedChoice?.isCorrect
                       }
                     />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        {/* Modals */}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showQuestionModal}
+          onRequestClose={() => {
+            setShowQuestionModal(!showQuestionModal);
+          }}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setShowQuestionModal(!showQuestionModal);
+            }}
+          >
+            <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
+              <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
+                <View className="h-1/2 w-11/12 rounded-2xl bg-white">
+                  <View className="mt-auto flex flex-row items-center justify-center px-5 py-8">
+                    <TextInput
+                      className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
+                      placeholder="Ask AI a question"
+                      placeholderTextColor="#757575"
+                      onChangeText={(text) => setAiQuestion(text)}
+                      value={aiQuestion}
+                    />
+                    <TouchableOpacity
+                      className="absolute right-8"
+                      onPress={handleGenerateQuestion}
+                      disabled={isGenerating}
+                    >
+                      {isGenerating ? (
+                        <ActivityIndicator size="small" />
+                      ) : (
+                        <Feather name="send" size={24} color="#6949FF" />
+                      )}
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
@@ -532,6 +607,7 @@ export const CreateQuestionScreen: FC = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
