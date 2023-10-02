@@ -24,20 +24,25 @@ export const SettingsScreen = () => {
 
   return (
     <SafeAreaView
-      className="flex-1 flex-col"
-      style={{
-        backgroundColor: isModalOpen ? "#09101D" : "white",
-      }}
+      className={`flex-1 flex-col ${
+        isModalOpen ? "inset-0 z-10 bg-black/60" : ""
+      }`}
     >
       <View
         className={`flex-1 flex-col ${
-          isModalOpen ? " z-30 opacity-70" : "z-50"
+          isModalOpen ? "z-30 opacity-70" : "z-50"
         }`}
         pointerEvents={`${isModalOpen ? "none" : "auto"}`}
       >
         <SettingsHeader screenName={"Settings"} />
         <SettingsButtons openBottomSheet={openBottomSheet} />
       </View>
+      {/* Overlay to darken the screen, but under the modal */}
+      {isModalOpen && (
+        <View
+          className="absolute inset-0 z-10 bg-black/70" // semi-transparent black
+        ></View>
+      )}
       <LogoutModal
         sheetRef={bottomSheetRef}
         index={-1}

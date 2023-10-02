@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useEffect } from "react";
+import { useCallback, useMemo, useRef, useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   TouchableOpacity,
@@ -51,6 +51,7 @@ const CreateTestForm: FC<Props> = ({
   isCreatingQuiz = false,
   isUploading = false,
 }) => {
+  const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const navigation = useNavigation();
   const image = useImageStore((state) => state.image);
 
@@ -112,6 +113,7 @@ const CreateTestForm: FC<Props> = ({
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
+    setBottomSheetOpen(true);
   };
 
   const goToCreateQuestion = () => {
@@ -184,7 +186,9 @@ const CreateTestForm: FC<Props> = ({
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      className={`${isBottomSheetOpen ? "inset-0 z-10 bg-black/60" : ""}`}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="mx-6 flex flex-col content-end justify-between"
