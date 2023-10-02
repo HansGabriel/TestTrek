@@ -1,7 +1,9 @@
 import React, { ReactNode } from "react";
 import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 
-interface ButtonProps {
+import type { TouchableOpacityProps } from "react-native";
+
+interface ButtonProps extends TouchableOpacityProps {
   text: string;
   classNameValue?: string;
   buttonColor: string;
@@ -56,11 +58,13 @@ export const AppButton = ({
   TOwidth,
   Vwidth,
   isLoading = false,
+  ...props
 }: ButtonProps) => {
   return (
     <TouchableOpacity
       className={`my-${marginY} mx-${marginX} w-${TOwidth} $ self-cente justify-center`}
       onPress={onPress}
+      {...props}
     >
       <View
         className={` h-14 w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(

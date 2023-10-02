@@ -54,7 +54,7 @@ export const TRPCProvider: React.FC<{
               Authorization: authToken ?? undefined,
             };
           },
-          url: `${getBaseUrl("production")}/api/trpc`,
+          url: `${getBaseUrl("development")}/api/trpc`,
         }),
       ],
     }),

@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { IMAGE_PLACEHOLDER } from "../../constants";
@@ -38,14 +39,15 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
     testId: testDetails?.id ?? "",
   });
 
-  const { mutate: playTest } = trpc.test.play.useMutation({
-    onSuccess: (data) => {
-      navigation.navigate("PlayTest", {
-        playId: data.id,
-        testId: data.testId,
-      });
-    },
-  });
+  const { mutate: playTest, isLoading: isLoadingPlayTest } =
+    trpc.test.play.useMutation({
+      onSuccess: (data) => {
+        navigation.navigate("PlayTest", {
+          playId: data.id,
+          testId: data.testId,
+        });
+      },
+    });
 
   if (!testDetails || !testStatistics) {
     return (
@@ -78,9 +80,24 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const { id: testId } = testDetails;
 
   const handlePlayTest = () => {
-    playTest({
-      testId,
-    });
+    Alert.alert(
+      "Play Test",
+      "Are you sure you want to play this test?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Play",
+          onPress: () =>
+            playTest({
+              testId,
+            }),
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   const goToViewAllQuestions = () => {
@@ -285,6 +302,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           textColor="white"
           TOwidth="full"
           Vwidth="full"
+          disabled={isLoadingPlayTest}
         />
       </ScrollView>
     </SafeAreaView>
@@ -293,7 +311,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
 
 const HiddenQuestionSection: FC = () => (
   <View className="mb-5 inline-flex h-[88px] w-[382px] flex-col items-center justify-center gap-2 self-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
-    <View className="inline-flex h-7 w-7 items-center justify-center px-[2.33px] pt-[4.67px] pb-[3.18px]">
+    <View className="inline-flex h-7 w-7 items-center justify-center px-[2.33px] pb-[3.18px] pt-[4.67px]">
       <Ionicons name="ios-eye-off-outline" size={24} color="black" />
     </View>
     <Text className="font-nunito self-stretch text-center text-sm font-semibold leading-tight tracking-tight text-neutral-500">

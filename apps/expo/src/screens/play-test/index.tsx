@@ -256,14 +256,16 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 ref={countdownTimerRef}
               />
             ) : null}
-            <View className="mt-8 mb-4 flex flex-col">
-              <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
-                <Image
-                  source={{ uri: question?.image ?? "" }}
-                  className="h-60 w-full rounded-3xl"
-                />
+            {question?.image && (
+              <View className="mb-4 mt-8 flex flex-col">
+                <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
+                  <Image
+                    source={{ uri: question?.image }}
+                    className="h-60 w-full rounded-3xl"
+                  />
+                </View>
               </View>
-            </View>
+            )}
             <View
               className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
          
