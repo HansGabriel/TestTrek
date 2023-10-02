@@ -135,6 +135,7 @@ const CreateTestForm: FC<Props> = ({
   const handleSheetChanges = useCallback((index: number) => {
     if (index === 0) {
       bottomSheetRef.current?.forceClose();
+      setBottomSheetOpen(false);
     }
   }, []);
 
