@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -359,10 +359,6 @@ export const CreateQuestionScreen: FC = () => {
     () => choices.filter((choice) => choice.isCorrect).length >= 1,
     [choices],
   );
-
-  useEffect(() => {
-    console.log("errorState", errorState);
-  }, [errorState]);
 
   return (
     <View className="mx-6 mt-12 flex-1">

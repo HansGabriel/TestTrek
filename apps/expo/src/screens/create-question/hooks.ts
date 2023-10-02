@@ -103,7 +103,6 @@ const useError = () => {
     const oldChoicesError = state.choicesError;
     for (let index = 0; index < choices.length; index++) {
       const choice = choices[index];
-      console.log(choice);
       if (choice === undefined) {
         oldChoicesError[index] = undefined;
       } else if (choice === "") {
