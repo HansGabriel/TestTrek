@@ -30,7 +30,10 @@ export default async function handler(
     const userWebhookData = userWebhookSchema.parse(evt.data);
     const { id, email, first_name, last_name, image_url } = userWebhookData;
 
-    const username = `${first_name.toLowerCase()}_${last_name.toLowerCase()}`;
+    const firstName = first_name.trim().replace(/\s+/g, "_").toLowerCase();
+    const lastName = last_name.trim().replace(/\s+/g, "_").toLowerCase();
+    const username = firstName.concat("_", lastName);
+
     await prisma.user.create({
       data: {
         email,
