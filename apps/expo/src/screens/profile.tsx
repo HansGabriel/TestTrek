@@ -52,7 +52,7 @@ export const ProfileScreen = () => {
           <View className=" h-[25%] w-[100%] items-center justify-center">
             <SkeletonLoader isCircular={true} width={"100%"} height={"75%"} />
           </View>
-          <View className="h-[50.7%] w-[100%] items-center justify-evenly">
+          <View className="h-[54%] w-[100%] items-center justify-evenly">
             <SkeletonLoader isCircular={false} width={"100%"} height={20} />
             <SkeletonLoader isCircular={false} width={"100%"} height={20} />
           </View>
