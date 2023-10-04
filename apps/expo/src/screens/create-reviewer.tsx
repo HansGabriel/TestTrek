@@ -8,6 +8,7 @@ import {
   View,
   Text,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import {
   actions,
@@ -39,8 +40,11 @@ export const CreateReviewerScreen = () => {
   const reviewerImage = useImageStore((state) => state.reviewerImage);
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
 
-  const { mutate: createReviewer, reset } =
-    trpc.reviewer.createReviewer.useMutation();
+  const {
+    mutate: createReviewer,
+    isLoading: isCreatingReviewer,
+    reset,
+  } = trpc.reviewer.createReviewer.useMutation();
 
   const toggleHighlighter = () => {
     setIsToggled(!isToggled);
@@ -129,14 +133,19 @@ export const CreateReviewerScreen = () => {
       <ReusableHeader
         screenName={"Create Reviewer"}
         optionIcon={
-          <Entypo
-            name="save"
-            size={28}
-            color="rgb(79 70 229)"
-            onPress={handleSubmit(submitReviewerData)}
-          />
+          isCreatingReviewer ? (
+            <ActivityIndicator color="rgb(79 70 229)" />
+          ) : (
+            <Entypo
+              name="save"
+              size={28}
+              color="rgb(79 70 229)"
+              onPress={handleSubmit(submitReviewerData)}
+            />
+          )
         }
       />
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="w-[90%] self-center">
           <Controller
@@ -150,42 +159,42 @@ export const CreateReviewerScreen = () => {
             <Text className="mt-2 text-red-500">{errors.imageUrl.message}</Text>
           )}
         </View>
-
-        <Controller
-          name="title"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <View className="mt-5 w-[90%] self-center border border-zinc-100">
-              <Text
-                className={`font-nunito-bold ml-3 text-base leading-snug tracking-tight text-neutral-800`}
-              >
-                Title
-              </Text>
-              <TextInput
-                onBlur={onBlur}
-                className="font-nunito-bold ml-3 h-10 text-lg"
-                editable
-                placeholder="Input title here"
-                maxLength={40}
-                onChangeText={onChange}
-                value={value}
-                cursorColor={"black"}
-              />
-            </View>
+        <View className="mt-5 w-[90%] self-center border-b border-zinc-100">
+          <Controller
+            name="title"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <>
+                <Text
+                  className={`font-nunito-bold ml-3 text-base leading-snug tracking-tight text-neutral-800`}
+                >
+                  Title
+                </Text>
+                <TextInput
+                  onBlur={onBlur}
+                  className="font-nunito-bold ml-3 h-10 text-lg"
+                  editable
+                  placeholder="Input title here"
+                  maxLength={40}
+                  onChangeText={onChange}
+                  value={value}
+                  cursorColor={"black"}
+                />
+              </>
+            )}
+          />
+          {errors.title && (
+            <Text className="text-red-500">{errors.title.message}</Text>
           )}
-        />
-        {errors.title && (
-          <Text className="text-red-500">{errors.title.message}</Text>
-        )}
-
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => {
-            const onTextChange = (option: LabelOption) => {
-              onChange(option.value);
-            };
-            return (
-              <View className="w-[90%] self-center border-l border-r border-t border-zinc-100">
+        </View>
+        <View className="my-5 w-[90%] self-center">
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              const onTextChange = (option: LabelOption) => {
+                onChange(option.value);
+              };
+              return (
                 <AppPicker
                   dropDownTextMarginLeft={13}
                   labelMarginLeft="ml-3"
@@ -199,59 +208,60 @@ export const CreateReviewerScreen = () => {
                   selectedValue={value}
                   setSelectedValue={onTextChange}
                 />
-              </View>
-            );
-          }}
-          name="visibility"
-        />
-        {errors.visibility && (
-          <Text className="text-red-500">{errors.visibility.message}</Text>
-        )}
-
-        <Controller
-          control={control}
-          render={({ field: { onChange, onBlur } }) => {
-            return (
-              <View className="h-[50%] w-[90%] self-center border-b border-l border-r border-zinc-100">
-                <Text
-                  className={`font-nunito-bold ml-3 text-base leading-snug tracking-tight text-neutral-800`}
-                >
-                  Reviewer Content
-                </Text>
-
-                <ScrollView
-                  className="flex-1"
-                  style={{
-                    height: Dimensions.get("window").height * 0.75,
-                  }}
-                >
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    className="flex-1"
+              );
+            }}
+            name="visibility"
+          />
+          {errors.visibility && (
+            <Text className="text-red-500">{errors.visibility.message}</Text>
+          )}
+        </View>
+        <View className="my-3 h-[50%] w-[90%] self-center border border-zinc-100">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur } }) => {
+              return (
+                <>
+                  <Text
+                    className={`font-nunito-bold ml-3 text-base leading-snug tracking-tight text-neutral-800`}
                   >
-                    <RichEditor
-                      ref={richText}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      placeholder="Enter your content here :)"
-                      androidLayerType="software"
-                      className=" font-nunito-medium"
-                      useContainer={false}
-                      containerStyle={{
-                        minHeight: 500,
-                        maxHeight: Dimensions.get("screen").height,
-                      }}
-                    />
-                  </KeyboardAvoidingView>
-                </ScrollView>
-              </View>
-            );
-          }}
-          name="content"
-        />
-        {errors.content && (
-          <Text className="text-red-500">{errors.content.message}</Text>
-        )}
+                    Reviewer Content
+                  </Text>
+
+                  <ScrollView
+                    className="flex-1"
+                    style={{
+                      height: Dimensions.get("window").height * 0.75,
+                    }}
+                  >
+                    <KeyboardAvoidingView
+                      behavior={Platform.OS === "ios" ? "padding" : "height"}
+                      className="flex-1"
+                    >
+                      <RichEditor
+                        ref={richText}
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        placeholder="Enter your content here :)"
+                        androidLayerType="software"
+                        className=" font-nunito-medium"
+                        useContainer={false}
+                        containerStyle={{
+                          minHeight: 500,
+                          maxHeight: Dimensions.get("screen").height,
+                        }}
+                      />
+                    </KeyboardAvoidingView>
+                  </ScrollView>
+                </>
+              );
+            }}
+            name="content"
+          />
+          {errors.content && (
+            <Text className="text-red-500">{errors.content.message}</Text>
+          )}
+        </View>
       </ScrollView>
       {isToggled ? (
         <View className="z-50 my-3 self-center">

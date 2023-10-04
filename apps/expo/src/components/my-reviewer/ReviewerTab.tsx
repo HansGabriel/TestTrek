@@ -14,7 +14,6 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import { User, Visibility } from "@prisma/client";
 import { Avatar } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
 
 interface ObjectProps {
   id: string;
