@@ -643,6 +643,7 @@ export const testRouter = router({
             "User"."firstName",
             "User"."imageUrl",
             "Play"."playerId" AS "id",
+            "Play"."createdAt",
             MAX("Play"."score") AS "highScore"
           FROM
             "Play"
@@ -655,14 +656,20 @@ export const testRouter = router({
             AND "Play"."testId" = ${testId}
           GROUP BY
             "Play"."playerId",
+            "Play"."createdAt",
             "User"."firstName",
             "User"."imageUrl"
           ORDER BY
             "Play"."playerId",
-            "highScore" DESC;
+            "highScore" DESC,
+            "Play"."createdAt" ASC;
         `);
 
-      return playsWithHighestScore;
+      const sortedPlays = playsWithHighestScore.sort((a, b) => {
+        return b.highScore - a.highScore;
+      });
+
+      return sortedPlays;
     }),
 
   getIsFavorite: protectedProcedure
