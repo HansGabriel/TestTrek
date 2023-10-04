@@ -108,9 +108,9 @@ const useError = () => {
       } else if (choice === "") {
         hasError = true;
         oldChoicesError[index] = "Choice cannot be empty";
-      } else if (choice !== undefined && choice.length > 20) {
+      } else if (choice !== undefined && choice.length > 50) {
         hasError = true;
-        oldChoicesError[index] = "Choice cannot be longer than 20 characters";
+        oldChoicesError[index] = "Choice cannot be longer than 50 characters";
       } else {
         oldChoicesError[index] = undefined;
       }

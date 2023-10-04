@@ -275,28 +275,42 @@ export const CreateQuestionScreen: FC = () => {
     showToast("Question saved!");
   };
 
-  const renderChoice = (choice: Choice) => (
-    <TouchableOpacity
-      key={choice.id}
-      className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
-        choice.styles
-      } ${
-        errorState.choicesError[choice.id]?.length !== undefined
-          ? "border-2 border-red-500"
-          : ""
-      } p-5`}
-      onPress={handleOpenModal(choice.id)}
-    >
-      {choice.isCorrect && (
-        <View className="absolute right-2 top-2 h-5 w-5">
-          <CheckboxIcon />
-        </View>
-      )}
-      <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
-        {choice.text ? choice.text : "Add answer"}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderChoice = (choice: Choice) => {
+    let fontSize = "text-lg";
+
+    if (choice.text === undefined) {
+      fontSize = "text-lg";
+    } else if (choice.text.length > 20) {
+      fontSize = "text-md";
+    } else if (choice.text.length! > 30) {
+      fontSize = "text-sm";
+    }
+
+    return (
+      <TouchableOpacity
+        key={choice.id}
+        className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
+          choice.styles
+        } ${
+          errorState.choicesError[choice.id]?.length !== undefined
+            ? "border-2 border-red-500"
+            : ""
+        } p-5`}
+        onPress={handleOpenModal(choice.id)}
+      >
+        {choice.isCorrect && (
+          <View className="absolute right-2 top-2 h-5 w-5">
+            <CheckboxIcon />
+          </View>
+        )}
+        <Text
+          className={`my-5 self-stretch text-center ${fontSize} font-bold leading-[28.80px] text-white`}
+        >
+          {choice.text ? choice.text : "Add answer"}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const handleClickQuestion = (index: number) => () => {
     setSelectedQuestionId(index);

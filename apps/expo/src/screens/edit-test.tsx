@@ -176,7 +176,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
             </TouchableOpacity>
             <Text className="font-nunito-bold text-2xl">Edit Test</Text>
           </View>
-          <OptionsDropdown onSave={handleOnSave} onDelete={handleDeleteTest} />
+          <OptionsDropdown onDelete={handleDeleteTest} />
         </View>
 
         <CreateTestForm
