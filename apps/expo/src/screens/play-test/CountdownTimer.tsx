@@ -55,6 +55,10 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
       restart(endTimeRef.current);
     }, [timeInSeconds, index]);
 
+    const paddedTime = (seconds: number) => {
+      return seconds.toString().padStart(2, "0");
+    };
+
     return (
       <View className="mt-5 flex h-4 w-full items-center justify-center gap-x-3">
         <View className="relative h-4 w-full">
@@ -74,7 +78,7 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
                   style={{ fontSize: getFontSize(totalSecondsRemaining) }}
                   className="font-nunito-bold z-20 my-auto ml-auto text-end font-bold tracking-tight text-black"
                 >
-                  {totalSecondsRemaining}
+                  {paddedTime(totalSecondsRemaining)}
                 </Text>
               </View>
             </View>
