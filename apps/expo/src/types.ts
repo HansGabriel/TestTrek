@@ -61,7 +61,13 @@ export type RootStackParamList = {
   };
   AddCoverImage: {
     query: string;
-    type: "test" | "question" | "collection" | "editCollection";
+    type:
+      | "test"
+      | "question"
+      | "collection"
+      | "editCollection"
+      | "reviewer"
+      | "editReviewer";
   };
   MyStatistics: undefined;
   EditPersonalInfo: undefined;
@@ -74,7 +80,7 @@ export type RootStackParamList = {
   };
   MusicAndEffects: undefined;
   AboutTestTrek: undefined;
-  CreateReviewer: undefined
+  CreateReviewer: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

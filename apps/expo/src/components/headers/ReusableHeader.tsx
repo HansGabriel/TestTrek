@@ -5,7 +5,7 @@ import useGoBack from "../../hooks/useGoBack";
 
 interface HeaderProps {
   screenName: string;
-  optionIcon: React.ReactNode;
+  optionIcon?: React.ReactNode;
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon }) => {

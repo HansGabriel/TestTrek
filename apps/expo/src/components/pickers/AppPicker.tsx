@@ -18,6 +18,9 @@ interface Props {
   selectedValue: string | undefined;
   setSelectedValue: (value: LabelOption) => void;
   hasDefault?: boolean;
+  labelMarginLeft?: string;
+  dropDownTextMarginLeft?: number;
+  borderBottomColor?: string;
 }
 
 const AppPicker: FC<Props> = ({
@@ -27,6 +30,9 @@ const AppPicker: FC<Props> = ({
   selectedValue,
   setSelectedValue,
   hasDefault = false,
+  labelMarginLeft = "ml-0",
+  dropDownTextMarginLeft = 0,
+  borderBottomColor = "#6949FF",
 }) => {
   const defaultOption: LabelOption = {
     label: "None",
@@ -38,12 +44,14 @@ const AppPicker: FC<Props> = ({
     : options;
   return (
     <View className="my-2 flex flex-col">
-      <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
+      <Text
+        className={`font-nunito-bold ml-3 text-base leading-snug tracking-tight text-neutral-800 ${labelMarginLeft}`}
+      >
         {label}
       </Text>
       <Dropdown
         style={{
-          borderBottomColor: "#6949FF",
+          borderBottomColor: borderBottomColor,
           borderBottomWidth: 1,
         }}
         data={labelOptions}
@@ -53,9 +61,11 @@ const AppPicker: FC<Props> = ({
           fontSize: 15,
           fontFamily: "Nunito-Bold",
           fontWeight: "bold",
+          marginLeft: dropDownTextMarginLeft,
         }}
         selectedTextStyle={{
           fontFamily: "Nunito-Bold",
+          marginLeft: dropDownTextMarginLeft,
         }}
         labelField="label"
         valueField="value"

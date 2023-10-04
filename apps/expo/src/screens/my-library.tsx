@@ -10,6 +10,7 @@ import Animated, { SlideInLeft, SlideOutLeft } from "react-native-reanimated";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
 import { trpc } from "../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
+import { ReviewerHeaderAndContent } from "../components/my-reviewer/ReviewerHeaderAndContent";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -33,18 +34,64 @@ export const MyLibraryScreen = () => {
     sortBy: "newest",
   });
 
-  const [pressed, setPressed] = useState(false);
+  const { refetch: refetchReviewers } = trpc.reviewer.getAllReviewers.useQuery({
+    reviewerType: "user",
+    sortBy: "newest",
+  });
+
+  const { refetch: refetchOtherReviewers } =
+    trpc.reviewer.getAllReviewers.useQuery({
+      reviewerType: "other",
+      sortBy: "newest",
+    });
+
+  const [testButtonPressed, setTestButtonPressed] = useState(true);
+  const [favoriteButtonPressed, setFavoriteButtonPressed] = useState(false);
+  const [otherButtonPressed, setOtherButtonPressed] = useState(false);
+  const [reviewerButtonPressed, setReviewerButtonPressed] = useState(true);
+  const [otherReviewerButtonPressed, setOtherReviewerButtonPressed] =
+    useState(false);
   const navigation = useNavigation();
 
-  const onPressed = () => {
-    setPressed(!pressed);
+  const onTestButtonPressed = () => {
+    setTestButtonPressed(true);
+    setFavoriteButtonPressed(false);
+    setOtherButtonPressed(false);
+  };
+  const onFavoriteButtonPressed = () => {
+    setFavoriteButtonPressed(true);
+    setTestButtonPressed(false);
+    setOtherButtonPressed(false);
+  };
+  const onOtherButtonPressed = () => {
+    setOtherButtonPressed(true);
+    setFavoriteButtonPressed(false);
+    setTestButtonPressed(false);
   };
 
-  const changeButtonColor = (pressed: boolean) => {
+  const onReviewerButtonPressed = () => {
+    setReviewerButtonPressed(true);
+    setOtherReviewerButtonPressed(false);
+  };
+
+  const onOtherReviewerButtonPressed = () => {
+    setReviewerButtonPressed(false);
+    setOtherReviewerButtonPressed(true);
+  };
+
+  const changeTestButtonColor = (pressed: boolean) => {
     return pressed ? "bg-violet-600" : "bg-white";
   };
 
-  const changeTextColor = (pressed: boolean) => {
+  const changeTestTextColor = (pressed: boolean) => {
+    return pressed ? "text-white" : "text-violet-600";
+  };
+
+  const changeReviewerButtonColor = (pressed: boolean) => {
+    return pressed ? "bg-violet-600" : "bg-white";
+  };
+
+  const changeReviewerTextColor = (pressed: boolean) => {
     return pressed ? "text-white" : "text-violet-600";
   };
 
@@ -67,6 +114,8 @@ export const MyLibraryScreen = () => {
       refetchUserTests();
       refetchFavoriteTests();
       refetchOtherTests();
+      refetchReviewers();
+      refetchOtherReviewers();
     });
 
     return unsubscribe;
@@ -87,7 +136,7 @@ export const MyLibraryScreen = () => {
           </View>
         ) : (
           <Animated.View
-            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white pt-2 pb-3"
+            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white pb-3 pt-2"
             entering={SlideInLeft}
             exiting={SlideOutLeft}
           >
@@ -126,64 +175,137 @@ export const MyLibraryScreen = () => {
           },
         }}
       >
-        <Tab.Screen name="MyTests" options={{ title: "My Tests" }}>
+        <Tab.Screen name="Tests" options={{ title: "Tests" }}>
           {() => (
             <SafeAreaView className="my-5 flex-1">
               <View className="w-full flex-row items-center justify-evenly gap-1 ">
                 <TouchableOpacity
-                  onPress={onPressed}
-                  className={`h-10 w-32 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
-                    !pressed,
+                  onPress={onTestButtonPressed}
+                  className={`h-10 w-24 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeTestButtonColor(
+                    testButtonPressed,
                   )}`}
                 >
                   <Text
-                    className={`${changeTextColor(
-                      !pressed,
+                    className={`${changeTestTextColor(
+                      testButtonPressed,
                     )} font-nunito-semibold`}
                   >
-                    Tests
+                    My Tests
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={onPressed}
-                  className={`h-10 w-32 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
-                    pressed,
+                  onPress={onFavoriteButtonPressed}
+                  className={`h-10 w-24 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeTestButtonColor(
+                    favoriteButtonPressed,
                   )}`}
                 >
                   <Text
-                    className={`${changeTextColor(
-                      pressed,
+                    className={`${changeTestTextColor(
+                      favoriteButtonPressed,
                     )} font-nunito-semibold`}
                   >
-                    Collections
+                    Favorites
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={onOtherButtonPressed}
+                  className={`h-10 w-24 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeTestButtonColor(
+                    otherButtonPressed,
+                  )}`}
+                >
+                  <Text
+                    className={`${changeTestTextColor(
+                      otherButtonPressed,
+                    )} font-nunito-semibold`}
+                  >
+                    Other Tests
                   </Text>
                 </TouchableOpacity>
               </View>
 
-              {!pressed ? (
+              {testButtonPressed ? (
                 <View className="flex-1">
                   <HeaderAndContent tab={"user"} tabType={"Test"} />
                 </View>
               ) : (
+                ""
+              )}
+
+              {favoriteButtonPressed ? (
                 <View className="flex-1">
-                  <HeaderAndContent tab={"user"} tabType={"Collection"} />
+                  <HeaderAndContent tab={"favorite"} tabType={"Test"} />
                 </View>
+              ) : (
+                ""
+              )}
+
+              {otherButtonPressed ? (
+                <View className="flex-1">
+                  <HeaderAndContent tab={"other"} tabType={"Test"} />
+                </View>
+              ) : (
+                ""
               )}
             </SafeAreaView>
           )}
         </Tab.Screen>
-        <Tab.Screen name="Favorites" options={{ title: "Favorites" }}>
+        <Tab.Screen name="Collections" options={{ title: "Collections" }}>
           {() => (
             <View className="flex-1">
-              <HeaderAndContent tab={"favorite"} tabType={"Test"} />
+              <HeaderAndContent tab={"user"} tabType={"Collection"} />
             </View>
           )}
         </Tab.Screen>
-        <Tab.Screen name="OtherTests" options={{ title: "Other Tests" }}>
+        <Tab.Screen name="Reviewers" options={{ title: "Reviewers" }}>
           {() => (
-            <View className="flex-1">
-              <HeaderAndContent tab={"other"} tabType={"Test"} />
-            </View>
+            <SafeAreaView className="my-5 flex-1">
+              <View className="w-full flex-row items-center justify-evenly gap-1 ">
+                <TouchableOpacity
+                  onPress={onReviewerButtonPressed}
+                  className={`h-10 w-32 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeReviewerButtonColor(
+                    reviewerButtonPressed,
+                  )}`}
+                >
+                  <Text
+                    className={`${changeReviewerTextColor(
+                      reviewerButtonPressed,
+                    )} font-nunito-semibold`}
+                  >
+                    My Reviewers
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={onOtherReviewerButtonPressed}
+                  className={`h-10 w-32 items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeReviewerButtonColor(
+                    otherReviewerButtonPressed,
+                  )}`}
+                >
+                  <Text
+                    className={`${changeReviewerTextColor(
+                      otherReviewerButtonPressed,
+                    )} font-nunito-semibold`}
+                  >
+                    Other Reviewers
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {reviewerButtonPressed ? (
+                <View className="flex-1">
+                  <ReviewerHeaderAndContent tab="user" />
+                </View>
+              ) : (
+                ""
+              )}
+
+              {otherReviewerButtonPressed ? (
+                <View className="flex-1">
+                  <ReviewerHeaderAndContent tab="other" />
+                </View>
+              ) : (
+                ""
+              )}
+            </SafeAreaView>
           )}
         </Tab.Screen>
       </Tab.Navigator>

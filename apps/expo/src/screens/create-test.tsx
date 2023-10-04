@@ -109,18 +109,6 @@ export const CreateTestScreen: FC = () => {
               Create Test
             </Text>
           </View>
-          <TouchableOpacity
-            className="self-center"
-            onPress={() => {
-              navigation.navigate("CreateReviewer");
-            }}
-          >
-            <Ionicons
-              name="ios-document-text"
-              size={28}
-              color="rgb(79 70 229)"
-            />
-          </TouchableOpacity>
         </View>
         <CreateTestForm
           onSubmit={submitTestDetails}
