@@ -37,7 +37,6 @@ const OptionModal: FC<Props> = ({
 
   const handleOptionPress = (id: string) => {
     const newOptions = options.map((option) => {
-      // If the option is already selected, deselect it.
       if (option.id === id && option.isSelected) {
         return {
           ...option,
@@ -45,7 +44,6 @@ const OptionModal: FC<Props> = ({
         };
       }
 
-      // If the option is the one being pressed, select it.
       if (option.id === id) {
         return {
           ...option,
@@ -53,7 +51,6 @@ const OptionModal: FC<Props> = ({
         };
       }
 
-      // For all other options, deselect them.
       return {
         ...option,
         isSelected: false,

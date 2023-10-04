@@ -83,6 +83,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [isDone, setIsDone] = useState<boolean>(false);
   const [points, setPoints] = useState<number>(0);
   const [time, setTime] = useState<number>(0);
+  const [isTimerReady, setIsTimerReady] = useState(false);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
   const { mutate: finishTest } = trpc.play.finishTest.useMutation({
@@ -107,6 +108,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       setChoices(getSelectedChoices(singleQuestion));
     }
   }, [index, testDetails?.test.questions]);
+
+  useEffect(() => {
+    const timerDelay = setTimeout(() => {
+      setIsTimerReady(true);
+    }, 100); // 100ms delay
+
+    return () => clearTimeout(timerDelay);
+  }, []);
 
   if (!testDetails) {
     return <></>;
@@ -248,7 +257,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="mx-6">
-            {question ? (
+            {question && isTimerReady ? (
               <CountdownTimer
                 index={index}
                 timeInSeconds={question.time}

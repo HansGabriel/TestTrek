@@ -1,7 +1,8 @@
-import { useEffect, forwardRef, useImperativeHandle } from "react";
+import { useEffect, forwardRef, useImperativeHandle, useRef } from "react";
 import { View, Text } from "react-native";
 import { useTimer } from "react-timer-hook";
 import dayjs from "dayjs";
+import WatchTimerIcon from "../../icons/WatchTimerIcon";
 
 type Props = {
   index: number;
@@ -16,15 +17,31 @@ export type CountdownTimerRef = {
 
 const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
   ({ index, timeInSeconds = 60, handleTimeUp }, ref) => {
-    const { seconds, restart, pause } = useTimer({
-      expiryTimestamp: dayjs().add(timeInSeconds, "second").toDate(),
+    const endTimeRef = useRef(dayjs().add(timeInSeconds, "second").toDate());
+
+    const { seconds, minutes, restart, pause } = useTimer({
+      expiryTimestamp: endTimeRef.current,
       onExpire: () => {
         handleTimeUp?.();
       },
     });
 
-    const remainingPercentage = seconds / timeInSeconds;
-    const elapsedTime = timeInSeconds - seconds;
+    const totalSecondsRemaining = minutes * 60 + seconds;
+    const remainingPercentage =
+      ((totalSecondsRemaining / timeInSeconds) * 100) / 100;
+    const clampedPercentage = Math.min(
+      100,
+      Math.max(0, remainingPercentage * 100),
+    );
+    const elapsedTime = timeInSeconds - totalSecondsRemaining;
+
+    const getFontSize = (seconds: number) => {
+      const numDigits = seconds.toString().length;
+      if (numDigits === 3) {
+        return 8; // smaller font size for 3 digits
+      }
+      return 10; // default font size for 1 or 2 digits
+    };
 
     useImperativeHandle(ref, () => ({
       pauseTimer() {
@@ -34,7 +51,8 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
     }));
 
     useEffect(() => {
-      restart(dayjs().add(timeInSeconds, "second").toDate());
+      endTimeRef.current = dayjs().add(timeInSeconds, "second").toDate();
+      restart(endTimeRef.current);
     }, [timeInSeconds, index]);
 
     return (
@@ -46,11 +64,19 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
               className={`absolute left-0 top-0 h-4 w-full rounded-[100px] ${calculateColor(
                 remainingPercentage,
               )}`}
-              style={{ width: `${remainingPercentage * 100}%` }}
+              style={{ width: `${clampedPercentage}%` }}
             >
-              <Text className="font-nunito-bold my-auto ml-auto mr-3 text-end text-xs font-bold tracking-tight text-white">
-                {seconds}
-              </Text>
+              <View>
+                <WatchTimerIcon className="z-15 absolute right-0 -mr-1 -mt-1.5 " />
+              </View>
+              <View>
+                <Text
+                  style={{ fontSize: getFontSize(totalSecondsRemaining) }}
+                  className="font-nunito-bold z-20 my-auto ml-auto text-end font-bold tracking-tight text-black"
+                >
+                  {totalSecondsRemaining}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
