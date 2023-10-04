@@ -54,7 +54,9 @@ const UpperBar = forwardRef<UpperBarRef, Props>((props, ref) => {
         transform: [{ translateY }],
         opacity: isVisible ? 1 : 0,
       }}
-      className="absolute top-0 left-0 flex h-52 w-full flex-row items-center justify-between"
+      className={`absolute left-0 top-0 flex ${
+        isVisible ? "h-52" : "h-0"
+      } w-full flex-row items-center justify-between`}
     >
       {isVisible && (
         <Pressable
