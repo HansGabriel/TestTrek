@@ -19,6 +19,7 @@ interface ButtonProps extends TouchableOpacityProps {
   TOwidth?: string;
   Vwidth?: string;
   isLoading?: boolean;
+  loadingColor?: string;
 }
 
 const borderRadiusSize = (size: string | undefined) => {
@@ -58,6 +59,7 @@ export const AppButton = ({
   TOwidth,
   Vwidth,
   isLoading = false,
+  loadingColor = "black",
   ...props
 }: ButtonProps) => {
   return (
@@ -75,7 +77,7 @@ export const AppButton = ({
         <Text
           className={` font-nunito-${fontStyle} text-base text-${textColor}`}
         >
-          {isLoading ? <ActivityIndicator color={"black"} /> : text}
+          {isLoading ? <ActivityIndicator color={loadingColor} /> : text}
         </Text>
         {iconRight}
       </View>

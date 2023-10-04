@@ -27,6 +27,7 @@ import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
 import useImageStore from "../stores/useImageStore";
 import { match } from "ts-pattern";
 import { trpc } from "../utils/trpc";
+import { truncateString } from "@acme/utils/src/strings";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -385,8 +386,12 @@ const CreateTestForm: FC<Props> = ({
                                 .with("enumeration", () => "Enumeration")
                                 .exhaustive()}
                             </Text>
-                            <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
-                              {question.title}
+                            <Text
+                              className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700"
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                            >
+                              {truncateString(question.title, 25)}
                             </Text>
                           </View>
                         </TouchableOpacity>

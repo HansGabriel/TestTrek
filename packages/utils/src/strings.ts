@@ -1,3 +1,5 @@
+import { truncate } from "lodash";
+
 export const getFullName = (
   firstName: string | undefined,
   lastName: string | undefined,
@@ -7,4 +9,11 @@ export const getFullName = (
   }
 
   return `${firstName} ${lastName}`;
+};
+
+export const truncateString = (str: string, length = 10, omission = "...") => {
+  return truncate(str, {
+    length,
+    omission,
+  });
 };
