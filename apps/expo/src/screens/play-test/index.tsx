@@ -20,6 +20,11 @@ import { match } from "ts-pattern";
 import { useNavigation } from "@react-navigation/native";
 import PlayDropdown from "./PlayDropdown";
 import useGoBack from "../../hooks/useGoBack";
+import {
+  getErrorMessage,
+  DEFAULT_ERROR_MESSAGE,
+  type ErrorMessage,
+} from "./hooks";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
@@ -78,6 +83,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const upperBarRef = useRef<UpperBarRef>(null);
   const countdownTimerRef = useRef<CountdownTimerRef>(null);
 
+  const [errorMessage, setErrorMessage] = useState<ErrorMessage>(
+    DEFAULT_ERROR_MESSAGE,
+  );
   const [modalType, setModalType] = useState<"correct" | "incorrect">(
     "incorrect",
   );
@@ -146,6 +154,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 setModalType("correct");
               } else {
                 setModalType("incorrect");
+                const errorResult = getErrorMessage("incorrect");
+                setErrorMessage(errorResult);
               }
             } else {
               setModalType("incorrect");
@@ -226,9 +236,13 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           setModalType("correct");
         } else {
           setModalType("incorrect");
+          const errorResult = getErrorMessage("times-up");
+          setErrorMessage(errorResult);
         }
       } else {
         setModalType("incorrect");
+        const errorResult = getErrorMessage("times-up");
+        setErrorMessage(errorResult);
       }
     }
 
@@ -326,7 +340,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           />
         ))
         .with("incorrect", () => (
-          <UpperBar type="incorrect" ref={upperBarRef} />
+          <UpperBar type="incorrect" message={errorMessage} ref={upperBarRef} />
         ))
         .exhaustive()}
       <StatusBar
