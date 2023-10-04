@@ -37,21 +37,28 @@ const OptionModal: FC<Props> = ({
 
   const handleOptionPress = (id: string) => {
     const newOptions = options.map((option) => {
-      if (option.id === id) {
+      if (option.id === id && option.isSelected) {
         return {
           ...option,
-          isSelected: !option.isSelected,
+          isSelected: false,
         };
       }
 
-      return option;
+      if (option.id === id) {
+        return {
+          ...option,
+          isSelected: true,
+        };
+      }
+
+      return {
+        ...option,
+        isSelected: false,
+      };
     });
 
     setOptions(newOptions);
   };
-
-  const hasMoreThanOneSelected =
-    options.filter((option) => option.isSelected).length >= 1;
 
   return (
     <Modal
@@ -63,7 +70,7 @@ const OptionModal: FC<Props> = ({
       }}
     >
       <TouchableWithoutFeedback onPress={handleClose}>
-        <View className="absolute inset-0 flex-1 bg-black/70 w-[100%] h-[100%]">
+        <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
             <View className="flex h-3/4 w-11/12 items-center rounded-2xl bg-white">
               <Text className="mt-10 text-center text-2xl font-bold">
@@ -86,7 +93,7 @@ const OptionModal: FC<Props> = ({
                           : "border-neutral-200 bg-neutral-100"
                       } p-3`}
                       onPress={() => handleOptionPress(option.id)}
-                      disabled={!option.isSelected && hasMoreThanOneSelected}
+                      disabled={false}
                     >
                       <Text
                         className={`self-stretch text-center text-lg font-bold leading-[28.80px] ${
