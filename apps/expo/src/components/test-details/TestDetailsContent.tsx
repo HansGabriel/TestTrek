@@ -310,6 +310,8 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           TOwidth="full"
           Vwidth="full"
           disabled={isLoadingPlayTest}
+          isLoading={isLoadingPlayTest}
+          loadingColor="white"
         />
       </ScrollView>
     </SafeAreaView>

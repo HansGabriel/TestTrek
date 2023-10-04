@@ -10,7 +10,7 @@ import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
 import XIcon from "../../icons/XIcon";
 import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
-import { truncate } from "lodash";
+import { truncateString } from "@acme/utils/src/strings";
 
 import type { FC } from "react";
 
@@ -76,10 +76,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <GoldMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {truncate(firstPlaceTreker.firstName, {
-                  length: 10,
-                  omission: "...",
-                })}
+                {truncateString(firstPlaceTreker.firstName)}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
@@ -103,10 +100,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <SilverMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {truncate(secondPlaceTreker.firstName, {
-                  length: 10,
-                  omission: "...",
-                })}
+                {truncateString(secondPlaceTreker.firstName)}
               </Text>
 
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
@@ -131,10 +125,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <BronzeMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {truncate(thirdPlaceTreker.firstName, {
-                  length: 10,
-                  omission: "...",
-                })}
+                {truncateString(thirdPlaceTreker.firstName)}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
