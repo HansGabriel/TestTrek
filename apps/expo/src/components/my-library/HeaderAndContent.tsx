@@ -2,11 +2,11 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TabContent } from "./TabContent";
 import { BackendTabPage } from "../../types/libraryTypes";
 import { trpc } from "../../utils/trpc";
 import { CollectionTabContent } from "../my-collections/CollectionTabContent";
 import { AddButton } from "../buttons/AddButton";
+import { LibraryTabs } from "./LibraryTabs";
 
 interface HeaderProps {
   tab: BackendTabPage;
@@ -82,7 +82,7 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mt-1 mb-4 w-full flex-row items-end justify-between">
+      <View className="mb-4 mt-1 w-full flex-row items-end justify-between">
         <View className="mx-4">
           <Text className=" font-nunito-bold text-xl">
             {tabType === "Test" ? testData?.length : collectionData?.length}{" "}
@@ -115,7 +115,7 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
       </View>
       <View className="flex-1">
         {tabType === "Test" ? (
-          <TabContent tabData={testData} />
+          <LibraryTabs tabData={testData} />
         ) : (
           <View className="flex-1">
             <CollectionTabContent tabData={collectionData} />
