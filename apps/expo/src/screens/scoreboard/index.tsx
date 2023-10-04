@@ -10,6 +10,7 @@ import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
 import XIcon from "../../icons/XIcon";
 import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
+import { truncate } from "lodash";
 
 import type { FC } from "react";
 
@@ -75,7 +76,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <GoldMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {firstPlaceTreker.firstName}
+                {truncate(firstPlaceTreker.firstName, {
+                  length: 10,
+                  omission: "...",
+                })}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
@@ -99,7 +103,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <SilverMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {secondPlaceTreker.firstName}
+                {truncate(secondPlaceTreker.firstName, {
+                  length: 10,
+                  omission: "...",
+                })}
               </Text>
 
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
@@ -124,7 +131,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 <BronzeMedalIcon />
               </View>
               <Text className="font-nunito-bold text-center text-xl font-bold leading-loose text-white">
-                {thirdPlaceTreker.firstName}
+                {truncate(thirdPlaceTreker.firstName, {
+                  length: 10,
+                  omission: "...",
+                })}
               </Text>
               <View className="inline-flex h-8 items-center justify-center rounded-[100px] bg-white px-4 py-1.5">
                 <Text className="font-nunito-bold text-center text-sm font-semibold leading-tight tracking-tight text-violet-600">
@@ -136,7 +146,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
         )}
 
         <View className=" top-[25%]">
-          <PodiumComponent width={"90%"} style={{ alignSelf: "center"}} />
+          <PodiumComponent width={"90%"} style={{ alignSelf: "center" }} />
 
           {remainingTrekers.length > 0 && (
             <View className="flex h-[200px] w-full flex-col bg-white px-4">
@@ -150,7 +160,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                       className="mt-3 flex flex-row items-center justify-start border-b border-zinc-100 pb-2"
                     >
                       <Text className="font-nunito-bold mr-3 text-center text-xl font-bold leading-loose text-neutral-800">
-                        {index + 1}
+                        {index + 4}
                       </Text>
                       <Image
                         source={{
@@ -178,7 +188,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
         colors={["#856BFF", "#704FFF"]}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
-        className="flex flex-row items-center justify-between px-6 pt-6 pb-9"
+        className="flex flex-row items-center justify-between px-6 pb-9 pt-6"
       >
         <TouchableOpacity className="flex w-[48%] flex-row items-center justify-center gap-x-2 rounded-[100px] border-b-4 border-neutral-200 bg-white py-[18px]">
           <DownloadIcon />
