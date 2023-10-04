@@ -9,7 +9,6 @@ import {
   Alert,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
-import { MoreCircleIcon } from "../../icons/question-options";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import CloseSquareIcon from "../../icons/CloseSquareIcon";
 import { trpc } from "../../utils/trpc";
@@ -19,6 +18,8 @@ import CountdownTimer, { type CountdownTimerRef } from "./CountdownTimer";
 import UpperBar, { type UpperBarRef } from "./UpperBar";
 import { match } from "ts-pattern";
 import { useNavigation } from "@react-navigation/native";
+import PlayDropdown from "./PlayDropdown";
+import useGoBack from "../../hooks/useGoBack";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
@@ -72,6 +73,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   route,
 }) => {
   const navigation = useNavigation();
+  const goBack = useGoBack();
   const { playId, testId } = route.params;
   const upperBarRef = useRef<UpperBarRef>(null);
   const countdownTimerRef = useRef<CountdownTimerRef>(null);
@@ -234,17 +236,27 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     setIsDone(true);
   };
 
+  const handleExit = () => {
+    goBack();
+  };
+
+  const handleSave = () => {
+    finishTest({
+      playId,
+      score: points,
+      time,
+    });
+  };
+
   return (
     <>
       <SafeAreaView className="flex-1">
-        <View className="mx-6 my-5 flex flex-row items-center justify-between">
+        <View className="z-10 mx-6 my-5 flex flex-row items-center justify-between">
           <Text className="font-nunito-bold text-2xl">
             {index + 1}/{totalQuestions}
           </Text>
           <Text className="font-nunito-bold text-2xl">Test</Text>
-          <TouchableOpacity>
-            <MoreCircleIcon />
-          </TouchableOpacity>
+          <PlayDropdown onExit={handleExit} onSave={handleSave} />
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="mx-6">
@@ -313,7 +325,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             ref={upperBarRef}
           />
         ))
-
         .with("incorrect", () => (
           <UpperBar type="incorrect" ref={upperBarRef} />
         ))
