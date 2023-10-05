@@ -64,7 +64,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
     );
   }
 
-  const { isOwner, totalQuestions, totalPlays, totalFavorites } =
+  const { isOwner, totalQuestions, totalPlays, totalFavorites, notOwner } =
     testStatistics;
 
   const { questions } = testDetails;
@@ -106,6 +106,14 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
       type: "testId",
       testId,
     });
+  };
+
+  const goToOthersProfileScreen = (userId: string) => () => {
+    navigation.navigate("OthersProfile", { userId });
+  };
+
+  const goToMyProfileScreen = () => () => {
+    navigation.navigate("Profile");
   };
 
   return (
@@ -203,19 +211,18 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
               )}
             </Text>
           </View>
-          {isOwner ? (
-            <TouchableOpacity className="inline-flex h-7 w-14 items-center justify-center rounded-[100px] border-2 border-violet-600 py-1.5">
-              <Text className="font-nunito-bold text-center text-xs font-semibold leading-tight tracking-tight text-violet-600">
-                You
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity className=" mt-5 items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
-              <Text className="font-nunito-semibold text-center text-xs leading-[19.6px] text-white">
-                View
-              </Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            onPress={
+              isOwner
+                ? goToMyProfileScreen()
+                : goToOthersProfileScreen(notOwner ?? "")
+            }
+            className=" mt-5 items-center justify-center self-center rounded-full bg-[#6949FF] px-5 py-1"
+          >
+            <Text className="font-nunito-semibold text-center text-xs leading-[19.6px] text-white">
+              View
+            </Text>
+          </TouchableOpacity>
         </View>
         <Text className="font-nunito-bold mt-3 break-words text-xl font-bold leading-[32px] text-[#212121]">
           Description

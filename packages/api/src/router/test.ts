@@ -573,6 +573,9 @@ export const testRouter = router({
 
       const isOwner = test?.user.userId === ctx.auth.userId;
 
+
+      const notOwner = test?.user.userId;
+
       const totalQuestions = await ctx.prisma.question.count({
         where: {
           testId,
@@ -596,6 +599,7 @@ export const testRouter = router({
         totalQuestions,
         totalPlays,
         totalFavorites,
+        notOwner,
       };
     }),
 
