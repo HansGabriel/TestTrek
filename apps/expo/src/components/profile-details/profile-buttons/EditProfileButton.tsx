@@ -7,9 +7,9 @@ const EditProfileButton: FC = () => {
   const navigation = useNavigation()
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('MyStatistics')} className="items-center justify-center rounded-full bg-[#6949FF] px-5 py-1">
+    <TouchableOpacity onPress={() => navigation.navigate('MyStatistics')} className="items-center justify-center rounded-full bg-[#6949FF] px-3 py-1">
       <Text className="font-nunito-semibold text-center text-[12px] leading-[19.6px] text-white">
-        View Statistics
+        View Stats
       </Text>
     </TouchableOpacity>
   );
