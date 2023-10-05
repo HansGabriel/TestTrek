@@ -74,6 +74,7 @@ export const useRouter = router({
       },
       where: {
         playerId: ctx.auth.userId,
+        isFinished: true,
       },
     });
   }),
