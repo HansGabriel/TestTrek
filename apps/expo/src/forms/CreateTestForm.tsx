@@ -80,7 +80,6 @@ const CreateTestForm: FC<Props> = ({
     control,
     handleSubmit,
     setValue,
-    reset,
     formState: { errors },
   } = useForm<FormProps>({
     resolver: zodResolver(
@@ -144,7 +143,6 @@ const CreateTestForm: FC<Props> = ({
     onSubmit({
       ...data,
     });
-    reset();
   };
 
   const readyQuestions = questions.slice(0, 10);

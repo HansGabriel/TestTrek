@@ -124,8 +124,8 @@ export const testInputSchema = z.object({
   ),
   questions: z
     .array(questionSchema)
-    .min(1, {
-      message: "At least one question is required",
+    .min(5, {
+      message: "At least five questions is required",
     })
     .max(100, {
       message: "At most 100 questions are allowed",

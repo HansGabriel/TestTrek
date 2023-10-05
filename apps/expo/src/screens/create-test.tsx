@@ -20,6 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
 import useToast from "../hooks/useToast";
+import { mapZodError } from "../utils/helpers/zod";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -65,10 +66,10 @@ export const CreateTestScreen: FC = () => {
           resetQuestions();
           navigation.navigate("Home");
         },
-        onError: () => {
+        onError: (error) => {
           setIsUploading(false);
-          showToast("An error occurred");
-          resetQuestions();
+          const errorMessage = mapZodError(error);
+          showToast(errorMessage);
         },
       },
     );
