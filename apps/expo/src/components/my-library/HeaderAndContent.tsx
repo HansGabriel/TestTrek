@@ -115,11 +115,20 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
       </View>
       <View className="flex-1">
         {tabType === "Test" ? (
-          <LibraryTabs tabData={testData} />
+          <>
+            <LibraryTabs tabData={testData} />
+            {tab === "user" ? (
+              <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
+                <AddButton screen={"CreateTest"} />
+              </View>
+            ) : (
+              ""
+            )}
+          </>
         ) : (
           <>
             <CollectionTabContent tabData={collectionData} />
-            <View className="z-50 h-16 w-14 items-center self-end">
+            <View className="z-50 -mt-20 mb-5 h-12 w-14 items-center self-end">
               <AddButton screen={"CreateCollection"} />
             </View>
           </>

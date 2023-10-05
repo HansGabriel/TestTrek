@@ -27,6 +27,7 @@ export const collectionRouter = router({
       return ctx.prisma.collection.findMany({
         where: {
           userId: userId,
+          visibility: "public",
         },
         orderBy: (() => {
           switch (sortBy) {
