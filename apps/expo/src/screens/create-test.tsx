@@ -16,7 +16,7 @@ import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
-
+import { Ionicons } from "@expo/vector-icons";
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
 import useToast from "../hooks/useToast";
@@ -97,12 +97,17 @@ export const CreateTestScreen: FC = () => {
   return (
     <SafeAreaView className="flex-1">
       <View className="mt-12">
-        <View className="-z-[100] mx-6 flex flex-row items-center justify-between">
-          <View className="flex flex-row items-center gap-2">
-            <TouchableOpacity onPress={handleExitScreen}>
+        <View className="top-2 mx-5 flex flex-row justify-between">
+          <View className="flex-row gap-4 self-center">
+            <TouchableOpacity
+              onPress={handleExitScreen}
+              className="flex flex-row items-center self-center"
+            >
               <Feather name="x" size={24} color="black" />
             </TouchableOpacity>
-            <Text className="font-nunito-bold text-2xl">Create Test</Text>
+            <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+              Create Test
+            </Text>
           </View>
         </View>
         <CreateTestForm

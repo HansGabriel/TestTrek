@@ -11,6 +11,7 @@ import { imageSchema, stockImagesSchema } from "./image";
 import { testDetailsSchema, questionSchema, testInputSchema } from "./test";
 import { playersHighscoreSchema } from "./play";
 import { collectionsSchema } from "./collection";
+import { reviewerSchema } from "./reviewer";
 
 export type UserInfo = z.infer<typeof userInfoSchema>;
 export type UserSignup = z.infer<typeof userSignupSchema>;
@@ -25,3 +26,4 @@ export type StockImages = z.infer<typeof stockImagesSchema>;
 export type UserStored = z.infer<typeof userStoredSchema>;
 export type PlayersHighscore = z.infer<typeof playersHighscoreSchema>;
 export type Collections = z.infer<typeof collectionsSchema>;
+export type Reviewers = z.infer<typeof reviewerSchema>;

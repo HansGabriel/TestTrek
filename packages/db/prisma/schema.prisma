@@ -24,6 +24,7 @@ model User {
     collections   Collection[]
     plays         Play[]
     favoriteTests UserOnFavoriteTest[]
+    Reviewer      Reviewer[]
 }
 
 model Post {
@@ -57,7 +58,33 @@ model Test {
     questions      Question[]
     user           User                 @relation(fields: [userId], references: [userId])
     plays          Play[]
+    reviewers      ReviewerOnTest[]
     favoritedUsers UserOnFavoriteTest[]
+}
+
+model Reviewer {
+    id         String           @id @default(cuid())
+    title      String
+    imageUrl   String
+    testId     String?
+    content    String           @db.Text
+    visibility Visibility
+    userId     String
+    user       User             @relation(fields: [userId], references: [userId])
+    tests      ReviewerOnTest[]
+    createdAt  DateTime         @default(now())
+    updatedAt  DateTime         @updatedAt
+}
+
+model ReviewerOnTest {
+    testId     String
+    test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+    reviewer   Reviewer @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+    reviewerId String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@id([testId, reviewerId])
 }
 
 model Question {
