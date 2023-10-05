@@ -275,28 +275,44 @@ export const CreateQuestionScreen: FC = () => {
     showToast("Question saved!");
   };
 
-  const renderChoice = (choice: Choice) => (
-    <TouchableOpacity
-      key={choice.id}
-      className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
-        choice.styles
-      } ${
-        errorState.choicesError[choice.id]?.length !== undefined
-          ? "border-2 border-red-500"
-          : ""
-      } p-5`}
-      onPress={handleOpenModal(choice.id)}
-    >
-      {choice.isCorrect && (
-        <View className="absolute right-2 top-2 h-5 w-5">
-          <CheckboxIcon />
-        </View>
-      )}
-      <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
-        {choice.text ? choice.text : "Add answer"}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderChoice = (choice: Choice) => {
+    const getTextSize = (text: string) => {
+      if (text.length <= 10) {
+        return "text-base";
+      } else if (text.length <= 18) {
+        return "text-sm";
+      } else {
+        return "text-xs";
+      }
+    };
+
+    return (
+      <TouchableOpacity
+        key={choice.id}
+        className={`h-40 w-40 flex-col items-center justify-center rounded-2xl ${
+          choice.styles
+        } ${
+          errorState.choicesError[choice.id]?.length !== undefined
+            ? "border-2 border-red-500"
+            : ""
+        } p-5`}
+        onPress={handleOpenModal(choice.id)}
+      >
+        {choice.isCorrect && (
+          <View className="absolute right-2 top-2 h-5 w-5">
+            <CheckboxIcon />
+          </View>
+        )}
+        <Text
+          className={`self-stretch text-center ${getTextSize(
+            choice.text ? choice.text : "Add answer",
+          )} font-bold leading-[28.80px] text-white`}
+        >
+          {choice.text ? choice.text : "Add answer"}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const handleClickQuestion = (index: number) => () => {
     setSelectedQuestionId(index);
@@ -362,7 +378,7 @@ export const CreateQuestionScreen: FC = () => {
 
   return (
     <View className="mx-6 mt-12 flex-1">
-      <View className="z-50 flex flex-row items-center justify-between pb-5">
+      <View className="z-50 flex flex-row items-center justify-between">
         <View className="flex flex-row items-center gap-2">
           <TouchableOpacity onPress={handleGoBack}>
             <Feather name="x" size={24} color="black" />
@@ -460,7 +476,7 @@ export const CreateQuestionScreen: FC = () => {
         </TouchableOpacity>
 
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={showModal}
           onRequestClose={() => {
@@ -474,12 +490,14 @@ export const CreateQuestionScreen: FC = () => {
           >
             <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
               <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                <View className="h-1/2 w-11/12 rounded-2xl bg-white">
+                <View className="h-[40%] w-11/12 rounded-2xl bg-white">
                   <Text className="mt-10 text-center text-2xl font-bold">
                     Add Answer
                   </Text>
                   <TextInput
-                    className={`mx-5 mt-5 basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-5 text-center text-lg font-bold leading-[28.80px] text-white`}
+                    multiline={true}
+                    maxLength={69}
+                    className={`mx-5 mt-5 h-[35%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                     selectionColor="white"
                     value={selectedChoice?.text}
                     onChangeText={(modalText) =>
@@ -487,7 +505,13 @@ export const CreateQuestionScreen: FC = () => {
                     }
                     placeholder="Add answer"
                     placeholderTextColor="#FFFFFF"
-                  ></TextInput>
+                  />
+                  {selectedChoice?.text && selectedChoice?.text.length >= 69 ? (
+                    <Text className="mt-2 text-center text-red-500 ">
+                      You've reached the maximum of 69 characters.
+                    </Text>
+                  ) : null}
+
                   <View className="flex flex-row items-center justify-center px-5 py-8">
                     <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
                       Correct Answer
