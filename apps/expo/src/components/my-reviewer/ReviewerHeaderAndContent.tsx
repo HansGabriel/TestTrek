@@ -75,7 +75,7 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mb-4 mt-1 w-full flex-row items-end justify-between">
+      <View className="mb-4 w-full flex-row items-end justify-between">
         <View className="mx-4">
           <Text className=" font-nunito-bold text-xl">
             {reviewerData?.length} Reviewers
@@ -99,13 +99,9 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
       </View>
       <View className="flex-1">
         <ReviewerTabs tabData={reviewerData} />
-        {tab === "user" ? (
-          <View className="z-50 h-12 w-14 items-center self-end">
-            <AddButton screen={"CreateReviewer"} />
-          </View>
-        ) : (
-          ""
-        )}
+        <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
+          {tab === "user" ? <AddButton screen={"CreateReviewer"} /> : ""}
+        </View>
       </View>
     </SafeAreaView>
   );
