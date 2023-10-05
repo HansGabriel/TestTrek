@@ -30,15 +30,16 @@ const AppTextInput: FC<Props> = ({ label, textInputProps, type = "text" }) => {
         ))
         .with("textarea", () => (
           <TextInput
-            className="border-primary-1 font-nunito-bold mt-2 h-52 rounded-lg border px-5 py-3"
+            className="border-primary-1 font-nunito-bold mt-2 h-52 rounded-lg border px-3 py-3"
             multiline
             numberOfLines={4}
             onBlur={onBlur}
             placeholderTextColor="#9E9E9E"
             onChangeText={onChangeText}
             value={value}
+            style={{ textAlignVertical: "top" }}
             {...props}
-          ></TextInput>
+          />
         ))
         .otherwise(() => (
           <></>

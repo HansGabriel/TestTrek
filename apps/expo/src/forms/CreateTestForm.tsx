@@ -403,7 +403,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="flex flex-row items-center justify-between pb-20">
+          <View className="flex flex-row items-center justify-between mb-24">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}

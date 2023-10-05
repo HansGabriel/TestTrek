@@ -44,7 +44,7 @@ export const ProfileScreen = () => {
     return activeTab === tab ? "text-white" : "text-violet-600";
   };
 
-  if (!userData) {
+  if (!userData || !testData || !collectionData) {
     return (
       <>
         <ProfileHeader />
@@ -85,7 +85,10 @@ export const ProfileScreen = () => {
 
           <View className=" h-20 w-[90%] flex-row justify-around self-center bg-white py-5">
             <TouchableOpacity
-              onPress={() => setActiveTab(Tabs.TESTS)}
+              onPress={(e) => {
+                e.preventDefault();
+                setActiveTab(Tabs.TESTS);
+              }}
               className={`w-[30%] items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
                 Tabs.TESTS,
               )}`}
@@ -99,7 +102,10 @@ export const ProfileScreen = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setActiveTab(Tabs.COLLECTIONS)}
+              onPress={(e) => {
+                e.preventDefault();
+                setActiveTab(Tabs.COLLECTIONS);
+              }}
               className={`w-[30%] items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
                 Tabs.COLLECTIONS,
               )}`}
@@ -113,7 +119,10 @@ export const ProfileScreen = () => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setActiveTab(Tabs.ABOUT)}
+              onPress={(e) => {
+                e.preventDefault();
+                setActiveTab(Tabs.ABOUT);
+              }}
               className={`w-[30%] items-center justify-center  rounded-[100px] border-2 border-violet-600 ${changeButtonColor(
                 Tabs.ABOUT,
               )}`}
@@ -128,7 +137,12 @@ export const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
 
-          <View className="min-h-screen w-[90%] flex-1 self-center">
+          <View
+            className="w-[90%] flex-1 self-center"
+            style={{
+              minHeight: 100,
+            }}
+          >
             {activeTab === Tabs.TESTS && <LibraryTabs tabData={testData} />}
             {activeTab === Tabs.COLLECTIONS && (
               <CollectionsTab tabData={collectionData} />
@@ -136,8 +150,8 @@ export const ProfileScreen = () => {
             {activeTab === Tabs.ABOUT && <AboutUser />}
           </View>
         </ScrollView>
-        <Footer />
       </View>
+      <Footer />
     </SafeAreaView>
   );
 };
