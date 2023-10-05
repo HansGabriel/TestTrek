@@ -61,3 +61,5 @@ export const POINT_OPTIONS: Option[] = [
   { id: "7", title: "1000 pt", value: 1000, isSelected: false },
   { id: "8", title: "2000 pt", value: 2000, isSelected: false },
 ];
+
+export const CHOICE_LIMIT = 100;

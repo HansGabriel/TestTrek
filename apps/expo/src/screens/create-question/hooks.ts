@@ -88,10 +88,10 @@ const useError = () => {
       dispatch({ type: "SET_TITLE_ERROR", payload: "Title cannot be empty" });
       return true;
     }
-    if (title.length > 50) {
+    if (title.length > 100) {
       dispatch({
         type: "SET_TITLE_ERROR",
-        payload: "Title cannot be longer than 50 characters",
+        payload: "Title cannot be longer than 100 characters",
       });
       return true;
     }
@@ -108,9 +108,9 @@ const useError = () => {
       } else if (choice === "") {
         hasError = true;
         oldChoicesError[index] = "Choice cannot be empty";
-      } else if (choice !== undefined && choice.length > 50) {
+      } else if (choice !== undefined && choice.length > 100) {
         hasError = true;
-        oldChoicesError[index] = "Choice cannot be longer than 50 characters";
+        oldChoicesError[index] = "Choice cannot be longer than 100 characters";
       } else {
         oldChoicesError[index] = undefined;
       }

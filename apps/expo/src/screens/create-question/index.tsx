@@ -212,11 +212,13 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleChoiceChange = (index: number, text: string) => {
-    setChoices((prev) =>
-      prev.map((choice) =>
-        choice.id === index ? { ...choice, text: text } : choice,
-      ),
-    );
+    if (text.length <= 100) {
+      setChoices((prev) =>
+        prev.map((choice) =>
+          choice.id === index ? { ...choice, text: text } : choice,
+        ),
+      );
+    }
   };
 
   const toggleChoiceCorrect = (index: number) => () => {
@@ -284,6 +286,8 @@ export const CreateQuestionScreen: FC = () => {
       fontSize = "text-md";
     } else if (choice.text.length! > 30) {
       fontSize = "text-sm";
+    } else if (choice.text.length! > 50) {
+      fontSize = "text-xs";
     }
 
     return (
@@ -493,7 +497,7 @@ export const CreateQuestionScreen: FC = () => {
                     Add Answer
                   </Text>
                   <TextInput
-                    className={`mx-5 mt-5 basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-5 text-center text-lg font-bold leading-[28.80px] text-white`}
+                    className={`mx-5 mt-5 basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} px-5 py-[75px] text-center text-lg font-bold leading-[28.80px] text-white`}
                     selectionColor="white"
                     value={selectedChoice?.text}
                     onChangeText={(modalText) =>
@@ -501,7 +505,15 @@ export const CreateQuestionScreen: FC = () => {
                     }
                     placeholder="Add answer"
                     placeholderTextColor="#FFFFFF"
+                    multiline={true}
                   ></TextInput>
+                  <Text
+                    className={`ml-auto mr-7 mt-1 text-sm font-bold ${
+                      selectedChoice?.text?.length === 100 ? "text-red-500" : ""
+                    }`}
+                  >
+                    {selectedChoice?.text?.length ?? 0}/100
+                  </Text>
                   <View className="flex flex-row items-center justify-center px-5 py-8">
                     <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
                       Correct Answer

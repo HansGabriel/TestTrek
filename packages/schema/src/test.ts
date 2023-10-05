@@ -1,19 +1,19 @@
 import { z } from "zod";
 
 export const choiceSchema = z.object({
-  text: z.string().min(1).max(50),
+  text: z.string().min(1).max(100),
   isCorrect: z.boolean(),
 });
 
 export const modifiedChoiceSchema = choiceSchema.merge(
   z.object({
-    possibleAnswers: z.array(z.string().min(1).max(50)),
+    possibleAnswers: z.array(z.string().min(1).max(100)),
   }),
 );
 
 export const questionSchema = z.discriminatedUnion("type", [
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(100),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -21,7 +21,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(100),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -29,7 +29,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(100),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -37,16 +37,16 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(100),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
     type: z.literal("identification"),
-    answer: z.string().min(1).max(50),
-    possibleAnswers: z.array(z.string().min(1).max(50)),
+    answer: z.string().min(1).max(100),
+    possibleAnswers: z.array(z.string().min(1).max(100)),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(100),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
