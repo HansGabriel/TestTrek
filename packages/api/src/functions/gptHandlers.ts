@@ -33,15 +33,15 @@ export const generatePromptForType = (
 ): string => {
   switch (questionType) {
     case "multipleChoice":
-      return `Create a multiple choice question about: "${message}" with 4 choices. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answer: Option [Correct option number]`;
+      return `Create a multiple choice question about: "${message}" with 4 choices. Each choices must not exceed 68 characters. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answer: Option [Correct option number]`;
     case "identification":
-      return `Create an identification question based on: "${message}". Format as: Question: [Your question here]\nAnswer: [Your answer here]`;
+      return `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [Your answer here]`;
     case "trueOrFalse":
-      return `Based on the information "${message}", generate a true or false question. Format as: Question: [Your question here]\nAnswer: [True/False]`;
+      return `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [True/False]`;
     case "multiselect":
-      return `Create a multiselect question about: "${message}" with 4 choices. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`;
+      return `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`;
     case "enumeration":
-      return `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`;
+      return `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`;
     default:
       return `Please provide information based on: "${message}"`;
   }
