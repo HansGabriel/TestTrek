@@ -36,6 +36,7 @@ import { ScoreboardScreen } from "../screens/scoreboard";
 import { MusicAndEffectsScreen } from "../screens/settings/MusicSettings";
 import { AboutTestTrekScreen } from "../screens/settings/AboutTestTrek";
 import { OthersProfileScreen } from "../screens/others-profile";
+import { CreateReviewerScreen } from "../screens/create-reviewer";
 
 export default function Navigation() {
   return (
@@ -228,6 +229,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="AboutTestTrek"
               component={AboutTestTrekScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="CreateReviewer"
+              component={CreateReviewerScreen}
               options={{
                 headerShown: false,
               }}

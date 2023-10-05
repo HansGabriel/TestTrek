@@ -24,6 +24,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   const goBack = useGoBack();
   const setImage = useImageStore((state) => state.setImage);
   const setQuestionImage = useImageStore((state) => state.setQuestionImage);
+  const setReviewerImage = useImageStore((state) => state.setReviewerImage);
   const setCollectionImage = useImageStore((state) => state.setCollectionImage);
   const setEditCollectionImage = useImageStore(
     (state) => state.setEditCollectionImage,
@@ -58,6 +59,8 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
                 ? setCollectionImage
                 : type === "editCollection"
                 ? setEditCollectionImage
+                : type === "reviewer"
+                ? setReviewerImage
                 : setQuestionImage;
             settingFunction(image);
             goBack();

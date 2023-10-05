@@ -2,15 +2,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BackendTabPage } from "../../types/libraryTypes";
 import { trpc } from "../../utils/trpc";
-import { CollectionTabContent } from "../my-collections/CollectionTabContent";
+import { ReviewerTabs } from "./ReviewerTab";
 import { AddButton } from "../buttons/AddButton";
-import { LibraryTabs } from "./LibraryTabs";
 
 interface HeaderProps {
-  tab: BackendTabPage;
-  tabType: string;
+  tab: "user" | "other";
 }
 
 const sortObject = [
@@ -46,17 +43,13 @@ const sortObject = [
   },
 ];
 
-export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
+export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
   const [sortType, setSortType] = useState<
     "newest" | "oldest" | "alphabetical"
   >("newest");
 
-  const { data: testData } = trpc.testFilter.getAll.useQuery({
-    testType: tab,
-    sortBy: sortType,
-  });
-
-  const { data: collectionData } = trpc.collection.getByUserId.useQuery({
+  const { data: reviewerData } = trpc.reviewer.getAllReviewers.useQuery({
+    reviewerType: tab,
     sortBy: sortType,
   });
 
@@ -82,19 +75,10 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mb-4 mt-1 w-full flex-row items-end justify-between">
+      <View className="mb-4 w-full flex-row items-end justify-between">
         <View className="mx-4">
           <Text className=" font-nunito-bold text-xl">
-            {tabType === "Test" ? testData?.length : collectionData?.length}{" "}
-            {tab === "user"
-              ? tabType === "Collection"
-                ? "Collections"
-                : "Tests"
-              : tab === "favorite"
-              ? "Favorites"
-              : tab === "other"
-              ? "Other Tests"
-              : ""}
+            {reviewerData?.length} Reviewers
           </Text>
         </View>
         <View>
@@ -114,25 +98,10 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
         </View>
       </View>
       <View className="flex-1">
-        {tabType === "Test" ? (
-          <>
-            <LibraryTabs tabData={testData} />
-            {tab === "user" ? (
-              <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
-                <AddButton screen={"CreateTest"} />
-              </View>
-            ) : (
-              ""
-            )}
-          </>
-        ) : (
-          <>
-            <CollectionTabContent tabData={collectionData} />
-            <View className="z-50 -mt-20 mb-5 h-12 w-14 items-center self-end">
-              <AddButton screen={"CreateCollection"} />
-            </View>
-          </>
-        )}
+        <ReviewerTabs tabData={reviewerData} />
+        <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
+          {tab === "user" ? <AddButton screen={"CreateReviewer"} /> : ""}
+        </View>
       </View>
     </SafeAreaView>
   );
