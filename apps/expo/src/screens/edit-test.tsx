@@ -79,7 +79,13 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   });
 
   const { mutate: editTest, isLoading: isEditingTest } =
-    trpc.test.edit.useMutation();
+    trpc.test.edit.useMutation({
+      onSuccess: () => {
+        trpcUtils.test.invalidate();
+        trpcUtils.user.getTop.invalidate();
+        trpcUtils.collection.getTopCollections.invalidate();
+      },
+    });
 
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
