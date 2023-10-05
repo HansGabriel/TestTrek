@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -23,13 +22,14 @@ import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import EditIcon from "../icons/EditIcon";
 import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
+import useGoBack from "../hooks/useGoBack";
 
 export const EditPersonalInfoScreen = () => {
   const { data: userDetails, refetch: refetchData } =
     trpc.user.getUserDetails.useQuery();
 
   const [edit, setEdit] = useState(false);
-  const navigation = useNavigation();
+  const goBack = useGoBack();
   const { showToast } = useToast();
 
   const {
@@ -67,7 +67,7 @@ export const EditPersonalInfoScreen = () => {
       <View className="mx-5 mt-7 flex  flex-row justify-between bg-white py-5">
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
-            onPress={() => navigation.navigate("Settings")}
+            onPress={goBack}
             className="flex flex-row items-center self-center"
           >
             <LeftArrowIcon />
@@ -115,6 +115,7 @@ export const EditPersonalInfoScreen = () => {
                     onChangeText: onChange,
                     value,
                     editable: edit,
+                    style: { color: "#6b7280" },
                   }}
                 />
               )}
@@ -135,6 +136,7 @@ export const EditPersonalInfoScreen = () => {
                     onChangeText: onChange,
                     value,
                     editable: edit,
+                    style: { color: "#6b7280" },
                   }}
                 />
               )}
@@ -155,6 +157,7 @@ export const EditPersonalInfoScreen = () => {
                     onChangeText: onChange,
                     value,
                     editable: edit,
+                    style: { color: "#6b7280" },
                   }}
                 />
               )}
@@ -175,6 +178,7 @@ export const EditPersonalInfoScreen = () => {
                     onChangeText: onChange,
                     value,
                     editable: edit,
+                    style: { color: "#6b7280" },
                   }}
                 />
               )}
