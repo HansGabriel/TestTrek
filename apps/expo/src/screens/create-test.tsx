@@ -25,6 +25,7 @@ type FormProps = Omit<TestInput, "questions">;
 
 export const CreateTestScreen: FC = () => {
   const goBack = useGoBack();
+  const trpcUtils = trpc.useContext();
   const navigation = useNavigation();
   const questions = useQuestionStore((state) => state.questions);
   const resetImage = useImageStore((state) => state.resetImage);
@@ -35,7 +36,13 @@ export const CreateTestScreen: FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const { mutate: createTest, isLoading: isCreatingQuiz } =
-    trpc.test.create.useMutation();
+    trpc.test.create.useMutation({
+      onSuccess: () => {
+        trpcUtils.test.invalidate();
+        trpcUtils.user.getTop.invalidate();
+        trpcUtils.collection.getTopCollections.invalidate();
+      },
+    });
 
   const submitTestDetails = async (data: FormProps) => {
     setIsUploading(true);
