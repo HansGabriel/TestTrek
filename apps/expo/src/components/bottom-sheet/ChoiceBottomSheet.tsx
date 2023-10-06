@@ -10,9 +10,17 @@ import type { FC } from "react";
 
 interface Props {
   goToCreateQuestion: () => void;
+  closeBottomSheet?: () => void;
 }
 
-const ChoiceBottomSheet: FC<Props> = ({ goToCreateQuestion }) => {
+const ChoiceBottomSheet: FC<Props> = ({
+  goToCreateQuestion,
+  closeBottomSheet,
+}) => {
+  const handleChoicePress = () => {
+    goToCreateQuestion();
+    closeBottomSheet?.();
+  };
   return (
     <View className="flex-1 bg-white pt-2 shadow shadow-black">
       <View className="flex flex-row items-center justify-center">
@@ -24,12 +32,12 @@ const ChoiceBottomSheet: FC<Props> = ({ goToCreateQuestion }) => {
       {/* Horizontal Line */}
       <View className="my-5 h-[0px] w-[382px] border border-zinc-100" />
 
-      {/* Cards */}
+      {/* Cards Choices */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex flex-col items-center">
           <View className="mx-6 flex flex-row">
             <TouchableOpacity
-              onPress={goToCreateQuestion}
+              onPress={handleChoicePress}
               className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"
             >
               <View className="h-10 w-10 items-center justify-center px-[7px] py-1">
