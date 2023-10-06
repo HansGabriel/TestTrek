@@ -14,3 +14,9 @@ export const collectionByUserIdSchema = z.object({
   userId: z.string(),
   sortBy: z.enum(["newest", "oldest", "alphabetical"]).optional(),
 });
+
+export const highlightCollectionsInput = z
+  .object({
+    amountOfColletions: z.number().optional(),
+  })
+  .optional();

@@ -8,7 +8,9 @@ import { IMAGE_PLACEHOLDER } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 
 const TopPicksHomeSection: FC = () => {
-  const { data: topPicksTest } = trpc.test.getTopPicks.useQuery();
+  const { data: topPicksTest } = trpc.test.getTopPicks.useQuery({
+    amountOfTests: 5,
+  });
 
   const navigation = useNavigation();
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
-import { testInputSchema } from "@acme/schema/src/test";
+import { highlightTestsInput, testInputSchema } from "@acme/schema/src/test";
 import { playersHighscoreSchema } from "@acme/schema/src/play";
 
 import { Prisma } from "@acme/db";
@@ -397,161 +397,111 @@ export const testRouter = router({
 
       return test;
     }),
-  getDiscoverTests: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.test.findMany({
-      take: 5,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        questions: {
-          select: {
-            answer: true,
-            choices: {
-              select: {
-                id: true,
-                isCorrect: true,
-                text: true,
-              },
-            },
-            id: true,
-            image: true,
-            points: true,
-            possibleAnswers: true,
-            time: true,
-            title: true,
-            type: true,
-          },
-        },
-        collections: {
-          include: {
-            collection: true,
-          },
-        },
-        visibility: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  }),
 
-  getTrendingTests: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.test.findMany({
-      take: 5,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        questions: {
-          select: {
-            answer: true,
-            choices: {
-              select: {
-                id: true,
-                isCorrect: true,
-                text: true,
-              },
+  getDiscoverTests: protectedProcedure
+    .input(highlightTestsInput)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.test.findMany({
+        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          keywords: {
+            select: {
+              id: true,
+              name: true,
             },
-            id: true,
-            image: true,
-            points: true,
-            possibleAnswers: true,
-            time: true,
-            title: true,
-            type: true,
           },
-        },
-        collections: {
-          include: {
-            collection: true,
+          questions: {
+            select: {
+              id: true,
+            },
           },
-        },
-        visibility: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+            },
           },
+          createdAt: true,
+          updatedAt: true,
         },
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  }),
+      });
+    }),
 
-  getTopPicks: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.test.findMany({
-      take: 5,
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        questions: {
-          select: {
-            answer: true,
-            choices: {
-              select: {
-                id: true,
-                isCorrect: true,
-                text: true,
-              },
+  getTrendingTests: protectedProcedure
+    .input(highlightTestsInput)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.test.findMany({
+        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          keywords: {
+            select: {
+              id: true,
+              name: true,
             },
-            id: true,
-            image: true,
-            points: true,
-            possibleAnswers: true,
-            time: true,
-            title: true,
-            type: true,
           },
-        },
-        collections: {
-          include: {
-            collection: true,
+          questions: {
+            select: {
+              id: true,
+            },
           },
-        },
-        visibility: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+            },
           },
+          createdAt: true,
+          updatedAt: true,
         },
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  }),
+      });
+    }),
+
+  getTopPicks: protectedProcedure
+    .input(highlightTestsInput)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.test.findMany({
+        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          keywords: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          questions: {
+            select: {
+              id: true,
+            },
+          },
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    }),
 
   getDetails: protectedProcedure
     .input(z.object({ testId: z.string() }))
@@ -572,7 +522,6 @@ export const testRouter = router({
       });
 
       const isOwner = test?.user.userId === ctx.auth.userId;
-
 
       const notOwner = test?.user.userId;
 

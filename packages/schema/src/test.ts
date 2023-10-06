@@ -64,6 +64,10 @@ export const testDetailsSchema = z.object({
   keywords: z.array(z.string().min(3).max(20)),
 });
 
+export const highlightTestsInput = z
+  .object({ amountOfTests: z.number().optional() })
+  .optional();
+
 export const testInputSchema = z.object({
   image: z.string({
     errorMap: () => ({
