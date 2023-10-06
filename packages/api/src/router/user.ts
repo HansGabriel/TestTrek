@@ -209,7 +209,7 @@ export const useRouter = router({
   editUserDetails: protectedProcedure
     .input(userStoredSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userName, firstName, lastName, email } = input;
+      const { userName, firstName, lastName, email, about } = input;
 
       return ctx.prisma.user.update({
         where: {
@@ -220,6 +220,7 @@ export const useRouter = router({
           firstName,
           lastName,
           email,
+          about,
         },
       });
     }),

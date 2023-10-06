@@ -23,6 +23,15 @@ export const userStoredSchema = z.object({
   firstName: z.string().min(1, "First Name is required"),
   imageUrl: z.string().optional(),
   lastName: z.string().min(1, "Last Name is required"),
+  about: z
+    .string()
+    .min(5, {
+      message: "About Me must be at least 5 characters",
+    })
+    .max(500, {
+      message: "About Me must be at most 500 characters",
+    })
+    .optional(),
 });
 
 export const highlightUsersInput = z

@@ -140,14 +140,16 @@ export const ProfileScreen = () => {
           <View
             className="w-[90%] flex-1 self-center"
             style={{
-              minHeight: 100,
+              minHeight: 120,
             }}
           >
             {activeTab === Tabs.TESTS && <LibraryTabs tabData={testData} />}
             {activeTab === Tabs.COLLECTIONS && (
               <CollectionsTab tabData={collectionData} />
             )}
-            {activeTab === Tabs.ABOUT && <AboutUser />}
+            {activeTab === Tabs.ABOUT && (
+              <AboutUser aboutUser={userData.about} />
+            )}
           </View>
         </ScrollView>
       </View>

@@ -6,9 +6,10 @@ import useGoBack from "../../hooks/useGoBack";
 interface HeaderProps {
   screenName: string;
   optionIcon?: React.ReactNode;
+  onIconPress? : () => void
 }
 
-export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon }) => {
+export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon, onIconPress }) => {
   const goBack = useGoBack();
   return (
     <>
@@ -24,9 +25,9 @@ export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon }) => {
             {screenName}
           </Text>
         </View>
-        <View className="self-center">
+        <TouchableOpacity onPress={onIconPress} className="self-center">
           {optionIcon}
-        </View>
+        </TouchableOpacity>
       </View>
     </>
   );
