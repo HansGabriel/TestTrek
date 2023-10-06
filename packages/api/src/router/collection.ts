@@ -2,6 +2,7 @@ import {
   collectionByUserIdSchema,
   collectionSortSchema,
   collectionsSchema,
+  highlightCollectionsInput,
 } from "@acme/schema/src/collection";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
@@ -361,16 +362,20 @@ export const collectionRouter = router({
         },
       });
     }),
-  getTopCollections: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.collection.findMany({
-      take: 5,
-      select: {
-        id: true,
-        title: true,
-        userId: true,
-        imageUrl: true,
-        tests: true,
-      },
-    });
-  }),
+  getTopCollections: protectedProcedure
+    .input(highlightCollectionsInput)
+    .query(({ ctx, input }) => {
+      return ctx.prisma.collection.findMany({
+        ...(input && input.amountOfColletions
+          ? { take: input.amountOfColletions }
+          : {}),
+        select: {
+          id: true,
+          title: true,
+          userId: true,
+          imageUrl: true,
+          tests: true,
+        },
+      });
+    }),
 });

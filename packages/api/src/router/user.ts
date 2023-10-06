@@ -1,4 +1,4 @@
-import { userStoredSchema } from "@acme/schema/src/user";
+import { highlightUsersInput, userStoredSchema } from "@acme/schema/src/user";
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { Prisma } from "@acme/db";
@@ -6,19 +6,10 @@ import { PlayersHighscore } from "@acme/schema/src/types";
 
 export const useRouter = router({
   getTop: protectedProcedure
-    .input(
-      z
-        .object({
-          limit: z.number().optional().default(5),
-        })
-        .optional()
-        .default({
-          limit: 5,
-        }),
-    )
+    .input(highlightUsersInput)
     .query(({ ctx, input }) => {
-      const { limit } = input;
       return ctx.prisma.user.findMany({
+        ...(input && input.amountOfUsers ? { take: input.amountOfUsers } : {}),
         select: {
           id: true,
           userId: true,
@@ -26,7 +17,6 @@ export const useRouter = router({
           firstName: true,
           lastName: true,
         },
-        take: limit,
       });
     }),
 

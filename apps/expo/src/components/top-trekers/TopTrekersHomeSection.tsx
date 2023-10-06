@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 
 const TopTrekersHomeSection: FC = () => {
-  const { data: topTrekers } = trpc.user.getTop.useQuery();
+  const { data: topTrekers } = trpc.user.getTop.useQuery({ amountOfUsers: 5 });
 
   const navigation = useNavigation();
 

@@ -8,7 +8,9 @@ import { trpc } from "../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 
 const TrendingTestsHomeSection: FC = () => {
-  const { data: trendingTests } = trpc.test.getTrendingTests.useQuery();
+  const { data: trendingTests } = trpc.test.getTrendingTests.useQuery({
+    amountOfTests: 5,
+  });
 
   const navigation = useNavigation();
 

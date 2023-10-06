@@ -23,7 +23,7 @@ const HomeTestDisplayCard: FC<Props> = (props) => {
             className="absolute inset-0 h-28 w-full object-cover"
             source={props.imageSource}
           />
-          <View className="absolute bottom-1 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
+          <View className="absolute bottom-3 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
             <Text className="text-xs font-semibold text-white">
               {props.questions} Qs
             </Text>

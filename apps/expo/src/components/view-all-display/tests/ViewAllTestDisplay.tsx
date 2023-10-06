@@ -16,6 +16,7 @@ import { match } from "ts-pattern";
 import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
+import { Visibility } from "../../../../../../packages/db";
 
 type Props =
   | {
@@ -39,21 +40,35 @@ type FetchedData = TestsType | QuestionsType | PartialQuestion[] | undefined;
 
 export const ViewAllTestDisplay: FC<Props> = (props) => {
   let fetchedData: FetchedData = undefined;
+  let fetchedTestData:
+    | {
+        questions: { id: string }[];
+        user: { firstName: string; imageUrl: string | null; lastName: string };
+        title: string;
+        id: string;
+        description: string;
+        visibility: Visibility;
+        keywords: { id: string; name: string }[];
+        imageUrl: string;
+        createdAt: Date;
+        updatedAt: Date;
+      }[]
+    | undefined = undefined;
   let headerTitle = "";
 
   const navigation = useNavigation();
 
   if (props.testsFor == "discover") {
     const { data } = trpc.test.getDiscoverTests.useQuery();
-    fetchedData = data;
+    fetchedTestData = data;
     headerTitle = "Discover";
   } else if (props.testsFor == "trending") {
     const { data } = trpc.test.getTrendingTests.useQuery();
-    fetchedData = data;
+    fetchedTestData = data;
     headerTitle = "Trending";
   } else if (props.testsFor == "topPicks") {
     const { data } = trpc.test.getTopPicks.useQuery();
-    fetchedData = data;
+    fetchedTestData = data;
     headerTitle = "Top Picks";
   } else if (props.testsFor == "questions") {
     const { type } = props;
@@ -110,7 +125,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
             <>
               <FlashList
                 showsVerticalScrollIndicator={false}
-                data={fetchedData as TestsType}
+                data={fetchedTestData}
                 estimatedItemSize={100}
                 renderItem={({ item, index }) => {
                   const fullName = `${item.user.firstName} ${item.user.lastName}`;
@@ -157,7 +172,7 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
         renderItem={({ item: question, index }) => {
           return (
             <TouchableOpacity
-              className="my-2 mx-5 flex h-[105px] items-center justify-start"
+              className="mx-5 my-2 flex h-[105px] items-center justify-start"
               key={index}
             >
               <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">

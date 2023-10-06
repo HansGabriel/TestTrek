@@ -25,6 +25,12 @@ export const userStoredSchema = z.object({
   lastName: z.string().min(1, "Last Name is required"),
 });
 
+export const highlightUsersInput = z
+  .object({
+    amountOfUsers: z.number().optional(),
+  })
+  .optional();
+
 export const userWebhookSchema = z
   .object({
     email_addresses: z

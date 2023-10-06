@@ -9,7 +9,7 @@ import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import HomeEmptyTest from "../home-empty-section/EmptyTest";
 
 const DiscoverHomeSection: FC = () => {
-  const { data } = trpc.test.getDiscoverTests.useQuery();
+  const { data } = trpc.test.getDiscoverTests.useQuery({ amountOfTests: 5 });
 
   const navigation = useNavigation();
 
