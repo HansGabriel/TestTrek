@@ -9,7 +9,7 @@ import HomeEmptyCollection from "../home-empty-section/EmptyCollection";
 
 const TopCollectionsHomeSection: FC = () => {
   const { data: topCollections } = trpc.collection.getTopCollections.useQuery({
-    amountOfColletions: 5,
+    amountOfCollections: 5,
   });
 
   const navigation = useNavigation();
