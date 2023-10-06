@@ -166,6 +166,31 @@ const CreateTestForm: FC<Props> = ({
     });
   }, [image, testDetails?.image]);
 
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your progress if you exit this screen",
+        [
+          {
+            text: "CANCEL",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => goBack() },
+        ],
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const goToViewAllQuestions = () => {
     navigation.navigate("ViewAll", {
       fetchedData: "questions",
@@ -194,31 +219,6 @@ const CreateTestForm: FC<Props> = ({
     bottomSheetRef.current?.close();
     setBottomSheetOpen(false);
   };
-
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all your progress if you exit this screen",
-        [
-          {
-            text: "CANCEL",
-            onPress: () => null,
-            style: "cancel",
-          },
-          { text: "OK", onPress: () => goBack() },
-        ],
-      );
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   return (
     <SafeAreaView>

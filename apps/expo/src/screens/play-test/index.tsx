@@ -121,6 +121,27 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   }, [index, testDetails?.test.questions]);
 
   useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => goBack() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
     const timerDelay = setTimeout(() => {
       setIsTimerReady(true);
     }, 100); // 100ms delay
@@ -271,27 +292,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       time,
     });
   };
-
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to exit?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => goBack() },
-      ]);
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   return (
     <>
