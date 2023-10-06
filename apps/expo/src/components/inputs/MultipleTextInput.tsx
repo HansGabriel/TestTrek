@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { View, Text, TextInput, type TextInputProps } from "react-native";
 import useToast from "../../hooks/useToast";
@@ -42,6 +42,10 @@ const MultipleTextInput: FC<Props> = ({
     onChangeTexts(texts.filter((t) => t !== text));
   };
 
+  useEffect(() => {
+    setInputText("");
+  }, [texts]);
+
   return (
     <View className="my-2 flex flex-col">
       <Text className="font-nunito-bold text-base leading-snug tracking-tight text-neutral-800">
@@ -60,7 +64,7 @@ const MultipleTextInput: FC<Props> = ({
           <TouchableOpacity
             key={`${text}-${idx}`}
             onPress={() => handleOnRemoveText(text)}
-            className="mr-3 mb-2 flex min-w-min flex-row items-center justify-center rounded-[100px] border border-violet-600 px-5 py-2"
+            className="mb-2 mr-3 flex min-w-min flex-row items-center justify-center rounded-[100px] border border-violet-600 px-5 py-2"
           >
             <Text className="mr-2 text-center text-base font-semibold leading-snug tracking-tight text-violet-600">
               {text}
