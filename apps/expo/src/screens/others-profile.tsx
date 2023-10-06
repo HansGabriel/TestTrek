@@ -147,7 +147,9 @@ export const OthersProfileScreen = ({
             {activeTab === Tabs.COLLECTIONS && (
               <CollectionsTab tabData={collectionData} />
             )}
-            {activeTab === Tabs.ABOUT && <AboutUser />}
+            {activeTab === Tabs.ABOUT && (
+              <AboutUser aboutUser={userData.about} />
+            )}
           </View>
         </ScrollView>
       </View>
