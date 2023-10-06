@@ -185,10 +185,13 @@ const CreateTestForm: FC<Props> = ({
     }
   };
 
+  const closeBottomSheet = () => {
+    bottomSheetRef.current?.close();
+    setBottomSheetOpen(false);
+  };
+
   return (
-    <SafeAreaView
-      className={`${isBottomSheetOpen ? "inset-0 z-10 bg-black/60" : ""}`}
-    >
+    <SafeAreaView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="mx-6 flex flex-col content-end justify-between"
@@ -425,6 +428,9 @@ const CreateTestForm: FC<Props> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      {isBottomSheetOpen && (
+        <View style={styles.overlay} onTouchEnd={closeBottomSheet} />
+      )}
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
@@ -432,7 +438,10 @@ const CreateTestForm: FC<Props> = ({
         onChange={handleSheetChanges}
         style={styles.bottomSheetContainer}
       >
-        <ChoiceBottomSheet goToCreateQuestion={goToCreateQuestion} />
+        <ChoiceBottomSheet
+          goToCreateQuestion={goToCreateQuestion}
+          closeBottomSheet={closeBottomSheet}
+        />
       </BottomSheet>
     </SafeAreaView>
   );
@@ -448,6 +457,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 });
 

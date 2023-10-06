@@ -25,7 +25,7 @@ export const SettingsScreen = () => {
   return (
     <SafeAreaView
       className={`flex-1 flex-col ${
-        isModalOpen ? "inset-0 z-10 bg-black/60" : ""
+        isModalOpen ? "inset-0 z-10 bg-black/50" : ""
       }`}
     >
       <View
