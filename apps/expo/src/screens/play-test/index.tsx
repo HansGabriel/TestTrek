@@ -7,6 +7,7 @@ import {
   ScrollView,
   StatusBar,
   Alert,
+  BackHandler,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -270,6 +271,27 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       time,
     });
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to exit?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => goBack() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <>
