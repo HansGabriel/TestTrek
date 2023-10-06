@@ -189,7 +189,9 @@ export const EditPersonalInfoScreen = () => {
           )}
 
           <Controller
+            name="about"
             control={control}
+            defaultValue={`${userDetails?.about}`}
             render={({ field: { onChange, onBlur, value } }) => (
               <AppTextInput
                 label="About Me"
@@ -206,7 +208,6 @@ export const EditPersonalInfoScreen = () => {
                 }}
               />
             )}
-            name="about"
           />
           {errors.about && (
             <Text className="text-red-500">{errors.about.message}</Text>
