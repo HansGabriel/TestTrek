@@ -111,8 +111,8 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
         },
         onError: (error) => {
           setIsUploading(false);
-          showToast(mapZodError(error));
-          resetQuestions();
+          const errorMessage = mapZodError(error);
+          showToast(errorMessage);
         },
       },
     );
