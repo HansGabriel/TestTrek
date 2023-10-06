@@ -187,35 +187,36 @@ export const EditPersonalInfoScreen = () => {
           {errors.email && (
             <Text className="text-red-500">{errors.email.message}</Text>
           )}
-
-          <Controller
-            name="about"
-            control={control}
-            defaultValue={`${userDetails?.about}`}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <AppTextInput
-                label="About Me"
-                type="textarea"
-                textInputProps={{
-                  onBlur,
-                  onChangeText: onChange,
-                  value,
-                  editable: edit,
-                  style: {
-                    color: !edit ? "#6b7280" : "black",
-                    textAlignVertical: "top",
-                  },
-                }}
-              />
+          <View className="mb-5">
+            <Controller
+              name="about"
+              control={control}
+              defaultValue={`${userDetails?.about}`}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <AppTextInput
+                  label="About Me"
+                  type="textarea"
+                  textInputProps={{
+                    onBlur,
+                    onChangeText: onChange,
+                    value,
+                    editable: edit,
+                    style: {
+                      color: !edit ? "#6b7280" : "black",
+                      textAlignVertical: "top",
+                    },
+                  }}
+                />
+              )}
+            />
+            {errors.about && (
+              <Text className="text-red-500">{errors.about.message}</Text>
             )}
-          />
-          {errors.about && (
-            <Text className="text-red-500">{errors.about.message}</Text>
-          )}
+          </View>
         </View>
 
         {edit ? (
-          <View className="my-20">
+          <View className="my-16">
             <AppButton
               text="Save"
               buttonColor="violet-600"
