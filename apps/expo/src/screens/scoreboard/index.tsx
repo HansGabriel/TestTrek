@@ -11,8 +11,13 @@ import XIcon from "../../icons/XIcon";
 import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
 import { truncateString } from "@acme/utils/src/strings";
+import congrats from "../../sounds/congratulations.mp3";
 
 import type { FC } from "react";
+import { Audio } from "expo-av";
+import { useMusicStore } from "../../stores/useMusicStore";
+import { playEffects, unloadAudio } from "../../services/audioService";
+import { useIsFocused } from "@react-navigation/native";
 
 export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
   navigation,
@@ -20,6 +25,12 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
 }) => {
   const { testId } = route.params;
   const [isShowinConfetti, setIsShowingConfetti] = useState<boolean>(false);
+  const isFocused = useIsFocused();
+  const isEffectsPlaying = useMusicStore((state) => state.isEffectsPlaying);
+  const setIsScoreboardScreen = useMusicStore(
+    (state) => state.setIsScoreboardScreen,
+  );
+  const congratsInstance = new Audio.Sound();
 
   const { data: topTrekersList } = trpc.test.getScoreboard.useQuery({
     testId,
@@ -29,14 +40,26 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
     setIsShowingConfetti(true);
     setTimeout(() => {
       setIsShowingConfetti(false);
-    }, 5000);
+    }, 10000);
   }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      setIsScoreboardScreen(true);
+      if (isEffectsPlaying && topTrekersList) {
+        playEffects({ sound: congratsInstance, music: congrats });
+      }
+    }else{
+      setIsScoreboardScreen(false);
+    }
+  }, [isEffectsPlaying, topTrekersList, isFocused]);
 
   if (!topTrekersList) {
     return <></>;
   }
 
   const goToHome = () => {
+    setIsScoreboardScreen(false);
     navigation.navigate("Home");
   };
 
