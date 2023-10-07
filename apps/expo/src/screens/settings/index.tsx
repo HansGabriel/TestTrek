@@ -37,11 +37,8 @@ export const SettingsScreen = () => {
         <SettingsHeader screenName={"Settings"} />
         <SettingsButtons openBottomSheet={openBottomSheet} />
       </View>
-      {/* Overlay to darken the screen, but under the modal */}
       {isModalOpen && (
-        <View
-          className="absolute inset-0 z-10 bg-black/70" // semi-transparent black
-        ></View>
+        <View className="absolute inset-0 z-10 bg-black/70"></View>
       )}
       <LogoutModal
         sheetRef={bottomSheetRef}

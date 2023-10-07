@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -13,6 +13,8 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  Alert,
+  BackHandler,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -286,6 +288,31 @@ export const CreateQuestionScreen: FC = () => {
         return "text-xs";
       }
     };
+
+    useEffect(() => {
+      const backAction = () => {
+        Alert.alert(
+          "Are you sure?",
+          "You will lose all your progress if you exit this screen",
+          [
+            {
+              text: "CANCEL",
+              onPress: () => null,
+              style: "cancel",
+            },
+            { text: "EXIT", onPress: () => goBack() },
+          ],
+        );
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction,
+      );
+
+      return () => backHandler.remove();
+    }, []);
 
     return (
       <TouchableOpacity

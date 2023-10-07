@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
   ImageBackground,
   StyleSheet,
+  Alert,
+  BackHandler,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Feather } from "@expo/vector-icons";
@@ -36,6 +38,7 @@ import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FieldError } from "react-hook-form";
+import useGoBack from "../hooks/useGoBack";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -80,6 +83,8 @@ const CreateTestForm: FC<Props> = ({
 
     return undefined;
   };
+
+  const goBack = useGoBack();
 
   const {
     control,
@@ -165,6 +170,31 @@ const CreateTestForm: FC<Props> = ({
       }
     });
   }, [image, testDetails?.image]);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your progress if you exit this screen",
+        [
+          {
+            text: "CANCEL",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => goBack() },
+        ],
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const goToViewAllQuestions = () => {
     navigation.navigate("ViewAll", {
@@ -426,6 +456,8 @@ const CreateTestForm: FC<Props> = ({
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
+              disabled={questions.length === 0}
+              style={[questions.length === 0 ? styles.disabledButton : {}]}
             >
               {isCreatingQuiz || isUploading ? (
                 <ActivityIndicator color="black" />
@@ -483,6 +515,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
 
