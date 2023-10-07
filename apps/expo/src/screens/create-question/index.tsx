@@ -64,7 +64,7 @@ export const CreateQuestionScreen: FC = () => {
 
   const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
     useQuestionStore();
-  const { errorState, checkErrors, resetErrors } = useError();
+  const { errorState, checkErrors, resetErrors, checkAnswerError } = useError();
 
   const questionImage = useImageStore((state) => state.questionImage);
   const setImage = useImageStore((state) => state.setImage);
@@ -254,7 +254,7 @@ export const CreateQuestionScreen: FC = () => {
       title: questionTitle,
     });
     if (errors) {
-      return;
+      return errorState;
     }
     const multipleChoiceQuestion: MultipleChoiceQuestion = {
       title: questionTitle,
@@ -273,6 +273,7 @@ export const CreateQuestionScreen: FC = () => {
     editQuestion(selectedIndex!, multipleChoiceQuestion);
     resetQuestionImage();
     showToast("Question saved!");
+    return true;
   };
 
   const renderChoice = (choice: Choice) => {
@@ -366,6 +367,18 @@ export const CreateQuestionScreen: FC = () => {
     });
   };
 
+  const handleSaveAnswer = (callback?: () => void) => () => {
+    const isSaved = handleSaveQuestion();
+    if (isSaved === true) {
+      callback?.();
+    } else {
+      const answerError = checkAnswerError(choices);
+      if (answerError) {
+        showToast("Please select a correct answer");
+      }
+    }
+  };
+
   const selectedChoice = useMemo(
     () => choices[selectedQuestionId],
     [choices, selectedQuestionId],
@@ -387,10 +400,7 @@ export const CreateQuestionScreen: FC = () => {
         </View>
         {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
         <QuestionOptionsDropdown
-          onSave={() => {
-            handleSaveQuestion();
-            goBack();
-          }}
+          onSave={handleSaveAnswer(goBack)}
           onDelete={handleDelete}
         />
       </View>
@@ -468,7 +478,8 @@ export const CreateQuestionScreen: FC = () => {
 
         <TouchableOpacity
           className="mt-10 w-full items-center justify-center rounded-[100px] border-b-2 border-violet-700 bg-violet-600 py-[18px]"
-          onPress={handleSaveQuestion}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onPress={handleSaveAnswer(() => {})}
         >
           <Text className="text-center text-base font-bold text-white">
             Save
