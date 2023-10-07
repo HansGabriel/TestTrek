@@ -9,7 +9,7 @@ interface Props {
 
 const CollectionsCard: FC<Props> = (props) => {
   return (
-    <View className="my-3 mx-3">
+    <View className="mx-3 my-3">
       <ImageBackground
         source={props.userImage}
         className="overflow-hidden rounded-xl border-2 border-white"
@@ -27,7 +27,11 @@ const CollectionsCard: FC<Props> = (props) => {
         ></View>
 
         <View className="ml-5 h-28 w-36 content-end items-start justify-end">
-          <Text className="font-nunito-bold text-s p-s my-3 max-h-[50%] max-w-[80%] rounded-2xl text-white">
+          <Text
+            className="font-nunito-bold text-s p-s my-3 max-h-[50%] max-w-[80%] rounded-2xl text-white"
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
             {props.title}
           </Text>
         </View>

@@ -196,6 +196,7 @@ const RootNavigator = () => {
               component={MyStatistics}
               options={{
                 headerShown: false,
+                animation: "fade",
               }}
             />
             <Stack.Screen

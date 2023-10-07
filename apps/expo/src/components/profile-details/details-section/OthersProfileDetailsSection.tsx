@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View, Image, SafeAreaView } from "react-native";
 import type { FC } from "react";
 import { Collection, Test, User } from "@prisma/client";
+import { getFullName } from "@acme/utils/src/strings";
 
 interface PlayObject {
   _count: {
@@ -35,31 +36,20 @@ const OthersProfileDetailsSection: FC<ProfileProps> = ({
               className="h-[60px] w-[60px] rounded-full"
               source={{ uri: userDetails?.imageUrl?.toString() }}
             />
-            <View className="mx-2">
-              <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
-                {userDetails?.firstName.length > 40 ||
-                userDetails?.lastName.length > 40 ? (
-                  <>
-                    {userDetails?.firstName.slice(0, 40)}
-                    {userDetails?.firstName.length > 40 ? "..." : ""}
-                    {"\n"}
-                    {userDetails?.lastName.slice(0, 40)}
-                    {userDetails?.lastName.length > 40 ? "..." : ""}
-                  </>
-                ) : (
-                  `${userDetails?.firstName} ${userDetails?.lastName}`
-                )}
+            <View className="mx-2 w-[70%]">
+              <Text
+                className="font-nunito-bold text-lg leading-[32px] text-[#212121]"
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {getFullName(userDetails.firstName, userDetails.lastName)}
               </Text>
-              <Text className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]">
-                @
-                {userDetails.username.length > 40 ? (
-                  <>
-                    {userDetails.username.slice(0, 40)}
-                    {userDetails.username.length > 40 ? "..." : ""}
-                  </>
-                ) : (
-                  `${userDetails.username}`
-                )}
+              <Text
+                className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                @{userDetails.username}
               </Text>
             </View>
           </View>

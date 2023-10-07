@@ -24,6 +24,7 @@ import type { RouterOutputs } from "../../utils/trpc";
 import { ScrollView } from "react-native-gesture-handler";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import { FlashList } from "@shopify/flash-list";
+import { getFullName } from "@acme/utils/src/strings";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -179,36 +180,28 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           </React.Fragment>
         ))}
 
-        <View className="w-[100%] flex-row items-center justify-evenly self-center py-3">
+        <View className="w-[90%] flex-row items-center justify-evenly self-center py-3">
           <Image
             className="mr-3 h-[60px] w-[60px] rounded-full"
             source={{ uri: testDetails?.user.imageUrl ?? IMAGE_PLACEHOLDER }}
           />
-          <View className="mx-1 flex-grow flex-col items-start justify-center">
-            <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
-              {testDetails?.user.firstName.length > 10 ||
-              testDetails?.user.lastName.length > 10 ? (
-                <>
-                  {testDetails?.user.firstName.slice(0, 10)}
-                  {testDetails?.user.firstName.length > 10 ? "..." : ""}
-                  {"\n"}
-                  {testDetails?.user.lastName.slice(0, 10)}
-                  {testDetails?.user.lastName.length > 10 ? "..." : ""}
-                </>
-              ) : (
-                `${testDetails?.user.firstName} ${testDetails?.user.lastName}`
+          <View className="ml-3 w-[70%] flex-grow flex-col items-start justify-center">
+            <Text
+              className="font-nunito-bold w-[90%] text-lg leading-[32px] text-[#212121]"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {getFullName(
+                testDetails.user.firstName,
+                testDetails.user.lastName,
               )}
             </Text>
-            <Text className="font-nunito-semibold text-[14px] leading-[19.6px] text-[#616161]">
-              @
-              {testDetails?.user.username.length > 20 ? (
-                <>
-                  {testDetails?.user.username.slice(0, 20)}
-                  {testDetails?.user.username.length > 20 ? "..." : ""}
-                </>
-              ) : (
-                `${testDetails?.user.username}`
-              )}
+            <Text
+              className="font-nunito-semibold w-[90%] text-[14px] leading-[19.6px] text-[#616161]"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              @{testDetails.user.username}
             </Text>
           </View>
           <TouchableOpacity

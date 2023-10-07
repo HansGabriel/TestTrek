@@ -36,6 +36,6 @@ export const collectionByUserIdSchema = z.object({
 
 export const highlightCollectionsInput = z
   .object({
-    amountOfColletions: z.number().optional(),
+    amountOfCollections: z.number().optional(),
   })
   .optional();

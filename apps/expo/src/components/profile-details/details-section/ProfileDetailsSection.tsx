@@ -1,8 +1,9 @@
 import React from "react";
 import { Text, View, Image, SafeAreaView } from "react-native";
-import EditProfileButton from "../profile-buttons/EditProfileButton";
+import ViewStatisticsButton from "../profile-buttons/ViewStatisticsButton";
 import type { FC } from "react";
 import { Collection, Test, User } from "@prisma/client";
+import { getFullName } from "@acme/utils/src/strings";
 
 interface PlayObject {
   _count: {
@@ -30,45 +31,38 @@ const ProfileDetailsSection: FC<ProfileProps> = ({
   return (
     <SafeAreaView className="flex-1">
       <View className="w-[90%] flex-col items-center self-center">
-        <View className="my-3 w-[100%] flex-row items-center justify-between self-center">
-          <View className="flex-grow flex-row">
+        <View className="my-3 w-[80%] flex-row items-center justify-between self-center">
+          <View className="w-[93%] flex-grow flex-row">
             <Image
-              className="h-[60px] w-[60px] rounded-full"
+              className="my-3 h-[60px] w-[60px] rounded-full"
               source={{ uri: userDetails?.imageUrl?.toString() }}
             />
             <View className="mx-2">
-              <Text className="font-nunito-bold text-lg leading-[32px] text-[#212121]">
-                {userDetails?.firstName.length > 10 ||
-                userDetails?.lastName.length > 10 ? (
-                  <>
-                    {userDetails?.firstName.slice(0, 10)}
-                    {userDetails?.firstName.length > 10 ? "..." : ""}
-                    {"\n"}
-                    {userDetails?.lastName.slice(0, 10)}
-                    {userDetails?.lastName.length > 10 ? "..." : ""}
-                  </>
-                ) : (
-                  `${userDetails?.firstName} ${userDetails?.lastName}`
-                )}
-              </Text>
-              <Text className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]">
-                @
-                {userDetails.username.length > 20 ? (
-                  <>
-                    {userDetails.username.slice(0, 20)}
-                    {userDetails.username.length > 20 ? "..." : ""}
-                  </>
-                ) : (
-                  `${userDetails.username}`
-                )}
-              </Text>
+              <View className="w-[90%]">
+                <Text
+                  className="font-nunito-bold text-lg leading-[32px] text-[#212121]"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {getFullName(userDetails.firstName, userDetails.lastName)}
+                </Text>
+              </View>
+              <View className="w-[90%]">
+                <Text
+                  className="font-nunito-semibold text-sm leading-[19.6px] text-[#616161]"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  @{userDetails.username}
+                </Text>
+              </View>
             </View>
           </View>
           <View>
-            <EditProfileButton />
+            <ViewStatisticsButton />
           </View>
         </View>
-        <View className="my-3 w-80 flex-row justify-evenly border-t border-b border-[#EEEEEE]">
+        <View className="my-3 w-80 flex-row justify-evenly border-b border-t border-[#EEEEEE]">
           <View className="items-center px-2 py-2">
             <Text className=" font-nunito-bold text-2xl">
               {testDetails?.length}

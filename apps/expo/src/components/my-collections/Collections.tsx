@@ -49,7 +49,11 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
                 }}
               />
               <View className="h-28 w-36 content-end items-start justify-end">
-                <Text className="font-nunito-bold text-s p-s my-3 ml-5 max-h-[50%] max-w-[80%] rounded-2xl text-white">
+                <Text
+                  className="font-nunito-bold text-s p-s my-3 ml-5 max-h-[50%] max-w-[80%] rounded-2xl text-white"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
                   {item.title}
                 </Text>
               </View>
