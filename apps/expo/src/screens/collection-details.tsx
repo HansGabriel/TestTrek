@@ -7,6 +7,7 @@ import { CollectionTestHeaderAndContent } from "../components/collection-details
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 
 export const CollectionDetailsScreen = ({
+  navigation,
   route,
 }: RootStackScreenProps<"CollectionDetails">) => {
   const { collectionId } = route.params;
@@ -15,6 +16,10 @@ export const CollectionDetailsScreen = ({
     trpc.collection.getByCollectionId.useQuery({
       collectionId,
     });
+
+  const goToTestDetailsScreen = (testId: string) => () => {
+    navigation.navigate("TestDetails", { testId });
+  };
 
   if (!collectionDetails) {
     return (
@@ -38,7 +43,10 @@ export const CollectionDetailsScreen = ({
         className="h-[30%] w-[90%] rounded-2xl"
         source={{ uri: collectionDetails.imageUrl }}
       />
-      <CollectionTestHeaderAndContent collectionId={collectionDetails.id} />
+      <CollectionTestHeaderAndContent
+        collectionId={collectionDetails.id}
+        goToTestDetailsScreen={goToTestDetailsScreen}
+      />
     </SafeAreaView>
   );
 };
