@@ -8,6 +8,7 @@ import { trpc } from "../../utils/trpc";
 
 interface Props {
   collectionId: string;
+  goToTestDetailsScreen: (testId: string) => () => void;
 }
 
 const sortObject = [
@@ -44,6 +45,7 @@ const sortObject = [
 ];
 
 export const CollectionTestHeaderAndContent: FC<Props> = (props) => {
+  const { goToTestDetailsScreen } = props;
   const [sortType, setSortType] = useState<
     "newest" | "oldest" | "alphabetical"
   >("newest");
@@ -103,7 +105,10 @@ export const CollectionTestHeaderAndContent: FC<Props> = (props) => {
           renderItem={({ item, index }) => {
             const fullName = `${item.test.user.firstName} ${item.test.user.lastName}`;
             return (
-              <TouchableOpacity key={index}>
+              <TouchableOpacity
+                key={index}
+                onPress={goToTestDetailsScreen(item.test.id)}
+              >
                 <ViewAllScreenTestCard
                   imageSource={{ uri: item.test.imageUrl }}
                   title={item.test.title}

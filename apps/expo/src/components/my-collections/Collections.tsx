@@ -14,10 +14,22 @@ import { useNavigation } from "@react-navigation/native";
 
 interface CollectionProps {
   tabData?: Collection[];
+  tabType?: "edit" | "view";
 }
 
-export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
+export const CollectionsTab: FC<CollectionProps> = ({
+  tabData,
+  tabType = "edit",
+}) => {
   const navigation = useNavigation();
+
+  const goToEdit = (collectionId: string) => {
+    navigation.navigate("EditCollection", { collectionId });
+  };
+
+  const goToView = (collectionId: string) => {
+    navigation.navigate("CollectionDetails", { collectionId });
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -30,7 +42,7 @@ export const CollectionsTab: FC<CollectionProps> = ({ tabData }) => {
           <TouchableOpacity
             className="mx-2 my-5"
             onPress={() =>
-              navigation.navigate("EditCollection", { collectionId: item.id })
+              tabType === "edit" ? goToEdit(item.id) : goToView(item.id)
             }
           >
             <ImageBackground
