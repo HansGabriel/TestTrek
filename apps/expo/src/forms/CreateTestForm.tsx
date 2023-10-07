@@ -12,6 +12,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Feather } from "@expo/vector-icons";
 import { testInputSchema } from "@acme/schema/src/test";
 import AppTextInput from "../components/inputs/AppTextInput";
 import MultipleTextInput from "../components/inputs/MultipleTextInput";
@@ -40,17 +41,21 @@ type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
 
 interface Props {
+  testTitle: string;
   testDetails?: FormProps;
   onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
+  handleExitScreen: () => void;
 }
 
 const CreateTestForm: FC<Props> = ({
+  testTitle,
   testDetails,
   onSubmit,
   isCreatingQuiz = false,
   isUploading = false,
+  handleExitScreen,
 }) => {
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const navigation = useNavigation();
@@ -192,6 +197,19 @@ const CreateTestForm: FC<Props> = ({
 
   return (
     <SafeAreaView>
+      <View className="top-2 mx-5 flex flex-row justify-between pb-5">
+        <View className="flex-row gap-4 self-center">
+          <TouchableOpacity
+            onPress={handleExitScreen}
+            className="flex flex-row items-center self-center"
+          >
+            <Feather name="x" size={24} color="black" />
+          </TouchableOpacity>
+          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+            {testTitle}
+          </Text>
+        </View>
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="mx-6 flex flex-col content-end justify-between"

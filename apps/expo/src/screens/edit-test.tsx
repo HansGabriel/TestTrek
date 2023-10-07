@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import { Feather } from "@expo/vector-icons";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  Alert,
-} from "react-native";
+import { View, SafeAreaView, Alert } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
@@ -174,18 +167,9 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mt-12">
-        <View className="z-50 mx-6 flex flex-row items-center justify-between">
-          <View className="flex flex-row items-center gap-2">
-            <TouchableOpacity onPress={handleExitScreen}>
-              <Feather name="x" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="font-nunito-bold text-2xl">Edit Test</Text>
-          </View>
-          <OptionsDropdown onSave={handleOnSave} onDelete={handleDeleteTest} />
-        </View>
-
+      <View className="mb-20">
         <CreateTestForm
+          testTitle="Edit Test"
           testDetails={{
             description: testDetails.description,
             title: testDetails.title,
@@ -197,6 +181,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           onSubmit={submitTestDetails}
           isCreatingQuiz={isEditingTest}
           isUploading={isUploading}
+          handleExitScreen={handleExitScreen}
         />
       </View>
     </SafeAreaView>

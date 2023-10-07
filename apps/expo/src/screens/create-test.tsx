@@ -1,18 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import { Feather } from "@expo/vector-icons";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  SafeAreaView,
-  Alert,
-} from "react-native";
+import { View, SafeAreaView, Alert } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
-import { ImageDetails } from "@acme/schema/src/types";
-import { FlashList } from "@shopify/flash-list";
 import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
@@ -104,24 +95,13 @@ export const CreateTestScreen: FC = () => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mt-12">
-        <View className="top-2 mx-5 flex flex-row justify-between">
-          <View className="flex-row gap-4 self-center">
-            <TouchableOpacity
-              onPress={handleExitScreen}
-              className="flex flex-row items-center self-center"
-            >
-              <Feather name="x" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-              Create Test
-            </Text>
-          </View>
-        </View>
+      <View className="mb-20">
         <CreateTestForm
+          testTitle="Create Test"
           onSubmit={submitTestDetails}
           isCreatingQuiz={isCreatingQuiz}
           isUploading={isUploading}
+          handleExitScreen={handleExitScreen}
         />
       </View>
     </SafeAreaView>
