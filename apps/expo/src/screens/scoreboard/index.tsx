@@ -16,7 +16,7 @@ import congrats from "../../sounds/congratulations.mp3";
 import type { FC } from "react";
 import { Audio } from "expo-av";
 import { useMusicStore } from "../../stores/useMusicStore";
-import { playEffects, unloadAudio } from "../../services/audioService";
+import { playEffects } from "../../services/audioService";
 import { useIsFocused } from "@react-navigation/native";
 
 export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
@@ -49,7 +49,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
       if (isEffectsPlaying && topTrekersList) {
         playEffects({ sound: congratsInstance, music: congrats });
       }
-    }else{
+    } else {
       setIsScoreboardScreen(false);
     }
   }, [isEffectsPlaying, topTrekersList, isFocused]);

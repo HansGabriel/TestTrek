@@ -13,7 +13,6 @@ import { Audio } from "expo-av";
 import bgMusic from "../sounds/comedy.mp3";
 import { useMusicStore } from "../stores/useMusicStore";
 import { playSound, unloadAudio } from "../services/audioService";
-import { useIsFocused } from "@react-navigation/native";
 
 export const HomeScreen = () => {
   const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
@@ -21,10 +20,6 @@ export const HomeScreen = () => {
   const isScoreboardScreen = useMusicStore((state) => state.isScoreboardScreen);
 
   const generalMusicInstance = new Audio.Sound();
-
-  console.log("isMusicPlaying", isMusicPlaying);
-  console.log("isPlayTest", isPlayTestScreen);
-  console.log("isScoreboard", isScoreboardScreen);
 
   useEffect(() => {
     if (isMusicPlaying) {
