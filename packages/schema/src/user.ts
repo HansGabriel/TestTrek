@@ -18,11 +18,34 @@ export const userSigninSchema = z.object({
 });
 
 export const userStoredSchema = z.object({
-  email: z.string().email({ message: "Not a valid email" }),
-  userName: z.string().min(1, "Username is required"),
-  firstName: z.string().min(1, "First Name is required"),
+  email: z
+    .string({
+      errorMap: () => ({
+        message: "Email is required",
+      }),
+    })
+    .email({ message: "Not a valid email" }),
+  userName: z
+    .string({
+      errorMap: () => ({
+        message: "Username is required",
+      }),
+    })
+    .min(1, "Username is required"),
+  firstName: z.string().min(1, "First Name is required").max(50, {
+    message: "First Name must be at most 50 characters",
+  }),
   imageUrl: z.string().optional(),
-  lastName: z.string().min(1, "Last Name is required"),
+  lastName: z
+    .string({
+      errorMap: () => ({
+        message: "Last Name is required",
+      }),
+    })
+    .min(1, "Last Name is required")
+    .max(50, {
+      message: "Last Name must be at most 50 characters",
+    }),
   about: z
     .string()
     .min(5, {

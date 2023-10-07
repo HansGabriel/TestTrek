@@ -1,9 +1,28 @@
 import { z } from "zod";
 
 export const collectionsSchema = z.object({
-  image: z.string(),
-  title: z.string().min(5).max(50),
-  visibility: z.enum(["public", "private"]),
+  image: z.string({
+    errorMap: () => ({
+      message: "Image is required",
+    }),
+  }),
+  title: z
+    .string({
+      errorMap: () => ({
+        message: "Title is required",
+      }),
+    })
+    .min(5, {
+      message: "Title must be at least 5 characters",
+    })
+    .max(50, {
+      message: "Title must be at most 50 characters",
+    }),
+  visibility: z.enum(["public", "private"], {
+    errorMap: () => ({
+      message: "Visibility is required",
+    }),
+  }),
 });
 
 export const collectionSortSchema = z.object({
