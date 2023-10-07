@@ -75,8 +75,14 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
               />
             </View>
             <View className=" ml-3 w-full justify-around">
-              <View>
-                <Text className=" font-nunito-bold text-lg">{item.title}</Text>
+              <View className="w-[55%]">
+                <Text
+                  className=" font-nunito-bold text-lg"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {item.title}
+                </Text>
               </View>
               <View className="flex-row">
                 <Text className=" mr-2">{dayjs(item.createdAt).fromNow()}</Text>

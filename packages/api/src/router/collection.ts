@@ -366,8 +366,8 @@ export const collectionRouter = router({
     .input(highlightCollectionsInput)
     .query(({ ctx, input }) => {
       return ctx.prisma.collection.findMany({
-        ...(input && input.amountOfColletions
-          ? { take: input.amountOfColletions }
+        ...(input && input.amountOfCollections
+          ? { take: input.amountOfCollections }
           : {}),
         select: {
           id: true,
