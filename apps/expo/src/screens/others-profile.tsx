@@ -145,7 +145,7 @@ export const OthersProfileScreen = ({
           >
             {activeTab === Tabs.TESTS && <LibraryTabs tabData={testData} />}
             {activeTab === Tabs.COLLECTIONS && (
-              <CollectionsTab tabData={collectionData} />
+              <CollectionsTab tabData={collectionData} tabType="view" />
             )}
             {activeTab === Tabs.ABOUT && (
               <AboutUser aboutUser={userData.about} />
