@@ -199,7 +199,7 @@ export const EditPersonalInfoScreen = () => {
                   textInputProps={{
                     onBlur,
                     onChangeText: onChange,
-                    value,
+                    value: value ?? "",
                     editable: edit,
                     style: {
                       color: !edit ? "#6b7280" : "black",
