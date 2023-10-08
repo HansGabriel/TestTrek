@@ -6,10 +6,16 @@ import useGoBack from "../../hooks/useGoBack";
 interface HeaderProps {
   screenName: string;
   optionIcon?: React.ReactNode;
-  onIconPress? : () => void
+  onIconPress?: () => void;
+  backIcon?: React.ReactNode;
 }
 
-export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon, onIconPress }) => {
+export const ReusableHeader: FC<HeaderProps> = ({
+  screenName,
+  optionIcon,
+  onIconPress,
+  backIcon = <LeftArrowIcon />,
+}) => {
   const goBack = useGoBack();
   return (
     <>
@@ -19,7 +25,7 @@ export const ReusableHeader: FC<HeaderProps> = ({ screenName, optionIcon, onIcon
             onPress={goBack}
             className="flex flex-row items-center self-center"
           >
-            <LeftArrowIcon />
+            {backIcon}
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
             {screenName}

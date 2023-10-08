@@ -8,6 +8,7 @@ import { trpc } from "../../utils/trpc";
 import useToast from "../../hooks/useToast";
 
 import type { FC } from "react";
+import { ReusableHeader } from "./ReusableHeader";
 
 interface Props {
   testId: string;
@@ -42,7 +43,11 @@ const TestDetailsHeader: FC<Props> = ({
   });
 
   if (isFavorite === undefined) {
-    return <></>;
+    return (
+      <>
+        <ReusableHeader screenName={""} optionIcon={<StarIcon />} />
+      </>
+    );
   }
 
   const handleToggleFavorite = () => {

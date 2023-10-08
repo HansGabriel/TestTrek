@@ -5,6 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { trpc } from "../../utils/trpc";
 import { ReviewerTabs } from "./ReviewerTab";
 import { AddButton } from "../buttons/AddButton";
+import { SkeletonLoader } from "../loaders/SkeletonLoader";
+import { ReusablePlaceholder } from "../../placeholders/ReusablePlaceholder";
+import { Ionicons } from "@expo/vector-icons";
 
 interface HeaderProps {
   tab: "user" | "other";
@@ -72,6 +75,80 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
 
     setSortType(nextSortType);
   };
+
+  if (!reviewerData) {
+    return (
+      <>
+        <SafeAreaView className="flex-1">
+          <View className="mb-4 w-full flex-row items-end justify-between">
+            <View className="mx-4">
+              <Text className=" font-nunito-bold text-xl">Reviewers</Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                className="mx-2.5 flex-row gap-2"
+                onPress={sortItems}
+              >
+                <Text className=" font-nunito-bold text-xl capitalize text-violet-600">
+                  {sortType}
+                </Text>
+                {sortObject.map((item, index) => {
+                  if (sortType === item.sortName) {
+                    return <View key={index}>{item.icon}</View>;
+                  }
+                })}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
+            <View className="my-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="my-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
+
+  if (reviewerData.length <= 0) {
+    return (
+      <>
+        <SafeAreaView className="flex-1">
+          <View className="mb-4 w-full flex-row items-end justify-between">
+            <View className="mx-4">
+              <Text className=" font-nunito-bold text-xl">
+                {reviewerData.length} Reviewers
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                className="mx-2.5 flex-row gap-2"
+                onPress={sortItems}
+              >
+                <Text className=" font-nunito-bold text-xl capitalize text-violet-600">
+                  {sortType}
+                </Text>
+                {sortObject.map((item, index) => {
+                  if (sortType === item.sortName) {
+                    return <View key={index}>{item.icon}</View>;
+                  }
+                })}
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View>
+            <ReusablePlaceholder
+              icon={<Ionicons name="newspaper" size={40} color="#7c3aed" />}
+              text={`No reviewers shown`}
+            />
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">

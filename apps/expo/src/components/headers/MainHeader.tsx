@@ -26,7 +26,7 @@ const MainHeader: FC = ({}) => {
   return (
     <View className="z-50">
       {isPressed ? (
-        <View className="sticky z-50 mt-5 flex-row justify-between self-center bg-white">
+        <View className="sticky z-50 mt-5 flex-row justify-between self-center bg-white mb-3">
           <SearchField
             searchString={query}
             onChange={updateQuery}
@@ -37,7 +37,7 @@ const MainHeader: FC = ({}) => {
         </View>
       ) : (
         <Animated.View
-          className="sticky top-0 z-50 mx-6 mt-5 flex-row justify-between bg-white pb-2 pt-1"
+          className="sticky top-0 z-50 mx-6 mt-5 mb-5 flex-row justify-between bg-white pt-1"
           entering={SlideInLeft}
           exiting={SlideOutLeft}
         >

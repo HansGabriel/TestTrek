@@ -5,6 +5,8 @@ import { trpc } from "../utils/trpc";
 import ViewAllScreenHeader from "../components/headers/ViewAllScreenHeader";
 import { CollectionTestHeaderAndContent } from "../components/collection-details/CollectionTestHeaderAndContent";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
+import { ReusableHeader } from "../components/headers/ReusableHeader";
+import SearchIcon from "../icons/SearchIcon";
 
 export const CollectionDetailsScreen = ({
   navigation,
@@ -23,16 +25,23 @@ export const CollectionDetailsScreen = ({
 
   if (!collectionDetails) {
     return (
-      <SafeAreaView className="mt-28 flex-1">
-        <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
-          <View className=" h-[50%] w-[100%] items-center justify-center">
-            <SkeletonLoader isCircular={true} width={"100%"} height={"100%"} />
+      <>
+        <ReusableHeader screenName={""} optionIcon={<SearchIcon />} />
+        <SafeAreaView className="flex-1">
+          <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
+            <View className=" h-[50%] w-[100%] items-center justify-center">
+              <SkeletonLoader
+                isCircular={true}
+                width={"100%"}
+                height={"100%"}
+              />
+            </View>
+            <View className="h-[25%] w-[100%] items-center justify-evenly">
+              <SkeletonLoader isCircular={true} width={"100%"} height={25} />
+            </View>
           </View>
-          <View className="h-[25%] w-[100%] items-center justify-evenly">
-            <SkeletonLoader isCircular={false} width={"100%"} height={25} />
-          </View>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </>
     );
   }
 

@@ -229,8 +229,8 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
               />
             </View>
             <View className="h-[25%] w-[100%] items-center justify-evenly">
-              <SkeletonLoader isCircular={false} width={"100%"} height={25} />
-              <SkeletonLoader isCircular={false} width={"100%"} height={25} />
+              <SkeletonLoader isCircular={true} width={"100%"} height={25} />
+              <SkeletonLoader isCircular={true} width={"100%"} height={25} />
             </View>
           </View>
         </SafeAreaView>
