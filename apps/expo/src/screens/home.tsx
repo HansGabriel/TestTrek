@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
@@ -9,8 +9,30 @@ import Footer from "../components/Footer";
 import TopCollectionsHomeSection from "../components/top-collections/TopCollectionsHomeSection";
 import TrendingTestsHomeSection from "../components/trending-tests/TrendingTestsHomeSection";
 import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSection";
+import { Audio } from "expo-av";
+import bgMusic from "../sounds/comedy.mp3";
+import { useMusicStore } from "../stores/useMusicStore";
+import { playSound, unloadAudio } from "../services/audioService";
 
 export const HomeScreen = () => {
+  const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
+  const isPlayTestScreen = useMusicStore((state) => state.isPlayTestScreen);
+  const isScoreboardScreen = useMusicStore((state) => state.isScoreboardScreen);
+
+  const generalMusicInstance = new Audio.Sound();
+
+  useEffect(() => {
+    if (isMusicPlaying) {
+      if (!isPlayTestScreen && !isScoreboardScreen) {
+        playSound({ music: bgMusic, sound: generalMusicInstance });
+      }
+    }
+
+    return () => {
+      unloadAudio({ sound: generalMusicInstance });
+    };
+  }, [isMusicPlaying, isPlayTestScreen, isScoreboardScreen]);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <MainHeader />

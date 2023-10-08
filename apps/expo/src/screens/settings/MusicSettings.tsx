@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView, View, Text } from "react-native";
 import { Switch } from "@rneui/themed";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import { useMusicStore } from "../../stores/useMusicStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const MusicAndEffectsScreen = () => {
   const {
@@ -11,6 +12,36 @@ export const MusicAndEffectsScreen = () => {
     toggleEffectsPlay,
     toggleMusicPlay,
   } = useMusicStore();
+
+  useEffect(() => {
+    AsyncStorage.setItem("isMusicPlaying", JSON.stringify(isMusicPlaying));
+  }, [isMusicPlaying]);
+
+  useEffect(() => {
+    AsyncStorage.setItem("isEffectsPlaying", JSON.stringify(isEffectsPlaying));
+  }, [isEffectsPlaying]);
+
+  useEffect(() => {
+    const retrieveState = async () => {
+      const savedMusicState = await AsyncStorage.getItem("isMusicPlaying");
+      if (savedMusicState !== null) {
+        useMusicStore.setState({ isMusicPlaying: JSON.parse(savedMusicState) });
+      }
+    };
+    retrieveState();
+  }, []);
+
+  useEffect(() => {
+    const retrieveState = async () => {
+      const savedEffectsState = await AsyncStorage.getItem("isEffectsPlaying");
+      if (savedEffectsState !== null) {
+        useMusicStore.setState({
+          isEffectsPlaying: JSON.parse(savedEffectsState),
+        });
+      }
+    };
+    retrieveState();
+  }, []);
 
   return (
     <SafeAreaView className="flex-1">

@@ -18,7 +18,7 @@ import { RouterOutputs } from "../../utils/trpc";
 import CountdownTimer, { type CountdownTimerRef } from "./CountdownTimer";
 import UpperBar, { type UpperBarRef } from "./UpperBar";
 import { match } from "ts-pattern";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import PlayDropdown from "./PlayDropdown";
 import useGoBack from "../../hooks/useGoBack";
 import {
@@ -30,6 +30,17 @@ import {
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
 import type { ChoiceStyle } from "../create-question/types";
+
+import correctSound from "../../sounds/correct.mp3";
+import wrongSound from "../../sounds/wrong.mp3";
+import gameMusic from "../../sounds/8bitMusic.mp3";
+import { Audio } from "expo-av";
+import { useMusicStore } from "../../stores/useMusicStore";
+import {
+  playEffects,
+  playSound,
+  unloadAudio,
+} from "../../services/audioService";
 
 const choiceStyles: ChoiceStyle[] = [
   {
@@ -78,11 +89,21 @@ type ModifiedChoice = ModifiedChoices[number];
 export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   route,
 }) => {
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const goBack = useGoBack();
   const { playId, testId } = route.params;
   const upperBarRef = useRef<UpperBarRef>(null);
   const countdownTimerRef = useRef<CountdownTimerRef>(null);
+  const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
+  const isEffectsPlaying = useMusicStore((state) => state.isEffectsPlaying);
+  const setIsPlayTestScreen = useMusicStore(
+    (state) => state.setIsPlayTestScreen,
+  );
+
+  const correctSoundInstance = new Audio.Sound();
+  const wrongSoundInstance = new Audio.Sound();
+  const gameMusicInstance = new Audio.Sound();
 
   const [errorMessage, setErrorMessage] = useState<ErrorMessage>(
     DEFAULT_ERROR_MESSAGE,
@@ -111,6 +132,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     : [];
 
   const [choices, setChoices] = useState<ModifiedChoices>(questionChoices);
+
+  useEffect(() => {
+    if (isFocused) {
+      setIsPlayTestScreen(true);
+      if (isMusicPlaying && testDetails) {
+        playSound({ sound: gameMusicInstance, music: gameMusic });
+      }
+    } else {
+      setIsPlayTestScreen(false);
+    }
+
+    return () => {
+      unloadAudio({ sound: gameMusicInstance });
+    };
+  }, [isMusicPlaying, testDetails, isFocused]);
 
   useEffect(() => {
     const questions = testDetails?.test.questions;
@@ -183,8 +219,17 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 setPoints((prevPoints) => prevPoints + question.points);
                 setTime((prevTime) => prevTime + elapsedTime);
                 setModalType("correct");
+                if (isEffectsPlaying) {
+                  playEffects({
+                    sound: correctSoundInstance,
+                    music: correctSound,
+                  });
+                }
               } else {
                 setModalType("incorrect");
+                if (isEffectsPlaying) {
+                  playEffects({ sound: wrongSoundInstance, music: wrongSound });
+                }
                 const errorResult = getErrorMessage("incorrect");
                 setErrorMessage(errorResult);
               }
@@ -265,13 +310,22 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           setPoints((prevPoints) => prevPoints + question.points);
           setTime((prevTime) => prevTime + elapsedTime);
           setModalType("correct");
+          if (isEffectsPlaying) {
+            playEffects({ sound: correctSoundInstance, music: correctSound });
+          }
         } else {
           setModalType("incorrect");
+          if (isEffectsPlaying) {
+            playEffects({ sound: wrongSoundInstance, music: wrongSound });
+          }
           const errorResult = getErrorMessage("times-up");
           setErrorMessage(errorResult);
         }
       } else {
         setModalType("incorrect");
+        if (isEffectsPlaying) {
+          playEffects({ sound: wrongSoundInstance, music: wrongSound });
+        }
         const errorResult = getErrorMessage("times-up");
         setErrorMessage(errorResult);
       }
@@ -282,6 +336,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   };
 
   const handleExit = () => {
+    setIsPlayTestScreen(false);
     goBack();
   };
 
@@ -363,16 +418,24 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         </ScrollView>
       </SafeAreaView>
       {match(modalType)
-        .with("correct", () => (
-          <UpperBar
-            type="correct"
-            value={question?.points ?? 0}
-            ref={upperBarRef}
-          />
-        ))
-        .with("incorrect", () => (
-          <UpperBar type="incorrect" message={errorMessage} ref={upperBarRef} />
-        ))
+        .with("correct", () => {
+          return (
+            <UpperBar
+              type="correct"
+              value={question?.points ?? 0}
+              ref={upperBarRef}
+            />
+          );
+        })
+        .with("incorrect", () => {
+          return (
+            <UpperBar
+              type="incorrect"
+              message={errorMessage}
+              ref={upperBarRef}
+            />
+          );
+        })
         .exhaustive()}
       <StatusBar
         barStyle={
