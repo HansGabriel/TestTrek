@@ -2,7 +2,9 @@ import {
   reviewerFiltersSchema,
   reviewerSchema,
 } from "@acme/schema/src/reviewer";
+import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 export const reviewerRouter = router({
   getAllReviewers: protectedProcedure
@@ -56,6 +58,49 @@ export const reviewerRouter = router({
       });
     }),
 
+  getReviewerById: protectedProcedure
+    .input(
+      z.object({
+        reviewerId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { reviewerId } = input;
+
+      const userId = ctx.auth.userId;
+
+      const reviewer = await ctx.prisma.reviewer.findUnique({
+        where: { id: reviewerId },
+        select: {
+          id: true,
+          userId: true,
+          content: true,
+          title: true,
+          imageUrl: true,
+          visibility: true,
+          user: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!reviewer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Reviewer not found.",
+        });
+      }
+
+      if (reviewer.userId !== userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to view this reviewer.",
+        });
+      }
+
+      return reviewer;
+    }),
+
   createReviewer: protectedProcedure
     .input(reviewerSchema)
     .mutation(({ ctx, input }) => {
@@ -70,6 +115,43 @@ export const reviewerRouter = router({
           content,
           visibility,
           userId,
+        },
+      });
+    }),
+
+  updateReviewer: protectedProcedure
+    .input(reviewerSchema)
+    .input(z.object({ reviewerId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { reviewerId, title, imageUrl, content, visibility } = input;
+
+      const userId = ctx.auth.userId;
+
+      const reviewer = await ctx.prisma.reviewer.findUnique({
+        where: { id: reviewerId },
+      });
+
+      if (!reviewer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Reviewer not found.",
+        });
+      }
+
+      if (reviewer.userId !== userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to edit this reviewer.",
+        });
+      }
+
+      return ctx.prisma.reviewer.update({
+        where: { id: reviewerId },
+        data: {
+          title,
+          imageUrl,
+          content,
+          visibility,
         },
       });
     }),

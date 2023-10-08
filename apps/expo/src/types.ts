@@ -80,7 +80,12 @@ export type RootStackParamList = {
   };
   MusicAndEffects: undefined;
   AboutTestTrek: undefined;
-  CreateReviewer: undefined;
+  CreateReviewer:
+    | {
+        reviewerId?: string;
+        type?: "create" | "edit";
+      }
+    | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
