@@ -254,7 +254,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       <TouchableOpacity
         key={choice.id}
         disabled={isDone}
-        className={`basis-[48%] flex-col items-center justify-center rounded-2xl border-b-2 ${
+        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
           isDone ? doneStyle : choice.styles
         } p-5`}
         onPress={handlePressChoice(choice.id)}
@@ -264,9 +264,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             {choice.isCorrect ? <CheckboxIcon /> : <CloseSquareIcon />}
           </View>
         ) : null}
-        <Text className="my-5 self-stretch text-center text-lg font-bold leading-[28.80px] text-white">
-          {choice.text}
-        </Text>
+        <View className="h-full w-full items-center justify-center">
+          <Text className="self-center text-center text-lg font-bold text-white">
+            {choice.text}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -351,7 +353,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   return (
     <>
       <SafeAreaView className="flex-1">
-        <View className="z-10 mx-6 my-5 flex flex-row items-center justify-between">
+        <View className="z-10 mx-6 mt-10 flex flex-row items-center justify-between">
           <Text className="font-nunito-bold text-2xl">
             {index + 1}/{totalQuestions}
           </Text>
@@ -389,13 +391,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             </View>
 
             <View className="mt-5 flex flex-row items-center justify-between">
-              {choices[0] ? renderChoice(choices[0]) : <></>}
-              {choices[1] ? renderChoice(choices[1]) : <></>}
-            </View>
-
-            <View className="mt-5 flex flex-row items-center justify-between">
-              {choices[2] ? renderChoice(choices[2]) : <></>}
-              {choices[3] ? renderChoice(choices[3]) : <></>}
+              <View className="space-y-4">
+                <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
+                <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
+              </View>
+              <View className="space-y-4">
+                <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
+                <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
+              </View>
             </View>
 
             {isDone && (
