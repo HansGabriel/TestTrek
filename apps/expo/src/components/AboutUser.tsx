@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text } from "react-native";
 
 import type { FC } from "react";
+import { ReusablePlaceholder } from "../placeholders/ReusablePlaceholder";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface AboutUserProps {
   aboutUser: string | null;
@@ -10,8 +12,12 @@ interface AboutUserProps {
 export const AboutUser: FC<AboutUserProps> = ({ aboutUser }) => {
   if (!aboutUser) {
     return (
-      <View className="h-full w-full items-center justify-center self-center">
-        <Text>Empty Section</Text>
+      <View>
+        <ReusablePlaceholder
+          icon={<FontAwesome name="info-circle" size={40} color="#7c3aed" />}
+          text={`Tell us about yourself`}
+          marginY={5}
+        />
       </View>
     );
   }

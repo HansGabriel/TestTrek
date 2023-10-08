@@ -17,6 +17,7 @@ import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
 import { Visibility } from "../../../../../../packages/db";
+import { SkeletonLoader } from "../../loaders/SkeletonLoader";
 
 type Props =
   | {
@@ -93,6 +94,30 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
       testId,
     });
   };
+
+  if (!fetchedTestData) {
+    return (
+      <>
+        <SafeAreaView className="flex-1">
+          <ViewAllScreenHeader title={headerTitle} />
+          <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 flex-col">

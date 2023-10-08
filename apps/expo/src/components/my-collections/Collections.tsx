@@ -11,6 +11,8 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import { Collection } from "@prisma/client";
 import { useNavigation } from "@react-navigation/native";
+import { ReusablePlaceholder } from "../../placeholders/ReusablePlaceholder";
+import { Ionicons } from "@expo/vector-icons";
 
 interface CollectionProps {
   tabData?: Collection[];
@@ -30,6 +32,18 @@ export const CollectionsTab: FC<CollectionProps> = ({
   const goToView = (collectionId: string) => {
     navigation.navigate("CollectionDetails", { collectionId });
   };
+
+  if (tabData && tabData.length <= 0) {
+    return (
+      <View>
+        <ReusablePlaceholder
+          icon={<Ionicons name="newspaper" size={40} color="#7c3aed" />}
+          text={`No collections shown`}
+          marginY={5}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">

@@ -22,6 +22,8 @@ import {
 } from "@prisma/client";
 import { Avatar } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { ReusablePlaceholder } from "../../placeholders/ReusablePlaceholder";
+import { Ionicons } from "@expo/vector-icons";
 
 interface CollectionOnTest extends TestOnCollection {
   collection: Collection;
@@ -51,6 +53,18 @@ interface ContentProps {
 
 export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
   const navigation = useNavigation();
+
+  if (tabData && tabData.length <= 0) {
+    return (
+      <View>
+        <ReusablePlaceholder
+          icon={<Ionicons name="newspaper" size={40} color="#7c3aed" />}
+          text={`No tests shown`}
+          marginY={5}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">

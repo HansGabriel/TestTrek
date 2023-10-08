@@ -64,10 +64,10 @@ export const EditPersonalInfoScreen = () => {
             <SkeletonLoader isCircular={true} width={100} height={100} />
           </View>
           <View className="h-[50%] w-[100%] items-center justify-evenly">
-            <SkeletonLoader isCircular={false} width={"100%"} height={20} />
-            <SkeletonLoader isCircular={false} width={"100%"} height={20} />
-            <SkeletonLoader isCircular={false} width={"100%"} height={20} />
-            <SkeletonLoader isCircular={false} width={"100%"} height={20} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
           </View>
         </View>
       </SafeAreaView>

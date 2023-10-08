@@ -23,10 +23,10 @@ const TopCollectionsHomeSection: FC = () => {
       <SafeAreaView className="flex-1">
         <View className="h-[90%] w-[90%] items-center space-y-10 self-center py-4">
           <View className="h-[25%] w-[100%] items-center justify-evenly">
-            <SkeletonLoader isCircular={false} width={"100%"} height={25} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={25} />
           </View>
           <View className="h-[1%] w-[100%] items-center justify-evenly">
-            <SkeletonLoader isCircular={false} width={"100%"} height={50} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={50} />
           </View>
         </View>
       </SafeAreaView>

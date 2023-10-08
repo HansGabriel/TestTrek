@@ -1,10 +1,11 @@
 import React, { FC } from "react";
-import { SafeAreaView, TouchableOpacity } from "react-native";
+import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import CollectionsCard from "./CollectionsCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
 import { trpc } from "../../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
+import { SkeletonLoader } from "../../loaders/SkeletonLoader";
 
 interface Props {
   collectionsFor: "topCollections";
@@ -28,6 +29,30 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
 
     return format;
   };
+
+  if (!topCollections) {
+    return (
+      <>
+        <SafeAreaView className="flex-1">
+          <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
+          <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+            <View className="mt-7">
+              <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

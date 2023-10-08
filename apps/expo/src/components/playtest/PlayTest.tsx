@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const PlayTest: FC = () => {
   return (
-    <SafeAreaView className="mb-3 items-center">
+    <SafeAreaView className="mb-3 -mt-6 items-center">
       <PlayTestBackground width={"90%"} />
     </SafeAreaView>
   );
