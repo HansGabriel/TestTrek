@@ -27,24 +27,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewerSchema } from "@acme/schema/src/reviewer";
 import useImageStore from "../stores/useImageStore";
 import AppPicker, { LabelOption } from "../components/pickers/AppPicker";
-import { useNavigation } from "@react-navigation/native";
 import useToast from "../hooks/useToast";
 import { trpc } from "../utils/trpc";
+import { match } from "ts-pattern";
 
-export const CreateReviewerScreen = () => {
+import type { RootStackScreenProps } from "../types";
+
+export const CreateReviewerScreen = ({
+  navigation,
+  route,
+}: RootStackScreenProps<"CreateReviewer">) => {
+  const { reviewerId, type } = route.params ?? {
+    reviewerId: undefined,
+    type: "create",
+  };
+
   const { showToast } = useToast();
-  const navigation = useNavigation();
   const richText = useRef<RichEditor | null>(null);
   const [isToggled, setIsToggled] = useState(false);
 
   const reviewerImage = useImageStore((state) => state.reviewerImage);
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
 
+  const { data: reviewerDetails } = trpc.reviewer.getReviewerById.useQuery(
+    {
+      reviewerId: reviewerId ?? "",
+    },
+    {
+      enabled: reviewerId !== undefined,
+    },
+  );
+
   const {
     mutate: createReviewer,
     isLoading: isCreatingReviewer,
     reset,
   } = trpc.reviewer.createReviewer.useMutation();
+
+  const { mutate: updateReviewer, isLoading: isUpdatingReviewer } =
+    trpc.reviewer.updateReviewer.useMutation();
 
   const toggleHighlighter = () => {
     setIsToggled(!isToggled);
@@ -79,10 +100,10 @@ export const CreateReviewerScreen = () => {
   } = useForm<Reviewers>({
     resolver: zodResolver(reviewerSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      visibility: undefined,
-      imageUrl: getDisplayImage(),
+      title: reviewerDetails?.title ?? "",
+      content: reviewerDetails?.content ?? "",
+      visibility: reviewerDetails?.visibility ?? ("" as "public" | "private"),
+      imageUrl: reviewerDetails?.imageUrl ?? getDisplayImage(),
     },
   });
 
@@ -106,34 +127,77 @@ export const CreateReviewerScreen = () => {
 
   const submitReviewerData = (createdData: Reviewers) => {
     const formatContent = removeTags(createdData.content);
-    createReviewer(
-      {
-        title: createdData.title,
-        imageUrl: createdData.imageUrl,
-        visibility: createdData.visibility,
-        content: formatContent,
-      },
-      {
-        onSuccess: () => {
-          showToast("Reviewer added successfully");
-          resetReviewerImage();
-          reset();
-          navigation.navigate("MyLibrary");
+
+    if (type === "edit") {
+      updateReviewer(
+        {
+          reviewerId: reviewerId ?? "",
+          title: createdData.title,
+          imageUrl: createdData.imageUrl,
+          visibility: createdData.visibility,
+          content: formatContent,
         },
-        onError: () => {
-          showToast(`An error occurred`);
-          resetReviewerImage();
+        {
+          onSuccess: () => {
+            showToast("Reviewer updated successfully");
+            resetReviewerImage();
+            reset();
+            navigation.navigate("MyLibrary");
+          },
+          onError: () => {
+            showToast(`An error occurred`);
+            resetReviewerImage();
+          },
         },
-      },
-    );
+      );
+      return;
+    }
+
+    if (type === "create") {
+      createReviewer(
+        {
+          title: createdData.title,
+          imageUrl: createdData.imageUrl,
+          visibility: createdData.visibility,
+          content: formatContent,
+        },
+        {
+          onSuccess: () => {
+            showToast("Reviewer added successfully");
+            resetReviewerImage();
+            reset();
+            navigation.navigate("MyLibrary");
+          },
+          onError: () => {
+            showToast(`An error occurred`);
+            resetReviewerImage();
+          },
+        },
+      );
+      return;
+    }
   };
+
+  useEffect(() => {
+    if (reviewerDetails) {
+      setValue("title", reviewerDetails.title);
+      setValue("content", reviewerDetails.content);
+      setValue("visibility", reviewerDetails.visibility);
+      setValue("imageUrl", reviewerDetails.imageUrl);
+      richText.current?.setContentHTML(reviewerDetails.content);
+    }
+  }, [reviewerDetails]);
 
   return (
     <SafeAreaView className="flex-1">
       <ReusableHeader
-        screenName={"Create Reviewer"}
+        screenName={match(type)
+          .with("create", () => "Create Reviewer")
+          .with("edit", () => "Edit Reviewer")
+          .with(undefined, () => "Create Reviewer")
+          .exhaustive()}
         optionIcon={
-          isCreatingReviewer ? (
+          isCreatingReviewer || isUpdatingReviewer ? (
             <ActivityIndicator color="rgb(79 70 229)" />
           ) : (
             <Entypo

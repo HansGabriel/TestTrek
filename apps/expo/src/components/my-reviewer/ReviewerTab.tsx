@@ -14,6 +14,7 @@ import {
 import { FlashList } from "@shopify/flash-list";
 import { User, Visibility } from "@prisma/client";
 import { Avatar } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
 
 interface ObjectProps {
   id: string;
@@ -32,6 +33,15 @@ interface ContentProps {
 }
 
 export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
+  const navigation = useNavigation();
+
+  const goToCreateReviewer = (reviewerId: string) => () => {
+    navigation.navigate("CreateReviewer", {
+      reviewerId,
+      type: "edit",
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1">
       <FlashList
@@ -39,7 +49,10 @@ export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
         data={tabData}
         estimatedItemSize={5}
         renderItem={({ item }) => (
-          <TouchableOpacity className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100">
+          <TouchableOpacity
+            className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100"
+            onPress={goToCreateReviewer(item.id)}
+          >
             <View className=" w-32 items-center justify-center bg-violet-600">
               <Image
                 className="h-full w-full"
