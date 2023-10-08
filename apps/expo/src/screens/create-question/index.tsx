@@ -317,7 +317,7 @@ export const CreateQuestionScreen: FC = () => {
     return (
       <TouchableOpacity
         key={choice.id}
-        className={`h-40 w-40 flex-col items-center justify-center rounded-2xl ${
+        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
           errorState.choicesError[choice.id]?.length !== undefined
@@ -331,13 +331,15 @@ export const CreateQuestionScreen: FC = () => {
             <CheckboxIcon />
           </View>
         )}
-        <Text
-          className={`self-stretch text-center ${getTextSize(
-            choice.text ? choice.text : "Add answer",
-          )} font-bold leading-[28.80px] text-white`}
-        >
-          {choice.text ? choice.text : "Add answer"}
-        </Text>
+        <View className="h-full w-full items-center justify-center">
+          <Text
+            className={`self-center text-center ${getTextSize(
+              choice.text ? choice.text : "Add answer",
+            )} font-bold text-white`}
+          >
+            {choice.text ? choice.text : "Add answer"}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -494,13 +496,14 @@ export const CreateQuestionScreen: FC = () => {
         </View>
 
         <View className="mt-5 flex flex-row items-center justify-between">
-          {renderChoice(choices[0]!)}
-          {renderChoice(choices[1]!)}
-        </View>
-
-        <View className="mt-5 flex flex-row items-center justify-between">
-          {renderChoice(choices[2]!)}
-          {renderChoice(choices[3]!)}
+          <View className="space-y-4">
+            <View>{renderChoice(choices[0]!)}</View>
+            <View>{renderChoice(choices[1]!)}</View>
+          </View>
+          <View className="space-y-4">
+            <View>{renderChoice(choices[2]!)}</View>
+            <View>{renderChoice(choices[3]!)}</View>
+          </View>
         </View>
 
         <TouchableOpacity
@@ -550,7 +553,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                   ) : null}
 
-                  <View className="flex flex-row items-center justify-center px-5 py-8">
+                  <View className="flex flex-row items-center justify-center px-5 py-8 rounded-b-2xl bg-white">
                     <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
                       Correct Answer
                     </Text>
