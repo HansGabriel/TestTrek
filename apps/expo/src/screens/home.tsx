@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ScrollView, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
 import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
@@ -13,13 +13,24 @@ import { Audio } from "expo-av";
 import bgMusic from "../sounds/comedy.mp3";
 import { useMusicStore } from "../stores/useMusicStore";
 import { playSound, unloadAudio } from "../services/audioService";
+import { trpc } from "../utils/trpc";
 
 export const HomeScreen = () => {
+  const trpcUtils = trpc.useContext();
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
   const isPlayTestScreen = useMusicStore((state) => state.isPlayTestScreen);
   const isScoreboardScreen = useMusicStore((state) => state.isScoreboardScreen);
 
   const generalMusicInstance = new Audio.Sound();
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    trpcUtils.test.invalidate();
+    trpcUtils.collection.invalidate();
+    trpcUtils.user.invalidate();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (isMusicPlaying) {
@@ -36,7 +47,11 @@ export const HomeScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <MainHeader />
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <PlayTest />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
