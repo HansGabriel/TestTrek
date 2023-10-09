@@ -553,7 +553,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                   ) : null}
 
-                  <View className="flex flex-row items-center justify-center px-5 py-8 rounded-b-2xl bg-white">
+                  <View className="flex flex-row items-center justify-center rounded-b-2xl bg-white px-5 py-8">
                     <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
                       Correct Answer
                     </Text>
@@ -589,8 +589,13 @@ export const CreateQuestionScreen: FC = () => {
           >
             <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
               <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                <View className="h-1/2 w-11/12 rounded-2xl bg-white">
-                  <View className="mt-auto flex flex-row items-center justify-center px-5 py-8">
+                <View className="h-[25%] w-11/12 rounded-2xl bg-white">
+                  <View className="h-[50%] justify-center self-center">
+                    <Text className="font-nunito-bold text-xl">
+                      What is your question?
+                    </Text>
+                  </View>
+                  <View className="flex flex-row items-center justify-center px-5">
                     <TextInput
                       className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
                       placeholder="Ask AI a question"
