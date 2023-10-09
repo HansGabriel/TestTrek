@@ -10,7 +10,7 @@ import * as React from "react";
 
 import { SigninScreen } from "../screens/signin";
 import { HomeScreen } from "../screens/home";
-import { WaltkthroughScreen } from "../screens/walkthrough";
+import { WalkthroughScreen } from "../screens/walkthrough";
 import { CreateAccountScreen } from "../screens/create-account";
 import { SignupScreen } from "../screens/signup";
 import { RootStackParamList } from "../types";
@@ -253,7 +253,7 @@ const RootNavigator = () => {
             />
             <Stack.Screen
               name="Walkthrough"
-              component={WaltkthroughScreen}
+              component={WalkthroughScreen}
               options={{
                 headerShown: false,
               }}

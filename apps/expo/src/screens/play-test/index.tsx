@@ -118,13 +118,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [isTimerReady, setIsTimerReady] = useState(false);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
-  const { mutate: finishTest } = trpc.play.finishTest.useMutation({
-    onSuccess: () => {
-      navigation.navigate("Scoreboard", {
-        testId: testId,
-      });
-    },
-  });
+  const { mutate: finishTest, isLoading: isFinished } =
+    trpc.play.finishTest.useMutation({
+      onSuccess: () => {
+        navigation.navigate("Scoreboard", {
+          testId: testId,
+        });
+      },
+    });
 
   const singleQuestion = testDetails?.test.questions[index];
   const questionChoices = singleQuestion
@@ -414,6 +415,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                   textColor="white"
                   TOwidth="full"
                   Vwidth="full"
+                  isLoading={isFinished}
                 />
               </>
             )}

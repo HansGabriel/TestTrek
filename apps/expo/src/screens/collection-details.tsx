@@ -7,11 +7,13 @@ import { CollectionTestHeaderAndContent } from "../components/collection-details
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
 import SearchIcon from "../icons/SearchIcon";
+import useGoBack from "../hooks/useGoBack";
 
 export const CollectionDetailsScreen = ({
   navigation,
   route,
 }: RootStackScreenProps<"CollectionDetails">) => {
+  const goBack = useGoBack()
   const { collectionId } = route.params;
 
   const { data: collectionDetails } =
@@ -26,7 +28,7 @@ export const CollectionDetailsScreen = ({
   if (!collectionDetails) {
     return (
       <>
-        <ReusableHeader screenName={""} optionIcon={<SearchIcon />} />
+        <ReusableHeader screenName={""} optionIcon={<SearchIcon />} handleExit={goBack} />
         <SafeAreaView className="flex-1">
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">

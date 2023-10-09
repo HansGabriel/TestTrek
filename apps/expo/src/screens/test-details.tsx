@@ -8,11 +8,13 @@ import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
 import StarIcon from "../icons/StarIcon";
+import useGoBack from "../hooks/useGoBack";
 
 export const TestDetailsScreen = ({
   route,
 }: RootStackScreenProps<"TestDetails">) => {
   const navigation = useNavigation();
+  const goBack = useGoBack();
   const { testId } = route.params;
 
   const { data: testDetails } = trpc.test.getById.useQuery({ testId });
@@ -27,7 +29,11 @@ export const TestDetailsScreen = ({
   if (!testDetails || !testStatistics) {
     return (
       <>
-        <ReusableHeader screenName={""} optionIcon={<StarIcon />} />
+        <ReusableHeader
+          screenName={""}
+          optionIcon={<StarIcon />}
+          handleExit={goBack}
+        />
         <SafeAreaView className="flex-1">
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">

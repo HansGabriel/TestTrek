@@ -4,8 +4,10 @@ import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import SettingsIcon from "../../icons/SettingsIcon";
 
 import type { FC } from "react";
+import useGoBack from "../../hooks/useGoBack";
 
 const ProfileHeader: FC = ({}) => {
+  const goBack = useGoBack()
   const navigation = useNavigation();
   return (
     <>
@@ -13,7 +15,7 @@ const ProfileHeader: FC = ({}) => {
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
             className="flex flex-row items-center self-center"
-            onPress={() => navigation.navigate("Home")}
+            onPress={goBack}
           >
             <LeftArrowIcon />
           </TouchableOpacity>
