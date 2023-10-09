@@ -38,7 +38,7 @@ interface Props {
 
 const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const navigation = useNavigation();
-  const goBack = useGoBack()
+  const goBack = useGoBack();
 
   const { data: testStatistics } = trpc.test.getDetails.useQuery({
     testId: testDetails?.id ?? "",
@@ -57,7 +57,11 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   if (!testDetails || !testStatistics) {
     return (
       <>
-        <ReusableHeader screenName={""} optionIcon={<StarIcon />} handleExit={goBack} />
+        <ReusableHeader
+          screenName={""}
+          optionIcon={<StarIcon />}
+          handleExit={goBack}
+        />
         <SafeAreaView className="flex-1">
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">
@@ -263,8 +267,8 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
                       className="my-2 flex h-[105px] items-center justify-start"
                       key={index}
                     >
-                      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
-                        <View className="relative w-[140px] self-stretch">
+                      <View className="flex w-[100%] shrink grow basis-0 items-center rounded-xl border border-zinc-200 bg-white">
+                        <View className=" w-[100%]">
                           <ImageBackground
                             source={{
                               uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
@@ -276,19 +280,29 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
                             className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
                           />
                         </View>
-                        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                          {index + 1} -{" "}
-                          {match(question.type)
-                            .with("multiple_choice", () => "Multiple Choice")
-                            .with("true_or_false", () => "True or False")
-                            .with("multi_select", () => "Multi Select")
-                            .with("identification", () => "Identification")
-                            .with("enumeration", () => "Enumeration")
-                            .exhaustive()}
-                        </Text>
-                        <Text className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700">
-                          {question.title}
-                        </Text>
+                        <View className=" h-full w-[55%] self-end">
+                          <Text
+                            className="font-nunito-bold mt-1 w-full text-lg leading-[28.80px] text-neutral-800"
+                            numberOfLines={1}
+                            ellipsizeMode={"tail"}
+                          >
+                            {index + 1} -{" "}
+                            {match(question.type)
+                              .with("multiple_choice", () => "Multiple Choice")
+                              .with("true_or_false", () => "True or False")
+                              .with("multi_select", () => "Multi Select")
+                              .with("identification", () => "Identification")
+                              .with("enumeration", () => "Enumeration")
+                              .exhaustive()}
+                          </Text>
+                          <Text
+                            className="font-nunito-semibold text-base leading-snug tracking-tight text-neutral-700"
+                            numberOfLines={2}
+                            ellipsizeMode={"tail"}
+                          >
+                            {question.title}
+                          </Text>
+                        </View>
                       </View>
                     </TouchableOpacity>
                   );
