@@ -1,12 +1,23 @@
 import React, { useEffect } from "react";
 
-import { View, SafeAreaView, Text } from "react-native";
+import { View, SafeAreaView, Text, BackHandler } from "react-native";
 import { TestTrekLogo } from "../icons/logos/TestTrekIcon";
 import { SkypeIndicator } from "react-native-indicators";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 export const SplashScreen = () => {
   const navigate = useNavigation();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => true;
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, []),
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => navigate.navigate("Walkthrough"), 5000);

@@ -12,12 +12,13 @@ import {
   Platform,
   ScrollView,
   SafeAreaView,
+  BackHandler,
+  Alert,
 } from "react-native";
 import TestImagePicker from "../components/ImagePicker";
 import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
 import AppTextInput from "../components/inputs/AppTextInput";
 import useGoBack from "../hooks/useGoBack";
-import LeftArrowIcon from "../icons/LeftArrowIcon";
 import { AppButton } from "../components/buttons/AppButton";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
@@ -25,6 +26,7 @@ import { trpc } from "../utils/trpc";
 import useToast from "../hooks/useToast";
 import { RootStackScreenProps } from "../types";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
+import { Feather } from "@expo/vector-icons";
 
 export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   route,
@@ -116,6 +118,50 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     return unsubscribe;
   }, [navigation]);
 
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
+    );
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your progress if you exit this screen",
+        [
+          {
+            text: "CANCEL",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => goBack() },
+        ],
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -124,10 +170,10 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
       <View className="mx-5 mt-7 flex  flex-row justify-between bg-white py-5">
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
-            onPress={goBack}
+            onPress={handleExitScreen}
             className="flex flex-row items-center self-center"
           >
-            <LeftArrowIcon />
+            <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
             Edit Collection

@@ -95,7 +95,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
     });
   };
 
-  if (!fetchedTestData) {
+  if (!fetchedTestData || !fetchedData) {
     return (
       <>
         <SafeAreaView className="flex-1">

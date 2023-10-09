@@ -1,5 +1,4 @@
 import { View, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import XIcon from "../../icons/XIcon";
 import StarIcon from "../../icons/StarIcon";
 import EditIcon from "../../icons/EditIcon";
@@ -9,6 +8,7 @@ import useToast from "../../hooks/useToast";
 
 import type { FC } from "react";
 import { ReusableHeader } from "./ReusableHeader";
+import useGoBack from "../../hooks/useGoBack";
 
 interface Props {
   testId: string;
@@ -22,8 +22,9 @@ const TestDetailsHeader: FC<Props> = ({
   goToEditTest,
 }) => {
   const trpcUtils = trpc.useContext();
-  const navigation = useNavigation();
+
   const { showToast } = useToast();
+  const goBack = useGoBack()
 
   const { data: isFavorite } = trpc.test.getIsFavorite.useQuery({ testId });
   const { mutate: toggleFavorite } = trpc.test.toggleFavorite.useMutation({
@@ -45,7 +46,7 @@ const TestDetailsHeader: FC<Props> = ({
   if (isFavorite === undefined) {
     return (
       <>
-        <ReusableHeader screenName={""} optionIcon={<StarIcon />} />
+        <ReusableHeader screenName={""} optionIcon={<StarIcon />} handleExit={goBack} />
       </>
     );
   }
@@ -61,7 +62,7 @@ const TestDetailsHeader: FC<Props> = ({
       <View className="sticky top-9 z-50 mx-6 mb-10 flex flex-row justify-between bg-white py-5">
         <TouchableOpacity
           className="flex flex-row items-center gap-4"
-          onPress={() => navigation.goBack()}
+          onPress={goBack}
         >
           <XIcon />
         </TouchableOpacity>

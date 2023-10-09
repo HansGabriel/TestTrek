@@ -1,13 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import type { FC } from "react";
-import useGoBack from "../../hooks/useGoBack";
 
 interface HeaderProps {
   screenName: string;
   optionIcon?: React.ReactNode;
   onIconPress?: () => void;
   backIcon?: React.ReactNode;
+  handleExit? : () => void
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({
@@ -15,14 +15,14 @@ export const ReusableHeader: FC<HeaderProps> = ({
   optionIcon,
   onIconPress,
   backIcon = <LeftArrowIcon />,
+  handleExit,
 }) => {
-  const goBack = useGoBack();
   return (
     <>
       <View className="mx-5 mt-7 flex  flex-row justify-between py-5">
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
-            onPress={goBack}
+            onPress={handleExit}
             className="flex flex-row items-center self-center"
           >
             {backIcon}

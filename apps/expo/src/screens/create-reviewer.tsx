@@ -9,6 +9,8 @@ import {
   Text,
   Dimensions,
   ActivityIndicator,
+  Alert,
+  BackHandler,
 } from "react-native";
 import {
   actions,
@@ -30,8 +32,10 @@ import AppPicker, { LabelOption } from "../components/pickers/AppPicker";
 import useToast from "../hooks/useToast";
 import { trpc } from "../utils/trpc";
 import { match } from "ts-pattern";
+import { Feather } from "@expo/vector-icons";
 
 import type { RootStackScreenProps } from "../types";
+import useGoBack from "../hooks/useGoBack";
 
 export const CreateReviewerScreen = ({
   navigation,
@@ -48,6 +52,7 @@ export const CreateReviewerScreen = ({
 
   const reviewerImage = useImageStore((state) => state.reviewerImage);
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
+  const goBack = useGoBack();
 
   const { data: reviewerDetails } = trpc.reviewer.getReviewerById.useQuery(
     {
@@ -188,9 +193,55 @@ export const CreateReviewerScreen = ({
     }
   }, [reviewerDetails]);
 
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all your progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
+    );
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Are you sure?",
+        "You will lose all your progress if you exit this screen",
+        [
+          {
+            text: "CANCEL",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => goBack() },
+        ],
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <SafeAreaView className="flex-1">
       <ReusableHeader
+        backIcon={<Feather name="x" size={24} color="black" />}
+        handleExit={handleExitScreen}
         screenName={match(type)
           .with("create", () => "Create Reviewer")
           .with("edit", () => "Edit Reviewer")

@@ -27,6 +27,7 @@ import { FlashList } from "@shopify/flash-list";
 import { getFullName } from "@acme/utils/src/strings";
 import StarIcon from "../../icons/StarIcon";
 import { ReusableHeader } from "../headers/ReusableHeader";
+import useGoBack from "../../hooks/useGoBack";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -37,6 +38,7 @@ interface Props {
 
 const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const navigation = useNavigation();
+  const goBack = useGoBack()
 
   const { data: testStatistics } = trpc.test.getDetails.useQuery({
     testId: testDetails?.id ?? "",
@@ -55,7 +57,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   if (!testDetails || !testStatistics) {
     return (
       <>
-        <ReusableHeader screenName={""} optionIcon={<StarIcon />} />
+        <ReusableHeader screenName={""} optionIcon={<StarIcon />} handleExit={goBack} />
         <SafeAreaView className="flex-1">
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">
