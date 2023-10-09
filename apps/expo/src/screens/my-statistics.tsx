@@ -18,9 +18,10 @@ import MedalIcon from "../icons/statistics/MedalIcon";
 import TargetIcon from "../icons/statistics/TargetIcon";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
+import useGoBack from "../hooks/useGoBack";
 
 export const MyStatistics = () => {
-  const navigation = useNavigation();
+  const goBack = useGoBack();
   const { data: totalUserOnTop, isLoading: topLoading } =
     trpc.user.getTimesUserOnTop.useQuery();
   const { data: totalTests, isLoading: testLoading } =
@@ -62,15 +63,40 @@ export const MyStatistics = () => {
     ],
   };
 
-  const isFetching = () => {
+  if (
+    topLoading ||
+    testLoading ||
+    scoreLoading ||
+    playsLoading ||
+    weeklyScoreLoading
+  ) {
     return (
-      topLoading &&
-      testLoading &&
-      scoreLoading &&
-      playsLoading &&
-      weeklyScoreLoading
+      <SafeAreaView className="flex-1">
+        <View className="mx-6 mt-10 flex flex-row justify-between bg-white py-5">
+          <View className="flex-row gap-4 self-center">
+            <TouchableOpacity
+              className="flex flex-row items-center self-center"
+              onPress={goBack}
+            >
+              <LeftArrowIcon />
+            </TouchableOpacity>
+            <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+              My Statistics
+            </Text>
+          </View>
+        </View>
+        <View className="mt-8 h-[90%] w-[90%] items-center space-y-10 self-center">
+          <View className=" h-[25%] w-[100%] items-center justify-center">
+            <SkeletonLoader isCircular={true} width={"100%"} height={"75%"} />
+          </View>
+          <View className="h-[50%] w-[100%] items-center justify-evenly">
+            <SkeletonLoader isCircular={true} width={"100%"} height={30} />
+            <SkeletonLoader isCircular={true} width={"100%"} height={30} />
+          </View>
+        </View>
+      </SafeAreaView>
     );
-  };
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -79,7 +105,7 @@ export const MyStatistics = () => {
           <View className="flex-row gap-4 self-center">
             <TouchableOpacity
               className="flex flex-row items-center self-center"
-              onPress={() => navigation.navigate("Profile")}
+              onPress={goBack}
             >
               <LeftArrowIcon />
             </TouchableOpacity>
@@ -92,92 +118,76 @@ export const MyStatistics = () => {
           className=" h-[75%] w-full "
           showsVerticalScrollIndicator={false}
         >
-          {isFetching() === false ? (
-            <View className="flex-1">
-              <View className=" h-[10%] w-[90%] flex-col self-center border-t border-l border-r border-zinc-200 ">
-                <View className="mt-5 flex-row justify-around">
-                  <Text className=" font-nunito-bold text-lg">
-                    Your Points This Week
-                  </Text>
-                  <Text className=" font-nunito-semibold text-base">
-                    {scores?.weeklyScore} pts
-                  </Text>
-                </View>
+          <View className="flex-1">
+            <View className=" h-[10%] w-[90%] flex-col self-center border-l border-r border-t border-zinc-200 ">
+              <View className="mt-5 flex-row justify-around">
+                <Text className=" font-nunito-bold text-lg">
+                  Your Points This Week
+                </Text>
+                <Text className=" font-nunito-semibold text-base">
+                  {scores?.weeklyScore} pts
+                </Text>
               </View>
-              <View className=" h-[45%]  w-[90%] self-center border-r border-l border-b border-zinc-200">
-                <LineChart
-                  style={{
-                    alignSelf: "flex-start",
-                  }}
-                  data={lineData}
-                  width={Dimensions.get("window").width * 0.89}
-                  height={Dimensions.get("window").height * 0.5}
-                  chartConfig={{
-                    backgroundColor: "white",
-                    backgroundGradientFrom: "white",
-                    backgroundGradientTo: "white",
-                    decimalPlaces: 0,
-                    color: () => `#7c3aed`,
-                    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    fillShadowGradient: "rgba(105, 73, 255, 1)",
-                  }}
-                  bezier
-                  withInnerLines={false}
-                  withOuterLines={false}
-                  withDots={false}
-                />
-              </View>
+            </View>
+            <View className=" h-[45%]  w-[90%] self-center border-b border-l border-r border-zinc-200">
+              <LineChart
+                style={{
+                  alignSelf: "flex-start",
+                }}
+                data={lineData}
+                width={Dimensions.get("window").width * 0.89}
+                height={Dimensions.get("window").height * 0.5}
+                chartConfig={{
+                  backgroundColor: "white",
+                  backgroundGradientFrom: "white",
+                  backgroundGradientTo: "white",
+                  decimalPlaces: 0,
+                  color: () => `#7c3aed`,
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  fillShadowGradient: "rgba(105, 73, 255, 1)",
+                }}
+                bezier
+                withInnerLines={false}
+                withOuterLines={false}
+                withDots={false}
+              />
+            </View>
 
-              <View className=" mt-7 flex w-[95%] flex-col self-center bg-white ">
-                <View className="flex-row gap-4 px-2 pb-5">
-                  <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-                    My Achievements
-                  </Text>
-                </View>
-                <View className="flex-1 " style={{ height: 300 }}>
-                  <FlashList
-                    data={data}
-                    numColumns={2}
-                    estimatedItemSize={5}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => (
-                      <SafeAreaView className="flex-1">
-                        <View className="mx-2 my-2 flex-1 self-center">
-                          <View className="h-20 w-40 flex-row items-center justify-center rounded-2xl border border-zinc-200">
-                            <View className="h-[60%] w-[20%] justify-start">
-                              {item.icon}
-                            </View>
-                            <View className="h-[90%] w-[65%] justify-center">
-                              <Text className=" font-nunito-bold text-xl">
-                                {item.value}
-                              </Text>
-                              <Text className=" font-nunito-medium text-sm">
-                                {item.name}
-                              </Text>
-                            </View>
+            <View className=" mt-7 flex w-[95%] flex-col self-center bg-white ">
+              <View className="flex-row gap-4 px-2 pb-5">
+                <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+                  My Achievements
+                </Text>
+              </View>
+              <View className="flex-1 " style={{ height: 300 }}>
+                <FlashList
+                  data={data}
+                  numColumns={2}
+                  estimatedItemSize={5}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <SafeAreaView className="flex-1">
+                      <View className="mx-2 my-2 flex-1 self-center">
+                        <View className="h-20 w-40 flex-row items-center justify-center rounded-2xl border border-zinc-200">
+                          <View className="h-[60%] w-[20%] justify-start">
+                            {item.icon}
+                          </View>
+                          <View className="h-[90%] w-[65%] justify-center">
+                            <Text className=" font-nunito-bold text-xl">
+                              {item.value}
+                            </Text>
+                            <Text className=" font-nunito-medium text-sm">
+                              {item.name}
+                            </Text>
                           </View>
                         </View>
-                      </SafeAreaView>
-                    )}
-                  />
-                </View>
-              </View>
-            </View>
-          ) : (
-            <View className="mt-20 h-[90%] w-[90%] items-center space-y-10 self-center">
-              <View className=" h-[25%] w-[100%] items-center justify-center">
-                <SkeletonLoader
-                  isCircular={true}
-                  width={"100%"}
-                  height={"75%"}
+                      </View>
+                    </SafeAreaView>
+                  )}
                 />
               </View>
-              <View className="h-[50%] w-[100%] items-center justify-evenly">
-                <SkeletonLoader isCircular={true} width={"100%"} height={20} />
-                <SkeletonLoader isCircular={true} width={"100%"} height={20} />
-              </View>
             </View>
-          )}
+          </View>
         </ScrollView>
       </View>
       <Footer />

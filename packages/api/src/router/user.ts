@@ -3,6 +3,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { Prisma } from "@acme/db";
 import { PlayersHighscore } from "@acme/schema/src/types";
+import pMap from "p-map";
 
 export const useRouter = router({
   getTop: protectedProcedure
@@ -78,40 +79,42 @@ export const useRouter = router({
 
     let totalTop3Count = 0;
 
-    await Promise.all(
-      userPlays.map(async (item) => {
+    await pMap(
+      userPlays,
+      async (item) => {
         const top3Plays = await ctx.prisma
           .$queryRaw<PlayersHighscore>(Prisma.sql`
-        SELECT
-          DISTINCT ON ("Play"."playerId")
-          "User"."firstName",
-          "User"."imageUrl",
-          "Play"."playerId" AS "id",
-          MAX("Play"."score") AS "highScore"
-        FROM
-          "Play"
-        JOIN
-          "User"
-        ON
-          "Play"."playerId" = "User"."userId"
-        WHERE
-          "Play"."isFinished" = TRUE
-          AND "Play"."testId" = ${item.testId}
-        GROUP BY
-          "Play"."playerId",
-          "User"."firstName",
-          "User"."imageUrl"
-        ORDER BY
-          "Play"."playerId",
-          "highScore" DESC
-        LIMIT 3;
-      `);
+      SELECT
+        DISTINCT ON ("Play"."playerId")
+        "User"."firstName",
+        "User"."imageUrl",
+        "Play"."playerId" AS "id",
+        MAX("Play"."score") AS "highScore"
+      FROM
+        "Play"
+      JOIN
+        "User"
+      ON
+        "Play"."playerId" = "User"."userId"
+      WHERE
+        "Play"."isFinished" = TRUE
+        AND "Play"."testId" = ${item.testId}
+      GROUP BY
+        "Play"."playerId",
+        "User"."firstName",
+        "User"."imageUrl"
+      ORDER BY
+        "Play"."playerId",
+        "highScore" DESC
+      LIMIT 3;
+    `);
 
         const userTop3Count = top3Plays.filter(
           (topPlay) => topPlay.id === ctx.auth.userId,
         ).length;
         totalTop3Count += userTop3Count;
-      }),
+      },
+      { concurrency: 5 },
     );
 
     return totalTop3Count;
