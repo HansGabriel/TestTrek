@@ -21,6 +21,7 @@ import EditIcon from "../icons/EditIcon";
 import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
+import useGoBack from "../hooks/useGoBack";
 
 export const EditPersonalInfoScreen = () => {
   const { data: userDetails, refetch: refetchData } =
@@ -28,6 +29,8 @@ export const EditPersonalInfoScreen = () => {
 
   const [edit, setEdit] = useState(false);
   const { showToast } = useToast();
+
+  const goBack = useGoBack();
 
   const {
     control,
@@ -59,6 +62,7 @@ export const EditPersonalInfoScreen = () => {
   if (!userDetails) {
     return (
       <SafeAreaView className="flex-1">
+        <ReusableHeader screenName="Personal Info" handleExit={goBack} />
         <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
           <View className=" h-[25%] w-[100%] items-center justify-center">
             <SkeletonLoader isCircular={true} width={100} height={100} />
@@ -83,6 +87,7 @@ export const EditPersonalInfoScreen = () => {
         screenName="Personal Info"
         optionIcon={edit ? <XIcon /> : <EditIcon />}
         onIconPress={() => setEdit(!edit)}
+        handleExit={goBack}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className=" h-30 w-[90%] items-center justify-center self-center">

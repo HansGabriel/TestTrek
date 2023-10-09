@@ -6,20 +6,33 @@ import {
   Text,
   SafeAreaView,
   Animated,
+  BackHandler,
 } from "react-native";
 import useSignin from "../hooks/useSignin";
 
-import WalktrhoughIcon1 from "../icons/WalkthroughIcon1";
-import WalktrhoughIcon2 from "../icons/WalktrhoughIcon2";
-import WalktrhoughIcon3 from "../icons/WalkthroughIcon3";
+import WalkthroughIcon1 from "../icons/WalkthroughIcon1";
+import WalkthroughIcon2 from "../icons/WalktrhoughIcon2";
+import WalkthroughIcon3 from "../icons/WalkthroughIcon3";
 import GoogleIcon from "../icons/GoogleIcon";
 import FacebookIcon from "../icons/FacebookIcon";
 
 import Swiper from "react-native-swiper";
 
 import type { FC } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
-export const WaltkthroughScreen: FC = () => {
+export const WalkthroughScreen: FC = () => {
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => true;
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, []),
+  );
+
   const signInWithGoogle = useSignin({
     strategy: "oauth_google",
   });
@@ -66,19 +79,19 @@ export const WaltkthroughScreen: FC = () => {
         }
       >
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon1 height={"60%"} width={"90%"} />
+          <WalkthroughIcon1 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
             Create and play tests whenever and wherever you want
           </Text>
         </View>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon2 height={"60%"} width={"90%"} />
+          <WalkthroughIcon2 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
             Find fun and interesting tests to boost up your knowledge
           </Text>
         </View>
         <View className="mb-8 w-[90%] flex-1 items-center justify-center self-center">
-          <WalktrhoughIcon3 height={"60%"} width={"90%"} />
+          <WalkthroughIcon3 height={"60%"} width={"90%"} />
           <Text className="font-nunito-bold mt-10 w-[382px] text-center text-3xl leading-[51.20px] text-neutral-800">
             Play and take test challenges from other trekers.
           </Text>

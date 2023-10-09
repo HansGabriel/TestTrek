@@ -77,6 +77,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
         <ReusableHeader
           screenName={"Add Cover Image"}
           backIcon={<Feather name="x" size={24} color="#BDBDBD" />}
+          handleExit={goBack}
         />
         <View className="self-center">
           <SearchComponent handleSearch={handleSearch} />
@@ -104,6 +105,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
       <ReusableHeader
         screenName={"Add Cover Image"}
         backIcon={<Feather name="x" size={24} color="#BDBDBD" />}
+        handleExit={goBack}
       />
       <View className="self-center">
         <SearchComponent handleSearch={handleSearch} />

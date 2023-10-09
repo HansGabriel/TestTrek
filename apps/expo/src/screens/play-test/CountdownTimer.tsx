@@ -60,7 +60,7 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
     };
 
     return (
-      <View className="mt-5 flex h-4 w-full items-center justify-center gap-x-3">
+      <View className="mt-5 flex h-4 w-full items-center justify-center gap-x-3 self-center">
         <View className="relative h-4 w-full">
           <View className="absolute left-0 top-0 h-4 w-full">
             <View className="absolute left-0 top-0 h-4 w-full rounded-[100px] bg-zinc-100" />
