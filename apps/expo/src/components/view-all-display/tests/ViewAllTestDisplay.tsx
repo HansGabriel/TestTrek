@@ -95,7 +95,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
     });
   };
 
-  if (!fetchedTestData || !fetchedData) {
+  if (!fetchedTestData && !fetchedData) {
     return (
       <>
         <SafeAreaView className="flex-1">
@@ -138,6 +138,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
 
           if (testsFor === "questions" && props.type === "questions") {
             const questionsData = fetchedData as PartialQuestion[];
+            console.log(questionsData);
             return (
               <>
                 <QuestionsList questions={questionsData} />

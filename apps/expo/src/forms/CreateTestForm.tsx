@@ -68,7 +68,7 @@ const CreateTestForm: FC<Props> = ({
     sortBy: "alphabetical",
   });
 
-  const getDisplayImage = () => {
+  const getDisplayImage = (isDefault = false) => {
     if (testDetails?.image && !image) {
       return testDetails.image;
     }
@@ -78,13 +78,15 @@ const CreateTestForm: FC<Props> = ({
     }
 
     if (image && testDetails?.image) {
-      return image;
+      return isDefault ? testDetails.image : image;
     }
 
     return undefined;
   };
 
   const goBack = useGoBack();
+
+  const displayImage = getDisplayImage(true);
 
   const {
     control,
@@ -100,7 +102,7 @@ const CreateTestForm: FC<Props> = ({
     defaultValues: {
       title: testDetails?.title,
       description: testDetails?.description,
-      image: getDisplayImage(),
+      image: displayImage,
       collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords ?? [],
@@ -249,9 +251,9 @@ const CreateTestForm: FC<Props> = ({
             <View className="mb-6">
               <Controller
                 control={control}
-                render={({ field: { value } }) => (
-                  <TestImagePicker image={value} />
-                )}
+                render={({ field: { value } }) => {
+                  return <TestImagePicker image={value} />;
+                }}
                 name="image"
               />
               {errors.image && (

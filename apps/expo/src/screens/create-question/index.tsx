@@ -64,12 +64,16 @@ export const CreateQuestionScreen: FC = () => {
   const { showToast } = useToast();
   const isImageVisible = useToggleImageStore((state) => state.isVisible);
 
-  const { questions, selectedIndex, getSelectedQuestion, editQuestion } =
-    useQuestionStore();
+  const {
+    questions,
+    selectedIndex,
+    setSelectedIndex,
+    getSelectedQuestion,
+    editQuestion,
+  } = useQuestionStore();
   const { errorState, checkErrors, resetErrors, checkAnswerError } = useError();
 
   const questionImage = useImageStore((state) => state.questionImage);
-  const setImage = useImageStore((state) => state.setImage);
   const setQuestionImage = useImageStore((state) => state.setQuestionImage);
   const resetQuestionImage = useImageStore((state) => state.resetQuestionImage);
   const deleteQuestion = useQuestionStore((state) => state.deleteQuestion);
@@ -162,7 +166,7 @@ export const CreateQuestionScreen: FC = () => {
       setPointOptions(POINT_OPTIONS);
       setQuestionTitle("");
       setChoices(resetSelectedChoices());
-      setImage(undefined);
+      setQuestionImage(undefined);
       navigation.navigate("CreateQuestion");
     } else {
       addEmptyQuestion("multiple_choice");
@@ -345,6 +349,7 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleClickQuestion = (index: number) => () => {
+    setSelectedIndex(index);
     setSelectedQuestionId(index);
     setQuestionImage(questions[index]?.image ?? undefined);
     const selectedQuestion = questions[index];
@@ -359,13 +364,13 @@ export const CreateQuestionScreen: FC = () => {
           styles: choiceStyles[idx]!.styles,
         })),
       );
-      setImage(selectedImage),
-        setTimeLimitOptions((prev) =>
-          prev.map((option) => ({
-            ...option,
-            isSelected: option.value === selectedQuestion.time,
-          })),
-        );
+
+      setTimeLimitOptions((prev) =>
+        prev.map((option) => ({
+          ...option,
+          isSelected: option.value === selectedQuestion.time,
+        })),
+      );
       setPointOptions((prev) =>
         prev.map((option) => ({
           ...option,
@@ -386,7 +391,36 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleDelete = () => {
     deleteQuestion(selectedIndex!);
-    goBack();
+    const index = selectedIndex ? selectedIndex - 1 : 0;
+    setSelectedIndex(index);
+    setSelectedQuestionId(index);
+    setQuestionImage(questions[index]?.image ?? undefined);
+    const selectedQuestion = questions[index];
+
+    if (selectedQuestion?.type === "multiple_choice") {
+      setQuestionTitle(selectedQuestion.title);
+      setChoices(
+        selectedQuestion.choices.map((choice, idx) => ({
+          id: idx,
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+          styles: choiceStyles[idx]!.styles,
+        })),
+      );
+
+      setTimeLimitOptions((prev) =>
+        prev.map((option) => ({
+          ...option,
+          isSelected: option.value === selectedQuestion.time,
+        })),
+      );
+      setPointOptions((prev) =>
+        prev.map((option) => ({
+          ...option,
+          isSelected: option.value === selectedQuestion.points,
+        })),
+      );
+    }
   };
 
   const handleGenerateQuestion = () => {
@@ -654,7 +688,12 @@ export const CreateQuestionScreen: FC = () => {
                 {question.image ? (
                   <Image
                     source={{ uri: question.image }}
-                    className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600"
+                    // className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600"
+                    className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                      idx === selectedIndex
+                        ? "border-4 border-violet-600"
+                        : "border border-violet-600"
+                    }`}
                   />
                 ) : (
                   <View className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600 bg-neutral-100"></View>
@@ -683,7 +722,10 @@ export const CreateQuestionScreen: FC = () => {
         onChange={handleSheetChanges}
         style={styles.bottomSheetContainer}
       >
-        <ChoiceBottomSheet goToCreateQuestion={goToCreateQuestion} />
+        <ChoiceBottomSheet
+          goToCreateQuestion={goToCreateQuestion}
+          closeBottomSheet={() => bottomSheetRef.current?.close()}
+        />
       </BottomSheet>
     </View>
   );
