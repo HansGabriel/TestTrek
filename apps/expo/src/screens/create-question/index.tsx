@@ -689,7 +689,6 @@ export const CreateQuestionScreen: FC = () => {
                 {question.image ? (
                   <Image
                     source={{ uri: question.image }}
-                    // className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600"
                     className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
                       idx === selectedIndex
                         ? "border-4 border-violet-600"
@@ -697,7 +696,13 @@ export const CreateQuestionScreen: FC = () => {
                     }`}
                   />
                 ) : (
-                  <View className="absolute left-0 top-0 h-[58px] w-24 rounded-lg border border-violet-600 bg-neutral-100"></View>
+                  <View
+                    className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                      idx === selectedIndex
+                        ? "border-4 border-violet-600"
+                        : "border border-violet-600"
+                    } bg-neutral-100`}
+                  ></View>
                 )}
                 <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
                   <Text className="text-center text-[10px] font-bold text-white">
