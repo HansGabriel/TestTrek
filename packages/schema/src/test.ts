@@ -13,7 +13,7 @@ export const modifiedChoiceSchema = choiceSchema.merge(
 
 export const questionSchema = z.discriminatedUnion("type", [
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(150),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -21,7 +21,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(150),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -29,7 +29,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(150),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -37,7 +37,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     choices: z.array(choiceSchema),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(150),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
@@ -46,7 +46,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     possibleAnswers: z.array(z.string().min(1).max(50)),
   }),
   z.object({
-    title: z.string().min(1).max(50),
+    title: z.string().min(1).max(150),
     image: z.string().min(5).max(200).nullable().optional(),
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),

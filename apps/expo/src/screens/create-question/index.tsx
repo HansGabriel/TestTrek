@@ -573,7 +573,7 @@ export const CreateQuestionScreen: FC = () => {
                   </Text>
                   <TextInput
                     multiline={true}
-                    maxLength={69}
+                    maxLength={150}
                     className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                     selectionColor="white"
                     value={selectedChoice?.text}
@@ -583,9 +583,10 @@ export const CreateQuestionScreen: FC = () => {
                     placeholder="Add answer"
                     placeholderTextColor="#FFFFFF"
                   />
-                  {selectedChoice?.text && selectedChoice?.text.length >= 69 ? (
+                  {selectedChoice?.text &&
+                  selectedChoice?.text.length >= 150 ? (
                     <Text className="mt-2 text-center text-red-500 ">
-                      You've reached the maximum of 69 characters.
+                      You've reached the maximum of 150 characters.
                     </Text>
                   ) : null}
 
