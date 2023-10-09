@@ -4,7 +4,7 @@ const CLERK_PUBLISHABLE_KEY =
   "pk_test_Z3Jvd2luZy1kb2Jlcm1hbi04OC5jbGVyay5hY2NvdW50cy5kZXYk";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
-  name: "expo",
+  name: "TestTrek",
   slug: "testtrek",
   scheme: "testtrek",
   version: "1.0.0",
@@ -27,7 +27,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     buildNumber: "1",
   },
   android: {
-    package: "com.mathbasher.testtrek",
+    package: "TestTrek",
     versionCode: 1,
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
