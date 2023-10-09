@@ -18,8 +18,8 @@ const ChoiceBottomSheet: FC<Props> = ({
   closeBottomSheet,
 }) => {
   const handleChoicePress = () => {
-    goToCreateQuestion();
     closeBottomSheet?.();
+    goToCreateQuestion();
   };
   return (
     <View className="flex-1 bg-white pt-2 shadow shadow-black">

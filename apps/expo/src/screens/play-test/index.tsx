@@ -390,7 +390,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               </Text>
             </View>
 
-            <View className="mt-5 flex flex-row items-center justify-between">
+            <View className="mt-5 flex w-[100%] flex-row items-center justify-between self-center">
               <View className="space-y-4">
                 <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
                 <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>

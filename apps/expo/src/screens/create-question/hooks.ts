@@ -108,9 +108,9 @@ const useError = () => {
       } else if (choice === "") {
         hasError = true;
         oldChoicesError[index] = "Choice cannot be empty";
-      } else if (choice !== undefined && choice.length > 20) {
+      } else if (choice !== undefined && choice.length > 100) {
         hasError = true;
-        oldChoicesError[index] = "Choice cannot be longer than 20 characters";
+        oldChoicesError[index] = "Choice cannot be longer than 100 characters";
       } else {
         oldChoicesError[index] = undefined;
       }
@@ -123,6 +123,7 @@ const useError = () => {
   };
 
   const checkChoiceError = (index: number, choice: string) => {
+    console.log(choice.length)
     if (choice === "") {
       dispatch({
         type: "SET_CHOICES_ERROR",
@@ -132,11 +133,11 @@ const useError = () => {
       });
       return true;
     }
-    if (choice.length > 20) {
+    if (choice.length > 100) {
       dispatch({
         type: "SET_CHOICES_ERROR",
         payload: state.choicesError.map((error, i) =>
-          i === index ? "Choice cannot be longer than 20 characters" : error,
+          i === index ? "Choice cannot be longer than 100 characters" : error,
         ),
       });
       return true;
