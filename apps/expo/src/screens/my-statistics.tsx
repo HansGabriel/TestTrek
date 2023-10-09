@@ -1,4 +1,3 @@
-import { useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
