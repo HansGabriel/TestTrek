@@ -27,7 +27,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     buildNumber: "1",
   },
   android: {
-    package: "TestTrek",
+    package: "com.mathbasher.testtrek",
     versionCode: 1,
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
