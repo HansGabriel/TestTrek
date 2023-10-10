@@ -10,7 +10,7 @@ import TopCollectionsHomeSection from "../components/top-collections/TopCollecti
 import TrendingTestsHomeSection from "../components/trending-tests/TrendingTestsHomeSection";
 import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSection";
 import { Audio } from "expo-av";
-import bgMusic from "../sounds/comedy.mp3";
+import bgMusic from "../../assets/sounds/comedy.mp3";
 import { useMusicStore } from "../stores/useMusicStore";
 import { playSound, unloadAudio } from "../services/audioService";
 import { trpc } from "../utils/trpc";
