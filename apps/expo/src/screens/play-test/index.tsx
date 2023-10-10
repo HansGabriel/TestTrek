@@ -31,9 +31,9 @@ import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
 import type { ChoiceStyle } from "../create-question/types";
 
-import correctSound from "../../sounds/correct.mp3";
-import wrongSound from "../../sounds/wrong.mp3";
-import gameMusic from "../../sounds/8bitMusic.mp3";
+import correctSound from "../../../assets/sounds/correct.mp3";
+import wrongSound from "../../../assets/sounds/wrong.mp3";
+import gameMusic from "../../../assets/sounds/8bitMusic.mp3";
 import { Audio } from "expo-av";
 import { useMusicStore } from "../../stores/useMusicStore";
 import {
