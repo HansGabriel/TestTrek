@@ -16,21 +16,26 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Feather } from "@expo/vector-icons";
 import { testInputSchema } from "@acme/schema/src/test";
-import AppTextInput from "../components/inputs/AppTextInput";
-import MultipleTextInput from "../components/inputs/MultipleTextInput";
+import AppTextInput from "../../components/inputs/AppTextInput";
+import MultipleTextInput from "../../components/inputs/MultipleTextInput";
 import BottomSheet from "@gorhom/bottom-sheet";
-import ChoiceBottomSheet from "../components/bottom-sheet/ChoiceBottomSheet";
+import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
 import { useNavigation } from "@react-navigation/native";
-import TestImagePicker from "../components/ImagePicker";
-import useQuestionStore from "../stores/useQuestionStore";
+import TestImagePicker from "../../components/ImagePicker";
+import useQuestionStore from "../../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
-import RightArrowIcon from "../icons/RightArrowIcon";
-import { IMAGE_PLACEHOLDER_LARGE } from "../constants";
-import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
-import useImageStore from "../stores/useImageStore";
+import RightArrowIcon from "../../icons/RightArrowIcon";
+import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
+import AppPicker, {
+  type LabelOption,
+} from "../../components/pickers/AppPicker";
+import useImageStore from "../../stores/useImageStore";
 import { match } from "ts-pattern";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
 import { truncateString } from "@acme/utils/src/strings";
+import { Octicons } from "@expo/vector-icons";
+import RightSidebar from "./RightSidebar";
+import { RouterOutputs } from "../../utils/trpc";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -38,10 +43,11 @@ import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FieldError } from "react-hook-form";
-import useGoBack from "../hooks/useGoBack";
+import useGoBack from "../../hooks/useGoBack";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
+type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
 
 interface Props {
   testTitle: string;
@@ -60,7 +66,12 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
   handleExitScreen,
 }) => {
+  const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
+    null,
+  );
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const navigation = useNavigation();
   const image = useImageStore((state) => state.image);
 
@@ -229,8 +240,8 @@ const CreateTestForm: FC<Props> = ({
 
   return (
     <SafeAreaView>
-      <View className="top-2 mx-5 flex flex-row justify-between pb-5">
-        <View className="flex-row gap-4 self-center">
+      <View className="top-2 ml-5 mr-3 flex flex-row justify-between pb-5">
+        <View className="self-cente w-full flex-row justify-between gap-4">
           <TouchableOpacity
             onPress={handleExitScreen}
             className="flex flex-row items-center self-center"
@@ -240,6 +251,9 @@ const CreateTestForm: FC<Props> = ({
           <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
             {testTitle}
           </Text>
+          <TouchableOpacity onPress={() => setIsSidebarOpen(true)}>
+            <Octicons name="three-bars" size={24} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
       <KeyboardAvoidingView
@@ -380,6 +394,41 @@ const CreateTestForm: FC<Props> = ({
               )}
             </View>
           </View>
+          {selectedReviewer && (
+            <View className="mb-10">
+              <View className="mb-6 flex flex-row items-center justify-between">
+                <Text className="text-xl font-bold leading-loose text-neutral-800">
+                  Selected Reviewer
+                </Text>
+              </View>
+              <TouchableOpacity className="my-2 flex h-[105px] items-center justify-start">
+                <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+                  <View className="relative w-[140px] self-stretch">
+                    <ImageBackground
+                      source={{
+                        uri: selectedReviewer.imageUrl,
+                      }}
+                      imageStyle={{
+                        borderTopLeftRadius: 12,
+                        borderBottomLeftRadius: 12,
+                      }}
+                      className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                    />
+                  </View>
+                  <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+                    {selectedReviewer.title}
+                  </Text>
+                  <Text
+                    className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {truncateString(selectedReviewer.content, 25)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
           {questions.length > 0 && (
             <>
               <View className="mb-10 h-full flex-1 flex-col">
@@ -495,6 +544,11 @@ const CreateTestForm: FC<Props> = ({
           closeBottomSheet={closeBottomSheet}
         />
       </BottomSheet>
+      <RightSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        setReviewer={setSelectedReviewer}
+      />
     </SafeAreaView>
   );
 };

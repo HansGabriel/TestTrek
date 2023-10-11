@@ -64,7 +64,7 @@ export const AppButton = ({
 }: ButtonProps) => {
   return (
     <TouchableOpacity
-      className={`my-${marginY} mx-${marginX} w-${TOwidth} $ self-cente justify-center`}
+      className={`my-${marginY} mx-${marginX} w-${TOwidth} justify-center self-center`}
       onPress={onPress}
       {...props}
     >
