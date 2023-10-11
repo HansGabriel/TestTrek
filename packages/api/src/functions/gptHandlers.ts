@@ -1,12 +1,11 @@
-import {
-  TIME_LIMIT_OPTIONS,
-  POINT_OPTIONS,
-} from "../../../../apps/expo/src/screens/create-question/constants";
+import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 
 export interface MCQPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
   type: "multipleChoice";
+  timeLimit: number;
+  points: number;
 }
 
 export interface MultiselectPrompt {
@@ -27,7 +26,7 @@ export interface TrueOrFalsePrompt {
   type: "trueOrFalse";
 }
 
-const TIME_AND_POINTS_PROMPT = `
+export const timeAndPointsPrompt = `
 Time Limit: [Select from the following options based on how difficult you think the question is, lower value means easy while higher value means harder, choose between ${TIME_LIMIT_OPTIONS.map(
   (time) => time.title,
 ).join(", ")}]
@@ -44,19 +43,19 @@ Option 2: [Choice 2]
 Option 3: [Choice 3]
 Option 4: [Choice 4]
 Correct Answer: Option [Correct option number]
-${TIME_AND_POINTS_PROMPT}`,
+${timeAndPointsPrompt}`,
 
   identification: (message) =>
     `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as:
 Question: [Your question here]
 Answer: [Your answer here]
-${TIME_AND_POINTS_PROMPT}`,
+${timeAndPointsPrompt}`,
 
   trueOrFalse: (message) =>
     `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as:
 Question: [Your question here]
 Answer: [True/False]
-${TIME_AND_POINTS_PROMPT}`,
+${timeAndPointsPrompt}`,
 
   multiselect: (message) =>
     `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
@@ -66,13 +65,13 @@ Option 2: [Choice 2]
 Option 3: [Choice 3]
 Option 4: [Choice 4]
 Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
-${TIME_AND_POINTS_PROMPT}`,
+${timeAndPointsPrompt}`,
 
   enumeration: (message) =>
     `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as:
 Question: [Your question here]
 Answers: [1. Answer1, 2. Answer2, ...]
-${TIME_AND_POINTS_PROMPT}`,
+${timeAndPointsPrompt}`,
 };
 
 export const generatePromptForType = (
@@ -92,6 +91,8 @@ export const parseMultipleChoiceResponse = (
 
   let question = "";
   const choices: { text: string; isCorrect: boolean }[] = [];
+  let timeLimit = 0;
+  let points = 0;
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
@@ -117,6 +118,18 @@ export const parseMultipleChoiceResponse = (
         const choice = choices[correctIndex];
         if (choice) choice.isCorrect = true;
       }
+    } else if (line.startsWith("Time Limit:")) {
+      const time = line.replace("Time Limit:", "").trim();
+      const matchedOption = TIME_LIMIT_OPTIONS.find((o) => o.title === time);
+      if (matchedOption) {
+        timeLimit = matchedOption.value;
+      }
+    } else if (line.startsWith("Points:")) {
+      const point = line.replace("Points:", "").trim();
+      const matchedOption = POINT_OPTIONS.find((o) => o.title === point);
+      if (matchedOption) {
+        points = matchedOption.value;
+      }
     }
   });
 
@@ -124,6 +137,8 @@ export const parseMultipleChoiceResponse = (
     question,
     choices,
     type: "multipleChoice",
+    timeLimit,
+    points,
   };
 };
 

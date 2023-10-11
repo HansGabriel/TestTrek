@@ -16,6 +16,8 @@ describe("parseMultipleChoiceResponse", () => {
       Option 3: Paris
       Option 4: Rome
       Correct Answer: Option 3
+      Time Limit: 20 sec
+      Points: 200 pt
     `;
     const result = parseMultipleChoiceResponse(generatedMessage);
     expect(result).toEqual({
@@ -27,11 +29,12 @@ describe("parseMultipleChoiceResponse", () => {
         { text: "Rome", isCorrect: false },
       ],
       type: "multipleChoice",
+      timeLimit: 20,
+      points: 200,
     });
   });
 
   it("should handle incorrect formatting gracefully", () => {
-    //If the question is missing, the result should still be somewhat sensible
     const generatedMessageWithoutQuestion = `
       Option 1: Berlin
       Option 2: Madrid
@@ -43,7 +46,7 @@ describe("parseMultipleChoiceResponse", () => {
       generatedMessageWithoutQuestion,
     );
     expect(resultWithoutQuestion).toEqual({
-      question: "", // question is missing
+      question: "",
       choices: [
         { text: "Berlin", isCorrect: false },
         { text: "Madrid", isCorrect: false },
@@ -51,6 +54,8 @@ describe("parseMultipleChoiceResponse", () => {
         { text: "Rome", isCorrect: false },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     });
   });
 
@@ -70,10 +75,12 @@ describe("parseMultipleChoiceResponse", () => {
       choices: [
         { text: "Berlin", isCorrect: false },
         { text: "Madrid", isCorrect: false },
-        { text: "Paris", isCorrect: false }, // No correct answer mentioned
+        { text: "Paris", isCorrect: false },
         { text: "Rome", isCorrect: false },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     });
   });
 
@@ -96,6 +103,8 @@ describe("parseMultipleChoiceResponse", () => {
         { text: "Rome", isCorrect: false },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     });
   });
 
@@ -115,6 +124,8 @@ describe("parseMultipleChoiceResponse", () => {
         { text: "Paris", isCorrect: true },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     });
   });
 
@@ -124,6 +135,8 @@ describe("parseMultipleChoiceResponse", () => {
       question: "",
       choices: [],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     };
     expect(resultForEmpty).toEqual(expectedResult);
   });
@@ -145,6 +158,8 @@ describe("parseMultipleChoiceResponse", () => {
         { text: "Paris", isCorrect: true },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
     });
   });
 
@@ -165,10 +180,38 @@ describe("parseMultipleChoiceResponse", () => {
       choices: [
         { text: "Berlin", isCorrect: false },
         { text: "Madrid", isCorrect: false },
-        { text: "Paris", isCorrect: false }, // No valid correct answer mentioned
+        { text: "Paris", isCorrect: false },
         { text: "Rome", isCorrect: false },
       ],
       type: "multipleChoice",
+      timeLimit: 0,
+      points: 0,
+    });
+  });
+
+  it("should handle missing time limit and points", () => {
+    const generatedMessageWithoutTimeAndPoints = `
+      Question: What is the capital of France?
+      Option 1: Berlin
+      Option 2: Madrid
+      Option 3: Paris
+      Option 4: Rome
+      Correct Answer: Option 3
+    `;
+    const result = parseMultipleChoiceResponse(
+      generatedMessageWithoutTimeAndPoints,
+    );
+    expect(result).toEqual({
+      question: "What is the capital of France?",
+      choices: [
+        { text: "Berlin", isCorrect: false },
+        { text: "Madrid", isCorrect: false },
+        { text: "Paris", isCorrect: true },
+        { text: "Rome", isCorrect: false },
+      ],
+      type: "multipleChoice",
+      timeLimit: 0, // Default when missing
+      points: 0, // Default when missing
     });
   });
 });
