@@ -1,6 +1,6 @@
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 
-export interface MCQPrompt {
+export interface MultipleChoicePrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
   type: "multipleChoice";
@@ -104,7 +104,7 @@ export const generatePromptForType = (
 
 export const parseMultipleChoiceResponse = (
   generatedMessage: string,
-): MCQPrompt => {
+): MultipleChoicePrompt => {
   const lines = generatedMessage.split("\n").map((line) => line.trim());
 
   let question = "";
