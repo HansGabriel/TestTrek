@@ -318,6 +318,8 @@ describe("parseMultiselectResponse", () => {
         Option 3: Banana
         Option 4: Bus
         Correct Answers: Options 1,3
+        Time Limit: 30
+        Points: 100
       `;
     const result = parseMultiselectResponse(generatedMessage);
     expect(result).toEqual({
@@ -328,6 +330,8 @@ describe("parseMultiselectResponse", () => {
         { text: "Banana", isCorrect: true },
         { text: "Bus", isCorrect: false },
       ],
+      timeLimit: 30,
+      points: 100,
       type: "multiselect",
     });
   });
@@ -337,6 +341,8 @@ describe("parseMultiselectResponse", () => {
         Option 1: Apple
         Option 2: Car
         Correct Answers: Options 1
+        Time Limit: 45
+        Points: 50
       `;
     const result = parseMultiselectResponse(generatedMessageWithoutQuestion);
     expect(result).toEqual({
@@ -345,25 +351,28 @@ describe("parseMultiselectResponse", () => {
         { text: "Apple", isCorrect: true },
         { text: "Car", isCorrect: false },
       ],
+      timeLimit: 45,
+      points: 50,
       type: "multiselect",
     });
   });
 
-  it("should handle missing correct answers", () => {
-    const generatedMessageWithoutCorrectAnswers = `
+  it("should handle missing time and points", () => {
+    const generatedMessageWithoutTimePoints = `
         Question: Choose the fruits.
         Option 1: Apple
         Option 2: Car
+        Correct Answers: Options 1
       `;
-    const result = parseMultiselectResponse(
-      generatedMessageWithoutCorrectAnswers,
-    );
+    const result = parseMultiselectResponse(generatedMessageWithoutTimePoints);
     expect(result).toEqual({
       question: "Choose the fruits.",
       choices: [
-        { text: "Apple", isCorrect: false },
+        { text: "Apple", isCorrect: true },
         { text: "Car", isCorrect: false },
       ],
+      timeLimit: 0,
+      points: 0,
       type: "multiselect",
     });
   });
@@ -376,6 +385,8 @@ describe("parseMultiselectResponse", () => {
         Option 4: Bus
         Option 2: Car
         Correct Answers: Options 1,3
+        Time Limit: 60
+        Points: 150
       `;
     const result = parseMultiselectResponse(generatedMessageOutOfOrder);
     expect(result).toEqual({
@@ -386,6 +397,8 @@ describe("parseMultiselectResponse", () => {
         { text: "Banana", isCorrect: true },
         { text: "Bus", isCorrect: false },
       ],
+      timeLimit: 60,
+      points: 150,
       type: "multiselect",
     });
   });
@@ -395,6 +408,8 @@ describe("parseMultiselectResponse", () => {
     const expectedResult = {
       question: "",
       choices: [],
+      timeLimit: 0,
+      points: 0,
       type: "multiselect",
     };
     expect(resultForEmpty).toEqual(expectedResult);

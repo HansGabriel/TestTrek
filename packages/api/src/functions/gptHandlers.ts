@@ -12,6 +12,8 @@ export interface MultiselectPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
   type: "multiselect";
+  timeLimit: number;
+  points: number;
 }
 
 export interface IdentificationPrompt {
@@ -181,12 +183,13 @@ export const parseMultiselectResponse = (
   const lines = generatedMessage.split("\n").map((line) => line.trim());
 
   let question = "";
+  let timeLimit = 0;
+  let points = 0;
   const choices: { text: string; isCorrect: boolean }[] = [];
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
-      const q = line.replace("Question:", "").trim();
-      if (q) question = q;
+      question = line.replace("Question:", "").trim();
     } else if (line.startsWith("Option")) {
       const optionMatch = line.match(/^Option (\d): (.+)$/);
       if (optionMatch) {
@@ -209,12 +212,24 @@ export const parseMultiselectResponse = (
           if (choice) choice.isCorrect = true;
         });
       }
+    } else if (line.startsWith("Time Limit:")) {
+      const timeMatch = line.match(/\d+/);
+      if (timeMatch && timeMatch[0]) {
+        timeLimit = parseInt(timeMatch[0], 10);
+      }
+    } else if (line.startsWith("Points:")) {
+      const pointsMatch = line.match(/\d+/);
+      if (pointsMatch && pointsMatch[0]) {
+        points = parseInt(pointsMatch[0], 10);
+      }
     }
   });
 
   return {
     question,
     choices,
+    timeLimit,
+    points,
     type: "multiselect",
   };
 };
