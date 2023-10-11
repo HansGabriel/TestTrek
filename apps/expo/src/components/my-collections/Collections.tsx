@@ -35,7 +35,7 @@ export const CollectionsTab: FC<CollectionProps> = ({
 
   if (tabData && tabData.length <= 0) {
     return (
-      <View>
+      <View className="h-full">
         <ReusablePlaceholder
           icon={<Ionicons name="newspaper" size={40} color="#7c3aed" />}
           text={`No collections shown`}

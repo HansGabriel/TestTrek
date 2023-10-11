@@ -31,6 +31,7 @@ import useImageStore from "../stores/useImageStore";
 import { match } from "ts-pattern";
 import { trpc } from "../utils/trpc";
 import { truncateString } from "@acme/utils/src/strings";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
@@ -39,6 +40,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../hooks/useGoBack";
+import { PromptModal } from "../components/modals/PromptModal";
+import OptionModal from "../components/modals/OptionModal";
+import type { Option } from "./types";
+import { NUMBER_OF_QUESTIONS_OPTIONS } from "./constants";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -61,8 +66,19 @@ const CreateTestForm: FC<Props> = ({
   handleExitScreen,
 }) => {
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
+  const [openCreationChoice, setOpenCreationChoice] = useState(false);
+  const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
+    useState(false);
   const navigation = useNavigation();
   const image = useImageStore((state) => state.image);
+  const [numberOfQuestionOptions, setNumberOfQuestionOptions] = useState<
+    Option[]
+  >(
+    NUMBER_OF_QUESTIONS_OPTIONS.map((option) => ({
+      ...option,
+    })),
+  );
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery({
     sortBy: "alphabetical",
@@ -121,21 +137,42 @@ const CreateTestForm: FC<Props> = ({
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ["5%", "25%", "60%"], []);
+  const snapPoints = useMemo(() => ["5%", "35%", "60%"], []);
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
     setBottomSheetOpen(true);
   };
 
-  const goToCreateQuestion = () => {
-    if (isLastQuestionInEdit()) {
-      setLastIndex();
-      navigation.navigate("CreateQuestion");
+  const handleCloseNumberOfQuestionsModal = () => {
+    setShowNumberOfQuestionsModal(false);
+  };
+
+  const handleClosePromptModal = () => {
+    setIsPromptModalOpen(false);
+  };
+
+  const handleCloseCreationChoice = () => {
+    setOpenCreationChoice(false);
+  };
+
+  useEffect(() => {
+    if (questions.length < 5 && isBottomSheetOpen) {
+      setIsPromptModalOpen(true);
     } else {
+      setIsPromptModalOpen(false);
+    }
+  }, [isBottomSheetOpen]);
+
+  const goToCreateQuestion = () => {
+    setOpenCreationChoice(true);
+    if (isLastQuestionInEdit()) {
+      //create
+      setLastIndex();
+    } else {
+      //edit
       addEmptyQuestion("multiple_choice");
       setLastIndex();
-      navigation.navigate("CreateQuestion");
     }
   };
 
@@ -458,8 +495,8 @@ const CreateTestForm: FC<Props> = ({
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
-              disabled={questions.length === 0}
-              style={[questions.length === 0 ? styles.disabledButton : {}]}
+              disabled={questions.length < 5}
+              style={[questions.length < 5 ? styles.disabledButton : {}]}
             >
               {isCreatingQuiz || isUploading ? (
                 <ActivityIndicator color="black" />
@@ -495,6 +532,53 @@ const CreateTestForm: FC<Props> = ({
           closeBottomSheet={closeBottomSheet}
         />
       </BottomSheet>
+
+      <PromptModal
+        isVisible={isPromptModalOpen}
+        onConfirm={handleClosePromptModal}
+        modalIcon={
+          <MaterialCommunityIcons
+            name="bell-ring-outline"
+            size={40}
+            color="#7c3aed"
+          />
+        }
+        modalTitle={"Reminder"}
+        modalDescription={
+          "Please create at least five (5) questions to save the test!"
+        }
+        confirmButtonText={"Ok"}
+        isCancelButtonVisible={false}
+      />
+
+      <PromptModal
+        isVisible={openCreationChoice}
+        modalIcon={
+          <MaterialCommunityIcons name="robot" size={40} color="#7c3aed" />
+        }
+        modalTitle={"Create Question"}
+        modalDescription={"Do you want to generate questions with A.I?"}
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Manual Input"}
+        onCancel={() => {
+          handleCloseCreationChoice();
+          navigation.navigate("CreateQuestion");
+        }}
+        onConfirm={() => {
+          handleCloseCreationChoice();
+          setShowNumberOfQuestionsModal(true);
+        }}
+      />
+
+      <OptionModal
+        title="No. of questions you want to generate"
+        options={numberOfQuestionOptions}
+        setOptions={setNumberOfQuestionOptions}
+        isVisible={showNumberofQuestionsModal}
+        setIsVisible={handleCloseNumberOfQuestionsModal}
+        buttonText={"Generate"}
+      />
     </SafeAreaView>
   );
 };

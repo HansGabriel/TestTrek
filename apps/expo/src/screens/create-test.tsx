@@ -55,7 +55,7 @@ export const CreateTestScreen: FC = () => {
           setIsUploading(false);
           showToast("Test created successfully");
           resetQuestions();
-          navigation.navigate("Home");
+          navigation.navigate("MyLibrary");
         },
         onError: (error) => {
           setIsUploading(false);
