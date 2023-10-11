@@ -146,22 +146,33 @@ export const parseEnumerationResponse = (generatedMessage: string) => {
   const lines = generatedMessage.split("\n").map((line) => line.trim());
 
   let question = "";
+  let timeLimit = 0;
+  let points = 0;
   const answers: string[] = [];
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
-      const q = line.replace("Question:", "").trim();
-      if (q) question = q;
+      question = line.replace("Question:", "").trim();
     } else if (line.startsWith("Answers:")) {
       const ans = line
         .replace("Answers:", "")
         .split(",")
         .map((a) => a.trim().replace(/^\d+\.\s*/, ""));
       answers.push(...ans);
+    } else if (line.startsWith("Time Limit:")) {
+      const timeMatch = line.match(/\d+/);
+      if (timeMatch && timeMatch[0]) {
+        timeLimit = parseInt(timeMatch[0], 10);
+      }
+    } else if (line.startsWith("Points:")) {
+      const pointsMatch = line.match(/\d+/);
+      if (pointsMatch && pointsMatch[0]) {
+        points = parseInt(pointsMatch[0], 10);
+      }
     }
   });
 
-  return { question, answers };
+  return { question, answers, timeLimit, points };
 };
 
 export const parseMultiselectResponse = (
