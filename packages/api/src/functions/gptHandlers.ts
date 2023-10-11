@@ -22,29 +22,31 @@ export interface TrueOrFalsePrompt {
   type: "trueOrFalse";
 }
 
+const promptGenerators: { [key: string]: (message: string) => string } = {
+  multipleChoice: (message) =>
+    `Create a multiple choice question about: "${message}" with 4 choices. Each choices must not exceed 68 characters. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answer: Option [Correct option number]`,
+
+  identification: (message) =>
+    `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [Your answer here]`,
+
+  trueOrFalse: (message) =>
+    `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [True/False]`,
+
+  multiselect: (message) =>
+    `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`,
+
+  enumeration: (message) =>
+    `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`,
+};
+
 export const generatePromptForType = (
   message: string,
-  questionType:
-    | "multipleChoice"
-    | "identification"
-    | "trueOrFalse"
-    | "multiselect"
-    | "enumeration",
+  questionType: keyof typeof promptGenerators,
 ): string => {
-  switch (questionType) {
-    case "multipleChoice":
-      return `Create a multiple choice question about: "${message}" with 4 choices. Each choices must not exceed 68 characters. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answer: Option [Correct option number]`;
-    case "identification":
-      return `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [Your answer here]`;
-    case "trueOrFalse":
-      return `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [True/False]`;
-    case "multiselect":
-      return `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`;
-    case "enumeration":
-      return `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`;
-    default:
-      return `Please provide information based on: "${message}"`;
-  }
+  const promptGenerator = promptGenerators[questionType];
+  return promptGenerator
+    ? promptGenerator(message)
+    : `Please provide information based on: "${message}"`;
 };
 
 export const parseMultipleChoiceResponse = (
