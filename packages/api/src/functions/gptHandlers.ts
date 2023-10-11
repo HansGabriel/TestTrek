@@ -40,14 +40,29 @@ Points: [Select from the following options based on how difficult you think the 
   (points) => points.title,
 ).join(", ")}]`;
 
-const promptGenerators: { [key: string]: (message: string) => string } = {
-  multipleChoice: (message) =>
-    `Create a multiple choice question about: "${message}" with 4 choices. Each choice must not exceed 68 characters. Format as:
+const generateChoicesPrompt = (numChoices: number) => {
+  let choicesPrompt = "";
+  for (let i = 1; i <= numChoices; i++) {
+    choicesPrompt += `Option ${i}: [Choice ${i}]\n`;
+  }
+  return choicesPrompt.trim();
+};
+
+const generateEnumerationAnswersPrompt = (numItems: number) => {
+  const items = Array.from(
+    { length: numItems },
+    (_, i) => `${i + 1}. Answer${i + 1}`,
+  ).join(", ");
+  return `Answers: [${items}]`;
+};
+
+const promptGenerators: {
+  [key: string]: (message: string, numChoices?: number) => string;
+} = {
+  multipleChoice: (message, numChoices = 4) =>
+    `Create a multiple choice question about: "${message}" with ${numChoices} choices. Each choice must not exceed 68 characters. Format as:
 Question: [Your question here]
-Option 1: [Choice 1]
-Option 2: [Choice 2]
-Option 3: [Choice 3]
-Option 4: [Choice 4]
+${generateChoicesPrompt(numChoices)}
 Correct Answer: Option [Correct option number]
 ${timeAndPointsPrompt}`,
 
@@ -63,20 +78,17 @@ Question: [Your question here]
 Answer: [True/False]
 ${timeAndPointsPrompt}`,
 
-  multiselect: (message) =>
-    `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
+  multiselect: (message, numChoices = 4) =>
+    `Create a multiselect question about: "${message}" with ${numChoices} choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
 Question: [Your question here]
-Option 1: [Choice 1]
-Option 2: [Choice 2]
-Option 3: [Choice 3]
-Option 4: [Choice 4]
+${generateChoicesPrompt(numChoices)}
 Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
 
-  enumeration: (message) =>
-    `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as:
+  enumeration: (message, numAnswers = 4) =>
+    `Provide an enumeration question related to "${message}" with a maximum of ${numAnswers} inputs. The choices or answer must not exceed 68 characters. Format as:
 Question: [Your question here]
-Answers: [1. Answer1, 2. Answer2, ...]
+${generateEnumerationAnswersPrompt(numAnswers)}
 ${timeAndPointsPrompt}`,
 };
 

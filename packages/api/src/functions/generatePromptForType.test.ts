@@ -1,11 +1,11 @@
 import { generatePromptForType } from "./gptHandlers";
 import { describe, it, expect } from "vitest";
-import { timeAndPointsPrompt } from "./gptHandlers";
+import { timeAndPointsPrompt } from "./gptHandlers"; // Make sure this import is correct
 
 describe("generatePromptForType", () => {
   const message = "sample message";
 
-  it("should generate prompt for multipleChoice", () => {
+  it("should generate prompt for multipleChoice with default number of choices", () => {
     const result = generatePromptForType(message, "multipleChoice");
     expect(result).toEqual(
       `Create a multiple choice question about: "${message}" with 4 choices. Each choice must not exceed 68 characters. Format as:
@@ -39,7 +39,7 @@ ${timeAndPointsPrompt}`,
     );
   });
 
-  it("should generate prompt for multiselect", () => {
+  it("should generate prompt for multiselect with default number of choices", () => {
     const result = generatePromptForType(message, "multiselect");
     expect(result).toEqual(
       `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
@@ -53,12 +53,12 @@ ${timeAndPointsPrompt}`,
     );
   });
 
-  it("should generate prompt for enumeration", () => {
+  it("should generate prompt for enumeration with default number of answers", () => {
     const result = generatePromptForType(message, "enumeration");
     expect(result).toEqual(
       `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as:
 Question: [Your question here]
-Answers: [1. Answer1, 2. Answer2, ...]
+Answers: [1. Answer1, 2. Answer2, 3. Answer3, 4. Answer4]
 ${timeAndPointsPrompt}`,
     );
   });
