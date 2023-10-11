@@ -421,11 +421,15 @@ describe("parseIdentificationResponse", () => {
     const generatedMessage = `
         Question: Who was the first president of the United States?
         Answer: George Washington
+        Time Limit: 10
+        Points: 100
       `;
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "Who was the first president of the United States?",
       answer: "George Washington",
+      timeLimit: 10,
+      points: 100,
       type: "identification",
     });
   });
@@ -433,11 +437,15 @@ describe("parseIdentificationResponse", () => {
   it("should handle missing question", () => {
     const generatedMessage = `
         Answer: George Washington
+        Time Limit: 20
+        Points: 200
       `;
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "",
       answer: "George Washington",
+      timeLimit: 20,
+      points: 200,
       type: "identification",
     });
   });
@@ -445,11 +453,15 @@ describe("parseIdentificationResponse", () => {
   it("should handle missing answer", () => {
     const generatedMessage = `
         Question: Who was the first president of the United States?
+        Time Limit: 30
+        Points: 300
       `;
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "Who was the first president of the United States?",
       answer: "",
+      timeLimit: 30,
+      points: 300,
       type: "identification",
     });
   });
@@ -460,34 +472,44 @@ describe("parseIdentificationResponse", () => {
     expect(result).toEqual({
       question: "",
       answer: "",
+      timeLimit: 0,
+      points: 0,
       type: "identification",
     });
   });
 });
 
 describe("parseTrueOrFalseResponse", () => {
-  it("should correctly parse a well-formatted true response", () => {
+  it("should correctly parse a well-formatted true response with time and points", () => {
     const generatedMessage = `
         Question: Is the sky blue?
         Answer: True
+        Time Limit: 30 seconds
+        Points: 5
       `;
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Is the sky blue?",
       answer: true,
+      timeLimit: 30,
+      points: 5,
       type: "trueOrFalse",
     });
   });
 
-  it("should correctly parse a well-formatted false response", () => {
+  it("should correctly parse a well-formatted false response with time and points", () => {
     const generatedMessage = `
         Question: Do cows fly?
         Answer: False
+        Time Limit: 45 seconds
+        Points: 10
       `;
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Do cows fly?",
       answer: false,
+      timeLimit: 45,
+      points: 10,
       type: "trueOrFalse",
     });
   });
@@ -500,6 +522,8 @@ describe("parseTrueOrFalseResponse", () => {
     expect(result).toEqual({
       question: "",
       answer: false,
+      timeLimit: 0,
+      points: 0,
       type: "trueOrFalse",
     });
   });
@@ -512,6 +536,8 @@ describe("parseTrueOrFalseResponse", () => {
     expect(result).toEqual({
       question: "Do cows fly?",
       answer: false, // defaults to false
+      timeLimit: 0,
+      points: 0,
       type: "trueOrFalse",
     });
   });
@@ -525,6 +551,8 @@ describe("parseTrueOrFalseResponse", () => {
     expect(result).toEqual({
       question: "Is the sky blue?",
       answer: true,
+      timeLimit: 0,
+      points: 0,
       type: "trueOrFalse",
     });
   });
@@ -535,6 +563,23 @@ describe("parseTrueOrFalseResponse", () => {
     expect(result).toEqual({
       question: "",
       answer: false, // defaults to false
+      timeLimit: 0,
+      points: 0,
+      type: "trueOrFalse",
+    });
+  });
+
+  it("should parse a true response without time and points", () => {
+    const generatedMessage = `
+        Question: Is the sun hot?
+        Answer: True
+      `;
+    const result = parseTrueOrFalseResponse(generatedMessage);
+    expect(result).toEqual({
+      question: "Is the sun hot?",
+      answer: true,
+      timeLimit: 0,
+      points: 0,
       type: "trueOrFalse",
     });
   });

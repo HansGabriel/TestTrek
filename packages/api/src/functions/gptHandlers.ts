@@ -20,12 +20,16 @@ export interface IdentificationPrompt {
   question: string;
   answer: string;
   type: "identification";
+  timeLimit: number;
+  points: number;
 }
 
 export interface TrueOrFalsePrompt {
   question: string;
   answer: boolean;
   type: "trueOrFalse";
+  timeLimit: number;
+  points: number;
 }
 
 export const timeAndPointsPrompt = `
@@ -241,18 +245,30 @@ export const parseIdentificationResponse = (
 
   let question = "";
   let answer = "";
+  let timeLimit = 0;
+  let points = 0;
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
-      const q = line.replace("Question:", "").trim();
-      if (q) question = q;
+      question = line.replace("Question:", "").trim();
     } else if (line.startsWith("Answer:")) {
-      const a = line.replace("Answer:", "").trim();
-      if (a) answer = a;
+      answer = line.replace("Answer:", "").trim();
+    } else if (line.includes("Time Limit:")) {
+      const timeValue = line.split(":")[1]?.trim();
+      timeLimit = timeValue ? parseInt(timeValue, 10) : 0;
+    } else if (line.includes("Points:")) {
+      const pointsValue = line.split(":")[1]?.trim();
+      points = pointsValue ? parseInt(pointsValue, 10) : 0;
     }
   });
 
-  return { question, answer, type: "identification" };
+  return {
+    question,
+    answer,
+    timeLimit,
+    points,
+    type: "identification",
+  };
 };
 
 export const parseTrueOrFalseResponse = (
@@ -262,6 +278,8 @@ export const parseTrueOrFalseResponse = (
 
   let question = "";
   let answer = false;
+  let timeLimit = 0;
+  let points = 0;
 
   lines.forEach((line) => {
     if (line.startsWith("Question:")) {
@@ -270,8 +288,24 @@ export const parseTrueOrFalseResponse = (
     } else if (line.startsWith("Answer:")) {
       const a = line.replace("Answer:", "").trim().toLowerCase();
       answer = a === "true";
+    } else if (line.startsWith("Time Limit:")) {
+      const timeMatch = line.match(/\d+/);
+      if (timeMatch && timeMatch[0]) {
+        timeLimit = parseInt(timeMatch[0], 10);
+      }
+    } else if (line.startsWith("Points:")) {
+      const pointsMatch = line.match(/\d+/);
+      if (pointsMatch && pointsMatch[0]) {
+        points = parseInt(pointsMatch[0], 10);
+      }
     }
   });
 
-  return { question, answer, type: "trueOrFalse" };
+  return {
+    question,
+    answer,
+    timeLimit,
+    points,
+    type: "trueOrFalse",
+  };
 };
