@@ -1,3 +1,8 @@
+import {
+  TIME_LIMIT_OPTIONS,
+  POINT_OPTIONS,
+} from "../../../../apps/expo/src/screens/create-question/constants";
+
 export interface MCQPrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
@@ -22,21 +27,52 @@ export interface TrueOrFalsePrompt {
   type: "trueOrFalse";
 }
 
+const TIME_AND_POINTS_PROMPT = `
+Time Limit: [Select from the following options based on how difficult you think the question is, lower value means easy while higher value means harder, choose between ${TIME_LIMIT_OPTIONS.map(
+  (time) => time.title,
+).join(", ")}]
+Points: [Select from the following options based on how difficult you think the question is, lower value means easy while higher value means harder, choose between ${POINT_OPTIONS.map(
+  (points) => points.title,
+).join(", ")}]`;
+
 const promptGenerators: { [key: string]: (message: string) => string } = {
   multipleChoice: (message) =>
-    `Create a multiple choice question about: "${message}" with 4 choices. Each choices must not exceed 68 characters. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answer: Option [Correct option number]`,
+    `Create a multiple choice question about: "${message}" with 4 choices. Each choice must not exceed 68 characters. Format as:
+Question: [Your question here]
+Option 1: [Choice 1]
+Option 2: [Choice 2]
+Option 3: [Choice 3]
+Option 4: [Choice 4]
+Correct Answer: Option [Correct option number]
+${TIME_AND_POINTS_PROMPT}`,
 
   identification: (message) =>
-    `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [Your answer here]`,
+    `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as:
+Question: [Your question here]
+Answer: [Your answer here]
+${TIME_AND_POINTS_PROMPT}`,
 
   trueOrFalse: (message) =>
-    `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswer: [True/False]`,
+    `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as:
+Question: [Your question here]
+Answer: [True/False]
+${TIME_AND_POINTS_PROMPT}`,
 
   multiselect: (message) =>
-    `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:\nQuestion: [Your question here]\nOption 1: [Choice 1]\nOption 2: [Choice 2]\nOption 3: [Choice 3]\nOption 4: [Choice 4]\nCorrect Answers: Options [Correct option numbers separated by commas, e.g., 1,3]`,
+    `Create a multiselect question about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
+Question: [Your question here]
+Option 1: [Choice 1]
+Option 2: [Choice 2]
+Option 3: [Choice 3]
+Option 4: [Choice 4]
+Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
+${TIME_AND_POINTS_PROMPT}`,
 
   enumeration: (message) =>
-    `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as: Question: [Your question here]\nAnswers: [1. Answer1, 2. Answer2, ...]`,
+    `Provide an enumeration question related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as:
+Question: [Your question here]
+Answers: [1. Answer1, 2. Answer2, ...]
+${TIME_AND_POINTS_PROMPT}`,
 };
 
 export const generatePromptForType = (
