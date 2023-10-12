@@ -35,7 +35,7 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
   const handlePress = (index: number) => {
     if (reviewerIndex === index) {
       setReviewerIndex(null);
-
+      setReviewer(null);
       return;
     }
     setReviewerIndex(index);
