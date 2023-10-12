@@ -15,6 +15,8 @@ import { FlashList } from "@shopify/flash-list";
 import { User, Visibility } from "@prisma/client";
 import { Avatar } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import { ReusablePlaceholder } from "../../placeholders/ReusablePlaceholder";
+import { Ionicons } from "@expo/vector-icons";
 
 interface ObjectProps {
   id: string;
@@ -41,6 +43,18 @@ export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
       type: "edit",
     });
   };
+
+  if (tabData && tabData.length <= 0) {
+    return (
+      <View className="h-full">
+        <ReusablePlaceholder
+          icon={<Ionicons name="newspaper" size={40} color="#7c3aed" />}
+          text={`No reviewers shown`}
+          marginY={5}
+        />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">

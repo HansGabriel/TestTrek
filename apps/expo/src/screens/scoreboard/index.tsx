@@ -11,7 +11,7 @@ import XIcon from "../../icons/XIcon";
 import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
 import { truncateString } from "@acme/utils/src/strings";
-import congrats from "../../sounds/congratulations.mp3";
+import congrats from "../../../assets/sounds/congratulations.mp3";
 
 import type { FC } from "react";
 import { Audio } from "expo-av";
