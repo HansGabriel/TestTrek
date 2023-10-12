@@ -56,7 +56,7 @@ const generateEnumerationAnswersPrompt = (numItems: number) => {
   return `Answers: [${items}]`;
 };
 
-const promptGenerators: {
+export const promptGenerators: {
   [key: string]: (
     message: string,
     numChoices?: number,

@@ -28,8 +28,8 @@ Option 2: Very Many
 Option 3: Sometimes
 Option 4: Yes
 Correct Answer: Option 3
-Time Limit: 1 sec
-Points: 10 pt
+Time Limit: 5 sec
+Points: 50 pt
 `;
 
     const result = parseMultipleChoiceQuestions(input);
@@ -52,7 +52,7 @@ Points: 10 pt
     expect(result[2]?.choices[0]?.isCorrect).toBeFalsy();
     expect(result[2]?.choices[2]?.text).toBe("Sometimes");
     expect(result[2]?.choices[2]?.isCorrect).toBeTruthy();
-    expect(result[2]?.timeLimit).toBe(1);
-    expect(result[2]?.points).toBe(10);
+    expect(result[2]?.timeLimit).toBe(5);
+    expect(result[2]?.points).toBe(50);
   });
 });
