@@ -11,7 +11,7 @@ const ProfileHeader: FC = ({}) => {
   const navigation = useNavigation();
   return (
     <>
-      <View className="sticky top-9 z-50 mx-6 mb-10 flex flex-row justify-between bg-white py-5">
+      <View className="sticky z-50 mx-6 flex flex-row justify-between bg-white py-5">
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
             className="flex flex-row items-center self-center"

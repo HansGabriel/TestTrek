@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -37,6 +38,8 @@ import useToggleImageStore from "../../stores/useToggleImageStore";
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
 import type { PartialQuestion } from "../../stores/useQuestionStore";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ReusableHeader } from "../../components/headers/ReusableHeader";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -150,6 +153,8 @@ export const CreateQuestionScreen: FC = () => {
   const [aiQuestion, setAiQuestion] = useState<string>("");
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
   const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
+
+  const { height, width } = Dimensions.get("window");
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -451,66 +456,71 @@ export const CreateQuestionScreen: FC = () => {
     () => choices.filter((choice) => choice.isCorrect).length >= 1,
     [choices],
   );
-
   return (
-    <View className="mx-6 mt-12 flex-1">
-      <View className="z-50 flex flex-row items-center justify-between">
-        <View className="flex flex-row items-center gap-2">
-          <TouchableOpacity onPress={handleGoBack}>
-            <Feather name="x" size={24} color="black" />
-          </TouchableOpacity>
-          <Text className="font-nunito-bold text-2xl">Create Question</Text>
-        </View>
-        {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-        <QuestionOptionsDropdown
-          onSave={handleSaveAnswer(goBack)}
-          onDelete={handleDelete}
-        />
-      </View>
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        height: height,
+        width: width,
+      }}
+    >
+      <ReusableHeader
+        screenName={"Create Question"}
+        optionIcon={
+          <QuestionOptionsDropdown
+            onSave={handleSaveAnswer(goBack)}
+            onDelete={handleDelete}
+          />
+        }
+        backIcon={<Feather name="x" size={24} color="black" />}
+        handleExit={handleGoBack}
+      />
+      <View className="w-[90%] flex-1 self-center">
+        <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
+          {isImageVisible && (
+            <View className="my-5 flex flex-col ">
+              <TestImagePicker image={selectedImage} type="question" />
+            </View>
+          )}
+          <View className="flex w-[100%] flex-row items-center justify-evenly self-center">
+            <TouchableOpacity
+              className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
+                errorState.timeLimitError !== null
+                  ? "border-2 border-red-500"
+                  : ""
+              }`}
+              onPress={() => setShowTimeLimitModal(true)}
+            >
+              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                {timeLimitOptions.find((option) => option.isSelected)?.title ??
+                  "Time Limit"}
+              </Text>
+            </TouchableOpacity>
 
-      <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
-        {isImageVisible && (
-          <View className="mb-4 mt-8 flex flex-col">
-            <TestImagePicker image={selectedImage} type="question" />
+            <TouchableOpacity
+              className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
+                errorState.pointsError !== null ? "border-2 border-red-500" : ""
+              }`}
+              onPress={() => setShowPointModal(true)}
+            >
+              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                {pointOptions.find((option) => option.isSelected)?.title ??
+                  "Points"}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="items-center justify-center rounded-full border-2 border-violet-600 bg-white px-2 py-2"
+              onPress={() => setShowQuestionModal(true)}
+            >
+              <Text className="font-bold text-violet-600">
+                Generate with AI
+              </Text>
+            </TouchableOpacity>
           </View>
-        )}
-        <View className="flex flex-row items-center justify-between">
-          <TouchableOpacity
-            className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
-              errorState.timeLimitError !== null
-                ? "border-2 border-red-500"
-                : ""
-            }`}
-            onPress={() => setShowTimeLimitModal(true)}
-          >
-            <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-              {timeLimitOptions.find((option) => option.isSelected)?.title ??
-                "Time Limit"}
-            </Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
-              errorState.pointsError !== null ? "border-2 border-red-500" : ""
-            }`}
-            onPress={() => setShowPointModal(true)}
-          >
-            <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-              {pointOptions.find((option) => option.isSelected)?.title ??
-                "Points"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="items-center justify-center rounded-full border-2 border-violet-600 bg-white px-2 py-2"
-            onPress={() => setShowQuestionModal(true)}
-          >
-            <Text className="font-bold text-violet-600">Generate with AI</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View
-          className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
+          <View
+            className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
           ${
             isTextInputFocused
               ? "border-2 border-violet-600 bg-white"
@@ -518,222 +528,223 @@ export const CreateQuestionScreen: FC = () => {
           }
           ${errorState.titleError !== null ? "border-2 border-red-500" : ""}
         `}
-        >
-          <TextInput
-            className="self-stretch text-center text-xl font-bold leading-loose text-black"
-            onChangeText={setQuestionTitle}
-            value={questionTitle}
-            placeholder="Tap to add question"
-            placeholderTextColor={"#757575"}
-            onFocus={handleTextInputFocus}
-            multiline
-            numberOfLines={2}
-          />
-        </View>
-
-        <View className="mt-5 flex w-[100%] flex-row items-center justify-between self-center">
-          <View className="space-y-4">
-            <View>{renderChoice(choices[0]!)}</View>
-            <View>{renderChoice(choices[1]!)}</View>
+          >
+            <TextInput
+              className="self-stretch text-center text-xl font-bold leading-loose text-black"
+              onChangeText={setQuestionTitle}
+              value={questionTitle}
+              placeholder="Tap to add question"
+              placeholderTextColor={"#757575"}
+              onFocus={handleTextInputFocus}
+              multiline
+              numberOfLines={2}
+            />
           </View>
-          <View className="space-y-4">
-            <View>{renderChoice(choices[2]!)}</View>
-            <View>{renderChoice(choices[3]!)}</View>
+
+          <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+            <View className="space-y-4">
+              <View>{renderChoice(choices[0]!)}</View>
+              <View>{renderChoice(choices[1]!)}</View>
+            </View>
+            <View className="space-y-4">
+              <View>{renderChoice(choices[2]!)}</View>
+              <View>{renderChoice(choices[3]!)}</View>
+            </View>
           </View>
-        </View>
 
-        <TouchableOpacity
-          className="mt-10 w-full items-center justify-center rounded-[100px] border-b-2 border-violet-700 bg-violet-600 py-[18px]"
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          onPress={handleSaveAnswer(() => {})}
-        >
-          <Text className="text-center text-base font-bold text-white">
-            Save
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            className="mt-10 w-full items-center justify-center rounded-[100px] border-b-2 border-violet-700 bg-violet-600 py-[18px]"
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onPress={handleSaveAnswer(() => {})}
+          >
+            <Text className="text-center text-base font-bold text-white">
+              Save
+            </Text>
+          </TouchableOpacity>
 
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={showModal}
-          onRequestClose={() => {
-            setShowModal(!showModal);
-          }}
-        >
-          <TouchableWithoutFeedback
-            onPress={() => {
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={showModal}
+            onRequestClose={() => {
               setShowModal(!showModal);
             }}
           >
-            <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
-              <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                <View className="h-[50%] w-11/12 rounded-t-2xl bg-white">
-                  <Text className="mt-10 text-center text-2xl font-bold">
-                    Add Answer
-                  </Text>
-                  <TextInput
-                    multiline={true}
-                    maxLength={150}
-                    className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
-                    selectionColor="white"
-                    value={selectedChoice?.text}
-                    onChangeText={(modalText) =>
-                      handleChoiceChange(selectedQuestionId, modalText)
-                    }
-                    placeholder="Add answer"
-                    placeholderTextColor="#FFFFFF"
-                  />
-                  {selectedChoice?.text &&
-                  selectedChoice?.text.length >= 150 ? (
-                    <Text className="mt-2 text-center text-red-500 ">
-                      You've reached the maximum of 150 characters.
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setShowModal(!showModal);
+              }}
+            >
+              <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
+                <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
+                  <View className="h-[50%] w-11/12 rounded-t-2xl bg-white">
+                    <Text className="mt-10 text-center text-2xl font-bold">
+                      Add Answer
                     </Text>
-                  ) : null}
-
-                  <View className="flex flex-row items-center justify-center rounded-b-2xl bg-white px-5 py-8">
-                    <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
-                      Correct Answer
-                    </Text>
-                    <Switch
-                      value={selectedChoice?.isCorrect}
-                      onValueChange={toggleChoiceCorrect(selectedQuestionId)}
-                      trackColor={{ true: "#6949FF" }}
-                      disabled={
-                        hasOneCorrectAnswer && !selectedChoice?.isCorrect
+                    <TextInput
+                      multiline={true}
+                      maxLength={150}
+                      className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
+                      selectionColor="white"
+                      value={selectedChoice?.text}
+                      onChangeText={(modalText) =>
+                        handleChoiceChange(selectedQuestionId, modalText)
                       }
+                      placeholder="Add answer"
+                      placeholderTextColor="#FFFFFF"
                     />
+                    {selectedChoice?.text &&
+                    selectedChoice?.text.length >= 150 ? (
+                      <Text className="mt-2 text-center text-red-500 ">
+                        You've reached the maximum of 150 characters.
+                      </Text>
+                    ) : null}
+
+                    <View className="flex flex-row items-center justify-center rounded-b-2xl bg-white px-5 py-8">
+                      <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
+                        Correct Answer
+                      </Text>
+                      <Switch
+                        value={selectedChoice?.isCorrect}
+                        onValueChange={toggleChoiceCorrect(selectedQuestionId)}
+                        trackColor={{ true: "#6949FF" }}
+                        disabled={
+                          hasOneCorrectAnswer && !selectedChoice?.isCorrect
+                        }
+                      />
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+            </TouchableWithoutFeedback>
+          </Modal>
 
-        {/* Modals */}
+          {/* Modals */}
 
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showQuestionModal}
-          onRequestClose={() => {
-            setShowQuestionModal(!showQuestionModal);
-          }}
-        >
-          <TouchableWithoutFeedback
-            onPress={() => {
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showQuestionModal}
+            onRequestClose={() => {
               setShowQuestionModal(!showQuestionModal);
             }}
           >
-            <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
-              <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                <View className="h-[25%] w-11/12 rounded-2xl bg-white">
-                  <View className="h-[50%] justify-center self-center">
-                    <Text className="font-nunito-bold text-xl">
-                      What is your question?
-                    </Text>
-                  </View>
-                  <View className="flex flex-row items-center justify-center px-5">
-                    <TextInput
-                      className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
-                      placeholder="Ask AI a question"
-                      placeholderTextColor="#757575"
-                      onChangeText={(text) => setAiQuestion(text)}
-                      value={aiQuestion}
-                    />
-                    <TouchableOpacity
-                      className="absolute right-8"
-                      onPress={handleGenerateQuestion}
-                      disabled={isGenerating}
-                    >
-                      {isGenerating ? (
-                        <ActivityIndicator size="small" />
-                      ) : (
-                        <Feather name="send" size={24} color="#6949FF" />
-                      )}
-                    </TouchableOpacity>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setShowQuestionModal(!showQuestionModal);
+              }}
+            >
+              <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
+                <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
+                  <View className="h-[25%] w-11/12 rounded-2xl bg-white">
+                    <View className="h-[50%] justify-center self-center">
+                      <Text className="font-nunito-bold text-xl">
+                        What is your question?
+                      </Text>
+                    </View>
+                    <View className="flex flex-row items-center justify-center px-5">
+                      <TextInput
+                        className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
+                        placeholder="Ask AI a question"
+                        placeholderTextColor="#757575"
+                        onChangeText={(text) => setAiQuestion(text)}
+                        value={aiQuestion}
+                      />
+                      <TouchableOpacity
+                        className="absolute right-8"
+                        onPress={handleGenerateQuestion}
+                        disabled={isGenerating}
+                      >
+                        {isGenerating ? (
+                          <ActivityIndicator size="small" />
+                        ) : (
+                          <Feather name="send" size={24} color="#6949FF" />
+                        )}
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+            </TouchableWithoutFeedback>
+          </Modal>
 
-        <OptionModal
-          title="Time Limit"
-          options={timeLimitOptions}
-          setOptions={setTimeLimitOptions}
-          isVisible={showTimeLimitModal}
-          setIsVisible={setShowTimeLimitModal}
-        />
+          <OptionModal
+            title="Time Limit"
+            options={timeLimitOptions}
+            setOptions={setTimeLimitOptions}
+            isVisible={showTimeLimitModal}
+            setIsVisible={setShowTimeLimitModal}
+          />
 
-        <OptionModal
-          title="Points"
-          options={pointOptions}
-          setOptions={setPointOptions}
-          isVisible={showPointModal}
-          setIsVisible={setShowPointModal}
-        />
+          <OptionModal
+            title="Points"
+            options={pointOptions}
+            setOptions={setPointOptions}
+            isVisible={showPointModal}
+            setIsVisible={setShowPointModal}
+          />
 
-        <View className="mt-10 flex flex-row items-center justify-between border-t border-neutral-100 bg-white px-6 pb-9 pt-6">
-          <ScrollView
-            horizontal
-            className="flex flex-row gap-x-2"
-            showsHorizontalScrollIndicator={false}
-          >
-            {questions.map((question, idx) => (
-              <TouchableOpacity
-                className="relative h-[58px] w-24"
-                key={idx}
-                onPress={handleClickQuestion(idx)}
-              >
-                {question.image ? (
-                  <Image
-                    source={{ uri: question.image }}
-                    className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
-                      idx === selectedIndex
-                        ? "border-4 border-violet-600"
-                        : "border border-violet-600"
-                    }`}
-                  />
-                ) : (
-                  <View
-                    className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
-                      idx === selectedIndex
-                        ? "border-4 border-violet-600"
-                        : "border border-violet-600"
-                    } bg-neutral-100`}
-                  ></View>
-                )}
-                <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
-                  <Text className="text-center text-[10px] font-bold text-white">
-                    {idx + 1}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          <TouchableOpacity
-            className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow"
-            onPress={openBottomSheet}
-          >
-            <Feather name="plus" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+          <View className="mt-10 flex flex-row items-center justify-between border-t border-neutral-100 bg-white px-6 pb-9 pt-6">
+            <ScrollView
+              horizontal
+              className="flex flex-row gap-x-2"
+              showsHorizontalScrollIndicator={false}
+            >
+              {questions.map((question, idx) => (
+                <TouchableOpacity
+                  className="relative h-[58px] w-24"
+                  key={idx}
+                  onPress={handleClickQuestion(idx)}
+                >
+                  {question.image ? (
+                    <Image
+                      source={{ uri: question.image }}
+                      className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                        idx === selectedIndex
+                          ? "border-4 border-violet-600"
+                          : "border border-violet-600"
+                      }`}
+                    />
+                  ) : (
+                    <View
+                      className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                        idx === selectedIndex
+                          ? "border-4 border-violet-600"
+                          : "border border-violet-600"
+                      } bg-neutral-100`}
+                    ></View>
+                  )}
+                  <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
+                    <Text className="text-center text-[10px] font-bold text-white">
+                      {idx + 1}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow"
+              onPress={openBottomSheet}
+            >
+              <Feather name="plus" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        style={styles.bottomSheetContainer}
-      >
-        <ChoiceBottomSheet
-          goToCreateQuestion={goToCreateQuestion}
-          closeBottomSheet={() => bottomSheetRef.current?.close()}
-        />
-      </BottomSheet>
-    </View>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={-1}
+          snapPoints={snapPoints}
+          onChange={handleSheetChanges}
+          style={styles.bottomSheetContainer}
+        >
+          <ChoiceBottomSheet
+            goToCreateQuestion={goToCreateQuestion}
+            closeBottomSheet={() => bottomSheetRef.current?.close()}
+          />
+        </BottomSheet>
+      </View>
+    </SafeAreaView>
   );
 };
 

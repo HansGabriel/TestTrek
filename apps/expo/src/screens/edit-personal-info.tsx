@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   Text,
   View,
+  Dimensions,
 } from "react-native";
 
 import { Avatar } from "@rneui/themed";
@@ -22,8 +22,10 @@ import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
 import useGoBack from "../hooks/useGoBack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const EditPersonalInfoScreen = () => {
+  const { height, width } = Dimensions.get("window");
   const { data: userDetails, refetch: refetchData } =
     trpc.user.getUserDetails.useQuery();
 
@@ -61,7 +63,13 @@ export const EditPersonalInfoScreen = () => {
 
   if (!userDetails) {
     return (
-      <SafeAreaView className="flex-1">
+      <SafeAreaView
+        className="flex-1"
+        style={{
+          height: height,
+          width: width,
+        }}
+      >
         <ReusableHeader screenName="Personal Info" handleExit={goBack} />
         <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
           <View className=" h-[25%] w-[100%] items-center justify-center">
@@ -82,162 +90,168 @@ export const EditPersonalInfoScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
       className="flex-1"
+      style={{
+        height: height,
+        width: width,
+      }}
     >
-      <ReusableHeader
-        screenName="Personal Info"
-        optionIcon={edit ? <XIcon /> : <EditIcon />}
-        onIconPress={() => setEdit(!edit)}
-        handleExit={goBack}
-      />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className=" h-30 w-[90%] items-center justify-center self-center">
-          <Controller
-            name="imageUrl"
-            control={control}
-            defaultValue={`${userDetails?.imageUrl}`}
-            render={({ field: { value } }) => (
-              <Avatar
-                rounded
-                size={120}
-                source={{
-                  uri: value,
-                }}
-              />
-            )}
-          />
-        </View>
-
-        <View className=" mt-5 h-[60%] w-[85%] self-center">
-          <Controller
-            name="userName"
-            control={control}
-            defaultValue={`${userDetails?.username}`}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <AppTextInput
-                label="Username"
-                textInputProps={{
-                  onBlur,
-                  placeholder: "Enter Username",
-                  onChangeText: onChange,
-                  value,
-                  editable: edit,
-                  style: { color: !edit ? "#6b7280" : "black" },
-                }}
-              />
-            )}
-          />
-          {errors.userName && (
-            <Text className="text-red-500">{errors.userName.message}</Text>
-          )}
-          <Controller
-            name="firstName"
-            control={control}
-            defaultValue={`${userDetails?.firstName}`}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <AppTextInput
-                label="First Name"
-                textInputProps={{
-                  onBlur,
-                  placeholder: "Enter First Name",
-                  onChangeText: onChange,
-                  value,
-                  editable: edit,
-                  style: { color: !edit ? "#6b7280" : "black" },
-                }}
-              />
-            )}
-          />
-          {errors.firstName && (
-            <Text className="text-red-500">{errors.firstName.message}</Text>
-          )}
-          <Controller
-            name="lastName"
-            control={control}
-            defaultValue={`${userDetails?.lastName}`}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <AppTextInput
-                label="Last Name"
-                textInputProps={{
-                  onBlur,
-                  placeholder: "Enter Last Name",
-                  onChangeText: onChange,
-                  value,
-                  editable: edit,
-                  style: { color: !edit ? "#6b7280" : "black" },
-                }}
-              />
-            )}
-          />
-          {errors.lastName && (
-            <Text className="text-red-500">{errors.lastName.message}</Text>
-          )}
-          <Controller
-            name="email"
-            control={control}
-            defaultValue={`${userDetails?.email}`}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <AppTextInput
-                label="Email Address"
-                textInputProps={{
-                  onBlur,
-                  placeholder: "Enter Email Address",
-                  onChangeText: onChange,
-                  value,
-                  editable: edit,
-                  style: { color: !edit ? "#6b7280" : "black" },
-                }}
-              />
-            )}
-          />
-          {errors.email && (
-            <Text className="text-red-500">{errors.email.message}</Text>
-          )}
-          <View className="mb-5">
+      <SafeAreaView className="flex-1">
+        <ReusableHeader
+          screenName="Personal Info"
+          optionIcon={edit ? <XIcon /> : <EditIcon />}
+          onIconPress={() => setEdit(!edit)}
+          handleExit={goBack}
+        />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View className=" h-30 w-[90%] items-center justify-center self-center">
             <Controller
-              name="about"
+              name="imageUrl"
               control={control}
-              defaultValue={`${userDetails?.about}`}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <AppTextInput
-                  label="About Me"
-                  type="textarea"
-                  textInputProps={{
-                    onBlur,
-                    onChangeText: onChange,
-                    value: value ?? "",
-                    editable: edit,
-                    style: {
-                      color: !edit ? "#6b7280" : "black",
-                      textAlignVertical: "top",
-                    },
+              defaultValue={`${userDetails?.imageUrl}`}
+              render={({ field: { value } }) => (
+                <Avatar
+                  rounded
+                  size={120}
+                  source={{
+                    uri: value,
                   }}
                 />
               )}
             />
-            {errors.about && (
-              <Text className="text-red-500">{errors.about.message}</Text>
-            )}
           </View>
-        </View>
 
-        {edit ? (
-          <View className="my-16">
-            <AppButton
-              text="Save"
-              buttonColor="violet-600"
-              borderShadowColor="indigo-800"
-              borderRadius="full"
-              fontStyle="bold"
-              textColor="white"
-              TOwidth="full"
-              Vwidth="80"
-              onPress={handleSubmit(submitEditedData)}
+          <View className=" mt-5 h-[60%] w-[85%] self-center">
+            <Controller
+              name="userName"
+              control={control}
+              defaultValue={`${userDetails?.username}`}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <AppTextInput
+                  label="Username"
+                  textInputProps={{
+                    onBlur,
+                    placeholder: "Enter Username",
+                    onChangeText: onChange,
+                    value,
+                    editable: edit,
+                    style: { color: !edit ? "#6b7280" : "black" },
+                  }}
+                />
+              )}
             />
+            {errors.userName && (
+              <Text className="text-red-500">{errors.userName.message}</Text>
+            )}
+            <Controller
+              name="firstName"
+              control={control}
+              defaultValue={`${userDetails?.firstName}`}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <AppTextInput
+                  label="First Name"
+                  textInputProps={{
+                    onBlur,
+                    placeholder: "Enter First Name",
+                    onChangeText: onChange,
+                    value,
+                    editable: edit,
+                    style: { color: !edit ? "#6b7280" : "black" },
+                  }}
+                />
+              )}
+            />
+            {errors.firstName && (
+              <Text className="text-red-500">{errors.firstName.message}</Text>
+            )}
+            <Controller
+              name="lastName"
+              control={control}
+              defaultValue={`${userDetails?.lastName}`}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <AppTextInput
+                  label="Last Name"
+                  textInputProps={{
+                    onBlur,
+                    placeholder: "Enter Last Name",
+                    onChangeText: onChange,
+                    value,
+                    editable: edit,
+                    style: { color: !edit ? "#6b7280" : "black" },
+                  }}
+                />
+              )}
+            />
+            {errors.lastName && (
+              <Text className="text-red-500">{errors.lastName.message}</Text>
+            )}
+            <Controller
+              name="email"
+              control={control}
+              defaultValue={`${userDetails?.email}`}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <AppTextInput
+                  label="Email Address"
+                  textInputProps={{
+                    onBlur,
+                    placeholder: "Enter Email Address",
+                    onChangeText: onChange,
+                    value,
+                    editable: edit,
+                    style: { color: !edit ? "#6b7280" : "black" },
+                  }}
+                />
+              )}
+            />
+            {errors.email && (
+              <Text className="text-red-500">{errors.email.message}</Text>
+            )}
+            <View className="mb-5">
+              <Controller
+                name="about"
+                control={control}
+                defaultValue={`${userDetails?.about}`}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <AppTextInput
+                    label="About Me"
+                    type="textarea"
+                    textInputProps={{
+                      onBlur,
+                      onChangeText: onChange,
+                      value: value ?? "",
+                      editable: edit,
+                      style: {
+                        color: !edit ? "#6b7280" : "black",
+                        textAlignVertical: "top",
+                      },
+                    }}
+                  />
+                )}
+              />
+              {errors.about && (
+                <Text className="text-red-500">{errors.about.message}</Text>
+              )}
+            </View>
           </View>
-        ) : (
-          ""
-        )}
-      </ScrollView>
+
+          {edit ? (
+            <View className="my-16">
+              <AppButton
+                text="Save"
+                buttonColor="violet-600"
+                borderShadowColor="indigo-800"
+                borderRadius="full"
+                fontStyle="bold"
+                textColor="white"
+                TOwidth="full"
+                Vwidth="80"
+                onPress={handleSubmit(submitEditedData)}
+              />
+            </View>
+          ) : (
+            ""
+          )}
+        </ScrollView>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };

@@ -196,6 +196,7 @@ export const useRouter = router({
         score: true,
       },
       where: {
+        playerId: ctx.auth.userId,
         createdAt: {
           gte: new Date(startOfWeek.toISOString()),
           lte: new Date(endOfWeek.toISOString()),

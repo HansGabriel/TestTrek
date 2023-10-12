@@ -7,6 +7,7 @@ import AboutIcon from "../../icons/settings/AboutIcon";
 import RedLogoutIcon from "../../icons/settings/RedLogoutIcon";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface LogoutProps {
   openBottomSheet: () => void;
@@ -16,8 +17,8 @@ const SettingsButtons: FC<LogoutProps> = ({ openBottomSheet }) => {
   const navigation = useNavigation();
 
   return (
-    <View className="flex-1 self-center">
-      <View className="mt-5 w-80 self-center">
+    <SafeAreaView className="flex-1 self-center">
+      <View className="w-80 self-center">
         <TouchableOpacity
           onPress={() => navigation.navigate("EditPersonalInfo")}
         >
@@ -50,7 +51,7 @@ const SettingsButtons: FC<LogoutProps> = ({ openBottomSheet }) => {
           <RedLogoutIcon width={"100%"} />
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
