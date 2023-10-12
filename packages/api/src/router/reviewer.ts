@@ -26,6 +26,11 @@ export const reviewerRouter = router({
             visibility: "public",
           };
           break;
+        case "public":
+          whereCondition = {
+            visibility: "public",
+          };
+          break;
         default:
           throw new Error("Invalid reviewerType provided.");
       }
