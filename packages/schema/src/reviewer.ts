@@ -26,7 +26,7 @@ export const reviewerSchema = z.object({
   }),
 });
 
-export const reviewerTypeSchema = z.enum(["user", "other"]);
+export const reviewerTypeSchema = z.enum(["user", "other", "public"]);
 export const reviewerSortSchema = z
   .enum(["newest", "oldest", "alphabetical"])
   .optional();

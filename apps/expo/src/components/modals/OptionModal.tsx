@@ -22,6 +22,7 @@ interface Props {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   setOptions: (options: Option[]) => void;
+  buttonText?: string;
 }
 
 const OptionModal: FC<Props> = ({
@@ -30,6 +31,7 @@ const OptionModal: FC<Props> = ({
   isVisible,
   setIsVisible,
   setOptions,
+  buttonText = "Ok",
 }) => {
   const handleClose = () => {
     setIsVisible(false);
@@ -73,7 +75,7 @@ const OptionModal: FC<Props> = ({
         <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
             <View className="flex h-3/4 w-11/12 items-center rounded-2xl bg-white">
-              <Text className="mt-10 text-center text-2xl font-bold">
+              <Text className="mt-10 self-center px-5 text-center text-2xl font-bold">
                 {title}
               </Text>
 
@@ -82,7 +84,7 @@ const OptionModal: FC<Props> = ({
               {chunk(options, 2).map((row, idx) => (
                 <View
                   key={idx}
-                  className="mt-5 flex flex-row items-center justify-between gap-x-2"
+                  className="mt-5 flex w-[90%] flex-row items-center justify-around self-center"
                 >
                   {row.map((option) => (
                     <TouchableOpacity
@@ -112,7 +114,7 @@ const OptionModal: FC<Props> = ({
                 onPress={handleClose}
               >
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
-                  OK
+                  {buttonText}
                 </Text>
               </TouchableOpacity>
             </View>
