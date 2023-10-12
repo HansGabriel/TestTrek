@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BackendTabPage } from "../../types/libraryTypes";
 import { trpc } from "../../utils/trpc";
-import { CollectionTabContent } from "../my-collections/CollectionTabContent";
+import { CollectionsTab } from "../my-collections/Collections";
 import { AddButton } from "../buttons/AddButton";
 import { LibraryTabs } from "./LibraryTabs";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
@@ -131,10 +131,16 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
     );
   }
 
-  if (testData.length <= 0 || collectionData.length <= 0) {
+  if (testData.length < 0 || collectionData.length < 0) {
     return (
       <>
-        <SafeAreaView className="flex-1">
+        <SafeAreaView
+          className="flex-1"
+          style={{
+            width: Dimensions.get("window").width,
+            height: Dimensions.get("window").height,
+          }}
+        >
           <View className="mb-5 mt-1 w-full flex-row items-end justify-between">
             <View className="mx-4">
               <Text className=" font-nunito-bold text-xl">
@@ -214,18 +220,20 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
         {tabType === "Test" ? (
           <>
             <LibraryTabs tabData={testData} />
-            {tab === "user" ? (
-              <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
+            {tab === "user" && (
+              <View className="z-50 -mt-10 h-12 w-14 items-center self-end">
                 <AddButton screen={"CreateTest"} />
               </View>
-            ) : (
-              ""
             )}
           </>
         ) : (
           <>
-            <CollectionTabContent tabData={collectionData} />
-            <View className="z-50 -mt-20 mb-5 h-12 w-14 items-center self-end">
+            <CollectionsTab tabData={collectionData} />
+            <View
+              className={`z-50 ${
+                collectionData.length > 0 ? "-mt-24 mb-5" : "-mt-16"
+              }  h-12 w-14 items-center self-end`}
+            >
               <AddButton screen={"CreateCollection"} />
             </View>
           </>

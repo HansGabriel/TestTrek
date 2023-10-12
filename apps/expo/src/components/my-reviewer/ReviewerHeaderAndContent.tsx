@@ -113,7 +113,7 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
     );
   }
 
-  if (reviewerData.length <= 0) {
+  if (reviewerData.length < 0) {
     return (
       <>
         <SafeAreaView className="flex-1">
@@ -176,9 +176,13 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
       </View>
       <View className="flex-1">
         <ReviewerTabs tabData={reviewerData} />
-        <View className="z-50 -mt-20 h-12 w-14 items-center self-end">
-          {tab === "user" ? <AddButton screen={"CreateReviewer"} /> : ""}
-        </View>
+        {tab === "user" ? (
+          <View className="z-50 -mt-10 h-12 w-14 items-center self-end">
+            <AddButton screen={"CreateReviewer"} />
+          </View>
+        ) : (
+          ""
+        )}
       </View>
     </SafeAreaView>
   );
