@@ -20,8 +20,8 @@ export const multipleQuestionsPromptInput = z.object({
     "enumeration",
     "multiselect",
   ]),
-  numOfQuestions: z.number(),
-  numOfChoicesPerQuestion: z.number(),
-  maxCharsPerQuestion: z.number(),
-  maxCharsPerChoice: z.number(),
+  numOfQuestions: z.number().optional(),
+  numOfChoicesPerQuestion: z.number().optional(),
+  maxCharsPerQuestion: z.number().optional(),
+  maxCharsPerChoice: z.number().optional(),
 });

@@ -1,6 +1,5 @@
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
 
-
 export interface MultipleChoicePrompt {
   question: string;
   choices: { text: string; isCorrect: boolean }[];
@@ -57,37 +56,61 @@ const generateEnumerationAnswersPrompt = (numItems: number) => {
   return `Answers: [${items}]`;
 };
 
-const promptGenerators: {
-  [key: string]: (message: string, numChoices?: number) => string;
+export const promptGenerators: {
+  [key: string]: (
+    message: string,
+    numChoices?: number,
+    maxCharsForQuestion?: number,
+    maxCharsForChoice?: number,
+  ) => string;
 } = {
-  multipleChoice: (message, numChoices = 4) =>
-    `Create a multiple choice question about: "${message}" with ${numChoices} choices. Each choice must not exceed 68 characters. Format as:
+  multipleChoice: (
+    message,
+    numChoices = 4,
+    maxCharsForQuestion = 100,
+    maxCharsForChoice = 68,
+  ) =>
+    `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answer: Option [Correct option number]
 ${timeAndPointsPrompt}`,
 
-  identification: (message) =>
-    `Create an identification question based on: "${message}". The answer must not exceed 68 characters. Format as:
+  identification: (
+    message,
+    maxCharsForQuestion = 100,
+    maxCharsForChoice = 68,
+  ) =>
+    `Create an identification question (maximum of ${maxCharsForQuestion} characters) based on: "${message}". The answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [Your answer here]
 ${timeAndPointsPrompt}`,
 
-  trueOrFalse: (message) =>
-    `Based on the information "${message}", generate a true or false question. The answer must not exceed 68 characters. Format as:
+  trueOrFalse: (message, maxCharsForQuestion = 100, maxCharsForChoice = 68) =>
+    `Based on the information "${message}", generate a true or false question (maximum of ${maxCharsForQuestion} characters). The answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [True/False]
 ${timeAndPointsPrompt}`,
 
-  multiselect: (message, numChoices = 4) =>
-    `Create a multiselect question about: "${message}" with ${numChoices} choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
+  multiselect: (
+    message,
+    numChoices = 4,
+    maxCharsForQuestion = 100,
+    maxCharsForChoice = 68,
+  ) =>
+    `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters. Multiple answers can be correct. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
 
-  enumeration: (message, numAnswers = 4) =>
-    `Provide an enumeration question related to "${message}" with a maximum of ${numAnswers} inputs. The choices or answer must not exceed 68 characters. Format as:
+  enumeration: (
+    message,
+    numAnswers = 4,
+    maxCharsForQuestion = 100,
+    maxCharsForChoice = 68,
+  ) =>
+    `Provide an enumeration question (maximum of ${maxCharsForQuestion} characters) related to "${message}" with a maximum of ${numAnswers} inputs. The choices or answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 ${generateEnumerationAnswersPrompt(numAnswers)}
 ${timeAndPointsPrompt}`,
@@ -96,10 +119,18 @@ ${timeAndPointsPrompt}`,
 export const generatePromptForType = (
   message: string,
   questionType: keyof typeof promptGenerators,
+  numChoices?: number,
+  maxCharsForQuestion?: number,
+  maxCharsForChoice?: number,
 ): string => {
   const promptGenerator = promptGenerators[questionType];
   return promptGenerator
-    ? promptGenerator(message)
+    ? promptGenerator(
+        message,
+        numChoices,
+        maxCharsForQuestion,
+        maxCharsForChoice,
+      )
     : `Please provide information based on: "${message}"`;
 };
 
