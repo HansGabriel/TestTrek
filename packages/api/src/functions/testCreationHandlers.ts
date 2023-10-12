@@ -10,7 +10,7 @@ type QuestionType =
 interface QuestionPromptInput {
   content: string;
   type: QuestionType;
-  numOfQuestions: number;
+  numOfQuestions?: number;
   numOfChoicesPerQuestion?: number;
   maxCharsPerQuestion?: number;
   maxCharsPerChoice?: number;
@@ -19,7 +19,7 @@ interface QuestionPromptInput {
 export const generateQuestionPrompt = ({
   content,
   type,
-  numOfQuestions,
+  numOfQuestions = 1,
   numOfChoicesPerQuestion = 4,
   maxCharsPerQuestion = 100,
   maxCharsPerChoice = 68,
@@ -38,19 +38,6 @@ export const generateQuestionPrompt = ({
           ? `Correct Answer: Option [Correct option number]\n`
           : `Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]\n`;
       basePrompt = `Create a ${type} question (maximum of ${maxCharsPerQuestion} characters) about "${content}". Each choice must not exceed ${maxCharsPerChoice} characters. Format as:\nQuestion: [Your question here]\n${optionsPrompt}\n${correctAnswerPrompt}${timeAndPointsPrompt}`;
-      break;
-    case "identification":
-      basePrompt = `Create an identification question (max ${maxCharsPerQuestion} chars) based on "${content}". Format as:\nQuestion: [Your question here]\nAnswer: [Your answer here]\n${timeAndPointsPrompt}`;
-      break;
-    case "trueOrFalse":
-      basePrompt = `Based on the information "${content}", generate a true or false question (max ${maxCharsPerQuestion} chars). Format as:\nQuestion: [Your question here]\nAnswer: [True/False]\n${timeAndPointsPrompt}`;
-      break;
-    case "enumeration":
-      const enumerationPrompt = `Answers: [${Array.from(
-        { length: numOfChoicesPerQuestion },
-        (_, i) => `${i + 1}. Answer${i + 1}`,
-      ).join(", ")}]`;
-      basePrompt = `Provide an enumeration question (maximum of ${maxCharsPerQuestion} characters) related to "${content}" with a maximum of ${numOfChoicesPerQuestion} inputs. Each answer must not exceed ${maxCharsPerChoice} characters. Format as:\nQuestion: [Your question here]\n${enumerationPrompt}\n${timeAndPointsPrompt}`;
       break;
     default:
       throw new Error("Invalid question type provided.");
