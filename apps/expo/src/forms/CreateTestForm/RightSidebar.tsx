@@ -109,6 +109,7 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
               </ScrollView>
               <View className="mx-3 mb-5 flex flex-row">
                 <AppButton
+                  // eslint-disable-next-line @typescript-eslint/no-empty-function
                   onPress={() => {}}
                   text="Go to Reviewer"
                   buttonColor={
