@@ -1,5 +1,4 @@
 import {
-  SafeAreaView,
   View,
   Text,
   TouchableOpacity,
@@ -8,6 +7,7 @@ import {
   StatusBar,
   Alert,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import CheckboxIcon from "../../icons/CheckboxIcon";
@@ -41,6 +41,7 @@ import {
   playSound,
   unloadAudio,
 } from "../../services/audioService";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const choiceStyles: ChoiceStyle[] = [
   {
@@ -351,9 +352,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     });
   };
 
+  const { height, width } = Dimensions.get("window");
+
   return (
     <>
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
         <View className="z-10 mx-6 mt-10 flex flex-row items-center justify-between">
           <Text className="font-nunito-bold text-2xl">
             {index + 1}/{totalQuestions}
@@ -391,7 +394,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               </Text>
             </View>
 
-            <View className="mt-5 flex w-[100%] flex-row items-center justify-between self-center">
+            <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
               <View className="space-y-4">
                 <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
                 <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>

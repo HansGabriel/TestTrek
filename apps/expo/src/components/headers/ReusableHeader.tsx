@@ -19,7 +19,7 @@ export const ReusableHeader: FC<HeaderProps> = ({
 }) => {
   return (
     <>
-      <View className="mx-5 mt-7 flex  flex-row justify-between py-5">
+      <View className="mx-5 flex  flex-row justify-between py-5 z-50" >
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
             onPress={handleExit}

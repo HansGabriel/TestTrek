@@ -50,11 +50,11 @@ export const CollectionsTab: FC<CollectionProps> = ({
       <FlashList
         data={tabData}
         numColumns={2}
-        estimatedItemSize={5}
+        estimatedItemSize={100}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <TouchableOpacity
-            className="mx-2 my-5"
+            className="mx-auto my-5"
             onPress={() =>
               tabType === "edit" ? goToEdit(item.id) : goToView(item.id)
             }

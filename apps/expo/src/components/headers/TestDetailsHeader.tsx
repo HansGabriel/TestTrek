@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import XIcon from "../../icons/XIcon";
 import StarIcon from "../../icons/StarIcon";
 import EditIcon from "../../icons/EditIcon";
@@ -24,7 +24,7 @@ const TestDetailsHeader: FC<Props> = ({
   const trpcUtils = trpc.useContext();
 
   const { showToast } = useToast();
-  const goBack = useGoBack()
+  const goBack = useGoBack();
 
   const { data: isFavorite } = trpc.test.getIsFavorite.useQuery({ testId });
   const { mutate: toggleFavorite } = trpc.test.toggleFavorite.useMutation({
@@ -45,9 +45,13 @@ const TestDetailsHeader: FC<Props> = ({
 
   if (isFavorite === undefined) {
     return (
-      <>
-        <ReusableHeader screenName={""} optionIcon={<StarIcon />} handleExit={goBack} />
-      </>
+      <View>
+        <ReusableHeader
+          screenName={"Test Details"}
+          optionIcon={<StarIcon />}
+          handleExit={goBack}
+        />
+      </View>
     );
   }
 
@@ -59,13 +63,16 @@ const TestDetailsHeader: FC<Props> = ({
 
   return (
     <>
-      <View className="sticky top-9 z-50 mx-6 mb-10 flex flex-row justify-between bg-white py-5">
-        <TouchableOpacity
-          className="flex flex-row items-center gap-4"
-          onPress={goBack}
-        >
-          <XIcon />
-        </TouchableOpacity>
+      <View className="sticky z-50 mx-6 flex flex-row justify-between bg-white py-5">
+        <View className="flex flex-row items-center gap-4">
+          <TouchableOpacity onPress={goBack}>
+            <XIcon />
+          </TouchableOpacity>
+          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+            Test Details
+          </Text>
+        </View>
+
         <View className="flex flex-row items-center gap-4">
           {showEditIcon && (
             <TouchableOpacity onPress={goToEditTest}>

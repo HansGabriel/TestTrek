@@ -1,13 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Footer from "../components/Footer";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
@@ -18,8 +12,10 @@ import TargetIcon from "../icons/statistics/TargetIcon";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import useGoBack from "../hooks/useGoBack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const MyStatistics = () => {
+  const { height, width } = Dimensions.get("window");
   const goBack = useGoBack();
   const { data: totalUserOnTop, isLoading: topLoading } =
     trpc.user.getTimesUserOnTop.useQuery();
@@ -70,8 +66,14 @@ export const MyStatistics = () => {
     weeklyScoreLoading
   ) {
     return (
-      <SafeAreaView className="flex-1">
-        <View className="mx-6 mt-10 flex flex-row justify-between bg-white py-5">
+      <SafeAreaView
+        className="flex-1"
+        style={{
+          height: height,
+          width: width,
+        }}
+      >
+        <View className="mx-6 flex flex-row justify-between bg-white py-5">
           <View className="flex-row gap-4 self-center">
             <TouchableOpacity
               className="flex flex-row items-center self-center"
@@ -98,8 +100,14 @@ export const MyStatistics = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1">
-      <View className="flex-col pt-9">
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        height: height,
+        width: width,
+      }}
+    >
+      <View className="flex-col">
         <View className="mx-6 flex flex-row justify-between bg-white py-5">
           <View className="flex-row gap-4 self-center">
             <TouchableOpacity
@@ -118,7 +126,7 @@ export const MyStatistics = () => {
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-1">
-            <View className=" h-[10%] w-[90%] flex-col self-center border-l border-r border-t border-zinc-200 ">
+            <View className=" h-[10%] w-[90%] flex-col self-center ">
               <View className="mt-5 flex-row justify-around">
                 <Text className=" font-nunito-bold text-lg">
                   Your Points This Week
@@ -128,14 +136,14 @@ export const MyStatistics = () => {
                 </Text>
               </View>
             </View>
-            <View className=" h-[45%]  w-[90%] self-center border-b border-l border-r border-zinc-200">
+            <View className=" h-[50%]  w-[90%] self-center">
               <LineChart
                 style={{
                   alignSelf: "flex-start",
                 }}
                 data={lineData}
-                width={Dimensions.get("window").width * 0.89}
-                height={Dimensions.get("window").height * 0.5}
+                width={width * 0.89}
+                height={height * 0.6}
                 chartConfig={{
                   backgroundColor: "white",
                   backgroundGradientFrom: "white",
@@ -152,8 +160,8 @@ export const MyStatistics = () => {
               />
             </View>
 
-            <View className=" mt-7 flex w-[95%] flex-col self-center bg-white ">
-              <View className="flex-row gap-4 px-2 pb-5">
+            <View className=" mt-5 flex w-[90%] flex-col self-center bg-white ">
+              <View className="flex-row gap-4 px-2">
                 <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
                   My Achievements
                 </Text>

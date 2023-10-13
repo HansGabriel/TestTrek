@@ -1,6 +1,7 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import React, { useCallback, useRef, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { Dimensions, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import SettingsButtons from "../../components/settings/SettingsButtons";
 import { LogoutModal } from "./LogoutModal";
@@ -22,8 +23,11 @@ export const SettingsScreen = () => {
     }
   }, []);
 
+  const { height, width } = Dimensions.get("window");
+
   return (
     <SafeAreaView
+      style={{ height: height, width: width }}
       className={`flex-1 flex-col ${
         isModalOpen ? "inset-0 z-10 bg-black/50" : ""
       }`}

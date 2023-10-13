@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import { View, SafeAreaView, Alert } from "react-native";
+import { View, Alert, Dimensions } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
@@ -16,6 +16,7 @@ import type { PartialQuestion, QuestionType } from "../stores/useQuestionStore";
 import { RootStackScreenProps } from "../types";
 
 import useToast from "../hooks/useToast";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -23,6 +24,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   navigation,
   route,
 }) => {
+  const { height, width } = Dimensions.get("window");
   const { testId } = route.params;
   const trpcUtils = trpc.useContext();
   const goBack = useGoBack();
@@ -167,7 +169,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mb-20">
+      <View className="mb-20 -mt-5">
         <CreateTestForm
           testTitle="Edit Test"
           testDetails={{

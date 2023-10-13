@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {
-  SafeAreaView,
   View,
   TouchableOpacity,
   Text,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import ProfileHeader from "../components/headers/ProfileHeader";
 import ProfileDetailsSection from "../components/profile-details/details-section/ProfileDetailsSection";
@@ -15,6 +15,7 @@ import Footer from "../components/Footer";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { LibraryTabs } from "../components/my-library/LibraryTabs";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 enum Tabs {
   TESTS,
@@ -23,6 +24,7 @@ enum Tabs {
 }
 
 export const ProfileScreen = () => {
+  const { height, width } = Dimensions.get("window");
   const [activeTab, setActiveTab] = useState(Tabs.TESTS);
   const { data: userData } = trpc.user.getUserDetails.useQuery();
   const { data: testData } = trpc.testFilter.getAll.useQuery({
@@ -46,7 +48,7 @@ export const ProfileScreen = () => {
 
   if (!userData || !testData || !collectionData) {
     return (
-      <>
+      <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
         <ProfileHeader />
         <View className="h-[80%] w-[90%] items-center space-y-10 self-center">
           <View className=" h-[25%] w-[100%] items-center justify-center">
@@ -60,12 +62,12 @@ export const ProfileScreen = () => {
             <Footer />
           </View>
         </View>
-      </>
+      </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
       <ProfileHeader />
       <View className="flex-1">
         <ScrollView

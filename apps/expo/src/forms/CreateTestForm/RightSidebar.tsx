@@ -2,11 +2,14 @@ import {
   View,
   Text,
   Image,
-  Modal,
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Dimensions,
 } from "react-native";
+
+import Modal from "react-native-modal";
+
 import { useState } from "react";
 import { AppButton } from "../../components/buttons/AppButton";
 import { Feather } from "@expo/vector-icons";
@@ -26,6 +29,7 @@ interface Props {
 }
 
 const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
+  const { height, width } = Dimensions.get("window");
   const [reviewerIndex, setReviewerIndex] = useState<number | null>(null);
   const { data: reviewers, isLoading: isFetchingReviewers } =
     trpc.reviewer.getAllReviewers.useQuery({
@@ -46,24 +50,25 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
 
   return (
     <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isOpen}
-      onRequestClose={onClose}
+      animationIn={"slideInRight"}
+      animationOut={"slideOutRight"}
+      isVisible={isOpen}
+      style={{ height: height, width: width }}
+      className="self-center"
     >
-      <View
-        className="flex-1 bg-transparent bg-opacity-80"
-        style={{
-          backgroundColor: "rgba(0,0,0,0.5)",
-        }}
-      >
-        <SafeAreaView className="ml-auto w-8/12 flex-1 items-end bg-white shadow-lg">
-          <TouchableOpacity className="mr-5 mt-5" onPress={onClose}>
-            <Feather name="x" size={30} color="black" />
-          </TouchableOpacity>
-          <Text className="font-nunito-bold mx-auto mb-5 text-2xl">
-            Reviewers
-          </Text>
+      <SafeAreaView className="flex-1">
+        <View className="ml-auto w-[75%] flex-1 items-center self-center bg-white shadow-lg rounded-l-2xl">
+          <View className="mt-7 w-[90%] flex-row self-end ">
+            <View className=" mx-auto">
+              <Text className="font-nunito-bold text-2xl">Reviewers</Text>
+            </View>
+            <View className="mr-5">
+              <TouchableOpacity onPress={onClose}>
+                <Feather name="x" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {isFetchingReviewers ? (
             <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
               <View className="my-7">
@@ -128,8 +133,8 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
               </View>
             </>
           )}
-        </SafeAreaView>
-      </View>
+        </View>
+      </SafeAreaView>
     </Modal>
   );
 };

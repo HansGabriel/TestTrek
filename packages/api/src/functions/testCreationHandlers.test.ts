@@ -1,10 +1,44 @@
 import { describe, it, expect } from "vitest";
-import { parseMultipleChoiceQuestions } from "./testCreationHandlers";
+import {
+  parseMultipleChoiceQuestions,
+  generateQuestionPrompt,
+  QuestionPromptInput,
+} from "./testCreationHandlers";
+
+describe("generateQuestionPrompt", () => {
+  it("should generate custom prompt for defined types", () => {
+    const input: QuestionPromptInput = {
+      content: "exampleContent",
+      type: "type1",
+      numOfQuestions: 2,
+      numOfChoicesPerQuestion: 4,
+      maxCharsPerQuestion: 100,
+      maxCharsPerChoice: 68,
+    };
+
+    const result = generateQuestionPrompt(input);
+    const expected = `Generate 2 questions of type "type1" based on the content provided:\n\nPlease provide information based on: "exampleContent"`;
+
+    expect(result).toBe(expected);
+  });
+
+  it("should generate default prompt for undefined types", () => {
+    const input: QuestionPromptInput = {
+      content: "exampleContent",
+      type: "undefinedType",
+    };
+
+    const result = generateQuestionPrompt(input);
+    const expected = `Generate 1 questions of type "undefinedType" based on the content provided:\n\nPlease provide information based on: "exampleContent"`;
+
+    expect(result).toBe(expected);
+  });
+});
 
 describe("parseMultipleChoiceQuestions", () => {
   it("should parse multiple choice questions correctly", () => {
     const input = `
-1. Question: How many stars are in the Milky Way?
+Question: How many stars are in the Milky Way?
 Option 1: 200 billion
 Option 2: 500 billion
 Option 3: 1 trillion
@@ -13,7 +47,7 @@ Correct Answer: Option 2
 Time Limit: 10 sec
 Points: 100 pt
 
-1. Question: How many stars are in the Milky Way?
+Question: How many stars are in the Milky Way?
 Option 1: 200 billion
 Option 2: 500 billion
 Option 3: 1 trillion
@@ -22,7 +56,7 @@ Correct Answer: Option 2
 Time Limit: 10 sec
 Points: 100 pt
 
-1. Question: How many stars are in the Galaxy?
+Question: How many stars are in the Galaxy?
 Option 1: A lot
 Option 2: Very Many
 Option 3: Sometimes
