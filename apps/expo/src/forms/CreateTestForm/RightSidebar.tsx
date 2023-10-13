@@ -85,7 +85,7 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
                   {reviewers?.map((reviewer, index) => (
                     <TouchableOpacity
                       key={index}
-                      className={`flex flex-row gap-x-2 rounded-md border ${
+                      className={`flex flex-row gap-x-2 w-[100%] rounded-md border ${
                         reviewerIndex === index
                           ? "border-violet-600"
                           : "border-gray-200"

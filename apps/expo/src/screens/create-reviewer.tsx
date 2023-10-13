@@ -28,7 +28,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewerSchema } from "@acme/schema/src/reviewer";
 import useImageStore from "../stores/useImageStore";
 import AppPicker, { LabelOption } from "../components/pickers/AppPicker";
-import useToast from "../hooks/useToast";
 import { trpc } from "../utils/trpc";
 import { match } from "ts-pattern";
 import { Feather } from "@expo/vector-icons";
@@ -36,6 +35,10 @@ import { Feather } from "@expo/vector-icons";
 import type { RootStackScreenProps } from "../types";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 export const CreateReviewerScreen = ({
   navigation,
@@ -46,8 +49,6 @@ export const CreateReviewerScreen = ({
     reviewerId: undefined,
     type: "create",
   };
-
-  const { showToast } = useToast();
   const richText = useRef<RichEditor | null>(null);
   const [isToggled, setIsToggled] = useState(false);
 
@@ -145,13 +146,19 @@ export const CreateReviewerScreen = ({
         },
         {
           onSuccess: () => {
-            showToast("Reviewer updated successfully");
+            successToast({
+              title: "Success",
+              message: "Reviewer updated successfully",
+            });
             resetReviewerImage();
             reset();
             navigation.navigate("MyLibrary");
           },
           onError: () => {
-            showToast(`An error occurred`);
+            errorToast({
+              title: "Error",
+              message: "An error occurred",
+            });
             resetReviewerImage();
           },
         },
@@ -169,13 +176,19 @@ export const CreateReviewerScreen = ({
         },
         {
           onSuccess: () => {
-            showToast("Reviewer added successfully");
+            successToast({
+              title: "Success",
+              message: "Reviewer created successfully",
+            });
             resetReviewerImage();
             reset();
             navigation.navigate("MyLibrary");
           },
           onError: () => {
-            showToast(`An error occurred`);
+            errorToast({
+              title: "Error",
+              message: "An error occurred",
+            });
             resetReviewerImage();
           },
         },
@@ -197,7 +210,7 @@ export const CreateReviewerScreen = ({
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
@@ -217,7 +230,7 @@ export const CreateReviewerScreen = ({
     const backAction = () => {
       Alert.alert(
         "Are you sure?",
-        "You will lose all your progress if you exit this screen",
+        "You will lose all unsaved progress if you exit this screen",
         [
           {
             text: "CANCEL",
