@@ -22,9 +22,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
 import { useNavigation } from "@react-navigation/native";
 import TestImagePicker from "../../components/ImagePicker";
-import useQuestionStore, {
-  type PartialQuestion,
-} from "../../stores/useQuestionStore";
+import useQuestionStore from "../../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../../icons/RightArrowIcon";
 import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
@@ -74,7 +72,6 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
   handleExitScreen,
 }) => {
-
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
@@ -95,7 +92,7 @@ const CreateTestForm: FC<Props> = ({
     })),
   );
 
-  const { addQuestions } = useQuestionStore();
+  const { addQuestions, removeBlankQuestions } = useQuestionStore();
 
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
     trpc.gptApi.generateMultipleQuestions.useMutation();
@@ -541,7 +538,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="mb-24 flex flex-row items-center justify-between">
+          <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
@@ -647,7 +644,33 @@ const CreateTestForm: FC<Props> = ({
               numOfChoicesPerQuestion: 4,
             },
             {
-              onSuccess: (data) => {},
+              onSuccess: (data) => {
+                addQuestions(
+                  data.map((question) => {
+                    if (question.type === "multipleChoice") {
+                      return {
+                        type: "multiple_choice",
+                        choices: question.choices,
+                        inEdit: false,
+                        title: question.question,
+                        time: question.timeLimit,
+                        points: question.points,
+                      };
+                    }
+                    return {
+                      type: "multiple_choice",
+                      choices: [],
+                      inEdit: false,
+                      title: "",
+                    };
+                  }),
+                );
+                removeBlankQuestions();
+                addEmptyQuestion("multiple_choice");
+                setLastIndex();
+                setShowNumberOfQuestionsModal(false);
+                navigation.navigate("CreateQuestion");
+              },
               onError: (error) => {
                 console.log(error);
               },

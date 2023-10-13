@@ -26,6 +26,7 @@ interface QuestionStore {
   isLastQuestionInEdit: () => boolean;
   resetQuestions: () => void;
   deleteLastQuestion: () => void;
+  removeBlankQuestions: () => void;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -152,6 +153,38 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
   deleteLastQuestion: () =>
     set((state) => ({
       questions: state.questions.slice(0, state.questions.length - 1),
+    })),
+  removeBlankQuestions: () =>
+    set((state) => ({
+      questions: state.questions.filter((question) => {
+        if (question.type === "multiple_choice") {
+          return (
+            question.title !== "" &&
+            question.choices.every((choice) => choice.text !== "")
+          );
+        } else if (question.type === "true_or_false") {
+          return (
+            question.title !== "" &&
+            question.choices.every((choice) => choice.text !== "")
+          );
+        } else if (question.type === "multi_select") {
+          return (
+            question.title !== "" &&
+            question.choices.every((choice) => choice.text !== "")
+          );
+        } else if (question.type === "identification") {
+          return (
+            question.title !== "" &&
+            question.answer !== "" &&
+            question.possibleAnswers.every((answer) => answer !== "")
+          );
+        } else if (question.type === "enumeration") {
+          return (
+            question.title !== "" &&
+            question.choices.every((choice) => choice.text !== "")
+          );
+        }
+      }),
     })),
 }));
 

@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const choiceSchema = z.object({
-  text: z.string().min(1).max(50),
+  text: z.string().min(1).max(100),
   isCorrect: z.boolean(),
 });
 
 export const modifiedChoiceSchema = choiceSchema.merge(
   z.object({
-    possibleAnswers: z.array(z.string().min(1).max(50)),
+    possibleAnswers: z.array(z.string().min(1).max(100)),
   }),
 );
 
@@ -42,8 +42,8 @@ export const questionSchema = z.discriminatedUnion("type", [
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
     type: z.literal("identification"),
-    answer: z.string().min(1).max(50),
-    possibleAnswers: z.array(z.string().min(1).max(50)),
+    answer: z.string().min(1).max(100),
+    possibleAnswers: z.array(z.string().min(1).max(100)),
   }),
   z.object({
     title: z.string().min(1).max(150),
@@ -57,7 +57,7 @@ export const questionSchema = z.discriminatedUnion("type", [
 
 export const testDetailsSchema = z.object({
   image: z.string(),
-  title: z.string().min(5).max(50),
+  title: z.string().min(5).max(100),
   description: z.string().min(10).max(1000),
   collections: z.array(z.string().min(3).max(100)),
   visibility: z.enum(["public", "private"]),
@@ -84,7 +84,7 @@ export const testInputSchema = z.object({
       message: "Title must be at least 5 characters",
     })
     .max(50, {
-      message: "Title must be at most 50 characters",
+      message: "Title must be at most 100 characters",
     }),
   description: z
     .string({
