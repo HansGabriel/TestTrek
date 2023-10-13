@@ -200,6 +200,18 @@ export const CreateQuestionScreen: FC = () => {
                   styles: choiceStyles[idx]!.styles,
                 })),
               );
+              setTimeLimitOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.timeLimit,
+                })),
+              );
+              setPointOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.points,
+                })),
+              );
             },
           )
           .run();

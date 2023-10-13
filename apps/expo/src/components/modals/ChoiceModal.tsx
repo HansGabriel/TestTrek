@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import { chunk } from "lodash";
 
@@ -23,10 +24,11 @@ interface Props {
   setIsVisible: (isVisible: boolean) => void;
   setOptions: (options: Option[]) => void;
   buttonText?: string;
-  handleButtonPress?: () => void;
+  handleButtonPress: () => void;
+  isLoading?: boolean;
 }
 
-const OptionModal: FC<Props> = ({
+const ChoiceModal: FC<Props> = ({
   title,
   options,
   isVisible,
@@ -34,6 +36,7 @@ const OptionModal: FC<Props> = ({
   setOptions,
   buttonText = "Ok",
   handleButtonPress,
+  isLoading = false,
 }) => {
   const handleClose = () => {
     setIsVisible(false);
@@ -113,10 +116,15 @@ const OptionModal: FC<Props> = ({
 
               <TouchableOpacity
                 className="mb-5 mt-auto h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]"
-                onPress={handleButtonPress ?? handleClose}
+                onPress={handleButtonPress}
+                disabled={isLoading}
               >
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
-                  {buttonText}
+                  {isLoading ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    buttonText
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -127,4 +135,4 @@ const OptionModal: FC<Props> = ({
   );
 };
 
-export default OptionModal;
+export default ChoiceModal;

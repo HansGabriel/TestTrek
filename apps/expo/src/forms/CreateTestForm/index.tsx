@@ -47,7 +47,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
 import { PromptModal } from "../../components/modals/PromptModal";
-import OptionModal from "../../components/modals/OptionModal";
+import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
@@ -93,6 +93,11 @@ const CreateTestForm: FC<Props> = ({
       ...option,
     })),
   );
+
+  const { addQuestions, removeBlankQuestions } = useQuestionStore();
+
+  const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
+    trpc.gptApi.generateMultipleQuestions.useMutation();
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery({
     sortBy: "alphabetical",
@@ -536,7 +541,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="mb-20 flex flex-row items-center justify-between">
+          <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
@@ -617,17 +622,64 @@ const CreateTestForm: FC<Props> = ({
         }}
         onConfirm={() => {
           handleCloseCreationChoice();
-          setShowNumberOfQuestionsModal(true);
+          setTimeout(() => {
+            setShowNumberOfQuestionsModal(true);
+          }, 1000);
         }}
       />
 
-      <OptionModal
+      <ChoiceModal
         title="No. of questions you want to generate"
         options={numberOfQuestionOptions}
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
         setIsVisible={handleCloseNumberOfQuestionsModal}
-        buttonText={"Generate"}
+        buttonText="Generate"
+        isLoading={isGenerating}
+        handleButtonPress={() => {
+          generateMultipleQuestions(
+            {
+              message: selectedReviewer?.content ?? "",
+              questionType: "multipleChoice",
+              numOfQuestions:
+                numberOfQuestionOptions.find((option) => option.isSelected)
+                  ?.value ?? 1,
+              numOfChoicesPerQuestion: 4,
+            },
+            {
+              onSuccess: (data) => {
+                addQuestions(
+                  data.map((question) => {
+                    if (question.type === "multipleChoice") {
+                      return {
+                        type: "multiple_choice",
+                        choices: question.choices,
+                        inEdit: false,
+                        title: question.question,
+                        time: question.timeLimit,
+                        points: question.points,
+                      };
+                    }
+                    return {
+                      type: "multiple_choice",
+                      choices: [],
+                      inEdit: false,
+                      title: "",
+                    };
+                  }),
+                );
+                removeBlankQuestions();
+                addEmptyQuestion("multiple_choice");
+                setLastIndex();
+                setShowNumberOfQuestionsModal(false);
+                navigation.navigate("CreateQuestion");
+              },
+              onError: (error) => {
+                console.log(error);
+              },
+            },
+          );
+        }}
       />
     </SafeAreaView>
   );

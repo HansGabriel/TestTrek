@@ -8,7 +8,7 @@ import {
   generatePromptForType,
 } from "../functions/gptHandlers";
 import "dotenv/config";
-import { questionSchema } from "@acme/schema/src/question";
+import { questionSchema, questionsSchema } from "@acme/schema/src/question";
 import {
   generateQuestionPrompt,
   parseMultipleChoiceQuestions,
@@ -81,7 +81,7 @@ export const gptApiRouter = router({
 
   generateMultipleQuestions: protectedProcedure
     .input(multipleQuestionsPromptInput)
-    .output(questionSchema)
+    .output(questionsSchema)
     .mutation(async ({ input }) => {
       const {
         message,
