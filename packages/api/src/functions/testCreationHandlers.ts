@@ -4,7 +4,7 @@ import {
   promptGenerators,
 } from "./gptHandlers";
 
-interface QuestionPromptInput {
+export interface QuestionPromptInput {
   content: string;
   type: keyof typeof promptGenerators;
   numOfQuestions?: number;
@@ -35,23 +35,17 @@ export const generateQuestionPrompt = ({
     basePrompt = `Please provide information based on: "${content}"`;
   }
 
-  const fullPromptArray = Array(numOfQuestions).fill(basePrompt);
-  const numberedPrompt = fullPromptArray
-    .map((prompt, index) => `${index + 1}. ${prompt}`)
-    .join("\n\n");
-
-  return `Generate ${numOfQuestions} questions of type "${type}" based on the content provided:\n\n${numberedPrompt}`;
+  return `Generate ${numOfQuestions} questions of type "${type}" based on the content provided:\n\n${basePrompt}`;
 };
 
 export const parseMultipleChoiceQuestions = (
   generatedMessage: string,
 ): MultipleChoicePrompt[] => {
   return generatedMessage
-    .split(/(?=\d+\.\s*Question:)/)
+    .split(/(?=Question:)/)
     .filter((segment) => segment.trim().length > 0)
     .map((segment) => {
-      const cleanedSegment = segment.replace(/^\d+\.\s*/, "");
-      return parseMultipleChoiceResponse(cleanedSegment);
+      return parseMultipleChoiceResponse(segment.trim());
     });
 };
 
