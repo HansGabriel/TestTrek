@@ -23,11 +23,14 @@ import { AppButton } from "../components/buttons/AppButton";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
 import { trpc } from "../utils/trpc";
-import useToast from "../hooks/useToast";
 import { RootStackScreenProps } from "../types";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   route,
@@ -47,8 +50,6 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   const navigation = useNavigation();
   const { mutate: editCollection, isLoading: IsEditingCollection } =
     trpc.collection.editCollection.useMutation();
-
-  const { showToast } = useToast();
 
   const getDisplayImage = () => {
     if (collectionData?.imageUrl && !editImage) {
@@ -89,11 +90,17 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
       {
         onSuccess: () => {
           refetchCurrentCollection();
-          showToast("Details updated successfully");
+          successToast({
+            title: "Success",
+            message: "Collection updated successfully",
+          });
           navigation.navigate("MyLibrary");
         },
         onError: () => {
-          showToast(`An error occurred`);
+          errorToast({
+            title: "Error",
+            message: "An error occurred",
+          });
         },
       },
     );
@@ -123,7 +130,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
@@ -143,7 +150,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     const backAction = () => {
       Alert.alert(
         "Are you sure?",
-        "You will lose all your progress if you exit this screen",
+        "You will lose all unsaved progress if you exit this screen",
         [
           {
             text: "CANCEL",

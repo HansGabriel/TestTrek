@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Alert,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Feather } from "@expo/vector-icons";
@@ -72,7 +73,7 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
   handleExitScreen,
 }) => {
-
+  const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
@@ -227,7 +228,7 @@ const CreateTestForm: FC<Props> = ({
     const backAction = () => {
       Alert.alert(
         "Are you sure?",
-        "You will lose all your progress if you exit this screen",
+        "You will lose all unsaved progress if you exit this screen",
         [
           {
             text: "CANCEL",
@@ -289,10 +290,11 @@ const CreateTestForm: FC<Props> = ({
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="mx-6 flex flex-col content-end justify-between"
+        className="mx-6 flex flex-col self-center"
+        style={{ height: height * 0.95, width: width * 0.9 }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="mb-2 mt-8 flex flex-col">
+          <View className="flex flex-col">
             <View className="mb-6">
               <Controller
                 control={control}
@@ -534,7 +536,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="mb-24 flex flex-row items-center justify-between">
+          <View className="mb-20 flex flex-row items-center justify-between">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
