@@ -4,11 +4,10 @@ import StarIcon from "../../icons/StarIcon";
 import EditIcon from "../../icons/EditIcon";
 import SelectedStarIcon from "../../icons/SelectedStarIcon";
 import { trpc } from "../../utils/trpc";
-import useToast from "../../hooks/useToast";
-
 import type { FC } from "react";
 import { ReusableHeader } from "./ReusableHeader";
 import useGoBack from "../../hooks/useGoBack";
+import { errorToast, successToast } from "../notifications/ToastNotifications";
 
 interface Props {
   testId: string;
@@ -22,8 +21,6 @@ const TestDetailsHeader: FC<Props> = ({
   goToEditTest,
 }) => {
   const trpcUtils = trpc.useContext();
-
-  const { showToast } = useToast();
   const goBack = useGoBack();
 
   const { data: isFavorite } = trpc.test.getIsFavorite.useQuery({ testId });
@@ -36,10 +33,16 @@ const TestDetailsHeader: FC<Props> = ({
       trpcUtils.test.getDetails.invalidate({
         testId,
       });
-      showToast(!isFavorite ? "Added to favorites" : "Removed from favorites");
+      successToast({
+        title: "Success",
+        message: !isFavorite ? "Added to favorites" : "Removed from favorites",
+      });
     },
     onError: (err) => {
-      showToast(err.message);
+      errorToast({
+        title: "Error",
+        message: err.message,
+      });
     },
   });
 

@@ -15,7 +15,7 @@ export const AboutUser: FC<AboutUserProps> = ({ aboutUser }) => {
       <View>
         <ReusablePlaceholder
           icon={<FontAwesome name="info-circle" size={40} color="#7c3aed" />}
-          text={`Tell us about yourself`}
+          text={`No description`}
           marginY={5}
         />
       </View>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { View, SafeAreaView, Alert } from "react-native";
 import useGoBack from "../hooks/useGoBack";
@@ -7,11 +6,13 @@ import { trpc } from "../utils/trpc";
 import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
-import useToast from "../hooks/useToast";
 import { mapZodError } from "../utils/helpers/zod";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -22,8 +23,6 @@ export const CreateTestScreen: FC = () => {
   const questions = useQuestionStore((state) => state.questions);
   const resetImage = useImageStore((state) => state.resetImage);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
-
-  const { showToast } = useToast();
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -53,14 +52,17 @@ export const CreateTestScreen: FC = () => {
       {
         onSuccess: () => {
           setIsUploading(false);
-          showToast("Test created successfully");
+          successToast({
+            title: "Success",
+            message: "Test created successfully",
+          });
           resetQuestions();
           navigation.navigate("MyLibrary");
         },
         onError: (error) => {
           setIsUploading(false);
           const errorMessage = mapZodError(error);
-          showToast(errorMessage);
+          errorToast({ title: "Error", message: errorMessage });
         },
       },
     );
@@ -69,7 +71,7 @@ export const CreateTestScreen: FC = () => {
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
