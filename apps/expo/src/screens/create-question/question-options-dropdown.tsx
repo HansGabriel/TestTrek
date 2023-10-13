@@ -27,7 +27,7 @@ const QuestionOptionsDropdown: FC<Props> = ({ onSave, onDelete }) => {
       </TouchableOpacity>
 
       {showDropdown && (
-        <View className="pr-auto absolute right-1 top-10 flex h-[156px] w-[120px] flex-col items-center justify-center gap-y-4 rounded-[20px] bg-white pb-5 pt-2 shadow">
+        <View className=" pr-auto absolute right-1 top-10 flex h-[156px] w-[120px] flex-col items-center justify-center gap-y-4 rounded-[20px] bg-white pb-5 pt-2 shadow">
           <TouchableOpacity
             className="ml-4 mr-auto flex flex-row items-center justify-between"
             onPress={toggle}

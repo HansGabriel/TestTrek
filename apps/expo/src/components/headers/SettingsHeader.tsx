@@ -11,7 +11,7 @@ const SettingsHeader: FC<HeaderProps> = ({ screenName }) => {
   const goBack = useGoBack();
   return (
     <>
-      <View className="mx-5 mt-7 flex  flex-row justify-between py-5">
+      <View className="mx-5 flex  flex-row justify-between py-5">
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
             onPress={goBack}

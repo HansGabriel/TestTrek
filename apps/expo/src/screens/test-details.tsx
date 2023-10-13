@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import TestDetailsHeader from "../components/headers/TestDetailsHeader";
 import TestDetailsContent from "../components/test-details/TestDetailsContent";
 import { RootStackScreenProps } from "../types";
@@ -9,10 +9,12 @@ import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
 import StarIcon from "../icons/StarIcon";
 import useGoBack from "../hooks/useGoBack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const TestDetailsScreen = ({
   route,
 }: RootStackScreenProps<"TestDetails">) => {
+  const { height, width } = Dimensions.get("window");
   const navigation = useNavigation();
   const goBack = useGoBack();
   const { testId } = route.params;
@@ -29,12 +31,16 @@ export const TestDetailsScreen = ({
   if (!testDetails || !testStatistics) {
     return (
       <>
-        <ReusableHeader
-          screenName={""}
-          optionIcon={<StarIcon />}
-          handleExit={goBack}
-        />
-        <SafeAreaView className="flex-1">
+        <SafeAreaView
+          className="flex-1"
+          style={{ height: height, width: width }}
+        >
+          <ReusableHeader
+            screenName={"Test Details"}
+            optionIcon={<StarIcon />}
+            handleExit={goBack}
+          />
+
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">
               <SkeletonLoader
@@ -55,7 +61,10 @@ export const TestDetailsScreen = ({
   const { isOwner } = testStatistics;
 
   return (
-    <SafeAreaView className="flex-1 flex-col">
+    <SafeAreaView
+      className="flex-1 flex-col"
+      style={{ height: height, width: width }}
+    >
       <TestDetailsHeader
         showEditIcon={isOwner}
         testId={testId}

@@ -49,6 +49,7 @@ import { PromptModal } from "../../components/modals/PromptModal";
 import OptionModal from "../../components/modals/OptionModal";
 import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
+import { ReusableHeader } from "../../components/headers/ReusableHeader";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -71,6 +72,7 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
   handleExitScreen,
 }) => {
+
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
@@ -277,22 +279,14 @@ const CreateTestForm: FC<Props> = ({
 
   return (
     <SafeAreaView>
-      <View className="top-2 ml-5 mr-3 flex flex-row justify-between pb-5">
-        <View className="self-cente w-full flex-row justify-between gap-4">
-          <TouchableOpacity
-            onPress={handleExitScreen}
-            className="flex flex-row items-center self-center"
-          >
-            <Feather name="x" size={24} color="black" />
-          </TouchableOpacity>
-          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-            {testTitle}
-          </Text>
-          <TouchableOpacity onPress={() => setIsSidebarOpen(true)}>
-            <Octicons name="three-bars" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <ReusableHeader
+        screenName={testTitle}
+        optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+        onIconPress={() => setIsSidebarOpen(true)}
+        backIcon={<Feather name="x" size={24} color="black" />}
+        handleExit={handleExitScreen}
+      />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="mx-6 flex flex-col content-end justify-between"

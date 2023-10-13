@@ -1,11 +1,18 @@
 import React, { useEffect } from "react";
 
-import { View, SafeAreaView, Text, BackHandler } from "react-native";
+import {
+  View,
+  Text,
+  BackHandler,
+  Dimensions,
+} from "react-native";
 import { TestTrekLogo } from "../icons/logos/TestTrekIcon";
 import { SkypeIndicator } from "react-native-indicators";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const SplashScreen = () => {
+  const { height, width } = Dimensions.get("window");
   const navigate = useNavigation();
 
   useFocusEffect(
@@ -25,7 +32,7 @@ export const SplashScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
       <View className="h-4/5 w-full items-center justify-center">
         <View className="h-56 w-56 items-center justify-center">
           <TestTrekLogo

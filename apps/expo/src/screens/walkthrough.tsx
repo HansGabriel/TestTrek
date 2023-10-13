@@ -4,9 +4,9 @@ import {
   View,
   TouchableOpacity,
   Text,
-  SafeAreaView,
   Animated,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import useSignin from "../hooks/useSignin";
 
@@ -20,16 +20,19 @@ import Swiper from "react-native-swiper";
 
 import type { FC } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const WalkthroughScreen: FC = () => {
+  const { height, width } = Dimensions.get("window");
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => true;
 
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
     }, []),
   );
 
@@ -58,7 +61,10 @@ export const WalkthroughScreen: FC = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center bg-white">
+    <SafeAreaView
+      className="flex-1 items-center bg-white"
+      style={{ height: height, width: width }}
+    >
       <Swiper
         index={1}
         loop={true}
@@ -99,7 +105,7 @@ export const WalkthroughScreen: FC = () => {
       </Swiper>
       <TouchableOpacity
         onPress={signInWithGoogle}
-        className="mt-5 mb-1 w-[90%] rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
+        className="mb-1 mt-5 w-[90%] rounded-2xl border-b-4 border-l border-r border-t border-zinc-100 bg-white px-8 py-[18px]"
       >
         <View className="flex flex-row items-center justify-center gap-3">
           <GoogleIcon />
@@ -110,7 +116,7 @@ export const WalkthroughScreen: FC = () => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={signInWithFacebook}
-        className="mt-5 mb-5 w-[90%] rounded-2xl border-l border-r border-t border-b-4 border-zinc-100 bg-white px-8 py-[18px]"
+        className="mb-5 mt-5 w-[90%] rounded-2xl border-b-4 border-l border-r border-t border-zinc-100 bg-white px-8 py-[18px]"
       >
         <View className="flex flex-row items-center justify-center gap-3">
           <FacebookIcon />

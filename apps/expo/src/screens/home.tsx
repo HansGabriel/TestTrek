@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import { ScrollView, RefreshControl, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
 import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
@@ -16,6 +16,7 @@ import { playSound, unloadAudio } from "../services/audioService";
 import { trpc } from "../utils/trpc";
 
 export const HomeScreen = () => {
+  const { height, width } = Dimensions.get("window");
   const trpcUtils = trpc.useContext();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
@@ -45,7 +46,7 @@ export const HomeScreen = () => {
   }, [isMusicPlaying, isPlayTestScreen, isScoreboardScreen]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, height: height, width: width }}>
       <MainHeader />
       <ScrollView
         refreshControl={

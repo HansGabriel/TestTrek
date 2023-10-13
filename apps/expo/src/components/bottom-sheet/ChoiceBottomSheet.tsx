@@ -30,12 +30,12 @@ const ChoiceBottomSheet: FC<Props> = ({
       </View>
 
       {/* Horizontal Line */}
-      <View className="my-5 h-[0px] w-[382px] border border-zinc-100" />
+      <View className="my-5 h-[0px] w-[382px] border border-zinc-100 self-center" />
 
       {/* Cards Choices */}
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex flex-col items-center">
-          <View className="mx-6 flex flex-row">
+          <View className="mx-6 flex flex-row my-2">
             <TouchableOpacity
               onPress={handleChoicePress}
               className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {
-  SafeAreaView,
   View,
   TouchableOpacity,
   Text,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import OthersProfileHeader from "../components/headers/OthersProfileHeader";
 import RectangleProfileIcon from "../icons/RectangleProfileIcon";
@@ -16,6 +16,7 @@ import { RootStackScreenProps } from "../types";
 import Footer from "../components/Footer";
 import OthersProfileDetailsSection from "../components/profile-details/details-section/OthersProfileDetailsSection";
 import { LibraryTabs } from "../components/my-library/LibraryTabs";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 enum Tabs {
   TESTS,
@@ -26,6 +27,7 @@ enum Tabs {
 export const OthersProfileScreen = ({
   route,
 }: RootStackScreenProps<"OthersProfile">) => {
+  const { height, width } = Dimensions.get("window");
   const [activeTab, setActiveTab] = useState(Tabs.TESTS);
   const { userId } = route.params;
   const { data: userData } = trpc.user.getUserById.useQuery({ userId: userId });
@@ -56,25 +58,39 @@ export const OthersProfileScreen = ({
   if (!userData || !testData || !collectionData || !totalUserPlays) {
     return (
       <>
-        <OthersProfileHeader />
-        <View className="h-[80%] w-[90%] items-center space-y-10 self-center">
-          <View className=" h-[25%] w-[100%] items-center justify-center">
-            <SkeletonLoader isCircular={true} width={"100%"} height={"75%"} />
+        <SafeAreaView
+          className="flex-1"
+          style={{
+            height: height,
+            width: width,
+          }}
+        >
+          <OthersProfileHeader />
+          <View className="h-[80%] w-[90%] items-center space-y-10 self-center">
+            <View className=" h-[25%] w-[100%] items-center justify-center">
+              <SkeletonLoader isCircular={true} width={"100%"} height={"75%"} />
+            </View>
+            <View className="h-[54%] w-[100%] items-center justify-evenly">
+              <SkeletonLoader isCircular={true} width={"100%"} height={20} />
+              <SkeletonLoader isCircular={true} width={"100%"} height={20} />
+            </View>
+            <View>
+              <Footer />
+            </View>
           </View>
-          <View className="h-[54%] w-[100%] items-center justify-evenly">
-            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
-            <SkeletonLoader isCircular={true} width={"100%"} height={20} />
-          </View>
-          <View>
-            <Footer />
-          </View>
-        </View>
+        </SafeAreaView>
       </>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        height: height,
+        width: width,
+      }}
+    >
       <OthersProfileHeader />
       <View className="flex-1">
         <ScrollView

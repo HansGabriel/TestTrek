@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { View, SafeAreaView, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { useEffect, useState } from "react";
 import { HeaderAndContent } from "../components/my-library/HeaderAndContent";
@@ -11,6 +11,7 @@ import LeftArrowIcon from "../icons/LeftArrowIcon";
 import { trpc } from "../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { ReviewerHeaderAndContent } from "../components/my-reviewer/ReviewerHeaderAndContent";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -121,9 +122,11 @@ export const MyLibraryScreen = () => {
     return unsubscribe;
   }, [navigation]);
 
+  const { height, width } = Dimensions.get("window");
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <SafeAreaView className="mx-6 mt-10 flex-row items-center justify-between space-x-4">
+    <SafeAreaView style={{ flex: 1, height: height, width: width }}>
+      <SafeAreaView className="mx-6 flex-row items-center justify-between space-x-4">
         {isSearchPressed ? (
           <View className="sticky z-50 flex-row justify-between self-center bg-white">
             <SearchField
@@ -136,7 +139,7 @@ export const MyLibraryScreen = () => {
           </View>
         ) : (
           <Animated.View
-            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white pb-3 pt-2"
+            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white pb-3"
             entering={SlideInLeft}
             exiting={SlideOutLeft}
           >
@@ -177,7 +180,7 @@ export const MyLibraryScreen = () => {
       >
         <Tab.Screen name="Tests" options={{ title: "Tests" }}>
           {() => (
-            <SafeAreaView className="my-5 flex-1">
+            <SafeAreaView className=" flex-1">
               <View className="w-full flex-row items-center justify-evenly gap-1 ">
                 <TouchableOpacity
                   onPress={onTestButtonPressed}
@@ -258,7 +261,7 @@ export const MyLibraryScreen = () => {
         </Tab.Screen>
         <Tab.Screen name="Reviewers" options={{ title: "Reviewers" }}>
           {() => (
-            <SafeAreaView className="my-5 flex-1">
+            <SafeAreaView className="flex-1">
               <View className="w-full flex-row items-center justify-evenly gap-1 ">
                 <TouchableOpacity
                   onPress={onReviewerButtonPressed}

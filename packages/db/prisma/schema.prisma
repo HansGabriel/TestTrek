@@ -18,7 +18,7 @@ model User {
     firstName     String
     lastName      String
     imageUrl      String?
-    about         String?
+    about         String?              @db.Text
     createdAt     DateTime             @default(now())
     updatedAt     DateTime             @updatedAt
     tests         Test[]

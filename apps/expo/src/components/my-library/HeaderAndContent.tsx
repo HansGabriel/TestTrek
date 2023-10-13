@@ -221,7 +221,11 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
           <>
             <LibraryTabs tabData={testData} />
             {tab === "user" && (
-              <View className="z-50 -mt-10 h-12 w-14 items-center self-end">
+              <View
+                className={`z-50 ${
+                  testData.length > 0 ? "-mt-24 mb-5" : "-mt-16"
+                }  h-12 w-14 items-center self-end`}
+              >
                 <AddButton screen={"CreateTest"} />
               </View>
             )}

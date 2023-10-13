@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ScrollView,
   TextInput,
   View,
@@ -36,11 +35,13 @@ import { Feather } from "@expo/vector-icons";
 
 import type { RootStackScreenProps } from "../types";
 import useGoBack from "../hooks/useGoBack";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const CreateReviewerScreen = ({
   navigation,
   route,
 }: RootStackScreenProps<"CreateReviewer">) => {
+  const { height, width } = Dimensions.get("window");
   const { reviewerId, type } = route.params ?? {
     reviewerId: undefined,
     type: "create",
@@ -238,7 +239,7 @@ export const CreateReviewerScreen = ({
   }, []);
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
       <ReusableHeader
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}

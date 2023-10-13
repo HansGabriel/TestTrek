@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
-import { SafeAreaView, View, Text } from "react-native";
+import { Dimensions, View, Text } from "react-native";
 import { Switch } from "@rneui/themed";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import { useMusicStore } from "../../stores/useMusicStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const MusicAndEffectsScreen = () => {
+  const { height, width } = Dimensions.get("window");
   const {
     isEffectsPlaying,
     isMusicPlaying,
@@ -44,7 +46,13 @@ export const MusicAndEffectsScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView
+      className="flex-1"
+      style={{
+        height: height,
+        width: width,
+      }}
+    >
       <SettingsHeader screenName={"Music & Effects"} />
       <View className="w-[80%] flex-row justify-between self-center">
         <View className="self-center">
