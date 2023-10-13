@@ -22,7 +22,9 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
 import { useNavigation } from "@react-navigation/native";
 import TestImagePicker from "../../components/ImagePicker";
-import useQuestionStore from "../../stores/useQuestionStore";
+import useQuestionStore, {
+  type PartialQuestion,
+} from "../../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../../icons/RightArrowIcon";
 import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
@@ -46,7 +48,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
 import { PromptModal } from "../../components/modals/PromptModal";
-import OptionModal from "../../components/modals/OptionModal";
+import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
 
@@ -90,6 +92,11 @@ const CreateTestForm: FC<Props> = ({
       ...option,
     })),
   );
+
+  const { addQuestions } = useQuestionStore();
+
+  const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
+    trpc.gptApi.generateMultipleQuestions.useMutation();
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery({
     sortBy: "alphabetical",
@@ -621,17 +628,38 @@ const CreateTestForm: FC<Props> = ({
         }}
         onConfirm={() => {
           handleCloseCreationChoice();
-          setShowNumberOfQuestionsModal(true);
+          setTimeout(() => {
+            setShowNumberOfQuestionsModal(true);
+          }, 1000);
         }}
       />
 
-      <OptionModal
+      <ChoiceModal
         title="No. of questions you want to generate"
         options={numberOfQuestionOptions}
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
         setIsVisible={handleCloseNumberOfQuestionsModal}
-        buttonText={"Generate"}
+        buttonText="Generate"
+        isLoading={isGenerating}
+        handleButtonPress={() => {
+          generateMultipleQuestions(
+            {
+              message: selectedReviewer?.content ?? "",
+              questionType: "multipleChoice",
+              numOfQuestions:
+                numberOfQuestionOptions.find((option) => option.isSelected)
+                  ?.value ?? 1,
+              numOfChoicesPerQuestion: 4,
+            },
+            {
+              onSuccess: (data) => {},
+              onError: (error) => {
+                console.log(error);
+              },
+            },
+          );
+        }}
       />
     </SafeAreaView>
   );

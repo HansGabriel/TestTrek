@@ -15,6 +15,7 @@ interface QuestionStore {
   selectedIndex: number | undefined;
   addEmptyQuestion: (questionType: QuestionType) => void;
   addQuestion: (question: PartialQuestion) => void;
+  addQuestions: (questions: PartialQuestion[]) => void;
   getQuestion: (index: number) => PartialQuestion | undefined;
   getSelectedQuestion: () => PartialQuestion | undefined;
   editQuestion: (index: number, question: PartialQuestion) => void;
@@ -121,6 +122,10 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
           }))
           .exhaustive(),
       ],
+    })),
+  addQuestions: (questions) =>
+    set((state) => ({
+      questions: [...state.questions, ...questions],
     })),
   addQuestion: (question) =>
     set((state) => ({ questions: [...state.questions, question] })),

@@ -42,3 +42,5 @@ export const questionSchema = z.discriminatedUnion("type", [
     type: z.literal("enumeration"),
   }),
 ]);
+
+export const questionsSchema = z.array(questionSchema);
