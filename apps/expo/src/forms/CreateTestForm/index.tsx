@@ -43,7 +43,6 @@ import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
 import { PromptModal } from "../../components/modals/PromptModal";
@@ -51,6 +50,11 @@ import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
+import { AskAiModal } from "../../components/modals/AskAiModal";
+import {
+  errorToast,
+  successToast,
+} from "../../components/notifications/ToastNotifications";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -79,7 +83,8 @@ const CreateTestForm: FC<Props> = ({
   );
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState<string>("");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [openCreationChoice, setOpenCreationChoice] = useState(false);
   const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
@@ -142,6 +147,7 @@ const CreateTestForm: FC<Props> = ({
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords ?? [],
     },
+    
   });
 
   const questions = useQuestionStore((state) => state.questions).filter(
@@ -169,6 +175,10 @@ const CreateTestForm: FC<Props> = ({
 
   const handleClosePromptModal = () => {
     setIsPromptModalOpen(false);
+  };
+
+  const handleCloseAiModal = () => {
+    setShowAiModal(false);
   };
 
   const handleCloseCreationChoice = () => {
@@ -281,6 +291,60 @@ const CreateTestForm: FC<Props> = ({
   const closeBottomSheet = () => {
     bottomSheetRef.current?.close();
     setBottomSheetOpen(false);
+  };
+
+  const createMultipleQuestions = (inputMessage: string) => {
+    const numOfQuestions = numberOfQuestionOptions.find(
+      (option) => option.isSelected,
+    )?.value ?? 1;
+    generateMultipleQuestions(
+      {
+        message: inputMessage,
+        questionType: "multipleChoice",
+        numOfQuestions: numOfQuestions,
+        numOfChoicesPerQuestion: 4,
+      },
+      {
+        onSuccess: (data) => {
+          addQuestions(
+            data.map((question) => {
+              if (question.type === "multipleChoice") {
+                return {
+                  type: "multiple_choice",
+                  choices: question.choices,
+                  inEdit: false,
+                  title: question.question,
+                  time: question.timeLimit,
+                  points: question.points,
+                };
+              }
+              return {
+                type: "multiple_choice",
+                choices: [],
+                inEdit: false,
+                title: "",
+              };
+            }),
+          );
+          removeBlankQuestions();
+          addEmptyQuestion("multiple_choice");
+          setLastIndex();
+          setShowNumberOfQuestionsModal(false);
+          setShowAiModal(false);
+          successToast({
+            title: "Success",
+            message: "Questions generated successfully",
+          });
+          navigation.navigate("CreateQuestion");
+        },
+        onError: (error) => {
+          errorToast({
+            title: "Error",
+            message: error.message,
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -634,51 +698,27 @@ const CreateTestForm: FC<Props> = ({
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
         setIsVisible={handleCloseNumberOfQuestionsModal}
-        buttonText="Generate"
+        buttonText={selectedReviewer?.content ? "Generate" : "Ask AI"}
         isLoading={isGenerating}
-        handleButtonPress={() => {
-          generateMultipleQuestions(
-            {
-              message: selectedReviewer?.content ?? "",
-              questionType: "multipleChoice",
-              numOfQuestions:
-                numberOfQuestionOptions.find((option) => option.isSelected)
-                  ?.value ?? 1,
-              numOfChoicesPerQuestion: 4,
-            },
-            {
-              onSuccess: (data) => {
-                addQuestions(
-                  data.map((question) => {
-                    if (question.type === "multipleChoice") {
-                      return {
-                        type: "multiple_choice",
-                        choices: question.choices,
-                        inEdit: false,
-                        title: question.question,
-                        time: question.timeLimit,
-                        points: question.points,
-                      };
-                    }
-                    return {
-                      type: "multiple_choice",
-                      choices: [],
-                      inEdit: false,
-                      title: "",
-                    };
-                  }),
-                );
-                removeBlankQuestions();
-                addEmptyQuestion("multiple_choice");
-                setLastIndex();
+        handleButtonPress={
+          selectedReviewer?.content
+            ? () => createMultipleQuestions(selectedReviewer.content)
+            : () => {
                 setShowNumberOfQuestionsModal(false);
-                navigation.navigate("CreateQuestion");
-              },
-              onError: (error) => {
-                console.log(error);
-              },
-            },
-          );
+                setShowAiModal(true);
+              }
+        }
+      />
+
+      <AskAiModal
+        showAiModal={showAiModal}
+        aiQuestion={aiQuestion}
+        setAiQuestion={setAiQuestion}
+        isGenerating={isGenerating}
+        handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
+        handleClose={() => {
+          handleCloseAiModal();
+          setShowNumberOfQuestionsModal(true);
         }}
       />
     </SafeAreaView>
