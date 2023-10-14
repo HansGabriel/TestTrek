@@ -311,7 +311,12 @@ export const CreateQuestionScreen: FC = () => {
 
   useEffect(() => {
     if (errorState) {
-      if (!errorState.choicesError.every((item) => item === undefined)) {
+      if (errorState.titleError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Title cannot be empty",
+        });
+      } else if (!errorState.choicesError.every((item) => item === undefined)) {
         errorToast({
           title: "Missing field",
           message: "Choices cannot be empty",
@@ -325,11 +330,6 @@ export const CreateQuestionScreen: FC = () => {
         errorToast({
           title: "Missing field",
           message: "Points cannot be empty",
-        });
-      } else if (errorState.titleError !== null) {
-        errorToast({
-          title: "Missing field",
-          message: "Title cannot be empty",
         });
       }
     }
