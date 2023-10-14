@@ -21,10 +21,11 @@ interface Props {
   title: string;
   options: Option[];
   isVisible: boolean;
-  setIsVisible: (isVisible: boolean) => void;
+  setIsVisible: () => void;
   setOptions: (options: Option[]) => void;
-  buttonText?: string;
-  handleButtonPress: () => void;
+  handleAIPress: () => void;
+  selectButtonText?: string;
+  handleSelectPress: () => void;
   isLoading?: boolean;
 }
 
@@ -34,22 +35,21 @@ const ChoiceModal: FC<Props> = ({
   isVisible,
   setIsVisible,
   setOptions,
-  buttonText = "Ok",
-  handleButtonPress,
+  handleAIPress,
+  handleSelectPress,
   isLoading = false,
+  selectButtonText = "Select Reviewer",
 }) => {
-  const handleClose = () => {
-    setIsVisible(false);
-  };
 
   const handleOptionPress = (id: string) => {
     const newOptions = options.map((option) => {
-      if (option.id === id && option.isSelected) {
-        return {
-          ...option,
-          isSelected: false,
-        };
-      }
+      //{DO NOT REMOVE YET}
+      // if (option.id === id && option.isSelected) {
+      //   return {
+      //     ...option,
+      //     isSelected: false,
+      //   };
+      // }
 
       if (option.id === id) {
         return {
@@ -68,11 +68,7 @@ const ChoiceModal: FC<Props> = ({
   };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-    >
+    <Modal animationType="slide" transparent={true} visible={isVisible}>
       <TouchableWithoutFeedback className="border-2" disabled={isLoading}>
         <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
@@ -118,6 +114,44 @@ const ChoiceModal: FC<Props> = ({
               <View className="w-[90%] flex-row justify-evenly">
                 <View>
                   <AppButton
+                    text={selectButtonText}
+                    buttonColor="violet-600"
+                    borderShadowColor="indigo-800"
+                    borderRadius="full"
+                    fontStyle="bold"
+                    textColor="white"
+                    TOwidth="full"
+                    Vwidth="36"
+                    onPress={handleSelectPress}
+                    borderTop={"t"}
+                    borderLeft={"l"}
+                    borderRight={"r"}
+                    isLoading={isLoading}
+                    disabled={isLoading}
+                  />
+                </View>
+                <View>
+                  <AppButton
+                    text="Ask AI"
+                    buttonColor="violet-600"
+                    borderShadowColor="indigo-800"
+                    borderRadius="full"
+                    fontStyle="bold"
+                    textColor="white"
+                    TOwidth="full"
+                    Vwidth="32"
+                    onPress={handleAIPress}
+                    borderTop={"t"}
+                    borderLeft={"l"}
+                    borderRight={"r"}
+                    isLoading={isLoading}
+                    disabled={isLoading}
+                  />
+                </View>
+              </View>
+              <View className="w-[90%] flex-row justify-center">
+                <View>
+                  <AppButton
                     text="Cancel"
                     buttonColor="white"
                     borderShadowColor="indigo-800"
@@ -126,28 +160,10 @@ const ChoiceModal: FC<Props> = ({
                     textColor="violet-600"
                     TOwidth="full"
                     Vwidth="32"
-                    onPress={handleClose}
+                    onPress={setIsVisible}
                     borderTop={"t"}
                     borderLeft={"l"}
                     borderRight={"r"}
-                    disabled={isLoading}
-                  />
-                </View>
-                <View>
-                  <AppButton
-                    text={buttonText}
-                    buttonColor="violet-600"
-                    borderShadowColor="indigo-800"
-                    borderRadius="full"
-                    fontStyle="bold"
-                    textColor="white"
-                    TOwidth="full"
-                    Vwidth="32"
-                    onPress={handleButtonPress}
-                    borderTop={"t"}
-                    borderLeft={"l"}
-                    borderRight={"r"}
-                    isLoading={isLoading}
                     disabled={isLoading}
                   />
                 </View>

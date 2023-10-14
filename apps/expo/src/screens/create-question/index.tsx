@@ -309,6 +309,32 @@ export const CreateQuestionScreen: FC = () => {
     return true;
   };
 
+  useEffect(() => {
+    if (errorState) {
+      if (!errorState.choicesError.every((item) => item === undefined)) {
+        errorToast({
+          title: "Missing field",
+          message: "Choices cannot be empty",
+        });
+      } else if (errorState.timeLimitError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Time limit cannot be empty",
+        });
+      } else if (errorState.pointsError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Points cannot be empty",
+        });
+      } else if (errorState.titleError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Title cannot be empty",
+        });
+      }
+    }
+  }, [errorState]);
+
   const renderChoice = (choice: Choice) => {
     const getTextSize = (text: string) => {
       if (text.length <= 10) {
@@ -357,20 +383,22 @@ export const CreateQuestionScreen: FC = () => {
         } p-5`}
         onPress={handleOpenModal(choice.id)}
       >
-        {choice.isCorrect && (
-          <View className="absolute right-2 top-2 h-5 w-5">
-            <CheckboxIcon />
+        <>
+          {choice.isCorrect && (
+            <View className="absolute right-2 top-2 h-5 w-5">
+              <CheckboxIcon />
+            </View>
+          )}
+          <View className="h-full w-full items-center justify-center">
+            <Text
+              className={`self-center text-center ${getTextSize(
+                choice.text ? choice.text : "Add answer",
+              )} font-bold text-white`}
+            >
+              {choice.text ? choice.text : "Add answer"}
+            </Text>
           </View>
-        )}
-        <View className="h-full w-full items-center justify-center">
-          <Text
-            className={`self-center text-center ${getTextSize(
-              choice.text ? choice.text : "Add answer",
-            )} font-bold text-white`}
-          >
-            {choice.text ? choice.text : "Add answer"}
-          </Text>
-        </View>
+        </>
       </TouchableOpacity>
     );
   };
@@ -516,10 +544,12 @@ export const CreateQuestionScreen: FC = () => {
               }`}
               onPress={() => setShowTimeLimitModal(true)}
             >
-              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-                {timeLimitOptions.find((option) => option.isSelected)?.title ??
-                  "Time Limit"}
-              </Text>
+              <>
+                <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                  {timeLimitOptions.find((option) => option.isSelected)
+                    ?.title ?? "Time Limit"}
+                </Text>
+              </>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -528,10 +558,12 @@ export const CreateQuestionScreen: FC = () => {
               }`}
               onPress={() => setShowPointModal(true)}
             >
-              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-                {pointOptions.find((option) => option.isSelected)?.title ??
-                  "Points"}
-              </Text>
+              <>
+                <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                  {pointOptions.find((option) => option.isSelected)?.title ??
+                    "Points"}
+                </Text>
+              </>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -554,16 +586,18 @@ export const CreateQuestionScreen: FC = () => {
           ${errorState.titleError !== null ? "border-2 border-red-500" : ""}
         `}
           >
-            <TextInput
-              className="self-stretch text-center text-xl font-bold leading-loose text-black"
-              onChangeText={setQuestionTitle}
-              value={questionTitle}
-              placeholder="Tap to add question"
-              placeholderTextColor={"#757575"}
-              onFocus={handleTextInputFocus}
-              multiline
-              numberOfLines={2}
-            />
+            <>
+              <TextInput
+                className="self-stretch text-center text-xl font-bold leading-loose text-black"
+                onChangeText={setQuestionTitle}
+                value={questionTitle}
+                placeholder="Tap to add question"
+                placeholderTextColor={"#757575"}
+                onFocus={handleTextInputFocus}
+                multiline
+                numberOfLines={2}
+              />
+            </>
           </View>
 
           <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">

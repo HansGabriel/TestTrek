@@ -26,9 +26,17 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   setReviewer: (reviewer: Reviewer | null) => void;
+  handleConfirmPress: () => void;
+  confirmButtonText: string;
 }
 
-const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
+const RightSidebar: FC<Props> = ({
+  isOpen,
+  onClose,
+  setReviewer,
+  handleConfirmPress,
+  confirmButtonText = "Go to Reviewer",
+}) => {
   const { height, width } = Dimensions.get("window");
   const [reviewerIndex, setReviewerIndex] = useState<number | null>(null);
   const { data: reviewers, isLoading: isFetchingReviewers } =
@@ -57,7 +65,7 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
       className="self-center"
     >
       <SafeAreaView className="flex-1">
-        <View className="ml-auto w-[75%] flex-1 items-center self-center bg-white shadow-lg rounded-l-2xl">
+        <View className="ml-auto w-[75%] flex-1 items-center self-center rounded-l-2xl bg-white shadow-lg">
           <View className="mt-7 w-[90%] flex-row self-end ">
             <View className=" mx-auto">
               <Text className="font-nunito-bold text-2xl">Reviewers</Text>
@@ -85,7 +93,7 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
                   {reviewers?.map((reviewer, index) => (
                     <TouchableOpacity
                       key={index}
-                      className={`flex flex-row gap-x-2 w-[100%] rounded-md border ${
+                      className={`flex w-[100%] flex-row gap-x-2 rounded-md border ${
                         reviewerIndex === index
                           ? "border-violet-600"
                           : "border-gray-200"
@@ -114,9 +122,8 @@ const RightSidebar: FC<Props> = ({ isOpen, onClose, setReviewer }) => {
               </ScrollView>
               <View className="mx-3 mb-5 flex flex-row">
                 <AppButton
-                  // eslint-disable-next-line @typescript-eslint/no-empty-function
-                  onPress={() => {}}
-                  text="Go to Reviewer"
+                  onPress={handleConfirmPress}
+                  text={confirmButtonText}
                   buttonColor={
                     reviewerIndex === null ? "gray-400" : "violet-600"
                   }
