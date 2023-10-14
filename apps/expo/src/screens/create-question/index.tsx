@@ -43,6 +43,7 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
+import XIcon from "../../icons/XIcon";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -234,6 +235,10 @@ export const CreateQuestionScreen: FC = () => {
   const handleOpenModal = (index: number) => () => {
     setSelectedQuestionId(index);
     setShowModal(true);
+  };
+
+  const handleCloseQuestionModal = () => {
+    setShowQuestionModal(false);
   };
 
   const handleChoiceChange = (index: number, text: string) => {
@@ -645,22 +650,25 @@ export const CreateQuestionScreen: FC = () => {
             animationType="slide"
             transparent={true}
             visible={showQuestionModal}
-            onRequestClose={() => {
-              setShowQuestionModal(!showQuestionModal);
-            }}
           >
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setShowQuestionModal(!showQuestionModal);
-              }}
-            >
+            <TouchableWithoutFeedback disabled={isGenerating}>
               <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
                 <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                   <View className="h-[25%] w-11/12 rounded-2xl bg-white">
-                    <View className="h-[50%] justify-center self-center">
-                      <Text className="font-nunito-bold text-xl">
-                        What is your question?
-                      </Text>
+                    <View className="h-[50%] w-[100%]  flex-row">
+                      <View className="mx-auto w-[90%] items-center self-center">
+                        <Text className="font-nunito-bold text-xl">
+                          What is your question?
+                        </Text>
+                      </View>
+                      <View className=" m-2 self-start ">
+                        <TouchableOpacity
+                          onPress={handleCloseQuestionModal}
+                          disabled={isGenerating}
+                        >
+                          <XIcon />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     <View className="flex flex-row items-center justify-center px-5">
                       <TextInput
@@ -669,6 +677,7 @@ export const CreateQuestionScreen: FC = () => {
                         placeholderTextColor="#757575"
                         onChangeText={(text) => setAiQuestion(text)}
                         value={aiQuestion}
+                        editable={isGenerating}
                       />
                       <TouchableOpacity
                         className="absolute right-8"
