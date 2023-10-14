@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { View, Text, TextInput, type TextInputProps } from "react-native";
-import useToast from "../../hooks/useToast";
 
 import type { FC } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { errorToast } from "../notifications/ToastNotifications";
 
 interface Props {
   onChangeTexts: (value: string[]) => void;
@@ -19,7 +19,6 @@ const MultipleTextInput: FC<Props> = ({
   onChangeTexts,
   textInputProps,
 }) => {
-  const { showToast } = useToast();
   const [inputText, setInputText] = useState<string>("");
 
   const handleOnSubmitEditing = () => {
@@ -27,11 +26,17 @@ const MultipleTextInput: FC<Props> = ({
       return;
     }
     if (texts.includes(inputText)) {
-      showToast("Keyword already exists");
+      errorToast({
+        title: "Error",
+        message: "Keyword already exists",
+      });
       return;
     }
     if (texts.length >= 5) {
-      showToast("You can only add up to 5 keywords");
+      errorToast({
+        title: "Error",
+        message: "You can only add up to 5 keywords",
+      });
       return;
     }
     onChangeTexts([...texts, inputText]);

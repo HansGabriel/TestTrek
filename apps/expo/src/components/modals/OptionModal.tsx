@@ -23,6 +23,7 @@ interface Props {
   setIsVisible: (isVisible: boolean) => void;
   setOptions: (options: Option[]) => void;
   buttonText?: string;
+  handleButtonPress?: () => void;
 }
 
 const OptionModal: FC<Props> = ({
@@ -32,6 +33,7 @@ const OptionModal: FC<Props> = ({
   setIsVisible,
   setOptions,
   buttonText = "Ok",
+  handleButtonPress,
 }) => {
   const handleClose = () => {
     setIsVisible(false);
@@ -111,7 +113,7 @@ const OptionModal: FC<Props> = ({
 
               <TouchableOpacity
                 className="mb-5 mt-auto h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]"
-                onPress={handleClose}
+                onPress={handleButtonPress ?? handleClose}
               >
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
                   {buttonText}

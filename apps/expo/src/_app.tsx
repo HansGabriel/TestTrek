@@ -9,6 +9,8 @@ import Navigation from "./navigation";
 import { tokenCache } from "./utils/cache";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "./components/notifications/toastConfig";
 
 export const App = () => {
   return (
@@ -23,6 +25,7 @@ export const App = () => {
               <SafeAreaProvider>
                 <Navigation />
                 <StatusBar />
+                <Toast position="top" config={toastConfig} />
               </SafeAreaProvider>
             </TRPCProvider>
           </ClerkProvider>

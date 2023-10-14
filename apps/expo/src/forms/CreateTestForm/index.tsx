@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Alert,
   BackHandler,
+  Dimensions,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Feather } from "@expo/vector-icons";
@@ -42,14 +43,18 @@ import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
 import { PromptModal } from "../../components/modals/PromptModal";
-import OptionModal from "../../components/modals/OptionModal";
+import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
+import { AskAiModal } from "../../components/modals/AskAiModal";
+import {
+  errorToast,
+  successToast,
+} from "../../components/notifications/ToastNotifications";
 
 type Omitted = Omit<TestInput, "questions">;
 type FormProps = SetOptional<Omitted, "collection">;
@@ -72,13 +77,14 @@ const CreateTestForm: FC<Props> = ({
   isUploading = false,
   handleExitScreen,
 }) => {
-
+  const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiQuestion, setAiQuestion] = useState<string>("");
   const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [openCreationChoice, setOpenCreationChoice] = useState(false);
   const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
@@ -92,6 +98,11 @@ const CreateTestForm: FC<Props> = ({
       ...option,
     })),
   );
+
+  const { addQuestions, removeBlankQuestions } = useQuestionStore();
+
+  const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
+    trpc.gptApi.generateMultipleQuestions.useMutation();
 
   const { data: userCollections } = trpc.collection.getByUserId.useQuery({
     sortBy: "alphabetical",
@@ -136,6 +147,7 @@ const CreateTestForm: FC<Props> = ({
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords ?? [],
     },
+    
   });
 
   const questions = useQuestionStore((state) => state.questions).filter(
@@ -163,6 +175,10 @@ const CreateTestForm: FC<Props> = ({
 
   const handleClosePromptModal = () => {
     setIsPromptModalOpen(false);
+  };
+
+  const handleCloseAiModal = () => {
+    setShowAiModal(false);
   };
 
   const handleCloseCreationChoice = () => {
@@ -227,7 +243,7 @@ const CreateTestForm: FC<Props> = ({
     const backAction = () => {
       Alert.alert(
         "Are you sure?",
-        "You will lose all your progress if you exit this screen",
+        "You will lose all unsaved progress if you exit this screen",
         [
           {
             text: "CANCEL",
@@ -277,6 +293,60 @@ const CreateTestForm: FC<Props> = ({
     setBottomSheetOpen(false);
   };
 
+  const createMultipleQuestions = (inputMessage: string) => {
+    const numOfQuestions = numberOfQuestionOptions.find(
+      (option) => option.isSelected,
+    )?.value ?? 1;
+    generateMultipleQuestions(
+      {
+        message: inputMessage,
+        questionType: "multipleChoice",
+        numOfQuestions: numOfQuestions,
+        numOfChoicesPerQuestion: 4,
+      },
+      {
+        onSuccess: (data) => {
+          addQuestions(
+            data.map((question) => {
+              if (question.type === "multipleChoice") {
+                return {
+                  type: "multiple_choice",
+                  choices: question.choices,
+                  inEdit: false,
+                  title: question.question,
+                  time: question.timeLimit,
+                  points: question.points,
+                };
+              }
+              return {
+                type: "multiple_choice",
+                choices: [],
+                inEdit: false,
+                title: "",
+              };
+            }),
+          );
+          removeBlankQuestions();
+          addEmptyQuestion("multiple_choice");
+          setLastIndex();
+          setShowNumberOfQuestionsModal(false);
+          setShowAiModal(false);
+          successToast({
+            title: "Success",
+            message: "Questions generated successfully",
+          });
+          navigation.navigate("CreateQuestion");
+        },
+        onError: (error) => {
+          errorToast({
+            title: "Error",
+            message: error.message,
+          });
+        },
+      },
+    );
+  };
+
   return (
     <SafeAreaView>
       <ReusableHeader
@@ -289,10 +359,11 @@ const CreateTestForm: FC<Props> = ({
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="mx-6 flex flex-col content-end justify-between"
+        className="mx-6 flex flex-col self-center"
+        style={{ height: height * 0.95, width: width * 0.9 }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="mb-2 mt-8 flex flex-col">
+          <View className="flex flex-col">
             <View className="mb-6">
               <Controller
                 control={control}
@@ -534,7 +605,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="mb-24 flex flex-row items-center justify-between">
+          <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
@@ -615,17 +686,40 @@ const CreateTestForm: FC<Props> = ({
         }}
         onConfirm={() => {
           handleCloseCreationChoice();
-          setShowNumberOfQuestionsModal(true);
+          setTimeout(() => {
+            setShowNumberOfQuestionsModal(true);
+          }, 1000);
         }}
       />
 
-      <OptionModal
+      <ChoiceModal
         title="No. of questions you want to generate"
         options={numberOfQuestionOptions}
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
         setIsVisible={handleCloseNumberOfQuestionsModal}
-        buttonText={"Generate"}
+        buttonText={selectedReviewer?.content ? "Generate" : "Ask AI"}
+        isLoading={isGenerating}
+        handleButtonPress={
+          selectedReviewer?.content
+            ? () => createMultipleQuestions(selectedReviewer.content)
+            : () => {
+                setShowNumberOfQuestionsModal(false);
+                setShowAiModal(true);
+              }
+        }
+      />
+
+      <AskAiModal
+        showAiModal={showAiModal}
+        aiQuestion={aiQuestion}
+        setAiQuestion={setAiQuestion}
+        isGenerating={isGenerating}
+        handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
+        handleClose={() => {
+          handleCloseAiModal();
+          setShowNumberOfQuestionsModal(true);
+        }}
       />
     </SafeAreaView>
   );

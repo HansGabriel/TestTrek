@@ -22,8 +22,8 @@ import { AppButton } from "../components/buttons/AppButton";
 import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
 import { trpc } from "../utils/trpc";
-import useToast from "../hooks/useToast";
 import { Feather } from "@expo/vector-icons";
+import { errorToast, successToast } from "../components/notifications/ToastNotifications";
 
 export const CreateCollection = () => {
   const goBack = useGoBack();
@@ -37,8 +37,6 @@ export const CreateCollection = () => {
     isLoading: IsCreatingCollection,
     reset,
   } = trpc.collection.create.useMutation();
-
-  const { showToast } = useToast();
 
   const getDisplayImage = () => {
     if (image) {
@@ -68,13 +66,19 @@ export const CreateCollection = () => {
       },
       {
         onSuccess: () => {
-          showToast("Collection added successfully");
+          successToast({
+            title: "Success",
+            message: "Collection created successfully",
+          });
           resetCollectionImage();
           reset();
           navigation.navigate("MyLibrary");
         },
         onError: () => {
-          showToast(`An error occurred`);
+          errorToast({
+            title: "Error",
+            message: "An error occurred",
+          });
           resetCollectionImage();
         },
       },
@@ -92,7 +96,7 @@ export const CreateCollection = () => {
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
@@ -112,7 +116,7 @@ export const CreateCollection = () => {
     const backAction = () => {
       Alert.alert(
         "Are you sure?",
-        "You will lose all your progress if you exit this screen",
+        "You will lose all unsaved progress if you exit this screen",
         [
           {
             text: "CANCEL",

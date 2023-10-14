@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Dimensions,
+  Alert,
 } from "react-native";
 
 import { Avatar } from "@rneui/themed";
@@ -18,11 +19,14 @@ import { trpc } from "../utils/trpc";
 import { AppButton } from "../components/buttons/AppButton";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import EditIcon from "../icons/EditIcon";
-import useToast from "../hooks/useToast";
 import XIcon from "../icons/XIcon";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 export const EditPersonalInfoScreen = () => {
   const { height, width } = Dimensions.get("window");
@@ -30,9 +34,27 @@ export const EditPersonalInfoScreen = () => {
     trpc.user.getUserDetails.useQuery();
 
   const [edit, setEdit] = useState(false);
-  const { showToast } = useToast();
 
   const goBack = useGoBack();
+
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all unsaved progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
+    );
+  };
 
   const {
     control,
@@ -41,7 +63,8 @@ export const EditPersonalInfoScreen = () => {
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
-  const { mutate: editUser } = trpc.user.editUserDetails.useMutation();
+  const { mutate: editUser, isLoading: isEditingUser } =
+    trpc.user.editUserDetails.useMutation();
   const submitEditedData = async (updatedData: UserStored) => {
     editUser(
       {
@@ -50,15 +73,21 @@ export const EditPersonalInfoScreen = () => {
       {
         onSuccess: () => {
           refetchData();
-          showToast("Details updated successfully");
+          successToast({
+            title: "Success",
+            message: "Personal info updated successfully",
+          });
+          setEdit(false);
         },
         onError: () => {
-          showToast(`An error occurred`);
+          errorToast({
+            title: "Error",
+            message: "An error occurred",
+          });
+          setEdit(false);
         },
       },
     );
-
-    setEdit(false);
   };
 
   if (!userDetails) {
@@ -100,7 +129,7 @@ export const EditPersonalInfoScreen = () => {
           screenName="Personal Info"
           optionIcon={edit ? <XIcon /> : <EditIcon />}
           onIconPress={() => setEdit(!edit)}
-          handleExit={goBack}
+          handleExit={handleExitScreen}
         />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className=" h-30 w-[90%] items-center justify-center self-center">
@@ -209,7 +238,9 @@ export const EditPersonalInfoScreen = () => {
               <Controller
                 name="about"
                 control={control}
-                defaultValue={`${userDetails?.about}`}
+                defaultValue={`${
+                  userDetails?.about === null ? "" : userDetails?.about
+                }`}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <AppTextInput
                     label="About Me"
@@ -217,7 +248,7 @@ export const EditPersonalInfoScreen = () => {
                     textInputProps={{
                       onBlur,
                       onChangeText: onChange,
-                      value: value ?? "",
+                      value,
                       editable: edit,
                       style: {
                         color: !edit ? "#6b7280" : "black",
@@ -245,6 +276,7 @@ export const EditPersonalInfoScreen = () => {
                 TOwidth="full"
                 Vwidth="80"
                 onPress={handleSubmit(submitEditedData)}
+                isLoading={isEditingUser}
               />
             </View>
           ) : (

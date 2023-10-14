@@ -174,12 +174,12 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View className="flex-1">
+      <View className="flex-1 ">
         <ReviewerTabs tabData={reviewerData} />
         {tab === "user" ? (
           <View
             className={`z-50 ${
-              reviewerData.length > 0 ? "-mt-24 mb-5" : "-mt-16"
+              reviewerData.length > 0 ? "-mt-24 mb-10" : "-mt-16"
             }  h-12 w-14 items-center self-end`}
           >
             <AddButton screen={"CreateReviewer"} />

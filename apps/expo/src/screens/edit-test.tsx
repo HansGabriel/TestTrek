@@ -17,6 +17,10 @@ import { RootStackScreenProps } from "../types";
 
 import useToast from "../hooks/useToast";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -28,8 +32,6 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   const { testId } = route.params;
   const trpcUtils = trpc.useContext();
   const goBack = useGoBack();
-
-  const { showToast } = useToast();
   const questions = useQuestionStore((state) => state.questions);
   const setQuestions = useQuestionStore((state) => state.setQuestions);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
@@ -64,12 +66,18 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
 
   const { mutate: deleteTest } = trpc.test.delete.useMutation({
     onSuccess: () => {
-      showToast("Test deleted successfully");
+      successToast({
+        title: "Deleted",
+        message: "Test deleted successfully",
+      });
       trpcUtils.test.invalidate();
-      navigation.navigate("Home");
+      navigation.navigate("MyLibrary");
     },
     onError: () => {
-      showToast("An error occurred");
+      errorToast({
+        title: "Deleted",
+        message: "An error occurred",
+      });
     },
   });
 
@@ -100,14 +108,20 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
       {
         onSuccess: () => {
           setIsUploading(false);
-          showToast("Test updated successfully");
+          successToast({
+            title: "Success",
+            message: "Test updated successfully",
+          });
           resetQuestions();
-          navigation.navigate("Home");
+          navigation.navigate("MyLibrary");
         },
         onError: (error) => {
           setIsUploading(false);
           const errorMessage = mapZodError(error);
-          showToast(errorMessage);
+          errorToast({
+            title: "Error",
+            message: errorMessage,
+          });
         },
       },
     );
@@ -116,7 +130,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
@@ -135,7 +149,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   const handleDeleteTest = () => {
     Alert.alert(
       "Are you sure?",
-      "You will lose all your progress if you exit this screen",
+      "You will lose all unsaved progress if you exit this screen",
       [
         {
           text: "Cancel",
@@ -169,7 +183,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="mb-20 -mt-5">
+      <View className="-mt-5 mb-20">
         <CreateTestForm
           testTitle="Edit Test"
           testDetails={{

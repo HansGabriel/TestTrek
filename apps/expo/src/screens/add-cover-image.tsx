@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
-  SafeAreaView,
   View,
   Image,
   TouchableOpacity,
   ScrollView,
   Alert,
+  Dimensions,
 } from "react-native";
 import useGoBack from "../hooks/useGoBack";
 import { RootStackScreenProps } from "../types";
@@ -17,10 +17,12 @@ import useImageStore from "../stores/useImageStore";
 import type { FC } from "react";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   route,
 }) => {
+  const { height, width } = Dimensions.get("window");
   const { query, type } = route.params;
   const goBack = useGoBack();
   const setImage = useImageStore((state) => state.setImage);
@@ -101,7 +103,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
       <ReusableHeader
         screenName={"Add Cover Image"}
         backIcon={<Feather name="x" size={24} color="#BDBDBD" />}

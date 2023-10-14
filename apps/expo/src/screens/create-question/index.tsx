@@ -32,7 +32,6 @@ import { alertExit } from "../../hooks/useAlert";
 import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import useError from "./hooks";
-import useToast from "../../hooks/useToast";
 import useToggleImageStore from "../../stores/useToggleImageStore";
 
 import type { FC } from "react";
@@ -40,6 +39,11 @@ import type { Choice, Option, ChoiceStyle } from "./types";
 import type { PartialQuestion } from "../../stores/useQuestionStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
+import {
+  errorToast,
+  successToast,
+} from "../../components/notifications/ToastNotifications";
+import XIcon from "../../icons/XIcon";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -64,7 +68,6 @@ const choiceStyles: ChoiceStyle[] = [
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
   const navigation = useNavigation();
-  const { showToast } = useToast();
   const isImageVisible = useToggleImageStore((state) => state.isVisible);
 
   const {
@@ -198,6 +201,18 @@ export const CreateQuestionScreen: FC = () => {
                   styles: choiceStyles[idx]!.styles,
                 })),
               );
+              setTimeLimitOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.timeLimit,
+                })),
+              );
+              setPointOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.points,
+                })),
+              );
             },
           )
           .run();
@@ -220,6 +235,10 @@ export const CreateQuestionScreen: FC = () => {
   const handleOpenModal = (index: number) => () => {
     setSelectedQuestionId(index);
     setShowModal(true);
+  };
+
+  const handleCloseQuestionModal = () => {
+    setShowQuestionModal(false);
   };
 
   const handleChoiceChange = (index: number, text: string) => {
@@ -283,7 +302,10 @@ export const CreateQuestionScreen: FC = () => {
     resetErrors();
     editQuestion(selectedIndex!, multipleChoiceQuestion);
     resetQuestionImage();
-    showToast("Question saved!");
+    successToast({
+      title: "Success",
+      message: "Question saved successfully",
+    });
     return true;
   };
 
@@ -302,7 +324,7 @@ export const CreateQuestionScreen: FC = () => {
       const backAction = () => {
         Alert.alert(
           "Are you sure?",
-          "You will lose all your progress if you exit this screen",
+          "You will lose all unsaved progress if you exit this screen",
           [
             {
               text: "CANCEL",
@@ -442,7 +464,10 @@ export const CreateQuestionScreen: FC = () => {
     } else {
       const answerError = checkAnswerError(choices);
       if (answerError) {
-        showToast("Please select a correct answer");
+        errorToast({
+          title: "No correct answer",
+          message: "Please select a correct answer",
+        });
       }
     }
   };
@@ -625,22 +650,25 @@ export const CreateQuestionScreen: FC = () => {
             animationType="slide"
             transparent={true}
             visible={showQuestionModal}
-            onRequestClose={() => {
-              setShowQuestionModal(!showQuestionModal);
-            }}
           >
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setShowQuestionModal(!showQuestionModal);
-              }}
-            >
+            <TouchableWithoutFeedback disabled={isGenerating}>
               <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
                 <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                   <View className="h-[25%] w-11/12 rounded-2xl bg-white">
-                    <View className="h-[50%] justify-center self-center">
-                      <Text className="font-nunito-bold text-xl">
-                        What is your question?
-                      </Text>
+                    <View className="h-[50%] w-[100%]  flex-row">
+                      <View className="mx-auto w-[90%] items-center self-center">
+                        <Text className="font-nunito-bold text-xl">
+                          What is your question?
+                        </Text>
+                      </View>
+                      <View className=" m-2 self-start ">
+                        <TouchableOpacity
+                          onPress={handleCloseQuestionModal}
+                          disabled={isGenerating}
+                        >
+                          <XIcon />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     <View className="flex flex-row items-center justify-center px-5">
                       <TextInput
@@ -649,6 +677,7 @@ export const CreateQuestionScreen: FC = () => {
                         placeholderTextColor="#757575"
                         onChangeText={(text) => setAiQuestion(text)}
                         value={aiQuestion}
+                        editable={isGenerating}
                       />
                       <TouchableOpacity
                         className="absolute right-8"
