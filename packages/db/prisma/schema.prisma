@@ -11,50 +11,45 @@ datasource db {
 }
 
 model User {
-    id            String               @id @default(cuid())
+    id            String               @id @default(cuid()) @map("user_id")
     email         String               @unique
-    userId        String               @unique
+    userId        String               @unique @map("clerk_user_id")
     username      String
-    firstName     String
-    lastName      String
-    imageUrl      String?
+    firstName     String               @map("first_name")
+    lastName      String               @map("last_name")
+    imageUrl      String?              @map("image_url")
     about         String?              @db.Text
-    createdAt     DateTime             @default(now())
-    updatedAt     DateTime             @updatedAt
+    createdAt     DateTime             @default(now()) @map("created_at")
+    updatedAt     DateTime             @updatedAt @map("updated_at")
     tests         Test[]
     collections   Collection[]
     plays         Play[]
     favoriteTests UserOnFavoriteTest[]
-    Reviewer      Reviewer[]
-}
-
-model Post {
-    id      String @id @default(cuid())
-    title   String
-    content String
+    reviewer      Reviewer[]
 }
 
 model UserOnFavoriteTest {
-    userId    String
-    testId    String
+    id        String   @unique @default(cuid()) @map("user_on_favorite_test_id")
+    userId    String   @map("user_id")
+    testId    String   @map("test_id")
     user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
     test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     @@id([userId, testId])
 }
 
 model Test {
-    id             String               @id @default(cuid())
-    userId         String
-    imageUrl       String
+    id             String               @id @default(cuid()) @map("test_id")
+    userId         String               @map("user_id")
+    imageUrl       String               @map("image_url")
     title          String
     description    String               @db.Text
     visibility     Visibility
     keywords       Keyword[]
-    createdAt      DateTime             @default(now())
-    updatedAt      DateTime             @updatedAt
+    createdAt      DateTime             @default(now()) @map("created_at")
+    updatedAt      DateTime             @updatedAt @map("updated_at")
     collections    TestOnCollection[]
     questions      Question[]
     user           User                 @relation(fields: [userId], references: [userId])
@@ -64,33 +59,34 @@ model Test {
 }
 
 model Reviewer {
-    id         String           @id @default(cuid())
+    id         String           @id @default(cuid()) @map("reviewer_id")
     title      String
-    imageUrl   String
-    testId     String?
+    imageUrl   String           @map("image_url")
+    testId     String?          @map("test_id")
     content    String           @db.Text
     visibility Visibility
-    userId     String
+    userId     String           @map("user_id")
     user       User             @relation(fields: [userId], references: [userId])
     tests      ReviewerOnTest[]
-    createdAt  DateTime         @default(now())
-    updatedAt  DateTime         @updatedAt
+    createdAt  DateTime         @default(now()) @map("created_at")
+    updatedAt  DateTime         @updatedAt @map("updated_at")
 }
 
 model ReviewerOnTest {
-    testId     String
+    id         String   @unique @default(cuid()) @map("reviewer_on_test_id")
+    testId     String   @map("test_id")
     test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
     reviewer   Reviewer @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
-    reviewerId String
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+    reviewerId String   @map("reviewer_id")
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
 
     @@id([testId, reviewerId])
 }
 
 model Question {
-    id              String       @id @default(cuid())
-    testId          String
+    id              String       @id @default(cuid()) @map("question_id")
+    testId          String       @map("test_id")
     title           String
     image           String?
     time            Int
@@ -99,58 +95,59 @@ model Question {
     test            Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
     choices         Choice[]
     answer          String?
-    possibleAnswers String[]
+    possibleAnswers String[]     @map("possible_answers")
 }
 
 model Choice {
-    id         String   @id @default(cuid())
-    questionId String
+    id         String   @id @default(cuid()) @map("choice_id")
+    questionId String   @map("question_id")
     text       String
-    isCorrect  Boolean
+    isCorrect  Boolean  @map("is_correct")
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Keyword {
-    id        String   @id @default(cuid())
+    id        String   @id @default(cuid()) @map("keyword_id")
     name      String
     test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-    testId    String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    testId    String   @map("test_id")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Collection {
-    id         String             @id @default(cuid())
-    userId     String
+    id         String             @id @default(cuid()) @map("collection_id")
+    userId     String             @map("user_id")
     title      String
-    imageUrl   String
-    createdAt  DateTime           @default(now())
-    updatedAt  DateTime           @updatedAt
+    imageUrl   String             @map("image_url")
+    createdAt  DateTime           @default(now()) @map("created_at")
+    updatedAt  DateTime           @updatedAt @map("updated_at")
     tests      TestOnCollection[]
     user       User               @relation(fields: [userId], references: [userId])
     visibility Visibility         @default(private)
 }
 
 model TestOnCollection {
+    id            String     @unique @default(cuid()) @map("test_on_collection_id")
     test          Test       @relation(fields: [testId], references: [id], onDelete: Cascade)
-    testId        String
+    testId        String     @map("test_id")
     collection    Collection @relation(fields: [collectionsId], references: [id], onDelete: Cascade)
-    collectionsId String
-    createdAt     DateTime   @default(now())
-    updatedAt     DateTime   @updatedAt
+    collectionsId String     @map("collections_id")
+    createdAt     DateTime   @default(now()) @map("created_at")
+    updatedAt     DateTime   @updatedAt @map("updated_at")
 
     @@id([testId, collectionsId])
 }
 
 model Play {
-    id         String   @id @default(cuid())
-    testId     String
-    playerId   String
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
+    id         String   @id @default(cuid()) @map("play_id")
+    testId     String   @map("test_id")
+    playerId   String   @map("player_id")
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
     player     User     @relation(fields: [playerId], references: [userId])
     test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-    isFinished Boolean  @default(false)
+    isFinished Boolean  @default(false) @map("is_finished")
     score      Int?
     time       Int?
 }
