@@ -1,6 +1,6 @@
-import { generatePromptForType } from "./gptHandlers";
+import { generatePromptForType } from "../gptHandlers";
 import { describe, it, expect } from "vitest";
-import { timeAndPointsPrompt } from "./gptHandlers";
+import { timeAndPointsPrompt } from "../gptHandlers";
 
 describe("generatePromptForType", () => {
   const message = "sample message";
