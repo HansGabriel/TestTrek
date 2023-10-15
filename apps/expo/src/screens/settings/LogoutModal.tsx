@@ -50,7 +50,7 @@ export const LogoutModal: FC<LogoutProps> = ({
             <AppButton
               text="Cancel"
               buttonColor="violet-100"
-              borderShadowColor="violet-300"
+              borderShadowColor="indigo-800"
               borderRadius="full"
               fontStyle="bold"
               textColor="violet-600"

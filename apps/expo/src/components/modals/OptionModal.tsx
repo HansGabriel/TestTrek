@@ -91,7 +91,7 @@ const OptionModal: FC<Props> = ({
                   {row.map((option) => (
                     <TouchableOpacity
                       key={option.id}
-                      className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl border-b-2 ${
+                      className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl border-b-2 border-t border-l border-r ${
                         option.isSelected
                           ? "border-indigo-700 bg-violet-600"
                           : "border-neutral-200 bg-neutral-100"
@@ -112,7 +112,7 @@ const OptionModal: FC<Props> = ({
               ))}
 
               <TouchableOpacity
-                className="mb-5 mt-auto h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-2 border-indigo-700 bg-violet-600 px-4 py-[18px]"
+                className="mb-5 mt-auto h-[58px] w-[284px] items-center justify-center rounded-[100px] border-b-4 border-t border-l border-r border-indigo-800 bg-violet-600 px-4 py-[18px]"
                 onPress={handleButtonPress ?? handleClose}
               >
                 <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">

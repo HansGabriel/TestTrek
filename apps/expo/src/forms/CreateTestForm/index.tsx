@@ -612,7 +612,7 @@ const CreateTestForm: FC<Props> = ({
 
           <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
               disabled={questions.length < 5}
               style={[questions.length < 5 ? styles.disabledButton : {}]}
@@ -627,7 +627,7 @@ const CreateTestForm: FC<Props> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={openBottomSheet}
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-indigo-800 bg-indigo-700 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-indigo-700 py-[18px]"
             >
               <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
                 Add Question
