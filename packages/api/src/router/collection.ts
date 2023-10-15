@@ -378,4 +378,37 @@ export const collectionRouter = router({
         },
       });
     }),
+
+  updateTestsOnCollection: protectedProcedure
+    .input(
+      z.object({
+        collectionId: z.string(),
+        testIds: z.array(z.string()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { collectionId, testIds } = input;
+
+      await ctx.prisma.testOnCollection.deleteMany({
+        where: {
+          collectionsId: collectionId,
+        },
+      });
+
+      return ctx.prisma.collection.update({
+        where: {
+          id: collectionId,
+        },
+        data: {
+          tests: {
+            createMany: {
+              data: testIds.map((testId) => ({
+                testId,
+              })),
+              skipDuplicates: true,
+            },
+          },
+        },
+      });
+    }),
 });

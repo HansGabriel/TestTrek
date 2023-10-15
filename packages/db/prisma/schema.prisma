@@ -132,9 +132,9 @@ model Collection {
 }
 
 model TestOnCollection {
-    test          Test       @relation(fields: [testId], references: [id], onDelete: Cascade)
+    test          Test       @relation(fields: [testId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     testId        String
-    collection    Collection @relation(fields: [collectionsId], references: [id], onDelete: Cascade)
+    collection    Collection @relation(fields: [collectionsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     collectionsId String
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt

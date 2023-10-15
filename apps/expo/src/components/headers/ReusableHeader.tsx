@@ -1,13 +1,14 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import type { FC } from "react";
+import type { ViewProps } from "react-native";
 
-interface HeaderProps {
+interface HeaderProps extends ViewProps {
   screenName: string;
   optionIcon?: React.ReactNode;
   onIconPress?: () => void;
   backIcon?: React.ReactNode;
-  handleExit? : () => void
+  handleExit?: () => void;
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({
@@ -16,10 +17,14 @@ export const ReusableHeader: FC<HeaderProps> = ({
   onIconPress,
   backIcon = <LeftArrowIcon />,
   handleExit,
+  ...props
 }) => {
   return (
     <>
-      <View className="mx-5 flex  flex-row justify-between py-5 z-50" >
+      <View
+        className="z-50 mx-5  flex flex-row justify-between py-5"
+        {...props}
+      >
         <View className="flex-row gap-4 self-center">
           <TouchableOpacity
             onPress={handleExit}
