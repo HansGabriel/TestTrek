@@ -1,22 +1,11 @@
-import { PrismaClient, Prisma } from "@acme/db";
-import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/backend";
-import { createContextInner } from "../../context";
-import { mockCtx } from "./mockCtx";
+import { mockCtx, mockCtxType } from "./mockCtx";
 import { playRouter } from "../play";
-import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("playRouter", () => {
-  let ctx: {
-    auth: SignedInAuthObject | SignedOutAuthObject;
-    prisma: PrismaClient<
-      Prisma.PrismaClientOptions,
-      never,
-      Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-    >;
-  };
+  const ctx: mockCtxType = mockCtx;
 
   beforeEach(async () => {
-    ctx = mockCtx;
     ctx.prisma.play.findFirst = vi.fn().mockResolvedValue({
       test: {
         id: "testId1",
