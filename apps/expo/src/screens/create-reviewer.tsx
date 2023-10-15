@@ -107,10 +107,11 @@ export const CreateReviewerScreen = ({
   } = useForm<Reviewers>({
     resolver: zodResolver(reviewerSchema),
     defaultValues: {
-      title: reviewerDetails?.title ?? "",
-      content: reviewerDetails?.content ?? "",
-      visibility: reviewerDetails?.visibility ?? ("" as "public" | "private"),
-      imageUrl: reviewerDetails?.imageUrl ?? getDisplayImage(),
+      title: reviewerDetails?.reviewer?.title ?? "",
+      content: reviewerDetails?.reviewer?.content ?? "",
+      visibility:
+        reviewerDetails?.reviewer?.visibility ?? ("" as "public" | "private"),
+      imageUrl: reviewerDetails?.reviewer?.imageUrl ?? getDisplayImage(),
     },
   });
 
@@ -199,11 +200,11 @@ export const CreateReviewerScreen = ({
 
   useEffect(() => {
     if (reviewerDetails) {
-      setValue("title", reviewerDetails.title);
-      setValue("content", reviewerDetails.content);
-      setValue("visibility", reviewerDetails.visibility);
-      setValue("imageUrl", reviewerDetails.imageUrl);
-      richText.current?.setContentHTML(reviewerDetails.content);
+      setValue("title", reviewerDetails.reviewer?.title || "");
+      setValue("content", reviewerDetails.reviewer?.content || "");
+      setValue("visibility", reviewerDetails.reviewer?.visibility || "private");
+      setValue("imageUrl", reviewerDetails.reviewer?.imageUrl || "");
+      richText.current?.setContentHTML(reviewerDetails.reviewer?.content || "");
     }
   }, [reviewerDetails]);
 

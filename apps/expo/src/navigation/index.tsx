@@ -37,6 +37,7 @@ import { MusicAndEffectsScreen } from "../screens/settings/MusicSettings";
 import { AboutTestTrekScreen } from "../screens/settings/AboutTestTrek";
 import { OthersProfileScreen } from "../screens/others-profile";
 import { CreateReviewerScreen } from "../screens/create-reviewer";
+import { ReviewerDetailsScreen } from "../screens/reviewer-details";
 
 export default function Navigation() {
   return (
@@ -237,6 +238,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="CreateReviewer"
               component={CreateReviewerScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="ReviewerDetails"
+              component={ReviewerDetailsScreen}
               options={{
                 headerShown: false,
               }}
