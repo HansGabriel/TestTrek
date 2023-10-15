@@ -13,7 +13,7 @@ const mockPostData = {
 describe("postRouter", () => {
   const ctx: MockCtxType = mockCtx;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     ctx.prisma.post.findMany = vi.fn().mockResolvedValue([mockPostData]);
     ctx.prisma.post.findFirst = vi.fn().mockResolvedValue(mockPostData);
     ctx.prisma.post.create = vi.fn().mockResolvedValue(mockPostData);

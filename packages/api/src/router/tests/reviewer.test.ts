@@ -9,14 +9,14 @@ const mockReviewerData = {
   content: "Sample content",
   visibility: "public",
   userId: mockCtx.auth.userId,
-  createdAt: new Date("2022-11-11").toISOString(),
-  updatedAt: new Date("2022-11-11").toISOString(),
+  createdAt: new Date("2022-11-11"),
+  updatedAt: new Date("2022-11-11"),
 };
 
 describe("reviewerRouter", () => {
   const ctx: MockCtxType = mockCtx;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     ctx.prisma.reviewer.findMany = vi
       .fn()
       .mockResolvedValue([mockReviewerData]);
