@@ -17,7 +17,7 @@ import {
   multipleQuestionsPromptInput,
   singleQuestionPromptInput,
 } from "../../../schema/src/gpt";
-import { fetchGPT } from "../functions/gptApiHandlers";
+import { fetchGPT } from "../services/gptApiHandlers";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
