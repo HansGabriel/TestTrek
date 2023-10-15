@@ -1,4 +1,15 @@
 import { createContextInner } from "../../context";
+import { PrismaClient, Prisma } from "@acme/db";
+import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/backend";
+
+export type mockCtxType = {
+  auth: SignedInAuthObject | SignedOutAuthObject;
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >;
+};
 
 export const mockCtx = await createContextInner({
   auth: {

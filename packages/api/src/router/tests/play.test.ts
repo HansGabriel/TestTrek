@@ -1,22 +1,11 @@
-import { PrismaClient, Prisma } from "@acme/db";
-import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/backend";
-import { createContextInner } from "../../context";
-import { mockCtx } from "./mockCtx";
+import { mockCtx, mockCtxType } from "./mockCtx";
 import { playRouter } from "../play";
-import { Mock, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("playRouter", () => {
-  let ctx: {
-    auth: SignedInAuthObject | SignedOutAuthObject;
-    prisma: PrismaClient<
-      Prisma.PrismaClientOptions,
-      never,
-      Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-    >;
-  };
+  const ctx: mockCtxType = mockCtx;
 
   beforeEach(async () => {
-    ctx = mockCtx;
     ctx.prisma.play.findFirst = vi.fn().mockResolvedValue({
       test: {
         id: "testId1",
@@ -48,8 +37,9 @@ describe("playRouter", () => {
     vi.restoreAllMocks();
   });
 
+  const caller = playRouter.createCaller(ctx);
+
   it("should handle getTest query", async () => {
-    const caller = playRouter.createCaller(ctx);
     const input = { testId: "testId1" };
     const result = await caller.getTest(input);
     expect(result).toHaveProperty("test");
@@ -70,7 +60,6 @@ describe("playRouter", () => {
   });
 
   it("should handle finishTest mutation", async () => {
-    const caller = playRouter.createCaller(ctx);
     const input = { playId: "somePlayId", score: 100, time: 120 };
     const result = await caller.finishTest(input);
     expect(result).toHaveProperty("score", 100);
