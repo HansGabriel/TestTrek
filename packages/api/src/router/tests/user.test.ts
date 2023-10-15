@@ -1,6 +1,8 @@
 import { mockCtx, mockCtxType } from "./mockCtx";
 import { useRouter } from "../user";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Prisma } from "@acme/db";
+import pMap from "p-map";
 
 describe("useRouter", () => {
   const ctx: mockCtxType = mockCtx;
@@ -162,7 +164,51 @@ describe("useRouter", () => {
     expect(ctx.prisma.play.findMany).toHaveBeenCalledWith({
       where: { playerId: ctx.auth.userId },
     });
-    //Might want to add more expectations based on $queryRaw and pMap logic
+
+    if (ctx.auth.userId) {
+      const userPlays = await ctx.prisma.play.findMany({
+        where: { playerId: ctx.auth.userId, isFinished: true },
+      });
+
+      const normalizeWhitespace = (str: string) => {
+        return str.replace(/\s+/g, " ").trim();
+      };
+
+      await pMap(
+        userPlays,
+        async (item) => {
+          expect(ctx.prisma.$queryRaw).toHaveBeenCalledWith(
+            //Note: the next lines `SELECT...LIMIT 3;` are CASE, SPACE, and NEXT-LINE SENSITIVE
+            Prisma.sql`
+      SELECT
+        DISTINCT ON ("Play"."playerId")
+        "User"."firstName",
+        "User"."imageUrl",
+        "Play"."playerId" AS "id",
+        MAX("Play"."score") AS "highScore"
+      FROM
+        "Play"
+      JOIN
+        "User"
+      ON
+        "Play"."playerId" = "User"."userId"
+      WHERE
+        "Play"."isFinished" = TRUE
+        AND "Play"."testId" = ${item.testId}
+      GROUP BY
+        "Play"."playerId",
+        "User"."firstName",
+        "User"."imageUrl"
+      ORDER BY
+        "Play"."playerId",
+        "highScore" DESC
+      LIMIT 3;
+    `,
+          );
+        },
+        { concurrency: 5 },
+      );
+    }
   });
 
   it("should handle getTotalScore query", async () => {
@@ -187,6 +233,51 @@ describe("useRouter", () => {
     const result = await caller.getUserWeeklyAndDailyScores();
     expect(result.weeklyScore).toBe(500);
     expect(result.dailyScores).toEqual([500, 500, 500, 500, 500, 500, 500]);
-    //Might want to add more expectations based on aggregate and map logic
+    const currentDate = new Date();
+
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(
+      currentDate.getDate() -
+        currentDate.getDay() +
+        (currentDate.getDay() === 0 ? -6 : 1),
+    );
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(currentDate);
+    endOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 7);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    expect(ctx.prisma.play.aggregate).toHaveBeenCalledWith({
+      _sum: {
+        score: true,
+      },
+      where: {
+        playerId: ctx.auth.userId,
+        createdAt: {
+          gte: new Date(startOfWeek.toISOString()),
+          lte: new Date(endOfWeek.toISOString()),
+        },
+      },
+    });
+
+    [...Array(7).keys()].forEach((dayOffset, index) => {
+      const startOfDay = new Date(startOfWeek);
+      startOfDay.setDate(startOfWeek.getDate() + dayOffset);
+      const endOfDay = new Date(startOfDay);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      expect(ctx.prisma.play.aggregate).toHaveBeenCalledWith({
+        _sum: {
+          score: true,
+        },
+        where: {
+          playerId: ctx.auth.userId,
+          createdAt: {
+            gte: new Date(startOfDay.toISOString()),
+            lte: new Date(endOfDay.toISOString()),
+          },
+        },
+      });
+    });
   });
 });

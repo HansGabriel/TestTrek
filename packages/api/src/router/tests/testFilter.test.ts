@@ -133,6 +133,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "newest" } as const;
       const result = await caller.getAll(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: ctx.auth.userId },
         orderBy: { createdAt: "desc" },
@@ -156,6 +157,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "oldest" } as const;
       const result = await caller.getAll(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: ctx.auth.userId },
         orderBy: { createdAt: "asc" },
@@ -179,6 +181,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "alphabetical" } as const;
       const result = await caller.getAll(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: ctx.auth.userId },
         orderBy: { title: "asc" },
@@ -206,6 +209,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "newest" } as const;
       const result = await caller.getByUserId(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: input.userId },
         orderBy: { createdAt: "desc" },
@@ -229,6 +233,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "oldest" } as const;
       const result = await caller.getByUserId(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: input.userId },
         orderBy: { createdAt: "asc" },
@@ -252,6 +257,7 @@ describe("testFilterRouter", () => {
       const input = { ...inputBase, sortBy: "alphabetical" } as const;
       const result = await caller.getByUserId(input);
 
+      expect(result).toHaveLength(1);
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         where: { userId: input.userId },
         orderBy: { title: "asc" },
