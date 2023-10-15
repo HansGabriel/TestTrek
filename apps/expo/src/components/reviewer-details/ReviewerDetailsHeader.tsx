@@ -27,7 +27,7 @@ export const ReviewerDetailsHeader = ({
             Reviewer Details
           </Text>
         </View>
-        <View>
+        <View className="flex flex-row items-center gap-4">
           {showEditIcon && (
             <TouchableOpacity
               onPress={goToEditReviewer}

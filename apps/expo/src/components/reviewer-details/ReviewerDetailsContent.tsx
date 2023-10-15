@@ -7,7 +7,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import useGoBack from "../../hooks/useGoBack";
-import { RouterOutputs } from "../../utils/trpc";
+import { RouterOutputs, trpc } from "../../utils/trpc";
 import { ReusableHeader } from "../headers/ReusableHeader";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 
@@ -21,9 +21,11 @@ export const ReviewerDetailsContent = ({
   const { height, width } = Dimensions.get("window");
   const goBack = useGoBack();
   const navigation = useNavigation();
-  const { reviewer, isOwner } = reviewerDetails;
+  const { data: reviewerOwner } = trpc.reviewer.getDetails.useQuery({
+    reviewerId: reviewerDetails?.id ?? "",
+  });
 
-  if (!reviewerDetails) {
+  if (!reviewerDetails || !reviewerOwner) {
     return (
       <>
         <SafeAreaView
@@ -48,6 +50,8 @@ export const ReviewerDetailsContent = ({
       </>
     );
   }
+
+  const { isOwner, notOwner } = reviewerOwner;
 
   const goToOthersProfileScreen = (userId: string) => () => {
     navigation.navigate("OthersProfile", { userId });
@@ -80,7 +84,7 @@ export const ReviewerDetailsContent = ({
               resizeMode: "cover",
             }}
             source={{
-              uri: reviewer?.imageUrl ?? IMAGE_PLACEHOLDER,
+              uri: reviewerDetails.imageUrl ?? IMAGE_PLACEHOLDER,
             }}
           />
         </View>
@@ -91,7 +95,7 @@ export const ReviewerDetailsContent = ({
           ellipsizeMode="tail"
         >
           <Text className="font-nunito-bold w-[382px] text-2xl font-bold leading-[38.40px] text-neutral-800">
-            {reviewer?.title}
+            {reviewerDetails.title}
           </Text>
         </Text>
 
@@ -101,7 +105,7 @@ export const ReviewerDetailsContent = ({
           <Image
             className="mr-3 h-[60px] w-[60px] rounded-full"
             source={{
-              uri: reviewer?.user.imageUrl ?? IMAGE_PLACEHOLDER,
+              uri: reviewerDetails.user.imageUrl ?? IMAGE_PLACEHOLDER,
             }}
           />
           <View className="ml-3 w-[70%] flex-grow flex-col items-start justify-center">
@@ -110,21 +114,24 @@ export const ReviewerDetailsContent = ({
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              {getFullName(reviewer?.user.firstName, reviewer?.user.lastName)}
+              {getFullName(
+                reviewerDetails.user.firstName,
+                reviewerDetails.user.lastName,
+              )}
             </Text>
             <Text
               className="font-nunito-semibold w-[90%] text-[14px] leading-[19.6px] text-[#616161]"
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              @{reviewer?.user.username}
+              @{reviewerDetails.user.username}
             </Text>
           </View>
           <TouchableOpacity
             onPress={
               isOwner
                 ? goToMyProfileScreen()
-                : goToOthersProfileScreen(reviewer?.userId ?? "")
+                : goToOthersProfileScreen(notOwner ?? "")
             }
             className=" mt-5 items-center justify-center self-center rounded-full bg-[#6949FF] px-5 py-1"
           >
@@ -137,7 +144,7 @@ export const ReviewerDetailsContent = ({
           <Text className="font-nunito-bold break-words text-xl font-bold leading-[32px] text-[#212121]">
             Reviewer Content
           </Text>
-          <Text>{reviewer?.content}</Text>
+          <Text>{reviewerDetails.content}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

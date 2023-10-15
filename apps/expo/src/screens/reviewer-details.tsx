@@ -20,8 +20,18 @@ export const ReviewerDetailsScreen = ({
   const { data: reviewerData } = trpc.reviewer.getReviewerById.useQuery({
     reviewerId,
   });
+  const { data: reviewerOwner } = trpc.reviewer.getDetails.useQuery({
+    reviewerId: reviewerData?.id ?? "",
+  });
 
-  if (!reviewerData) {
+  const goToEditReviewer = () => {
+    navigation.navigate("CreateReviewer", {
+      reviewerId,
+      type: "edit",
+    });
+  };
+
+  if (!reviewerData || !reviewerOwner) {
     return (
       <>
         <SafeAreaView
@@ -47,14 +57,7 @@ export const ReviewerDetailsScreen = ({
     );
   }
 
-  const goToEditReviewer = () => {
-    if (reviewerData && reviewerData.reviewer) {
-      navigation.navigate("CreateReviewer", {
-        reviewerId: reviewerData.reviewer.id,
-        type: "edit",
-      });
-    }
-  };
+  const { isOwner } = reviewerOwner;
 
   return (
     <SafeAreaView
@@ -62,7 +65,7 @@ export const ReviewerDetailsScreen = ({
       style={{ height: height, width: width }}
     >
       <ReviewerDetailsHeader
-        showEditIcon={reviewerData.isOwner}
+        showEditIcon={isOwner}
         goToEditReviewer={goToEditReviewer}
       />
       <ReviewerDetailsContent reviewerDetails={reviewerData} />

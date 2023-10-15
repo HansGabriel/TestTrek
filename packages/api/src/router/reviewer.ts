@@ -87,17 +87,42 @@ export const reviewerRouter = router({
               firstName: true,
               lastName: true,
               imageUrl: true,
-              
-            }
+            },
           },
           createdAt: true,
           updatedAt: true,
         },
       });
 
-      const isOwner = reviewer?.userId === ctx.auth.userId;
+      return reviewer;
+    }),
 
-      return { reviewer, isOwner };
+  getDetails: protectedProcedure
+    .input(z.object({ reviewerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { reviewerId } = input;
+
+      const reviewer = await ctx.prisma.reviewer.findUnique({
+        where: {
+          id: reviewerId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      const isOwner = reviewer?.user.userId === ctx.auth.userId;
+
+      const notOwner = reviewer?.user.userId;
+
+      return {
+        isOwner,
+        notOwner,
+      };
     }),
 
   createReviewer: protectedProcedure
