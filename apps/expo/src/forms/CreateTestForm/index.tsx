@@ -612,7 +612,7 @@ const CreateTestForm: FC<Props> = ({
 
           <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-100 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-l border-r border-t border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
               disabled={questions.length < 5}
               style={[questions.length < 5 ? styles.disabledButton : {}]}
