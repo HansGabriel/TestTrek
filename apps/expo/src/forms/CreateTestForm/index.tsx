@@ -147,7 +147,6 @@ const CreateTestForm: FC<Props> = ({
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords ?? [],
     },
-    
   });
 
   const questions = useQuestionStore((state) => state.questions).filter(
@@ -294,9 +293,8 @@ const CreateTestForm: FC<Props> = ({
   };
 
   const createMultipleQuestions = (inputMessage: string) => {
-    const numOfQuestions = numberOfQuestionOptions.find(
-      (option) => option.isSelected,
-    )?.value ?? 1;
+    const numOfQuestions =
+      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
     generateMultipleQuestions(
       {
         message: inputMessage,
@@ -648,8 +646,16 @@ const CreateTestForm: FC<Props> = ({
       </BottomSheet>
       <RightSidebar
         isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
+        onClose={() => {
+          setIsSidebarOpen(false);
+        }}
         setReviewer={setSelectedReviewer}
+        handleConfirmPress={() => {
+          setIsSidebarOpen(false);
+        }}
+        confirmButtonText={
+          !showNumberofQuestionsModal ? "Go to Reviewer" : "Confirm"
+        }
       />
 
       <PromptModal
@@ -688,26 +694,31 @@ const CreateTestForm: FC<Props> = ({
           handleCloseCreationChoice();
           setTimeout(() => {
             setShowNumberOfQuestionsModal(true);
-          }, 1000);
+          }, 500);
         }}
       />
 
       <ChoiceModal
         title="No. of questions you want to generate"
+        selectButtonText={
+          !selectedReviewer?.content ? "Select Reviewer" : "Generate Questions"
+        }
         options={numberOfQuestionOptions}
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
         setIsVisible={handleCloseNumberOfQuestionsModal}
-        buttonText={selectedReviewer?.content ? "Generate" : "Ask AI"}
         isLoading={isGenerating}
-        handleButtonPress={
-          selectedReviewer?.content
-            ? () => createMultipleQuestions(selectedReviewer.content)
-            : () => {
-                setShowNumberOfQuestionsModal(false);
-                setShowAiModal(true);
-              }
-        }
+        handleAIPress={() => {
+          setShowNumberOfQuestionsModal(false);
+          setShowAiModal(true);
+        }}
+        handleSelectPress={() => {
+          if (!selectedReviewer?.content) {
+            setIsSidebarOpen(true);
+          } else {
+            createMultipleQuestions(selectedReviewer.content);
+          }
+        }}
       />
 
       <AskAiModal
