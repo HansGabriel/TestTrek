@@ -48,10 +48,12 @@ export const ReviewerDetailsScreen = ({
   }
 
   const goToEditReviewer = () => {
-    navigation.navigate("CreateReviewer", {
-      reviewerId: reviewerData?.reviewer?.id,
-      type: "edit",
-    });
+    if (reviewerData && reviewerData.reviewer) {
+      navigation.navigate("CreateReviewer", {
+        reviewerId: reviewerData.reviewer.id,
+        type: "edit",
+      });
+    }
   };
 
   return (
@@ -60,7 +62,7 @@ export const ReviewerDetailsScreen = ({
       style={{ height: height, width: width }}
     >
       <ReviewerDetailsHeader
-        showEditIcon={reviewerData?.isOwner}
+        showEditIcon={reviewerData.isOwner}
         goToEditReviewer={goToEditReviewer}
       />
       <ReviewerDetailsContent reviewerDetails={reviewerData} />

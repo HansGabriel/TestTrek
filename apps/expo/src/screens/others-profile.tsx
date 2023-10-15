@@ -74,10 +74,8 @@ export const OthersProfileScreen = ({
               <SkeletonLoader isCircular={true} width={"100%"} height={20} />
               <SkeletonLoader isCircular={true} width={"100%"} height={20} />
             </View>
-            <View>
-              <Footer />
-            </View>
           </View>
+          <Footer />
         </SafeAreaView>
       </>
     );

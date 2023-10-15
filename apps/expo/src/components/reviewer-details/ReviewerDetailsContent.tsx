@@ -21,6 +21,8 @@ export const ReviewerDetailsContent = ({
   const { height, width } = Dimensions.get("window");
   const goBack = useGoBack();
   const navigation = useNavigation();
+  const { reviewer, isOwner } = reviewerDetails;
+
   if (!reviewerDetails) {
     return (
       <>
@@ -78,7 +80,7 @@ export const ReviewerDetailsContent = ({
               resizeMode: "cover",
             }}
             source={{
-              uri: reviewerDetails.reviewer?.imageUrl ?? IMAGE_PLACEHOLDER,
+              uri: reviewer?.imageUrl ?? IMAGE_PLACEHOLDER,
             }}
           />
         </View>
@@ -89,7 +91,7 @@ export const ReviewerDetailsContent = ({
           ellipsizeMode="tail"
         >
           <Text className="font-nunito-bold w-[382px] text-2xl font-bold leading-[38.40px] text-neutral-800">
-            {reviewerDetails.reviewer?.title}
+            {reviewer?.title}
           </Text>
         </Text>
 
@@ -99,7 +101,7 @@ export const ReviewerDetailsContent = ({
           <Image
             className="mr-3 h-[60px] w-[60px] rounded-full"
             source={{
-              uri: reviewerDetails.reviewer?.user.imageUrl ?? IMAGE_PLACEHOLDER,
+              uri: reviewer?.user.imageUrl ?? IMAGE_PLACEHOLDER,
             }}
           />
           <View className="ml-3 w-[70%] flex-grow flex-col items-start justify-center">
@@ -108,26 +110,21 @@ export const ReviewerDetailsContent = ({
               numberOfLines={2}
               ellipsizeMode="tail"
             >
-              {getFullName(
-                reviewerDetails.reviewer?.user.firstName,
-                reviewerDetails.reviewer?.user.lastName,
-              )}
+              {getFullName(reviewer?.user.firstName, reviewer?.user.lastName)}
             </Text>
             <Text
               className="font-nunito-semibold w-[90%] text-[14px] leading-[19.6px] text-[#616161]"
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              @{reviewerDetails.reviewer?.user.username}
+              @{reviewer?.user.username}
             </Text>
           </View>
           <TouchableOpacity
             onPress={
-              reviewerDetails.isOwner
+              isOwner
                 ? goToMyProfileScreen()
-                : goToOthersProfileScreen(
-                    reviewerDetails.reviewer?.userId ?? "",
-                  )
+                : goToOthersProfileScreen(reviewer?.userId ?? "")
             }
             className=" mt-5 items-center justify-center self-center rounded-full bg-[#6949FF] px-5 py-1"
           >
@@ -140,7 +137,7 @@ export const ReviewerDetailsContent = ({
           <Text className="font-nunito-bold break-words text-xl font-bold leading-[32px] text-[#212121]">
             Reviewer Content
           </Text>
-          <Text>{reviewerDetails.reviewer?.content}</Text>
+          <Text>{reviewer?.content}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
