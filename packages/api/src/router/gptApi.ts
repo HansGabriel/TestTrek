@@ -17,6 +17,7 @@ import {
   multipleQuestionsPromptInput,
   singleQuestionPromptInput,
 } from "../../../schema/src/gpt";
+import { fetchGPT } from "../functions/gptApiHandlers";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
@@ -24,34 +25,10 @@ export const gptApiRouter = router({
     .output(questionSchema)
     .mutation(async ({ input }) => {
       const { message, questionType } = input;
-      const apiKey = process.env.GPT_KEY;
 
       const promptText = generatePromptForType(message, questionType);
 
-      const prompt = {
-        role: "user",
-        content: promptText,
-      };
-
-      const apiRequestBody = {
-        model: "gpt-3.5-turbo",
-        messages: [prompt],
-      };
-
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + apiKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(apiRequestBody),
-        },
-      );
-
-      const data = await response.json();
-      const generatedMessage = data.choices[0].message.content;
+      const generatedMessage = await fetchGPT(promptText);
 
       let answer;
 
@@ -91,7 +68,6 @@ export const gptApiRouter = router({
         maxCharsPerQuestion,
         maxCharsPerChoice,
       } = input;
-      const apiKey = process.env.GPT_KEY;
 
       const promptText = generateQuestionPrompt({
         content: message,
@@ -102,30 +78,7 @@ export const gptApiRouter = router({
         maxCharsPerChoice: maxCharsPerChoice,
       });
 
-      const prompt = {
-        role: "user",
-        content: promptText,
-      };
-
-      const apiRequestBody = {
-        model: "gpt-3.5-turbo",
-        messages: [prompt],
-      };
-
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + apiKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(apiRequestBody),
-        },
-      );
-
-      const data = await response.json();
-      const generatedMessage = data.choices[0].message.content;
+      const generatedMessage = await fetchGPT(promptText);
 
       let answer;
 
