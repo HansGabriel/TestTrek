@@ -82,6 +82,7 @@ const CreateTestForm: FC<Props> = ({
     null,
   );
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [aiQuestion, setAiQuestion] = useState<string>("");
@@ -295,54 +296,60 @@ const CreateTestForm: FC<Props> = ({
   const createMultipleQuestions = (inputMessage: string) => {
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
-    generateMultipleQuestions(
-      {
-        message: inputMessage,
-        questionType: "multipleChoice",
-        numOfQuestions: numOfQuestions,
-        numOfChoicesPerQuestion: 4,
-      },
-      {
-        onSuccess: (data) => {
-          addQuestions(
-            data.map((question) => {
-              if (question.type === "multipleChoice") {
+
+    if (inputMessage.length <= 0) {
+      setErrorInAIQuestion(true);
+    } else {
+      generateMultipleQuestions(
+        {
+          message: inputMessage,
+          questionType: "multipleChoice",
+          numOfQuestions: numOfQuestions,
+          numOfChoicesPerQuestion: 4,
+        },
+        {
+          onSuccess: (data) => {
+            addQuestions(
+              data.map((question) => {
+                if (question.type === "multipleChoice") {
+                  return {
+                    type: "multiple_choice",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
-                  choices: question.choices,
+                  choices: [],
                   inEdit: false,
-                  title: question.question,
-                  time: question.timeLimit,
-                  points: question.points,
+                  title: "",
                 };
-              }
-              return {
-                type: "multiple_choice",
-                choices: [],
-                inEdit: false,
-                title: "",
-              };
-            }),
-          );
-          removeBlankQuestions();
-          addEmptyQuestion("multiple_choice");
-          setLastIndex();
-          setShowNumberOfQuestionsModal(false);
-          setShowAiModal(false);
-          successToast({
-            title: "Success",
-            message: "Questions generated successfully",
-          });
-          navigation.navigate("CreateQuestion");
+              }),
+            );
+            removeBlankQuestions();
+            addEmptyQuestion("multiple_choice");
+            setLastIndex();
+            setErrorInAIQuestion(false);
+            setShowNumberOfQuestionsModal(false);
+            setShowAiModal(false);
+            successToast({
+              title: "Success",
+              message: "Questions generated successfully",
+            });
+            navigation.navigate("CreateQuestion");
+          },
+          onError: (error) => {
+            errorToast({
+              title: "Error",
+              message: error.message,
+            });
+          },
         },
-        onError: (error) => {
-          errorToast({
-            title: "Error",
-            message: error.message,
-          });
-        },
-      },
-    );
+      );
+    }
   };
 
   return (
@@ -729,8 +736,10 @@ const CreateTestForm: FC<Props> = ({
         handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
         handleClose={() => {
           handleCloseAiModal();
+          setErrorInAIQuestion(false);
           setShowNumberOfQuestionsModal(true);
         }}
+        hasError={errorInAIQuestion}
       />
     </SafeAreaView>
   );

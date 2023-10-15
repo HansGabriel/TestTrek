@@ -123,9 +123,6 @@ const ChoiceModal: FC<Props> = ({
                     TOwidth="full"
                     Vwidth="36"
                     onPress={handleSelectPress}
-                    borderTop={"t"}
-                    borderLeft={"l"}
-                    borderRight={"r"}
                     isLoading={isLoading}
                     disabled={isLoading}
                   />
@@ -141,10 +138,6 @@ const ChoiceModal: FC<Props> = ({
                     TOwidth="full"
                     Vwidth="32"
                     onPress={handleAIPress}
-                    borderTop={"t"}
-                    borderLeft={"l"}
-                    borderRight={"r"}
-                    isLoading={isLoading}
                     disabled={isLoading}
                   />
                 </View>
@@ -161,9 +154,6 @@ const ChoiceModal: FC<Props> = ({
                     TOwidth="full"
                     Vwidth="32"
                     onPress={setIsVisible}
-                    borderTop={"t"}
-                    borderLeft={"l"}
-                    borderRight={"r"}
                     disabled={isLoading}
                   />
                 </View>
