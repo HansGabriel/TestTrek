@@ -465,6 +465,11 @@ export const testRouter = router({
           createdAt: true,
           updatedAt: true,
         },
+        orderBy: {
+          plays: {
+            _count: "desc",
+          },
+        },
       });
     }),
 
@@ -499,6 +504,11 @@ export const testRouter = router({
           },
           createdAt: true,
           updatedAt: true,
+        },
+        orderBy: {
+          favoritedUsers: {
+            _count: "desc",
+          },
         },
       });
     }),
