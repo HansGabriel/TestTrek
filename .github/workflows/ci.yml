@@ -9,6 +9,7 @@ on:
 # You can leverage Vercel Remote Caching with Turbo to speed up your builds
 # @link https://turborepo.org/docs/core-concepts/remote-caching#remote-caching-on-vercel-builds
 env:
+  DATABASE_URL: postgresql://prisma:prisma@localhost:5433/tests
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}}
@@ -57,6 +58,14 @@ jobs:
         with:
           path: ${{ github.workspace }}apps/nextjs/.next/cache
           key: ${{ runner.os }}-${{ runner.node }}-${{ hashFiles('**/pnpm-lock.yaml') }}-nextjs
+
+      - name: Docker Compose
+        uses: isbang/compose-action@v1.4.0
+        with:
+          compose_file: docker-compose.yml
+
+      - name: Push schema
+        run: pnpm db-push
 
       - name: Build, lint and type-check
         run: pnpm turbo db-generate build lint type-check test
