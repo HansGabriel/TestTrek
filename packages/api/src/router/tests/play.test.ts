@@ -1,9 +1,9 @@
-import { mockCtx, mockCtxType } from "./mockCtx";
+import { mockCtx, MockCtxType } from "./mockCtx";
 import { playRouter } from "../play";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("playRouter", () => {
-  const ctx: mockCtxType = mockCtx;
+  const ctx: MockCtxType = mockCtx;
 
   beforeEach(async () => {
     ctx.prisma.play.findFirst = vi.fn().mockResolvedValue({

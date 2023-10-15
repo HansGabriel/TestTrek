@@ -1,6 +1,6 @@
 import { reviewerRouter } from "../reviewer";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mockCtx, mockCtxType } from "./mockCtx";
+import { mockCtx, MockCtxType } from "./mockCtx";
 
 const mockReviewerData = {
   id: "reviewerId1",
@@ -14,7 +14,7 @@ const mockReviewerData = {
 };
 
 describe("reviewerRouter", () => {
-  const ctx: mockCtxType = mockCtx;
+  const ctx: MockCtxType = mockCtx;
 
   beforeEach(() => {
     ctx.prisma.reviewer.findMany = vi

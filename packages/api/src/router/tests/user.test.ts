@@ -1,11 +1,11 @@
-import { mockCtx, mockCtxType } from "./mockCtx";
+import { mockCtx, MockCtxType } from "./mockCtx";
 import { useRouter } from "../user";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Prisma } from "@acme/db";
 import pMap from "p-map";
 
 describe("useRouter", () => {
-  const ctx: mockCtxType = mockCtx;
+  const ctx: MockCtxType = mockCtx;
 
   beforeEach(async () => {
     ctx.prisma.user.findMany = vi.fn().mockResolvedValue([
