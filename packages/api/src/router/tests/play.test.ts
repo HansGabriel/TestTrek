@@ -37,8 +37,9 @@ describe("playRouter", () => {
     vi.restoreAllMocks();
   });
 
+  const caller = playRouter.createCaller(ctx);
+
   it("should handle getTest query", async () => {
-    const caller = playRouter.createCaller(ctx);
     const input = { testId: "testId1" };
     const result = await caller.getTest(input);
     expect(result).toHaveProperty("test");
@@ -59,7 +60,6 @@ describe("playRouter", () => {
   });
 
   it("should handle finishTest mutation", async () => {
-    const caller = playRouter.createCaller(ctx);
     const input = { playId: "somePlayId", score: 100, time: 120 };
     const result = await caller.finishTest(input);
     expect(result).toHaveProperty("score", 100);

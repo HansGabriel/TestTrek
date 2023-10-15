@@ -41,8 +41,9 @@ describe("testFilterRouter", () => {
     vi.restoreAllMocks();
   });
 
+  const caller = testFilterRouter.createCaller(ctx);
+
   it("should handle getAll query for user tests", async () => {
-    const caller = testFilterRouter.createCaller(ctx);
     const input = { testType: "user", sortBy: "newest" } as const;
     const result = await caller.getAll(input);
     expect(result).toHaveLength(1);
@@ -68,7 +69,6 @@ describe("testFilterRouter", () => {
   });
 
   it("should handle getAll query for favorite tests", async () => {
-    const caller = testFilterRouter.createCaller(ctx);
     const input = { testType: "favorite", sortBy: "newest" } as const;
     const result = await caller.getAll(input);
     expect(result).toHaveLength(1);
@@ -98,7 +98,6 @@ describe("testFilterRouter", () => {
   });
 
   it("should handle getByUserId query", async () => {
-    const caller = testFilterRouter.createCaller(ctx);
     const input = {
       userId: "someUserId",
       sortBy: "newest",
@@ -127,13 +126,10 @@ describe("testFilterRouter", () => {
     });
   });
 
-  // ... previous test cases
-
   describe("getAll query with different orderBy options", () => {
     const inputBase = { testType: "user" } as const;
 
     it("should handle orderBy newest", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "newest" } as const;
       const result = await caller.getAll(input);
 
@@ -157,7 +153,6 @@ describe("testFilterRouter", () => {
     });
 
     it("should handle orderBy oldest", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "oldest" } as const;
       const result = await caller.getAll(input);
 
@@ -181,7 +176,6 @@ describe("testFilterRouter", () => {
     });
 
     it("should handle orderBy alphabetical", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "alphabetical" } as const;
       const result = await caller.getAll(input);
 
@@ -209,7 +203,6 @@ describe("testFilterRouter", () => {
     const inputBase = { userId: "someUserId", testType: "user" } as const;
 
     it("should handle orderBy newest", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "newest" } as const;
       const result = await caller.getByUserId(input);
 
@@ -233,7 +226,6 @@ describe("testFilterRouter", () => {
     });
 
     it("should handle orderBy oldest", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "oldest" } as const;
       const result = await caller.getByUserId(input);
 
@@ -257,7 +249,6 @@ describe("testFilterRouter", () => {
     });
 
     it("should handle orderBy alphabetical", async () => {
-      const caller = testFilterRouter.createCaller(ctx);
       const input = { ...inputBase, sortBy: "alphabetical" } as const;
       const result = await caller.getByUserId(input);
 
