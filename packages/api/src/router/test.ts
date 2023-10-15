@@ -189,32 +189,14 @@ export const testRouter = router({
   create: protectedProcedure
     .input(testInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const {
-        title,
-        collection,
-        description,
-        image,
-        keywords,
-        visibility,
-        questions,
-      } = input;
+      const { title, description, image, keywords, visibility, questions } =
+        input;
 
       const userId = ctx.auth.userId;
 
       const test = await ctx.prisma.test.create({
         data: {
           title,
-          collections: collection
-            ? {
-                create: {
-                  collection: {
-                    connect: {
-                      id: collection,
-                    },
-                  },
-                },
-              }
-            : undefined,
           description,
           imageUrl: image,
           keywords: {
@@ -321,7 +303,7 @@ export const testRouter = router({
       const {
         testId,
         title,
-        collection,
+
         description,
         image,
         keywords,
@@ -351,17 +333,6 @@ export const testRouter = router({
         },
         data: {
           title,
-          collections: collection
-            ? {
-                create: {
-                  collection: {
-                    connect: {
-                      id: collection,
-                    },
-                  },
-                },
-              }
-            : undefined,
           description,
           imageUrl: image,
           keywords: {
