@@ -22,7 +22,7 @@ env:
 jobs:
   build-lint:
     env:
-      DATABASE_URL: file:./db.sqlite
+      DATABASE_URL: postgresql://prisma:prisma@localhost:5433/tests
     runs-on: ubuntu-latest
 
     steps:
