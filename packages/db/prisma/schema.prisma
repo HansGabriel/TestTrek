@@ -26,6 +26,8 @@ model User {
     plays         Play[]
     favoriteTests UserOnFavoriteTest[]
     reviewer      Reviewer[]
+
+    @@map("Users")
 }
 
 model UserOnFavoriteTest {
@@ -38,6 +40,7 @@ model UserOnFavoriteTest {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     @@id([userId, testId])
+    @@map("UsersOnFavoriteTests")
 }
 
 model Test {
@@ -50,12 +53,16 @@ model Test {
     keywords       Keyword[]
     createdAt      DateTime             @default(now()) @map("created_at")
     updatedAt      DateTime             @updatedAt @map("updated_at")
+    deletedAt      DateTime?            @map("deleted_at")
     collections    TestOnCollection[]
     questions      Question[]
     user           User                 @relation(fields: [userId], references: [userId])
     plays          Play[]
     reviewers      ReviewerOnTest[]
     favoritedUsers UserOnFavoriteTest[]
+    isDeleted      Boolean              @default(false) @map("is_deleted")
+
+    @@map("Tests")
 }
 
 model Reviewer {
@@ -70,6 +77,10 @@ model Reviewer {
     tests      ReviewerOnTest[]
     createdAt  DateTime         @default(now()) @map("created_at")
     updatedAt  DateTime         @updatedAt @map("updated_at")
+    deletedAt  DateTime?        @map("deleted_at")
+    isDeleted  Boolean          @default(false) @map("is_deleted")
+
+    @@map("Reviewers")
 }
 
 model ReviewerOnTest {
@@ -82,6 +93,7 @@ model ReviewerOnTest {
     updatedAt  DateTime @updatedAt @map("updated_at")
 
     @@id([testId, reviewerId])
+    @@map("ReviewersOnTests")
 }
 
 model Question {
@@ -96,6 +108,10 @@ model Question {
     choices         Choice[]
     answer          String?
     possibleAnswers String[]     @map("possible_answers")
+    createdAt       DateTime     @default(now()) @map("created_at")
+    updatedAt       DateTime     @updatedAt @map("updated_at")
+
+    @@map("Questions")
 }
 
 model Choice {
@@ -104,6 +120,10 @@ model Choice {
     text       String
     isCorrect  Boolean  @map("is_correct")
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
+
+    @@map("Choices")
 }
 
 model Keyword {
@@ -113,6 +133,8 @@ model Keyword {
     testId    String   @map("test_id")
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("Keywords")
 }
 
 model Collection {
@@ -122,9 +144,13 @@ model Collection {
     imageUrl   String             @map("image_url")
     createdAt  DateTime           @default(now()) @map("created_at")
     updatedAt  DateTime           @updatedAt @map("updated_at")
+    deletedAt  DateTime?          @map("deleted_at")
     tests      TestOnCollection[]
     user       User               @relation(fields: [userId], references: [userId])
     visibility Visibility         @default(private)
+    isDeleted  Boolean            @default(false) @map("is_deleted")
+
+    @@map("Collections")
 }
 
 model TestOnCollection {
@@ -137,6 +163,7 @@ model TestOnCollection {
     updatedAt     DateTime   @updatedAt @map("updated_at")
 
     @@id([testId, collectionsId])
+    @@map("TestsOnCollections")
 }
 
 model Play {
@@ -150,6 +177,8 @@ model Play {
     isFinished Boolean  @default(false) @map("is_finished")
     score      Int?
     time       Int?
+
+    @@map("Plays")
 }
 
 enum Visibility {
