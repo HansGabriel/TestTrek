@@ -1,6 +1,6 @@
 import { reviewerRouter } from "../reviewer";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mockCtx, mockCtxType } from "./mockCtx";
+import { mockCtx, MockCtxType } from "./mockCtx";
 
 const mockReviewerData = {
   id: "reviewerId1",
@@ -9,14 +9,14 @@ const mockReviewerData = {
   content: "Sample content",
   visibility: "public",
   userId: mockCtx.auth.userId,
-  createdAt: new Date("2022-11-11").toISOString(),
-  updatedAt: new Date("2022-11-11").toISOString(),
+  createdAt: new Date("2022-11-11"),
+  updatedAt: new Date("2022-11-11"),
 };
 
 describe("reviewerRouter", () => {
-  const ctx: mockCtxType = mockCtx;
+  const ctx: MockCtxType = mockCtx;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     ctx.prisma.reviewer.findMany = vi
       .fn()
       .mockResolvedValue([mockReviewerData]);

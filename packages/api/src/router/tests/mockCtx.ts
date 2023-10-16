@@ -2,7 +2,7 @@ import { createContextInner } from "../../context";
 import { PrismaClient, Prisma } from "@acme/db";
 import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/backend";
 
-export type mockCtxType = {
+export type MockCtxType = {
   auth: SignedInAuthObject | SignedOutAuthObject;
   prisma: PrismaClient<
     Prisma.PrismaClientOptions,
