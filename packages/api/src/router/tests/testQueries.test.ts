@@ -2,7 +2,7 @@ import { mockCtx, MockCtxType } from "./mockCtx";
 import { testRouter } from "../test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-describe("testRouter", () => {
+describe("testRouter - queries", () => {
   const ctx: MockCtxType = mockCtx;
 
   const fixedDate = new Date("2022-10-17");
