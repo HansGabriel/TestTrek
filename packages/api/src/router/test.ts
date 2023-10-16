@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { highlightTestsInput, testInputSchema } from "@acme/schema/src/test";
 import { playersHighscoreSchema } from "@acme/schema/src/play";
+import { TRPCError } from "@trpc/server";
 
 import { Prisma } from "@acme/db";
 import type { PlayersHighscore } from "@acme/schema/src/types";
@@ -59,6 +60,75 @@ export const testRouter = router({
       },
     });
   }),
+  getCollectionTests: protectedProcedure
+    .input(
+      z.object({
+        collectionId: z.string(),
+        type: z.enum(["all", "public", "private"]).default("all"),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { collectionId, type } = input;
+
+      const publicTests = await ctx.prisma.test.findMany({
+        where: {
+          visibility: type === "all" ? undefined : type,
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+        },
+      });
+
+      const collectionTests = await ctx.prisma.collection
+        .findUnique({
+          where: {
+            id: collectionId,
+          },
+          select: {
+            tests: {
+              select: {
+                testId: true,
+              },
+            },
+          },
+        })
+        .then((collection) => collection?.tests);
+
+      if (!collectionTests) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Collection not found",
+        });
+      }
+
+      const mappedPublicTests = publicTests
+        .map((test) => {
+          const isSelected = collectionTests.some((collectionTest) => {
+            return collectionTest.testId === test.id;
+          });
+
+          return {
+            ...test,
+            isSelected,
+          };
+        })
+        .sort((a, b) => {
+          if (a.isSelected && !b.isSelected) {
+            return -1;
+          }
+
+          if (!a.isSelected && b.isSelected) {
+            return 1;
+          }
+
+          return 0;
+        });
+
+      return mappedPublicTests;
+    }),
   getById: protectedProcedure
     .input(z.object({ testId: z.string() }))
     .query(({ ctx, input }) => {
@@ -119,32 +189,14 @@ export const testRouter = router({
   create: protectedProcedure
     .input(testInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const {
-        title,
-        collection,
-        description,
-        image,
-        keywords,
-        visibility,
-        questions,
-      } = input;
+      const { title, description, image, keywords, visibility, questions } =
+        input;
 
       const userId = ctx.auth.userId;
 
       const test = await ctx.prisma.test.create({
         data: {
           title,
-          collections: collection
-            ? {
-                create: {
-                  collection: {
-                    connect: {
-                      id: collection,
-                    },
-                  },
-                },
-              }
-            : undefined,
           description,
           imageUrl: image,
           keywords: {
@@ -251,7 +303,7 @@ export const testRouter = router({
       const {
         testId,
         title,
-        collection,
+
         description,
         image,
         keywords,
@@ -281,17 +333,6 @@ export const testRouter = router({
         },
         data: {
           title,
-          collections: collection
-            ? {
-                create: {
-                  collection: {
-                    connect: {
-                      id: collection,
-                    },
-                  },
-                },
-              }
-            : undefined,
           description,
           imageUrl: image,
           keywords: {

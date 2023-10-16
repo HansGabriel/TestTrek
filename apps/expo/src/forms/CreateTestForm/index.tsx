@@ -41,7 +41,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
-import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
@@ -56,8 +55,7 @@ import {
   successToast,
 } from "../../components/notifications/ToastNotifications";
 
-type Omitted = Omit<TestInput, "questions">;
-type FormProps = SetOptional<Omitted, "collection">;
+type FormProps = Omit<TestInput, "questions">;
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
 
 interface Props {
@@ -104,10 +102,6 @@ const CreateTestForm: FC<Props> = ({
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
     trpc.gptApi.generateMultipleQuestions.useMutation();
 
-  const { data: userCollections } = trpc.collection.getByUserId.useQuery({
-    sortBy: "alphabetical",
-  });
-
   const getDisplayImage = (isDefault = false) => {
     if (testDetails?.image && !image) {
       return testDetails.image;
@@ -143,7 +137,6 @@ const CreateTestForm: FC<Props> = ({
       title: testDetails?.title,
       description: testDetails?.description,
       image: displayImage,
-      collection: testDetails?.collection,
       visibility: testDetails?.visibility,
       keywords: testDetails?.keywords ?? [],
     },
@@ -394,36 +387,6 @@ const CreateTestForm: FC<Props> = ({
             />
             {errors.title && (
               <Text className="text-red-500">{errors.title.message}</Text>
-            )}
-
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => {
-                const onTextChange = (option: LabelOption) => {
-                  onChange(option.value);
-                };
-                return (
-                  <>
-                    {userCollections ? (
-                      <AppPicker
-                        label="Collection"
-                        placeholder="Select collection"
-                        options={userCollections.map((collection) => ({
-                          label: collection.title,
-                          value: collection.id,
-                        }))}
-                        selectedValue={value}
-                        setSelectedValue={onTextChange}
-                        hasDefault={true}
-                      />
-                    ) : null}
-                  </>
-                );
-              }}
-              name="collection"
-            />
-            {errors.collection && (
-              <Text className="text-red-500">{errors.collection.message}</Text>
             )}
 
             <Controller
