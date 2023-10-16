@@ -64,22 +64,23 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     },
   );
 
-  const { mutate: deleteTest } = trpc.test.delete.useMutation({
-    onSuccess: () => {
-      successToast({
-        title: "Deleted",
-        message: "Test deleted successfully",
-      });
-      trpcUtils.test.invalidate();
-      navigation.navigate("MyLibrary");
-    },
-    onError: () => {
-      errorToast({
-        title: "Deleted",
-        message: "An error occurred",
-      });
-    },
-  });
+  const { mutate: deleteTest, isLoading: isDeletingTest } =
+    trpc.test.delete.useMutation({
+      onSuccess: () => {
+        successToast({
+          title: "Deleted",
+          message: "Test deleted successfully",
+        });
+        trpcUtils.test.invalidate();
+        navigation.navigate("MyLibrary");
+      },
+      onError: () => {
+        errorToast({
+          title: "Deleted",
+          message: "An error occurred",
+        });
+      },
+    });
 
   const { mutate: editTest, isLoading: isEditingTest } =
     trpc.test.edit.useMutation({
@@ -197,6 +198,8 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           isCreatingQuiz={isEditingTest}
           isUploading={isUploading}
           handleExitScreen={handleExitScreen}
+          deleteTest={handleDeleteTest}
+          isDeletingTest={isDeletingTest}
         />
       </View>
     </SafeAreaView>

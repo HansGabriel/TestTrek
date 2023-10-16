@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
+import { zip } from "lodash";
 import type { FC } from "react";
 import type { ViewProps } from "react-native";
 
 interface HeaderProps extends ViewProps {
   screenName: string;
-  optionIcon?: React.ReactNode;
-  onIconPress?: () => void;
+  optionIcon?: React.ReactNode | React.ReactNode[];
+  onIconPress?: (() => void)[] | (() => void);
   backIcon?: React.ReactNode;
   handleExit?: () => void;
 }
@@ -14,11 +16,17 @@ interface HeaderProps extends ViewProps {
 export const ReusableHeader: FC<HeaderProps> = ({
   screenName,
   optionIcon,
-  onIconPress,
+  onIconPress = () => {},
   backIcon = <LeftArrowIcon />,
   handleExit,
   ...props
 }) => {
+  const singleOnPress = () => {
+    if (typeof onIconPress === "function") {
+      onIconPress();
+    }
+  };
+
   return (
     <>
       <View
@@ -36,9 +44,26 @@ export const ReusableHeader: FC<HeaderProps> = ({
             {screenName}
           </Text>
         </View>
-        <TouchableOpacity onPress={onIconPress} className="self-center">
-          {optionIcon}
-        </TouchableOpacity>
+
+        {Array.isArray(optionIcon) && Array.isArray(onIconPress) ? (
+          <View className="flex flex-row gap-6">
+            {zip(optionIcon, onIconPress).map(([icon, onPress], index) => {
+              return (
+                <TouchableOpacity
+                  onPress={onPress}
+                  className="self-center"
+                  key={index}
+                >
+                  {icon}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ) : (
+          <TouchableOpacity onPress={singleOnPress} className="self-center">
+            {optionIcon}
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );

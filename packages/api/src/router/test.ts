@@ -603,18 +603,6 @@ export const testRouter = router({
       };
     }),
 
-  delete: protectedProcedure
-    .input(z.object({ testId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { testId } = input;
-
-      return ctx.prisma.test.delete({
-        where: {
-          id: testId,
-        },
-      });
-    }),
-
   play: protectedProcedure
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -749,6 +737,46 @@ export const testRouter = router({
             userId: ctx.auth.userId,
             testId: testId,
           },
+        },
+      });
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ testId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { testId } = input;
+
+      const testDetails = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+          deletedAt: true,
+        },
+      });
+
+      if (!testDetails) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Test not found",
+        });
+      }
+
+      if (testDetails.user.userId !== ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Unauthorized",
+        });
+      }
+
+      return ctx.prisma.test.delete({
+        where: {
+          id: testId,
         },
       });
     }),

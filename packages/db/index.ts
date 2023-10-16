@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import testsMiddleware from "./middlewares/tests";
 
 declare global {
   // allow global `var` declarations
@@ -14,6 +15,8 @@ export const prisma =
         ? ["query", "error", "warn"]
         : ["error"],
   });
+
+prisma.$use(testsMiddleware);
 
 export * from "@prisma/client";
 

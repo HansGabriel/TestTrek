@@ -15,7 +15,7 @@ import {
   Dimensions,
 } from "react-native";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Foundation } from "@expo/vector-icons";
 import { testInputSchema } from "@acme/schema/src/test";
 import AppTextInput from "../../components/inputs/AppTextInput";
 import MultipleTextInput from "../../components/inputs/MultipleTextInput";
@@ -65,6 +65,8 @@ interface Props {
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
   handleExitScreen: () => void;
+  deleteTest?: () => void;
+  isDeletingTest?: boolean;
 }
 
 const CreateTestForm: FC<Props> = ({
@@ -74,6 +76,8 @@ const CreateTestForm: FC<Props> = ({
   isCreatingQuiz = false,
   isUploading = false,
   handleExitScreen,
+  deleteTest,
+  isDeletingTest = false,
 }) => {
   const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
@@ -342,8 +346,15 @@ const CreateTestForm: FC<Props> = ({
     <SafeAreaView>
       <ReusableHeader
         screenName={testTitle}
-        optionIcon={<Octicons name="three-bars" size={24} color="black" />}
-        onIconPress={() => setIsSidebarOpen(true)}
+        optionIcon={[
+          isDeletingTest ? (
+            <ActivityIndicator color="black" />
+          ) : (
+            <Foundation name="trash" size={24} color="red" />
+          ),
+          <Octicons name="three-bars" size={24} color="black" />,
+        ]}
+        onIconPress={[() => deleteTest?.(), () => setIsSidebarOpen(true)]}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
       />
