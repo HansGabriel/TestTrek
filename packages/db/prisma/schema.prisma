@@ -27,7 +27,7 @@ model User {
     favoriteTests UserOnFavoriteTest[]
     reviewer      Reviewer[]
 
-    @@map("Users")
+    @@map("users")
 }
 
 model UserOnFavoriteTest {
@@ -40,7 +40,7 @@ model UserOnFavoriteTest {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     @@id([userId, testId])
-    @@map("UsersOnFavoriteTests")
+    @@map("users_on_favorite_tests")
 }
 
 model Test {
@@ -62,7 +62,7 @@ model Test {
     favoritedUsers UserOnFavoriteTest[]
     isDeleted      Boolean              @default(false) @map("is_deleted")
 
-    @@map("Tests")
+    @@map("tests")
 }
 
 model Reviewer {
@@ -80,7 +80,7 @@ model Reviewer {
     deletedAt  DateTime?        @map("deleted_at")
     isDeleted  Boolean          @default(false) @map("is_deleted")
 
-    @@map("Reviewers")
+    @@map("reviewers")
 }
 
 model ReviewerOnTest {
@@ -93,7 +93,7 @@ model ReviewerOnTest {
     updatedAt  DateTime @updatedAt @map("updated_at")
 
     @@id([testId, reviewerId])
-    @@map("ReviewersOnTests")
+    @@map("reviewers_on_tests")
 }
 
 model Question {
@@ -111,7 +111,7 @@ model Question {
     createdAt       DateTime     @default(now()) @map("created_at")
     updatedAt       DateTime     @updatedAt @map("updated_at")
 
-    @@map("Questions")
+    @@map("questions")
 }
 
 model Choice {
@@ -123,7 +123,7 @@ model Choice {
     createdAt  DateTime @default(now()) @map("created_at")
     updatedAt  DateTime @updatedAt @map("updated_at")
 
-    @@map("Choices")
+    @@map("choices")
 }
 
 model Keyword {
@@ -134,7 +134,7 @@ model Keyword {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@map("Keywords")
+    @@map("keywords")
 }
 
 model Collection {
@@ -150,7 +150,7 @@ model Collection {
     visibility Visibility         @default(private)
     isDeleted  Boolean            @default(false) @map("is_deleted")
 
-    @@map("Collections")
+    @@map("collections")
 }
 
 model TestOnCollection {
@@ -163,7 +163,7 @@ model TestOnCollection {
     updatedAt     DateTime   @updatedAt @map("updated_at")
 
     @@id([testId, collectionsId])
-    @@map("TestsOnCollections")
+    @@map("tests_on_collections")
 }
 
 model Play {
@@ -178,7 +178,7 @@ model Play {
     score      Int?
     time       Int?
 
-    @@map("Plays")
+    @@map("plays")
 }
 
 enum Visibility {
