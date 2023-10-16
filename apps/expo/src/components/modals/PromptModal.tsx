@@ -61,9 +61,6 @@ export const PromptModal = ({
                   TOwidth="full"
                   Vwidth="32"
                   onPress={onCancel}
-                  borderTop={"t"}
-                  borderLeft={"l"}
-                  borderRight={"r"}
                   isLoading={isLoading}
                 />
               </View>

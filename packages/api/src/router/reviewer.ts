@@ -72,8 +72,6 @@ export const reviewerRouter = router({
     .query(async ({ ctx, input }) => {
       const { reviewerId } = input;
 
-      const userId = ctx.auth.userId;
-
       const reviewer = await ctx.prisma.reviewer.findUnique({
         where: { id: reviewerId },
         select: {
@@ -83,27 +81,48 @@ export const reviewerRouter = router({
           title: true,
           imageUrl: true,
           visibility: true,
-          user: true,
+          user: {
+            select: {
+              username: true,
+              firstName: true,
+              lastName: true,
+              imageUrl: true,
+            },
+          },
           createdAt: true,
           updatedAt: true,
         },
       });
 
-      if (!reviewer) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Reviewer not found.",
-        });
-      }
-
-      if (reviewer.userId !== userId) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not allowed to view this reviewer.",
-        });
-      }
-
       return reviewer;
+    }),
+
+  getDetails: protectedProcedure
+    .input(z.object({ reviewerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { reviewerId } = input;
+
+      const reviewer = await ctx.prisma.reviewer.findUnique({
+        where: {
+          id: reviewerId,
+        },
+        select: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      const isOwner = reviewer?.user.userId === ctx.auth.userId;
+
+      const notOwner = reviewer?.user.userId;
+
+      return {
+        isOwner,
+        notOwner,
+      };
     }),
 
   createReviewer: protectedProcedure

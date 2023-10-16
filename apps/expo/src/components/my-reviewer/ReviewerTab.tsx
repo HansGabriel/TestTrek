@@ -37,13 +37,6 @@ interface ContentProps {
 export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
   const navigation = useNavigation();
 
-  const goToCreateReviewer = (reviewerId: string) => () => {
-    navigation.navigate("CreateReviewer", {
-      reviewerId,
-      type: "edit",
-    });
-  };
-
   if (tabData && tabData.length <= 0) {
     return (
       <View className="h-full">
@@ -65,7 +58,9 @@ export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
         renderItem={({ item }) => (
           <TouchableOpacity
             className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100"
-            onPress={goToCreateReviewer(item.id)}
+            onPress={() =>
+              navigation.navigate("ReviewerDetails", { reviewerId: item.id })
+            }
           >
             <View className=" w-32 items-center justify-center bg-violet-600">
               <Image

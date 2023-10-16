@@ -66,8 +66,8 @@ const TestDetailsHeader: FC<Props> = ({
 
   return (
     <>
-      <View className="sticky z-50 mx-6 flex flex-row justify-between bg-white py-5">
-        <View className="flex flex-row items-center gap-4">
+      <View className="sticky z-50 mx-5 flex flex-row justify-between bg-white py-5">
+        <View className="flex flex-row self-center items-center gap-2">
           <TouchableOpacity onPress={goBack}>
             <XIcon />
           </TouchableOpacity>

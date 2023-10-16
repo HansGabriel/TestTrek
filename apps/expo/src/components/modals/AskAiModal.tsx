@@ -17,6 +17,7 @@ interface ModalProps {
   isGenerating: boolean;
   handleQuestionGeneration: () => void;
   handleClose: () => void;
+  hasError: boolean;
 }
 
 export const AskAiModal = ({
@@ -26,6 +27,7 @@ export const AskAiModal = ({
   isGenerating,
   handleQuestionGeneration,
   handleClose,
+  hasError,
 }: ModalProps) => {
   return (
     <Modal animationType="slide" transparent={true} visible={showAiModal}>
@@ -50,24 +52,36 @@ export const AskAiModal = ({
               </View>
               <View className="flex flex-row items-center justify-center px-5">
                 <TextInput
-                  className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
+                  className={` bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10 ${
+                    hasError && aiQuestion.length <= 0
+                      ? "border-2 border-red-500"
+                      : "border-primary-1"
+                  }`}
                   placeholder="Ask AI a question"
                   placeholderTextColor="#757575"
                   onChangeText={(text) => setAiQuestion(text)}
                   value={aiQuestion}
                   editable={!isGenerating}
                 />
+
                 <TouchableOpacity
                   className="absolute right-8"
                   onPress={handleQuestionGeneration}
                   disabled={isGenerating}
                 >
-                  {isGenerating ? (
+                  {isGenerating && !hasError ? (
                     <ActivityIndicator size="small" />
                   ) : (
                     <Feather name="send" size={24} color="#6949FF" />
                   )}
                 </TouchableOpacity>
+              </View>
+              <View className="items-center justify-center">
+                {hasError && aiQuestion.length <= 0 && (
+                  <Text className="text-red-500">
+                    Ask AI field cannot be empty
+                  </Text>
+                )}
               </View>
             </View>
           </View>

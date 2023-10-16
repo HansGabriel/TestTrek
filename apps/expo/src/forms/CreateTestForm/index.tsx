@@ -80,6 +80,7 @@ const CreateTestForm: FC<Props> = ({
     null,
   );
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
+  const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [aiQuestion, setAiQuestion] = useState<string>("");
@@ -288,54 +289,60 @@ const CreateTestForm: FC<Props> = ({
   const createMultipleQuestions = (inputMessage: string) => {
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
-    generateMultipleQuestions(
-      {
-        message: inputMessage,
-        questionType: "multipleChoice",
-        numOfQuestions: numOfQuestions,
-        numOfChoicesPerQuestion: 4,
-      },
-      {
-        onSuccess: (data) => {
-          addQuestions(
-            data.map((question) => {
-              if (question.type === "multipleChoice") {
+
+    if (inputMessage.length <= 0) {
+      setErrorInAIQuestion(true);
+    } else {
+      generateMultipleQuestions(
+        {
+          message: inputMessage,
+          questionType: "multipleChoice",
+          numOfQuestions: numOfQuestions,
+          numOfChoicesPerQuestion: 4,
+        },
+        {
+          onSuccess: (data) => {
+            addQuestions(
+              data.map((question) => {
+                if (question.type === "multipleChoice") {
+                  return {
+                    type: "multiple_choice",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
-                  choices: question.choices,
+                  choices: [],
                   inEdit: false,
-                  title: question.question,
-                  time: question.timeLimit,
-                  points: question.points,
+                  title: "",
                 };
-              }
-              return {
-                type: "multiple_choice",
-                choices: [],
-                inEdit: false,
-                title: "",
-              };
-            }),
-          );
-          removeBlankQuestions();
-          addEmptyQuestion("multiple_choice");
-          setLastIndex();
-          setShowNumberOfQuestionsModal(false);
-          setShowAiModal(false);
-          successToast({
-            title: "Success",
-            message: "Questions generated successfully",
-          });
-          navigation.navigate("CreateQuestion");
+              }),
+            );
+            removeBlankQuestions();
+            addEmptyQuestion("multiple_choice");
+            setLastIndex();
+            setErrorInAIQuestion(false);
+            setShowNumberOfQuestionsModal(false);
+            setShowAiModal(false);
+            successToast({
+              title: "Success",
+              message: "Questions generated successfully",
+            });
+            navigation.navigate("CreateQuestion");
+          },
+          onError: (error) => {
+            errorToast({
+              title: "Error",
+              message: error.message,
+            });
+          },
         },
-        onError: (error) => {
-          errorToast({
-            title: "Error",
-            message: error.message,
-          });
-        },
-      },
-    );
+      );
+    }
   };
 
   return (
@@ -568,7 +575,7 @@ const CreateTestForm: FC<Props> = ({
 
           <View className="mb-40 flex flex-row items-center justify-between">
             <TouchableOpacity
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-violet-300 bg-violet-100 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-l border-r border-t border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
               disabled={questions.length < 5}
               style={[questions.length < 5 ? styles.disabledButton : {}]}
@@ -583,7 +590,7 @@ const CreateTestForm: FC<Props> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={openBottomSheet}
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-indigo-800 bg-indigo-700 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-indigo-700 py-[18px]"
             >
               <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
                 Add Question
@@ -692,8 +699,10 @@ const CreateTestForm: FC<Props> = ({
         handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
         handleClose={() => {
           handleCloseAiModal();
+          setErrorInAIQuestion(false);
           setShowNumberOfQuestionsModal(true);
         }}
+        hasError={errorInAIQuestion}
       />
     </SafeAreaView>
   );

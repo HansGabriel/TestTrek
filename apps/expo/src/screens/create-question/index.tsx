@@ -12,7 +12,6 @@ import {
   Switch,
   Image,
   StyleSheet,
-  ActivityIndicator,
   Alert,
   BackHandler,
   Dimensions,
@@ -43,7 +42,7 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
-import XIcon from "../../icons/XIcon";
+import { AskAiModal } from "../../components/modals/AskAiModal";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -146,6 +145,7 @@ export const CreateQuestionScreen: FC = () => {
     })),
   );
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
+  const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
   const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
@@ -479,10 +479,14 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleGenerateQuestion = () => {
-    generateQuestion({
-      message: aiQuestion,
-      questionType: "multipleChoice",
-    });
+    if (aiQuestion.length <= 0) {
+      setErrorInAIQuestion(true);
+    } else {
+      generateQuestion({
+        message: aiQuestion,
+        questionType: "multipleChoice",
+      });
+    }
   };
 
   const handleSaveAnswer = (callback?: () => void) => () => {
@@ -612,7 +616,7 @@ export const CreateQuestionScreen: FC = () => {
           </View>
 
           <TouchableOpacity
-            className="mt-10 w-full items-center justify-center rounded-[100px] border-b-2 border-violet-700 bg-violet-600 py-[18px]"
+            className="mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px]"
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             onPress={handleSaveAnswer(() => {})}
           >
@@ -680,56 +684,18 @@ export const CreateQuestionScreen: FC = () => {
 
           {/* Modals */}
 
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={showQuestionModal}
-          >
-            <TouchableWithoutFeedback disabled={isGenerating}>
-              <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
-                <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                  <View className="h-[25%] w-11/12 rounded-2xl bg-white">
-                    <View className="h-[50%] w-[100%]  flex-row">
-                      <View className="mx-auto w-[90%] items-center self-center">
-                        <Text className="font-nunito-bold text-xl">
-                          What is your question?
-                        </Text>
-                      </View>
-                      <View className=" m-2 self-start ">
-                        <TouchableOpacity
-                          onPress={handleCloseQuestionModal}
-                          disabled={isGenerating}
-                        >
-                          <XIcon />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View className="flex flex-row items-center justify-center px-5">
-                      <TextInput
-                        className="border-primary-1 bg-greyscale-50 h-10 flex-1 rounded-full border py-2 pl-5 pr-10"
-                        placeholder="Ask AI a question"
-                        placeholderTextColor="#757575"
-                        onChangeText={(text) => setAiQuestion(text)}
-                        value={aiQuestion}
-                        editable={isGenerating}
-                      />
-                      <TouchableOpacity
-                        className="absolute right-8"
-                        onPress={handleGenerateQuestion}
-                        disabled={isGenerating}
-                      >
-                        {isGenerating ? (
-                          <ActivityIndicator size="small" />
-                        ) : (
-                          <Feather name="send" size={24} color="#6949FF" />
-                        )}
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </Modal>
+          <AskAiModal
+            showAiModal={showQuestionModal}
+            aiQuestion={aiQuestion}
+            setAiQuestion={setAiQuestion}
+            isGenerating={isGenerating}
+            handleQuestionGeneration={handleGenerateQuestion}
+            handleClose={() => {
+              setErrorInAIQuestion(false);
+              handleCloseQuestionModal();
+            }}
+            hasError={errorInAIQuestion}
+          />
 
           <OptionModal
             title="Time Limit"
@@ -786,7 +752,7 @@ export const CreateQuestionScreen: FC = () => {
               ))}
             </ScrollView>
             <TouchableOpacity
-              className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-2 border-indigo-700 bg-violet-600 p-[17px] shadow"
+              className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 p-[17px] shadow"
               onPress={openBottomSheet}
             >
               <Feather name="plus" size={24} color="white" />

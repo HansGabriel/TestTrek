@@ -56,6 +56,9 @@ export type RootStackParamList = {
   CollectionDetails: {
     collectionId: string;
   };
+  ReviewerDetails: {
+    reviewerId: string;
+  };
   EditTest: {
     testId: string;
   };
