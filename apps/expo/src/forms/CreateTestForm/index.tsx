@@ -41,7 +41,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
-import type { SetOptional } from "type-fest";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { FieldError } from "react-hook-form";
 import useGoBack from "../../hooks/useGoBack";
@@ -56,8 +55,7 @@ import {
   successToast,
 } from "../../components/notifications/ToastNotifications";
 
-type Omitted = Omit<TestInput, "questions">;
-type FormProps = Omitted;
+type FormProps = Omit<TestInput, "questions">;
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
 
 interface Props {
