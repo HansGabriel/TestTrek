@@ -23,7 +23,10 @@ import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
 import { trpc } from "../utils/trpc";
 import { Feather } from "@expo/vector-icons";
-import { errorToast, successToast } from "../components/notifications/ToastNotifications";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
 
 export const CreateCollection = () => {
   const goBack = useGoBack();
@@ -53,7 +56,7 @@ export const CreateCollection = () => {
   } = useForm<Collections>({
     resolver: zodResolver(collectionsSchema),
     defaultValues: {
-      title: "",
+      title: undefined,
       visibility: undefined,
       image: getDisplayImage(),
     },
@@ -105,6 +108,7 @@ export const CreateCollection = () => {
         {
           text: "OK",
           onPress: () => {
+            resetCollectionImage();
             goBack();
           },
         },
@@ -123,7 +127,13 @@ export const CreateCollection = () => {
             onPress: () => null,
             style: "cancel",
           },
-          { text: "OK", onPress: () => goBack() },
+          {
+            text: "OK",
+            onPress: () => {
+              resetCollectionImage();
+              goBack();
+            },
+          },
         ],
       );
       return true;
@@ -136,6 +146,27 @@ export const CreateCollection = () => {
 
     return () => backHandler.remove();
   }, []);
+
+  useEffect(() => {
+    if (errors) {
+      if (errors.image && errors.image.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.image.message,
+        });
+      } else if (errors.title && errors.title.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.title.message,
+        });
+      } else if (errors.visibility && errors.visibility.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.visibility.message,
+        });
+      }
+    }
+  }, [errors]);
 
   return (
     <KeyboardAvoidingView
@@ -163,14 +194,20 @@ export const CreateCollection = () => {
           <View className="mb-6">
             <Controller
               control={control}
-              render={({ field: { value } }) => (
-                <TestImagePicker image={value} type="collection" />
-              )}
+              render={({ field: { value } }) => {
+                return (
+                  <>
+                    <TestImagePicker image={value} type={"collection"} />
+                    {errors.image && !value && (
+                      <Text className="mt-2 text-red-500">
+                        {errors.image.message}
+                      </Text>
+                    )}
+                  </>
+                );
+              }}
               name="image"
             />
-            {errors.image && (
-              <Text className="mt-2 text-red-500">{errors.image.message}</Text>
-            )}
           </View>
 
           <Controller

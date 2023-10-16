@@ -219,6 +219,7 @@ export const CreateReviewerScreen = ({
         {
           text: "OK",
           onPress: () => {
+            resetReviewerImage();
             goBack();
           },
         },
@@ -237,7 +238,13 @@ export const CreateReviewerScreen = ({
             onPress: () => null,
             style: "cancel",
           },
-          { text: "OK", onPress: () => goBack() },
+          {
+            text: "OK",
+            onPress: () => {
+              resetReviewerImage();
+              goBack();
+            },
+          },
         ],
       );
       return true;
@@ -250,6 +257,27 @@ export const CreateReviewerScreen = ({
 
     return () => backHandler.remove();
   }, []);
+
+  useEffect(() => {
+    if (errors) {
+      if (errors.imageUrl && errors.imageUrl.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.imageUrl.message,
+        });
+      } else if (errors.title && errors.title.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.title.message,
+        });
+      } else if (errors.visibility && errors.visibility.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.visibility.message,
+        });
+      }
+    }
+  }, [errors]);
 
   return (
     <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
@@ -279,14 +307,20 @@ export const CreateReviewerScreen = ({
         <View className="w-[90%] self-center">
           <Controller
             control={control}
-            render={({ field: { value } }) => (
-              <TestImagePicker image={value} type="reviewer" />
-            )}
+            render={({ field: { value } }) => {
+              return (
+                <>
+                  <TestImagePicker image={value} type="reviewer" />
+                  {errors.imageUrl && !value && (
+                    <Text className="mt-2 text-red-500">
+                      {errors.imageUrl.message}
+                    </Text>
+                  )}
+                </>
+              );
+            }}
             name="imageUrl"
           />
-          {errors.imageUrl && (
-            <Text className="mt-2 text-red-500">{errors.imageUrl.message}</Text>
-          )}
         </View>
         <View className="mt-5 w-[90%] self-center border-b border-zinc-100">
           <Controller
@@ -371,13 +405,14 @@ export const CreateReviewerScreen = ({
                         ref={richText}
                         onBlur={onBlur}
                         onChange={onChange}
-                        placeholder="Enter your content here :)"
+                        pasteAsPlainText={true}
+                        placeholder={"Enter your reviewer content here"}
                         androidLayerType="software"
                         className=" font-nunito-medium"
                         useContainer={false}
                         containerStyle={{
                           minHeight: 500,
-                          maxHeight: Dimensions.get("screen").height,
+                          maxHeight: Dimensions.get("window").height,
                         }}
                       />
                     </KeyboardAvoidingView>
@@ -387,9 +422,6 @@ export const CreateReviewerScreen = ({
             }}
             name="content"
           />
-          {errors.content && (
-            <Text className="text-red-500">{errors.content.message}</Text>
-          )}
         </View>
       </ScrollView>
       {isToggled ? (

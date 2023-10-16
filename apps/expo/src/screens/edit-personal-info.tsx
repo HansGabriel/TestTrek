@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -37,25 +37,6 @@ export const EditPersonalInfoScreen = () => {
 
   const goBack = useGoBack();
 
-  const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            goBack();
-          },
-        },
-      ],
-    );
-  };
-
   const {
     control,
     handleSubmit,
@@ -87,6 +68,56 @@ export const EditPersonalInfoScreen = () => {
           setEdit(false);
         },
       },
+    );
+  };
+
+  useEffect(() => {
+    if (errors) {
+      if (errors.userName && errors.userName.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.userName.message,
+        });
+      } else if (errors.firstName && errors.firstName.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.firstName.message,
+        });
+      } else if (errors.lastName && errors.lastName.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.lastName.message,
+        });
+      } else if (errors.email && errors.email.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.email.message,
+        });
+      } else if (errors.about && errors.about.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.about.message,
+        });
+      }
+    }
+  }, [errors]);
+
+  const handleExitScreen = () => {
+    Alert.alert(
+      "Are you sure?",
+      "You will lose all unsaved progress if you exit this screen",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            goBack();
+          },
+        },
+      ],
     );
   };
 
