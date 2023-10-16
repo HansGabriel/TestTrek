@@ -31,6 +31,7 @@
     "@rneui/themed": "4.0.0-rc.8",
     "@shopify/flash-list": "^1.4.0",
     "@tanstack/react-query": "^4.16.1",
+    "@testing-library/react-native": "^12.3.0",
     "@trpc/client": "^10.1.0",
     "@trpc/react-query": "^10.1.0",
     "@trpc/server": "^10.1.0",
