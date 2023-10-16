@@ -76,6 +76,7 @@ export const AppButton = ({
       className={`my-${marginY} mx-${marginX} w-${TOwidth} justify-center self-center`}
       onPress={onPress}
       {...props}
+      disabled={isLoading}
     >
       <View
         className={` h-14 w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(

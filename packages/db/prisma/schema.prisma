@@ -129,9 +129,9 @@ model Collection {
 
 model TestOnCollection {
     id            String     @unique @default(cuid()) @map("test_on_collection_id")
-    test          Test       @relation(fields: [testId], references: [id], onDelete: Cascade)
+    test          Test       @relation(fields: [testId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     testId        String     @map("test_id")
-    collection    Collection @relation(fields: [collectionsId], references: [id], onDelete: Cascade)
+    collection    Collection @relation(fields: [collectionsId], references: [id], onUpdate: Cascade, onDelete: Cascade)
     collectionsId String     @map("collections_id")
     createdAt     DateTime   @default(now()) @map("created_at")
     updatedAt     DateTime   @updatedAt @map("updated_at")

@@ -1,13 +1,12 @@
 import { collectionsSchema } from "@acme/schema/src/collection";
 import { Collections } from "@acme/schema/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FC, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-
+import { Octicons } from "@expo/vector-icons";
 import {
   View,
   Text,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -15,28 +14,35 @@ import {
   Alert,
   Dimensions,
 } from "react-native";
-import TestImagePicker from "../components/ImagePicker";
-import AppPicker, { type LabelOption } from "../components/pickers/AppPicker";
-import AppTextInput from "../components/inputs/AppTextInput";
-import useGoBack from "../hooks/useGoBack";
-import { AppButton } from "../components/buttons/AppButton";
-import useImageStore from "../stores/useImageStore";
+import TestImagePicker from "../../components/ImagePicker";
+import AppPicker, {
+  type LabelOption,
+} from "../../components/pickers/AppPicker";
+import AppTextInput from "../../components/inputs/AppTextInput";
+import useGoBack from "../../hooks/useGoBack";
+import { AppButton } from "../../components/buttons/AppButton";
+import useImageStore from "../../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
-import { trpc } from "../utils/trpc";
-import { RootStackScreenProps } from "../types";
-import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
+import { trpc } from "../../utils/trpc";
+import { RootStackScreenProps } from "../../types";
+import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import RightSidebar from "./RightSidebar";
 import {
   errorToast,
   successToast,
-} from "../components/notifications/ToastNotifications";
+} from "../../components/notifications/ToastNotifications";
+import { ReusableHeader } from "../../components/headers/ReusableHeader";
 
 export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   route,
 }) => {
   const { height, width } = Dimensions.get("window");
   const { collectionId } = route.params;
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const { data: collectionData, refetch: refetchCurrentCollection } =
     trpc.collection.getByCollectionId.useQuery({
       collectionId,
@@ -174,19 +180,14 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   if (!collectionData) {
     return (
       <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
-        <View className="mx-5 flex  flex-row justify-between bg-white py-5">
-          <View className="flex-row gap-4 self-center">
-            <TouchableOpacity
-              onPress={handleExitScreen}
-              className="flex flex-row items-center self-center"
-            >
-              <Feather name="x" size={24} color="black" />
-            </TouchableOpacity>
-            <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-              Edit Collection
-            </Text>
-          </View>
-        </View>
+        <ReusableHeader
+          screenName="Edit Collection"
+          optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+          onIconPress={() => setIsSidebarOpen(true)}
+          backIcon={<Feather name="x" size={24} color="black" />}
+          handleExit={handleExitScreen}
+          className="mt-7"
+        />
         <View>
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">
@@ -212,19 +213,14 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
       className="flex-1"
       style={{ height: height, width: width }}
     >
-      <View className="mx-5 mt-7 flex  flex-row justify-between bg-white py-5">
-        <View className="flex-row gap-4 self-center">
-          <TouchableOpacity
-            onPress={handleExitScreen}
-            className="flex flex-row items-center self-center"
-          >
-            <Feather name="x" size={24} color="black" />
-          </TouchableOpacity>
-          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
-            Edit Collection
-          </Text>
-        </View>
-      </View>
+      <ReusableHeader
+        screenName="Edit Collection"
+        optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+        onIconPress={() => setIsSidebarOpen(true)}
+        backIcon={<Feather name="x" size={24} color="black" />}
+        handleExit={handleExitScreen}
+        className="mt-7"
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -306,6 +302,16 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
           </View>
         </View>
       </ScrollView>
+      <RightSidebar
+        collectionId={collectionId}
+        isOpen={isSidebarOpen}
+        onClose={() => {
+          setIsSidebarOpen(false);
+        }}
+        handleConfirmPress={() => {
+          setIsSidebarOpen(false);
+        }}
+      />
     </KeyboardAvoidingView>
   );
 };

@@ -43,6 +43,7 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
+import XIcon from "../../icons/XIcon";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -236,6 +237,10 @@ export const CreateQuestionScreen: FC = () => {
     setShowModal(true);
   };
 
+  const handleCloseQuestionModal = () => {
+    setShowQuestionModal(false);
+  };
+
   const handleChoiceChange = (index: number, text: string) => {
     setChoices((prev) =>
       prev.map((choice) =>
@@ -304,6 +309,32 @@ export const CreateQuestionScreen: FC = () => {
     return true;
   };
 
+  useEffect(() => {
+    if (errorState) {
+      if (errorState.titleError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Title cannot be empty",
+        });
+      } else if (!errorState.choicesError.every((item) => item === undefined)) {
+        errorToast({
+          title: "Missing field",
+          message: "Choices cannot be empty",
+        });
+      } else if (errorState.timeLimitError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Time limit cannot be empty",
+        });
+      } else if (errorState.pointsError !== null) {
+        errorToast({
+          title: "Missing field",
+          message: "Points cannot be empty",
+        });
+      }
+    }
+  }, [errorState]);
+
   const renderChoice = (choice: Choice) => {
     const getTextSize = (text: string) => {
       if (text.length <= 10) {
@@ -352,20 +383,22 @@ export const CreateQuestionScreen: FC = () => {
         } p-5`}
         onPress={handleOpenModal(choice.id)}
       >
-        {choice.isCorrect && (
-          <View className="absolute right-2 top-2 h-5 w-5">
-            <CheckboxIcon />
+        <>
+          {choice.isCorrect && (
+            <View className="absolute right-2 top-2 h-5 w-5">
+              <CheckboxIcon />
+            </View>
+          )}
+          <View className="h-full w-full items-center justify-center">
+            <Text
+              className={`self-center text-center ${getTextSize(
+                choice.text ? choice.text : "Add answer",
+              )} font-bold text-white`}
+            >
+              {choice.text ? choice.text : "Add answer"}
+            </Text>
           </View>
-        )}
-        <View className="h-full w-full items-center justify-center">
-          <Text
-            className={`self-center text-center ${getTextSize(
-              choice.text ? choice.text : "Add answer",
-            )} font-bold text-white`}
-          >
-            {choice.text ? choice.text : "Add answer"}
-          </Text>
-        </View>
+        </>
       </TouchableOpacity>
     );
   };
@@ -511,10 +544,12 @@ export const CreateQuestionScreen: FC = () => {
               }`}
               onPress={() => setShowTimeLimitModal(true)}
             >
-              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-                {timeLimitOptions.find((option) => option.isSelected)?.title ??
-                  "Time Limit"}
-              </Text>
+              <>
+                <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                  {timeLimitOptions.find((option) => option.isSelected)
+                    ?.title ?? "Time Limit"}
+                </Text>
+              </>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -523,10 +558,12 @@ export const CreateQuestionScreen: FC = () => {
               }`}
               onPress={() => setShowPointModal(true)}
             >
-              <Text className="text-center font-semibold leading-snug tracking-tight text-white">
-                {pointOptions.find((option) => option.isSelected)?.title ??
-                  "Points"}
-              </Text>
+              <>
+                <Text className="text-center font-semibold leading-snug tracking-tight text-white">
+                  {pointOptions.find((option) => option.isSelected)?.title ??
+                    "Points"}
+                </Text>
+              </>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -549,16 +586,18 @@ export const CreateQuestionScreen: FC = () => {
           ${errorState.titleError !== null ? "border-2 border-red-500" : ""}
         `}
           >
-            <TextInput
-              className="self-stretch text-center text-xl font-bold leading-loose text-black"
-              onChangeText={setQuestionTitle}
-              value={questionTitle}
-              placeholder="Tap to add question"
-              placeholderTextColor={"#757575"}
-              onFocus={handleTextInputFocus}
-              multiline
-              numberOfLines={2}
-            />
+            <>
+              <TextInput
+                className="self-stretch text-center text-xl font-bold leading-loose text-black"
+                onChangeText={setQuestionTitle}
+                value={questionTitle}
+                placeholder="Tap to add question"
+                placeholderTextColor={"#757575"}
+                onFocus={handleTextInputFocus}
+                multiline
+                numberOfLines={2}
+              />
+            </>
           </View>
 
           <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
@@ -645,22 +684,25 @@ export const CreateQuestionScreen: FC = () => {
             animationType="slide"
             transparent={true}
             visible={showQuestionModal}
-            onRequestClose={() => {
-              setShowQuestionModal(!showQuestionModal);
-            }}
           >
-            <TouchableWithoutFeedback
-              onPress={() => {
-                setShowQuestionModal(!showQuestionModal);
-              }}
-            >
+            <TouchableWithoutFeedback disabled={isGenerating}>
               <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
                 <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
                   <View className="h-[25%] w-11/12 rounded-2xl bg-white">
-                    <View className="h-[50%] justify-center self-center">
-                      <Text className="font-nunito-bold text-xl">
-                        What is your question?
-                      </Text>
+                    <View className="h-[50%] w-[100%]  flex-row">
+                      <View className="mx-auto w-[90%] items-center self-center">
+                        <Text className="font-nunito-bold text-xl">
+                          What is your question?
+                        </Text>
+                      </View>
+                      <View className=" m-2 self-start ">
+                        <TouchableOpacity
+                          onPress={handleCloseQuestionModal}
+                          disabled={isGenerating}
+                        >
+                          <XIcon />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     <View className="flex flex-row items-center justify-center px-5">
                       <TextInput
@@ -669,6 +711,7 @@ export const CreateQuestionScreen: FC = () => {
                         placeholderTextColor="#757575"
                         onChangeText={(text) => setAiQuestion(text)}
                         value={aiQuestion}
+                        editable={isGenerating}
                       />
                       <TouchableOpacity
                         className="absolute right-8"

@@ -4,7 +4,7 @@ import {
   getDaysInMonth,
   formatOutput,
   getTimeAgo,
-} from "../../src/functions/timeAgo";
+} from "../timeAgo";
 
 test("isLeapYear returns true for leap years", () => {
   expect(isLeapYear(2000)).toBe(true);

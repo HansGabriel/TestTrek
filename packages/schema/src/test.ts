@@ -98,19 +98,6 @@ export const testInputSchema = z.object({
     .max(1000, {
       message: "Description must be at most 1000 characters",
     }),
-  collection: z
-    .string({
-      errorMap: () => ({
-        message: "Collection is required",
-      }),
-    })
-    .min(3, {
-      message: "Collection must be at least 3 characters",
-    })
-    .max(100, {
-      message: "Collection must be at most 100 characters",
-    })
-    .optional(),
   visibility: z.enum(["public", "private"], {
     errorMap: () => ({
       message: "Visibility is required",

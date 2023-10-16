@@ -3,7 +3,7 @@ import {
   parseMultipleChoiceQuestions,
   generateQuestionPrompt,
   QuestionPromptInput,
-} from "./testCreationHandlers";
+} from "../testCreationHandlers";
 
 describe("generateQuestionPrompt", () => {
   it("should generate custom prompt for defined types", () => {

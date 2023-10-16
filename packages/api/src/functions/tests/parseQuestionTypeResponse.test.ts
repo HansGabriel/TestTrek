@@ -4,7 +4,7 @@ import {
   parseMultiselectResponse,
   parseIdentificationResponse,
   parseTrueOrFalseResponse,
-} from "./gptHandlers";
+} from "../gptHandlers";
 import { describe, it, expect } from "vitest";
 
 describe("parseMultipleChoiceResponse", () => {
