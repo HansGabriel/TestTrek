@@ -28,10 +28,18 @@ const TestImagePicker: FC<Props> = ({ image, className, type = "test" }) => {
   };
 
   return (
-    <TouchableOpacity onPress={goToImageGallery} className={className}>
+    <TouchableOpacity
+      onPress={goToImageGallery}
+      className={className}
+      testID="test-image-picker-touchable"
+    >
       {image ? (
         <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
-          <Image source={{ uri: image }} className="h-60 w-full rounded-3xl" />
+          <Image
+            source={{ uri: image }}
+            className="h-60 w-full rounded-3xl"
+            testID="test-image-picker-image"
+          />
         </View>
       ) : (
         <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl border-2 border-violet-600 bg-neutral-50">

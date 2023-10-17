@@ -69,6 +69,7 @@ const AppTextInput = () => {
         multiline
         value={inputValue}
         onChangeText={setInputValue}
+        testID="text-input"
       />
       <Button title="Show Text" onPress={handleShowText} />
       {showText && <Text className="mt-2 text-lg">{displayedText}</Text>}
