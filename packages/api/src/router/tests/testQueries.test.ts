@@ -148,6 +148,9 @@ describe("testRouter - queries", () => {
       }
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         take: input.amountOfTests,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -175,6 +178,9 @@ describe("testRouter - queries", () => {
           createdAt: true,
           updatedAt: true,
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       });
     });
 
@@ -184,6 +190,10 @@ describe("testRouter - queries", () => {
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(result[1]).toHaveProperty("id", "testId2");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
+        take: 50,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -210,6 +220,9 @@ describe("testRouter - queries", () => {
           },
           createdAt: true,
           updatedAt: true,
+        },
+        orderBy: {
+          updatedAt: "desc",
         },
       });
     });
@@ -229,6 +242,9 @@ describe("testRouter - queries", () => {
       }
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         take: input.amountOfTests,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -280,6 +296,9 @@ describe("testRouter - queries", () => {
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         take: 50,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -340,6 +359,9 @@ describe("testRouter - queries", () => {
       }
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         take: input.amountOfTests,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -392,6 +414,9 @@ describe("testRouter - queries", () => {
       expect(result[1]).toHaveProperty("id", "testId2");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
         take: 50,
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,

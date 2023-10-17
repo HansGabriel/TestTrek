@@ -368,7 +368,10 @@ export const collectionRouter = router({
       return ctx.prisma.collection.findMany({
         ...(input && input.amountOfCollections
           ? { take: input.amountOfCollections }
-          : {}),
+          : { take: 50 }),
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
