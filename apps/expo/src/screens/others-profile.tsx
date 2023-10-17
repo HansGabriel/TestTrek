@@ -13,7 +13,6 @@ import { AboutUser } from "../components/AboutUser";
 import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { RootStackScreenProps } from "../types";
-import Footer from "../components/Footer";
 import OthersProfileDetailsSection from "../components/profile-details/details-section/OthersProfileDetailsSection";
 import { LibraryTabs } from "../components/my-library/LibraryTabs";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -75,7 +74,6 @@ export const OthersProfileScreen = ({
               <SkeletonLoader isCircular={true} width={"100%"} height={20} />
             </View>
           </View>
-          <Footer />
         </SafeAreaView>
       </>
     );
@@ -167,7 +165,6 @@ export const OthersProfileScreen = ({
           </View>
         </ScrollView>
       </View>
-      <Footer />
     </SafeAreaView>
   );
 };
