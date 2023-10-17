@@ -256,11 +256,21 @@ describe("testRouter - queries", () => {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          plays: {
-            _count: "desc",
+        orderBy: [
+          {
+            plays: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     });
 
@@ -269,6 +279,7 @@ describe("testRouter - queries", () => {
       expect(result.length).toBe(2);
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
+        take: 50,
         select: {
           id: true,
           title: true,
@@ -296,11 +307,21 @@ describe("testRouter - queries", () => {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          plays: {
-            _count: "desc",
+        orderBy: [
+          {
+            plays: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     });
   });
@@ -346,11 +367,21 @@ describe("testRouter - queries", () => {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          favoritedUsers: {
-            _count: "desc",
+        orderBy: [
+          {
+            favoritedUsers: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     });
 
@@ -360,6 +391,7 @@ describe("testRouter - queries", () => {
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(result[1]).toHaveProperty("id", "testId2");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
+        take: 50,
         select: {
           id: true,
           title: true,
@@ -387,11 +419,21 @@ describe("testRouter - queries", () => {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          favoritedUsers: {
-            _count: "desc",
+        orderBy: [
+          {
+            favoritedUsers: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     });
   });
