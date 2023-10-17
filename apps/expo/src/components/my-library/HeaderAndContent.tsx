@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FC, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -217,7 +217,7 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
             {tab === "user" && (
               <View
                 className={`z-50 ${
-                  testData.length > 0 ? "-mt-24 mb-10" : "-mt-16"
+                  testData.length > 0 ? "-mt-24 mb-8" : "-mt-20"
                 }  h-12 w-14 items-center self-end`}
               >
                 <AddButton screen={"CreateTest"} />
@@ -229,7 +229,7 @@ export const HeaderAndContent: FC<HeaderProps> = ({ tab, tabType }) => {
             <CollectionsTab tabData={collectionData} />
             <View
               className={`z-50 ${
-                collectionData.length > 0 ? "-mt-24 mb-10" : "-mt-16"
+                collectionData.length > 0 ? "-mt-24 mb-8" : "-mt-20"
               }  h-12 w-14 items-center self-end`}
             >
               <AddButton screen={"CreateCollection"} />

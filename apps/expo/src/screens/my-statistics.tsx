@@ -3,7 +3,6 @@ import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Footer from "../components/Footer";
 import LeftArrowIcon from "../icons/LeftArrowIcon";
 import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import CoinIcon from "../icons/statistics/CoinIcon";
@@ -36,11 +35,11 @@ export const MyStatistics = () => {
       value: totalTests?._count.userId,
     },
     {
-      name: "Lifetime Points",
+      name: "Total Score",
       icon: <CoinIcon />,
       value: totalScore?._sum.score,
     },
-    { name: "Top 3 Positions", icon: <MedalIcon />, value: totalUserOnTop },
+    { name: "Top Three", icon: <MedalIcon />, value: totalUserOnTop },
     {
       name: "Tests Taken",
       icon: <TargetIcon />,
@@ -122,7 +121,7 @@ export const MyStatistics = () => {
           </View>
         </View>
         <ScrollView
-          className=" h-[75%] w-full "
+          style={{ height: height * 0.9, width: width }}
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-1">
@@ -174,8 +173,14 @@ export const MyStatistics = () => {
                   showsVerticalScrollIndicator={false}
                   renderItem={({ item }) => (
                     <SafeAreaView className="flex-1">
-                      <View className="mx-2 my-2 flex-1 self-center">
-                        <View className="h-20 w-40 flex-row items-center justify-center rounded-2xl border border-zinc-200">
+                      <View className=" flex-1 self-center">
+                        <View
+                          className=" flex-row items-center justify-evenly rounded-2xl border border-zinc-200"
+                          style={{
+                            height: height * 0.1,
+                            width: width * 0.4,
+                          }}
+                        >
                           <View className="h-[60%] w-[20%] justify-start">
                             {item.icon}
                           </View>
@@ -197,7 +202,6 @@ export const MyStatistics = () => {
           </View>
         </ScrollView>
       </View>
-      <Footer />
     </SafeAreaView>
   );
 };

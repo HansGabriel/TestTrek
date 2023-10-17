@@ -179,7 +179,7 @@ export const ReviewerHeaderAndContent: FC<HeaderProps> = ({ tab }) => {
         {tab === "user" ? (
           <View
             className={`z-50 ${
-              reviewerData.length > 0 ? "-mt-24 mb-10" : "-mt-16"
+              reviewerData.length > 0 ? "-mt-24 mb-8" : "-mt-20"
             }  h-12 w-14 items-center self-end`}
           >
             <AddButton screen={"CreateReviewer"} />

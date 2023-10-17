@@ -133,6 +133,27 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    if (errors) {
+      if (errors.image && errors.image.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.image.message,
+        });
+      } else if (errors.title && errors.title.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.title.message,
+        });
+      } else if (errors.visibility && errors.visibility.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.visibility.message,
+        });
+      }
+    }
+  }, [errors]);
+
   const handleExitScreen = () => {
     Alert.alert(
       "Are you sure?",
@@ -163,7 +184,12 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
             onPress: () => null,
             style: "cancel",
           },
-          { text: "OK", onPress: () => goBack() },
+          {
+            text: "OK",
+            onPress: () => {
+              goBack();
+            },
+          },
         ],
       );
       return true;
@@ -186,7 +212,6 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
           onIconPress={() => setIsSidebarOpen(true)}
           backIcon={<Feather name="x" size={24} color="black" />}
           handleExit={handleExitScreen}
-          className="mt-7"
         />
         <View>
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
@@ -231,14 +256,20 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
             <Controller
               control={control}
               defaultValue={collectionData?.imageUrl}
-              render={({ field: { value } }) => (
-                <TestImagePicker image={value} type="editCollection" />
-              )}
+              render={({ field: { value } }) => {
+                return (
+                  <>
+                    <TestImagePicker image={value} type="editCollection" />
+                    {errors.image && !value && (
+                      <Text className="mt-2 text-red-500">
+                        {errors.image.message}
+                      </Text>
+                    )}
+                  </>
+                );
+              }}
               name="image"
             />
-            {errors.image && (
-              <Text className="mt-2 text-red-500">{errors.image.message}</Text>
-            )}
           </View>
 
           <Controller

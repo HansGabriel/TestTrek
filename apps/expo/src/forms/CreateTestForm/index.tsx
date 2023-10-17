@@ -345,6 +345,32 @@ const CreateTestForm: FC<Props> = ({
     }
   };
 
+  useEffect(() => {
+    if (errors) {
+      if (errors.image && errors.image.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.image.message,
+        });
+      } else if (errors.title && errors.title.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.title.message,
+        });
+      } else if (errors.visibility && errors.visibility.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.visibility.message,
+        });
+      } else if (errors.description && errors.description.message) {
+        errorToast({
+          title: "Missing field",
+          message: errors.description.message,
+        });
+      }
+    }
+  }, [errors]);
+
   return (
     <SafeAreaView>
       <ReusableHeader
@@ -366,15 +392,19 @@ const CreateTestForm: FC<Props> = ({
               <Controller
                 control={control}
                 render={({ field: { value } }) => {
-                  return <TestImagePicker image={value} />;
+                  return (
+                    <>
+                      <TestImagePicker image={value} />
+                      {errors.image && !value && (
+                        <Text className="mt-2 text-red-500">
+                          {errors.image.message}
+                        </Text>
+                      )}
+                    </>
+                  );
                 }}
                 name="image"
               />
-              {errors.image && (
-                <Text className="mt-2 text-red-500">
-                  {errors.image.message}
-                </Text>
-              )}
             </View>
 
             <Controller
@@ -573,7 +603,7 @@ const CreateTestForm: FC<Props> = ({
             </>
           )}
 
-          <View className="mb-40 flex flex-row items-center justify-between">
+          <View className="mb-24 flex flex-row items-center justify-between">
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-l border-r border-t border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
@@ -623,9 +653,7 @@ const CreateTestForm: FC<Props> = ({
         handleConfirmPress={() => {
           setIsSidebarOpen(false);
         }}
-        confirmButtonText={
-          !showNumberofQuestionsModal ? "Go to Reviewer" : "Confirm"
-        }
+        confirmButtonText={"Confirm"}
       />
 
       <PromptModal

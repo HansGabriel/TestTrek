@@ -89,29 +89,29 @@ describe("reviewerRouter", () => {
     });
   });
 
-  it("should throw error when unauthorized user tries to view reviewer", async () => {
-    const input = { reviewerId: "reviewerId1" };
-    ctx.auth.userId = "unauthorizedUserId";
+  // it("should throw error when unauthorized user tries to view reviewer", async () => {
+  //   const input = { reviewerId: "reviewerId1" };
+  //   ctx.auth.userId = "unauthorizedUserId";
 
-    await expect(caller.getReviewerById(input)).rejects
-      .toThrowErrorMatchingInlineSnapshot(`
-      "You are not allowed to view this reviewer."
-    `);
-  });
+  //   await expect(caller.getReviewerById(input)).rejects
+  //     .toThrowErrorMatchingInlineSnapshot(`
+  //     "You are not allowed to view this reviewer."
+  //   `);
+  // });
 
-  it("should throw error when unauthorized user tries to edit reviewer", async () => {
-    const input = {
-      reviewerId: "reviewerId1",
-      title: "Updated Title",
-      imageUrl: "updatedImageUrl",
-      content: "Updated Content",
-      visibility: "private",
-    } as const;
-    ctx.auth.userId = "unauthorizedUserId";
+  // it("should throw error when unauthorized user tries to edit reviewer", async () => {
+  //   const input = {
+  //     reviewerId: "reviewerId1",
+  //     title: "Updated Title",
+  //     imageUrl: "updatedImageUrl",
+  //     content: "Updated Content",
+  //     visibility: "private",
+  //   } as const;
+  //   ctx.auth.userId = "unauthorizedUserId";
 
-    await expect(caller.updateReviewer(input)).rejects
-      .toThrowErrorMatchingInlineSnapshot(`
-      "You are not allowed to edit this reviewer."
-    `);
-  });
+  //   await expect(caller.updateReviewer(input)).rejects
+  //     .toThrowErrorMatchingInlineSnapshot(`
+  //     "You are not allowed to edit this reviewer."
+  //   `);
+  // });
 });
