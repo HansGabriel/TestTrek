@@ -10,7 +10,9 @@ export const useRouter = router({
     .input(highlightUsersInput)
     .query(({ ctx, input }) => {
       return ctx.prisma.user.findMany({
-        ...(input && input.amountOfUsers ? { take: input.amountOfUsers } : {}),
+        ...(input && input.amountOfUsers
+          ? { take: input.amountOfUsers }
+          : { take: 50 }),
         select: {
           id: true,
           userId: true,

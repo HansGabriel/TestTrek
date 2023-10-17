@@ -184,6 +184,7 @@ describe("testRouter - queries", () => {
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(result[1]).toHaveProperty("id", "testId2");
       expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
+        take: 50,
         select: {
           id: true,
           title: true,

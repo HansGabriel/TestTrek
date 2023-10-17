@@ -100,6 +100,22 @@ describe("useRouter", () => {
     });
   });
 
+  it("should handle getTop query with no input", async () => {
+    const input = {};
+    const result = await caller.getTop(input);
+    expect(result).toHaveLength(2);
+    expect(ctx.prisma.user.findMany).toHaveBeenCalledWith({
+      take: 50,
+      select: {
+        id: true,
+        userId: true,
+        imageUrl: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+  });
+
   it("should handle getUserById query", async () => {
     const input = { userId: "user1" };
     const result = await caller.getUserById(input);

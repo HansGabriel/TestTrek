@@ -443,7 +443,9 @@ export const testRouter = router({
     .input(highlightTestsInput)
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
-        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        ...(input && input.amountOfTests
+          ? { take: input.amountOfTests }
+          : { take: 50 }),
         select: {
           id: true,
           title: true,

@@ -461,7 +461,7 @@ describe("collectionRouter", () => {
       expect(ctx.prisma.collection.findMany).toHaveBeenCalledWith({
         ...(input && input.amountOfCollections
           ? { take: input.amountOfCollections }
-          : {}),
+          : { take: 50 }),
         select: {
           id: true,
           title: true,
