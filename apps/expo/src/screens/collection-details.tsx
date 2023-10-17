@@ -35,7 +35,7 @@ export const CollectionDetailsScreen = ({
           style={{ height: height, width: width }}
         >
           <ReusableHeader
-            screenName={""}
+            screenName={"Collection Details"}
             optionIcon={<SearchIcon />}
             handleExit={goBack}
           />
