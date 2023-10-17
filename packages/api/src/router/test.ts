@@ -478,7 +478,9 @@ export const testRouter = router({
     .input(highlightTestsInput)
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
-        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        ...(input && input.amountOfTests
+          ? { take: input.amountOfTests }
+          : { take: 50 }),
         select: {
           id: true,
           title: true,
@@ -506,11 +508,21 @@ export const testRouter = router({
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          plays: {
-            _count: "desc",
+        orderBy: [
+          {
+            plays: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     }),
 
@@ -518,7 +530,9 @@ export const testRouter = router({
     .input(highlightTestsInput)
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
-        ...(input && input.amountOfTests ? { take: input.amountOfTests } : {}),
+        ...(input && input.amountOfTests
+          ? { take: input.amountOfTests }
+          : { take: 50 }),
         select: {
           id: true,
           title: true,
@@ -546,11 +560,21 @@ export const testRouter = router({
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          favoritedUsers: {
-            _count: "desc",
+        orderBy: [
+          {
+            favoritedUsers: {
+              _count: "desc",
+            },
           },
-        },
+          {
+            updatedAt: "desc",
+          },
+          {
+            questions: {
+              _count: "desc",
+            },
+          },
+        ],
       });
     }),
 
