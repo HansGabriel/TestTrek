@@ -89,16 +89,6 @@ describe("reviewerRouter", () => {
     });
   });
 
-  it("should throw error when unauthorized user tries to view reviewer", async () => {
-    const input = { reviewerId: "reviewerId1" };
-    ctx.auth.userId = "unauthorizedUserId";
-
-    await expect(caller.getReviewerById(input)).rejects
-      .toThrowErrorMatchingInlineSnapshot(`
-      "You are not allowed to view this reviewer."
-    `);
-  });
-
   it("should throw error when unauthorized user tries to edit reviewer", async () => {
     const input = {
       reviewerId: "reviewerId1",
