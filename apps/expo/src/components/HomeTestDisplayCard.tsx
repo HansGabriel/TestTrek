@@ -22,6 +22,7 @@ const HomeTestDisplayCard: FC<Props> = (props) => {
           <Image
             className="absolute inset-0 h-28 w-full object-cover"
             source={props.imageSource}
+            testID="main-image"
           />
           <View className="absolute bottom-3 right-3 h-5 w-10 items-center justify-center rounded-md bg-purple-700">
             <Text className="text-xs font-semibold text-white">
@@ -41,6 +42,7 @@ const HomeTestDisplayCard: FC<Props> = (props) => {
             <Image
               className="h-3 w-3 flex-shrink-0 rounded-full"
               source={props.userImageSource}
+              testID="user-image"
             />
             <Text
               className="ml-1.5 w-32 flex-shrink-0 truncate text-xs font-medium text-gray-600"
