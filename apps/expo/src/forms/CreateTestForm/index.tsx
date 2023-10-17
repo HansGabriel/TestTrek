@@ -726,8 +726,9 @@ const CreateTestForm: FC<Props> = ({
         isGenerating={isGenerating}
         handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
         handleClose={() => {
-          handleCloseAiModal();
+          setAiQuestion("");
           setErrorInAIQuestion(false);
+          handleCloseAiModal();
           setShowNumberOfQuestionsModal(true);
         }}
         hasError={errorInAIQuestion}

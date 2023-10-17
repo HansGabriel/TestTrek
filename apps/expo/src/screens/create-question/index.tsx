@@ -179,6 +179,11 @@ export const CreateQuestionScreen: FC = () => {
     } else {
       addEmptyQuestion("multiple_choice");
       setLastIndex();
+      setTimeLimitOptions(TIME_LIMIT_OPTIONS);
+      setPointOptions(POINT_OPTIONS);
+      setQuestionTitle("");
+      setChoices(resetSelectedChoices());
+      setQuestionImage(undefined);
       navigation.navigate("CreateQuestion");
     }
   };
@@ -486,6 +491,7 @@ export const CreateQuestionScreen: FC = () => {
         message: aiQuestion,
         questionType: "multipleChoice",
       });
+      setErrorInAIQuestion(false);
     }
   };
 
@@ -692,6 +698,7 @@ export const CreateQuestionScreen: FC = () => {
             handleQuestionGeneration={handleGenerateQuestion}
             handleClose={() => {
               setErrorInAIQuestion(false);
+              setAiQuestion("");
               handleCloseQuestionModal();
             }}
             hasError={errorInAIQuestion}
@@ -719,37 +726,39 @@ export const CreateQuestionScreen: FC = () => {
               className="flex flex-row gap-x-2"
               showsHorizontalScrollIndicator={false}
             >
-              {questions.map((question, idx) => (
-                <TouchableOpacity
-                  className="relative h-[58px] w-24"
-                  key={idx}
-                  onPress={handleClickQuestion(idx)}
-                >
-                  {question.image ? (
-                    <Image
-                      source={{ uri: question.image }}
-                      className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
-                        idx === selectedIndex
-                          ? "border-4 border-violet-600"
-                          : "border border-violet-600"
-                      }`}
-                    />
-                  ) : (
-                    <View
-                      className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
-                        idx === selectedIndex
-                          ? "border-4 border-violet-600"
-                          : "border border-violet-600"
-                      } bg-neutral-100`}
-                    ></View>
-                  )}
-                  <View className="absolute left-0 top-0 inline-flex h-5 w-5 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
-                    <Text className="text-center text-[10px] font-bold text-white">
-                      {idx + 1}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+              {questions.map((question, idx) => {
+                return (
+                  <TouchableOpacity
+                    className="relative h-[58px] w-24"
+                    key={idx}
+                    onPress={handleClickQuestion(idx)}
+                  >
+                    {question.image ? (
+                      <Image
+                        source={{ uri: question.image }}
+                        className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                          idx === selectedIndex
+                            ? "border-4 border-violet-600"
+                            : "border border-violet-600"
+                        }`}
+                      />
+                    ) : (
+                      <View
+                        className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                          idx === selectedIndex
+                            ? "border-4 border-violet-600"
+                            : "border border-violet-600"
+                        } bg-neutral-100`}
+                      ></View>
+                    )}
+                    <View className="absolute left-0 top-0 inline-flex h-8 w-8 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
+                      <Text className="text-center text-[10px] font-bold text-white">
+                        {idx + 1}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
             <TouchableOpacity
               className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 p-[17px] shadow"
