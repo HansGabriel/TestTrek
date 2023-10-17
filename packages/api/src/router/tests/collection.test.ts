@@ -462,6 +462,9 @@ describe("collectionRouter", () => {
         ...(input && input.amountOfCollections
           ? { take: input.amountOfCollections }
           : { take: 50 }),
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,

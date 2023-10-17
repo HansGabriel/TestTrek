@@ -446,6 +446,9 @@ export const testRouter = router({
         ...(input && input.amountOfTests
           ? { take: input.amountOfTests }
           : { take: 50 }),
+        where: {
+          visibility: "public",
+        },
         select: {
           id: true,
           title: true,
@@ -472,6 +475,9 @@ export const testRouter = router({
           },
           createdAt: true,
           updatedAt: true,
+        },
+        orderBy: {
+          updatedAt: "desc",
         },
       });
     }),
