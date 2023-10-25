@@ -93,17 +93,23 @@ const RightSidebar: FC<Props> = ({
     });
     setTests(updatedTests);
   };
+  const noneSelected = tests.every((test) => !test.isSelected);
 
   const addToCollection = () => {
-    const selectedTests = tests.filter((test) => test.isSelected);
-    const selectedTestIds = selectedTests.map((test) => test.id);
-    updateTestsOnCollection({
-      collectionId,
-      testIds: selectedTestIds,
-    });
+    if (noneSelected) {
+      updateTestsOnCollection({
+        collectionId,
+        testIds: [],
+      });
+    } else {
+      const selectedTests = tests.filter((test) => test.isSelected);
+      const selectedTestIds = selectedTests.map((test) => test.id);
+      updateTestsOnCollection({
+        collectionId,
+        testIds: selectedTestIds,
+      });
+    }
   };
-
-  const noneSelected = tests.every((test) => !test.isSelected);
 
   return (
     <Modal
@@ -162,7 +168,7 @@ const RightSidebar: FC<Props> = ({
                           {truncateString(test.title, 15)}
                         </Text>
                         <Text className="font-nunito-regular text-sm">
-                          {truncateString(test.description, 25)}
+                          {truncateString(test.description, 15)}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -172,10 +178,9 @@ const RightSidebar: FC<Props> = ({
               <View className="mx-3 mb-5 flex flex-row">
                 <AppButton
                   onPress={addToCollection}
-                  text={confirmButtonText}
-                  buttonColor={noneSelected ? "gray-400" : "violet-600"}
-                  disabled={noneSelected}
-                  borderShadowColor={noneSelected ? "gray-500" : "indigo-800"}
+                  text={noneSelected ? "Update Collection" : confirmButtonText}
+                  buttonColor={"violet-600"}
+                  borderShadowColor={"indigo-800"}
                   borderRadius="full"
                   fontStyle="bold"
                   textColor="white"

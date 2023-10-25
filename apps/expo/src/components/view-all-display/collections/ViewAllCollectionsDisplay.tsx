@@ -1,17 +1,19 @@
 import React, { FC } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, Dimensions } from "react-native";
 import CollectionsCard from "./CollectionsCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
 import { trpc } from "../../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../../loaders/SkeletonLoader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Props {
   collectionsFor: "topCollections";
 }
 
 export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
+  const { height, width } = Dimensions.get("window");
   const navigation = useNavigation();
 
   const { data: topCollections } = trpc.collection.getTopCollections.useQuery();
@@ -33,7 +35,13 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
   if (!topCollections) {
     return (
       <>
-        <SafeAreaView className="flex-1">
+        <SafeAreaView
+          className="flex-1"
+          style={{
+            height: height,
+            width: width,
+          }}
+        >
           <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
           <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
             <View className="mt-7">
@@ -55,7 +63,13 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        height: height,
+        width: width,
+        flex: 1,
+      }}
+    >
       <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
       <FlashList
         showsVerticalScrollIndicator={false}
