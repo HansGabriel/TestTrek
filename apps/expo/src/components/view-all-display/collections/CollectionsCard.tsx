@@ -14,6 +14,7 @@ const CollectionsCard: FC<Props> = (props) => {
         source={props.userImage}
         className="overflow-hidden rounded-xl border-2 border-white"
         style={{ position: "relative" }}
+        testID="userImageBackground"
       >
         <View
           style={{

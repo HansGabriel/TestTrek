@@ -25,6 +25,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
           <Image
             className="absolute inset-0 h-28 w-36"
             source={props.imageSource}
+            testID="mainImage"
           />
           <View className="absolute bottom-3.5 right-3 h-5 w-10 items-center justify-center  rounded-md bg-purple-700">
             <Text
@@ -37,7 +38,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
             </Text>
           </View>
         </View>
-        <View className="flex-1 flex-col justify-center overflow-hidden border-t border-r border-b border-gray-200 px-4 py-3">
+        <View className="flex-1 flex-col justify-center overflow-hidden border-b border-r border-t border-gray-200 px-4 py-3">
           <Text
             className="flex-1 overflow-hidden truncate text-lg font-bold leading-7 text-black"
             numberOfLines={1}
@@ -66,6 +67,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
             <Image
               className="h-5 w-5 rounded-full"
               source={props.userImageSource}
+              testID="userimage"
             />
             <Text
               className="ml-1.5 overflow-hidden truncate text-xs font-semibold text-gray-600"
