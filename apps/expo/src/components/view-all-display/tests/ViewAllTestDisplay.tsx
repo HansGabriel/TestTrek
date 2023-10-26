@@ -1,10 +1,10 @@
 import React, { FC } from "react";
 import {
-  SafeAreaView,
   TouchableOpacity,
   View,
   Text,
   ImageBackground,
+  Dimensions,
 } from "react-native";
 import ViewAllScreenTestCard from "./ViewAllScreenTestCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
@@ -18,6 +18,7 @@ import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
 import { Visibility } from "../../../../../../packages/db";
 import { SkeletonLoader } from "../../loaders/SkeletonLoader";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props =
   | {
@@ -40,6 +41,7 @@ type QuestionsType = NonNullable<RouterOutputs["test"]["getById"]>["questions"];
 type FetchedData = TestsType | QuestionsType | PartialQuestion[] | undefined;
 
 export const ViewAllTestDisplay: FC<Props> = (props) => {
+  const { height, width } = Dimensions.get("window");
   let fetchedData: FetchedData = undefined;
   let fetchedTestData:
     | {
@@ -98,7 +100,13 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
   if (!fetchedTestData && !fetchedData) {
     return (
       <>
-        <SafeAreaView className="flex-1">
+        <SafeAreaView
+          className="flex-1"
+          style={{
+            height: height,
+            width: width,
+          }}
+        >
           <ViewAllScreenHeader title={headerTitle} />
           <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
             <View className="mt-7">
@@ -120,7 +128,13 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
   }
 
   return (
-    <SafeAreaView className="flex-1 flex-col">
+    <SafeAreaView
+      className="flex-1 flex-col"
+      style={{
+        height: height,
+        width: width,
+      }}
+    >
       <ViewAllScreenHeader title={headerTitle} />
 
       {match(props.testsFor)

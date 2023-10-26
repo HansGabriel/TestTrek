@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import SearchIcon from "../../icons/SearchIcon";
 import type { FC } from "react";
@@ -14,20 +14,22 @@ const ViewAllScreenHeader: FC<Props> = (props) => {
   return (
     <>
       <View className="sticky z-50 mx-5 flex flex-row justify-between bg-white py-5">
-        <TouchableOpacity
-          className="flex flex-row items-center gap-4"
-          onPress={goBack}
-        >
-          <LeftArrowIcon />
-          <Text
-            className="font-nunito-bold w-4/5 text-2xl leading-[38.40px] text-neutral-800"
-            numberOfLines={1}
-            ellipsizeMode="tail"
+        <View className="flex-row self-center">
+          <TouchableOpacity
+            className="flex flex-row items-center gap-2 self-center"
+            onPress={goBack}
           >
-            {props.title}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="flex flex-row gap-4">
+            <LeftArrowIcon />
+            <Text
+              className="font-nunito-bold w-4/5 text-2xl leading-[38.40px] text-neutral-800"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {props.title}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity className="self-center">
           <SearchIcon />
         </TouchableOpacity>
       </View>

@@ -531,7 +531,6 @@ export const CreateQuestionScreen: FC = () => {
         screenName={"Create Question"}
         optionIcon={
           <QuestionOptionsDropdown
-            onSave={handleSaveAnswer(goBack)}
             onDelete={handleDelete}
           />
         }

@@ -113,7 +113,7 @@ const RightSidebar: FC<Props> = ({
                           {truncateString(reviewer.title, 15)}
                         </Text>
                         <Text className="font-nunito-regular text-sm">
-                          {truncateString(reviewer.content, 25)}
+                          {truncateString(reviewer.content, 15)}
                         </Text>
                       </View>
                     </TouchableOpacity>
