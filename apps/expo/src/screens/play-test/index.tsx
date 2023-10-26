@@ -249,9 +249,20 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   };
 
   const renderChoice = (choice: ModifiedChoice) => {
+    const getTextSize = (text: string) => {
+      if (text.length <= 10) {
+        return "text-base";
+      } else if (text.length <= 18) {
+        return "text-sm";
+      } else {
+        return "text-xs";
+      }
+    };
+
     const doneStyle = choice.isCorrect
       ? "border-emerald-600 bg-emerald-500"
       : "border-rose-500 bg-rose-600";
+
     return (
       <TouchableOpacity
         key={choice.id}
@@ -267,7 +278,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           </View>
         ) : null}
         <View className="h-full w-full items-center justify-center">
-          <Text className="self-center text-center text-lg font-bold text-white">
+          <Text
+            className={`self-center text-center ${getTextSize(
+              choice.text || "",
+            )} font-bold text-white`}
+          >
             {choice.text}
           </Text>
         </View>

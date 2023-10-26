@@ -519,6 +519,7 @@ export const CreateQuestionScreen: FC = () => {
     [choices, selectedQuestionId],
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const hasOneCorrectAnswer = useMemo(
     () => choices.filter((choice) => choice.isCorrect).length >= 1,
     [choices],
