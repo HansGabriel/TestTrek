@@ -256,11 +256,15 @@ export const CreateQuestionScreen: FC = () => {
 
   const toggleChoiceCorrect = (index: number) => () => {
     setChoices((prev) =>
-      prev.map((choice) =>
-        choice.id === index
-          ? { ...choice, isCorrect: !choice.isCorrect }
-          : choice,
-      ),
+      prev.map((choice) => {
+        if (choice.id === index) {
+          return { ...choice, isCorrect: !choice.isCorrect };
+        }
+        if (choice.isCorrect) {
+          return { ...choice, isCorrect: false };
+        }
+        return choice;
+      }),
     );
   };
 
@@ -529,11 +533,7 @@ export const CreateQuestionScreen: FC = () => {
     >
       <ReusableHeader
         screenName={"Create Question"}
-        optionIcon={
-          <QuestionOptionsDropdown
-            onDelete={handleDelete}
-          />
-        }
+        optionIcon={<QuestionOptionsDropdown onDelete={handleDelete} />}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleGoBack}
       />
@@ -676,9 +676,6 @@ export const CreateQuestionScreen: FC = () => {
                         value={selectedChoice?.isCorrect}
                         onValueChange={toggleChoiceCorrect(selectedQuestionId)}
                         trackColor={{ true: "#6949FF" }}
-                        disabled={
-                          hasOneCorrectAnswer && !selectedChoice?.isCorrect
-                        }
                       />
                     </View>
                   </View>
