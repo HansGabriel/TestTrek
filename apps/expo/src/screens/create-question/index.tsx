@@ -256,11 +256,15 @@ export const CreateQuestionScreen: FC = () => {
 
   const toggleChoiceCorrect = (index: number) => () => {
     setChoices((prev) =>
-      prev.map((choice) =>
-        choice.id === index
-          ? { ...choice, isCorrect: !choice.isCorrect }
-          : choice,
-      ),
+      prev.map((choice) => {
+        if (choice.id === index) {
+          return { ...choice, isCorrect: !choice.isCorrect };
+        }
+        if (choice.isCorrect) {
+          return { ...choice, isCorrect: false };
+        }
+        return choice;
+      }),
     );
   };
 
@@ -515,6 +519,7 @@ export const CreateQuestionScreen: FC = () => {
     [choices, selectedQuestionId],
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const hasOneCorrectAnswer = useMemo(
     () => choices.filter((choice) => choice.isCorrect).length >= 1,
     [choices],
@@ -529,11 +534,7 @@ export const CreateQuestionScreen: FC = () => {
     >
       <ReusableHeader
         screenName={"Create Question"}
-        optionIcon={
-          <QuestionOptionsDropdown
-            onDelete={handleDelete}
-          />
-        }
+        optionIcon={<QuestionOptionsDropdown onDelete={handleDelete} />}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleGoBack}
       />
@@ -604,7 +605,7 @@ export const CreateQuestionScreen: FC = () => {
                 placeholderTextColor={"#757575"}
                 onFocus={handleTextInputFocus}
                 multiline
-                numberOfLines={2}
+                maxLength={300}
               />
             </>
           </View>
@@ -651,7 +652,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                     <TextInput
                       multiline={true}
-                      maxLength={150}
+                      maxLength={69}
                       className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                       selectionColor="white"
                       value={selectedChoice?.text}
@@ -662,9 +663,9 @@ export const CreateQuestionScreen: FC = () => {
                       placeholderTextColor="#FFFFFF"
                     />
                     {selectedChoice?.text &&
-                    selectedChoice?.text.length >= 150 ? (
+                    selectedChoice?.text.length >= 69 ? (
                       <Text className="mt-2 text-center text-red-500 ">
-                        You've reached the maximum of 150 characters.
+                        You've reached the maximum of 69 characters.
                       </Text>
                     ) : null}
 
@@ -676,9 +677,6 @@ export const CreateQuestionScreen: FC = () => {
                         value={selectedChoice?.isCorrect}
                         onValueChange={toggleChoiceCorrect(selectedQuestionId)}
                         trackColor={{ true: "#6949FF" }}
-                        disabled={
-                          hasOneCorrectAnswer && !selectedChoice?.isCorrect
-                        }
                       />
                     </View>
                   </View>
