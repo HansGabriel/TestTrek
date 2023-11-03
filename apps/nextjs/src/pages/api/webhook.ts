@@ -34,16 +34,28 @@ export default async function handler(
     const lastName = last_name.trim().replace(/\s+/g, "_").toLowerCase();
     const username = firstName.concat("_", lastName);
 
-    await prisma.user.create({
-      data: {
-        email,
+    await prisma.user.upsert({
+      create: {
+        email: email,
         firstName: first_name,
         lastName: last_name,
         userId: id,
         imageUrl: image_url,
         username: username,
       },
+      update: {
+        email: email,
+        firstName: first_name,
+        lastName: last_name,
+        userId: id,
+        imageUrl: image_url,
+        username: username,
+      },
+      where: {
+        userId: id,
+      },
     });
+
     res.status(201).json({
       message: "User created",
     });
