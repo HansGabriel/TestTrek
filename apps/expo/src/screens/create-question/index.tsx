@@ -32,6 +32,7 @@ import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import useError from "./hooks";
 import useToggleImageStore from "../../stores/useToggleImageStore";
+import { isEqual } from "lodash";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
@@ -144,6 +145,7 @@ export const CreateQuestionScreen: FC = () => {
       isSelected: option.value === question?.points,
     })),
   );
+  const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -380,6 +382,26 @@ export const CreateQuestionScreen: FC = () => {
       return () => backHandler.remove();
     }, []);
 
+    useEffect(() => {
+      if (!isSaved) {
+        const isTitleSame = question?.title === questionTitle;
+        const isTimeLimitSame =
+          question?.time ===
+          timeLimitOptions.filter(
+            (timeLimitOption) => timeLimitOption.isSelected,
+          )[0]?.value;
+        const isPointSame =
+          question?.points ===
+          pointOptions.filter((pointOption) => pointOption.isSelected)[0]
+            ?.value;
+        const isChoicesSame = isEqual(choices, getSelectedChoices());
+        const isTheSameValues =
+          isTitleSame && isTimeLimitSame && isPointSame && isChoicesSame;
+
+        setIsSaved(isTheSameValues ? false : true);
+      }
+    }, [questionTitle, timeLimitOptions, pointOptions, choices]);
+
     return (
       <TouchableOpacity
         key={choice.id}
@@ -442,6 +464,8 @@ export const CreateQuestionScreen: FC = () => {
         })),
       );
     }
+
+    setIsSaved(false);
   };
 
   const handleGoBack = () => {
@@ -500,8 +524,8 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleSaveAnswer = (callback?: () => void) => () => {
-    const isSaved = handleSaveQuestion();
-    if (isSaved === true) {
+    const isValidInput = handleSaveQuestion();
+    if (isValidInput) {
       callback?.();
     } else {
       const answerError = checkAnswerError(choices);
@@ -622,9 +646,14 @@ export const CreateQuestionScreen: FC = () => {
           </View>
 
           <TouchableOpacity
-            className="mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px]"
+            className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
+              !isSaved ? "opacity-50" : ""
+            }`}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            onPress={handleSaveAnswer(() => {})}
+            onPress={handleSaveAnswer(() => {
+              setIsSaved(false);
+            })}
+            disabled={!isSaved}
           >
             <Text className="text-center text-base font-bold text-white">
               Save
