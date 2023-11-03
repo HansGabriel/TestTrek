@@ -681,7 +681,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                     <TextInput
                       multiline={true}
-                      maxLength={69}
+                      maxLength={100}
                       className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                       selectionColor="white"
                       value={selectedChoice?.text}
@@ -692,9 +692,9 @@ export const CreateQuestionScreen: FC = () => {
                       placeholderTextColor="#FFFFFF"
                     />
                     {selectedChoice?.text &&
-                    selectedChoice?.text.length >= 69 ? (
+                    selectedChoice?.text.length >= 100 ? (
                       <Text className="mt-2 text-center text-red-500 ">
-                        You've reached the maximum of 69 characters.
+                        You've reached the maximum of 100 characters.
                       </Text>
                     ) : null}
 
@@ -705,7 +705,7 @@ export const CreateQuestionScreen: FC = () => {
                       <Switch
                         value={selectedChoice?.isCorrect}
                         onValueChange={toggleChoiceCorrect(selectedQuestionId)}
-                        trackColor={{ true: "#6949FF" }}
+                        trackColor={{ true: "#10049FF" }}
                       />
                     </View>
                   </View>
