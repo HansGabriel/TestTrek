@@ -19,6 +19,7 @@
     "p-map": "^6.0.0",
     "shutterstock-api": "^1.1.35",
     "superjson": "^1.9.1",
+    "unsplash-js": "^7.0.18",
     "zod": "^3.18.0"
   },
   "devDependencies": {
