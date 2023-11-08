@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getImagesByQuery } from "../services/image";
+import { getUnsplashImages } from "../services/unsplash";
 import { router, protectedProcedure } from "../trpc";
 
 import type { StockImages } from "@acme/schema/src/types";
@@ -20,5 +21,13 @@ export const imageRouter = router({
         assetUrl: image.assets.preview.url,
       })) as StockImages;
       return result;
+    }),
+  getUnsplashImageQuery: protectedProcedure
+    .input(z.object({ query: z.string() }))
+    .query(async ({ input }) => {
+      const { query } = input;
+      const unsplashImages = await getUnsplashImages(query);
+      console.log(unsplashImages);
+      return unsplashImages;
     }),
 });

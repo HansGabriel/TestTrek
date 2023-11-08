@@ -39,7 +39,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
     setSearchTerm(query);
   };
 
-  const { data: imagesQuery } = trpc.image.getImagesQuery.useQuery({
+  const { data: unsplashImage } = trpc.image.getUnsplashImageQuery.useQuery({
     query: searchTerm,
   });
 
@@ -73,7 +73,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
     );
   };
 
-  if (!imagesQuery) {
+  if (!unsplashImage) {
     return (
       <SafeAreaView className="flex-1">
         <ReusableHeader
@@ -115,7 +115,7 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
 
       <ScrollView className="mx-6 mt-6 " showsVerticalScrollIndicator={false}>
         <View className="flex flex-row flex-wrap">
-          {imagesQuery.map((image, idx) => (
+          {unsplashImage.map((image, idx) => (
             <TouchableOpacity
               key={`${image.id}-${idx}`}
               className="mb-4 w-1/2 px-2"
