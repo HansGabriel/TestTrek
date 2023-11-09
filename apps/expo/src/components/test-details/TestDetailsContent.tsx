@@ -9,7 +9,7 @@ import {
   ImageBackground,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+//import { Ionicons } from "@expo/vector-icons";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { AppButton } from "../buttons/AppButton";
 import { trpc } from "../../utils/trpc";
@@ -166,7 +166,23 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           </Text>
         </Text>
 
-        <View className="mt-5 w-[87%] self-center border-b border-[#EEEEEE]"></View>
+        <AppButton
+          onPress={handlePlayTest}
+          text="Play Now"
+          classNameValue="mb-5 mt-5"
+          buttonColor="violet-600"
+          borderShadowColor="indigo-800"
+          borderRadius="full"
+          fontStyle="bold"
+          textColor="white"
+          TOwidth="full"
+          Vwidth="full"
+          disabled={isLoadingPlayTest}
+          isLoading={isLoadingPlayTest}
+          loadingColor="white"
+        />
+
+        <View className="w-[87%] self-center border-b border-[#EEEEEE]"></View>
 
         {Array.from({ length: 2 }).map((_, rowIndex) => (
           <React.Fragment key={rowIndex}>
@@ -311,32 +327,14 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
             </SafeAreaView>
           </View>
         ) : (
-          <>
-            <HiddenQuestionSection />
-          </>
+          <></>
         )}
-
-        <AppButton
-          onPress={handlePlayTest}
-          text="Play Now"
-          classNameValue="mb-10"
-          buttonColor="violet-600"
-          borderShadowColor="indigo-800"
-          borderRadius="full"
-          fontStyle="bold"
-          textColor="white"
-          TOwidth="full"
-          Vwidth="full"
-          disabled={isLoadingPlayTest}
-          isLoading={isLoadingPlayTest}
-          loadingColor="white"
-        />
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const HiddenQuestionSection: FC = () => (
+/* const HiddenQuestionSection: FC = () => (
   <View className="mb-5 inline-flex h-[88px] w-[382px] flex-col items-center justify-center gap-2 self-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
     <View className="inline-flex h-7 w-7 items-center justify-center px-[2.33px] pb-[3.18px] pt-[4.67px]">
       <Ionicons name="ios-eye-off-outline" size={24} color="black" />
@@ -345,6 +343,6 @@ const HiddenQuestionSection: FC = () => (
       Question content is not visible
     </Text>
   </View>
-);
+); */
 
 export default TestDetailsContent;

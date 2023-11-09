@@ -379,16 +379,18 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           <Text className="font-nunito-bold text-2xl">Test</Text>
           <PlayDropdown onExit={handleExit} onSave={handleSave} />
         </View>
+        <View className=" mb-5 ml-5 w-[90%] items-center">
+          {question && isTimerReady ? (
+            <CountdownTimer
+              index={index}
+              timeInSeconds={question.time}
+              handleTimeUp={handleTimeUp}
+              ref={countdownTimerRef}
+            />
+          ) : null}
+        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="mx-6">
-            {question && isTimerReady ? (
-              <CountdownTimer
-                index={index}
-                timeInSeconds={question.time}
-                handleTimeUp={handleTimeUp}
-                ref={countdownTimerRef}
-              />
-            ) : null}
             {question?.image && (
               <View className="mb-4 mt-8 flex flex-col">
                 <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
