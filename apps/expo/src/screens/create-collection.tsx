@@ -1,7 +1,7 @@
 import { collectionsSchema } from "@acme/schema/src/collection";
 import { Collections } from "@acme/schema/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
@@ -11,7 +11,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
   BackHandler,
 } from "react-native";
 import TestImagePicker from "../components/ImagePicker";
@@ -27,8 +26,10 @@ import {
   errorToast,
   successToast,
 } from "../components/notifications/ToastNotifications";
+import { AlertModal } from "../components/modals/AlertModal";
 
 export const CreateCollection = () => {
+  const [openAlert, setOpenAlert] = useState(false);
   const goBack = useGoBack();
   const image = useImageStore((state) => state.collectionImage);
   const resetCollectionImage = useImageStore(
@@ -52,7 +53,7 @@ export const CreateCollection = () => {
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Collections>({
     resolver: zodResolver(collectionsSchema),
     defaultValues: {
@@ -97,45 +98,22 @@ export const CreateCollection = () => {
   }, [image]);
 
   const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            resetCollectionImage();
-            goBack();
-          },
-        },
-      ],
-    );
+    if (isDirty) {
+      setOpenAlert(true);
+    } else {
+      resetCollectionImage();
+      goBack();
+    }
   };
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all unsaved progress if you exit this screen",
-        [
-          {
-            text: "CANCEL",
-            onPress: () => null,
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: () => {
-              resetCollectionImage();
-              goBack();
-            },
-          },
-        ],
-      );
+      if (isDirty) {
+        setOpenAlert(true);
+      } else {
+        resetCollectionImage();
+        goBack();
+      }
       return true;
     };
 
@@ -145,7 +123,7 @@ export const CreateCollection = () => {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [isDirty]);
 
   useEffect(() => {
     if (errors) {
@@ -269,6 +247,20 @@ export const CreateCollection = () => {
           </View>
         </View>
       </ScrollView>
+      <AlertModal
+        isVisible={openAlert}
+        alertTitle={"Are you sure?"}
+        alertDescription={
+          "You will lose all unsaved progress if you exit this screen"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenAlert(false);
+        }}
+        onConfirm={goBack}
+      />
     </KeyboardAvoidingView>
   );
 };

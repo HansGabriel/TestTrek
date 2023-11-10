@@ -5,7 +5,7 @@ import {
   Text,
   View,
   Dimensions,
-  Alert,
+  BackHandler,
 } from "react-native";
 
 import { Avatar } from "@rneui/themed";
@@ -28,11 +28,15 @@ import {
   successToast,
 } from "../components/notifications/ToastNotifications";
 
+import { AlertModal } from "../components/modals/AlertModal";
+
 export const EditPersonalInfoScreen = () => {
   const { height, width } = Dimensions.get("window");
+
   const { data: userDetails, refetch: refetchData } =
     trpc.user.getUserDetails.useQuery();
 
+  const [openAlert, setOpenAlert] = useState(false);
   const [edit, setEdit] = useState(false);
 
   const goBack = useGoBack();
@@ -40,7 +44,7 @@ export const EditPersonalInfoScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<UserStored>({
     resolver: zodResolver(userStoredSchema),
   });
@@ -103,23 +107,30 @@ export const EditPersonalInfoScreen = () => {
   }, [errors]);
 
   const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            goBack();
-          },
-        },
-      ],
-    );
+    if (isDirty) {
+      setOpenAlert(true);
+    } else {
+      goBack();
+    }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isDirty) {
+        setOpenAlert(true);
+      } else {
+        goBack();
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [isDirty]);
 
   if (!userDetails) {
     return (
@@ -314,6 +325,20 @@ export const EditPersonalInfoScreen = () => {
             ""
           )}
         </ScrollView>
+        <AlertModal
+          isVisible={openAlert}
+          alertTitle={"Are you sure?"}
+          alertDescription={
+            "You will lose all unsaved progress if you exit this screen"
+          }
+          confirmButtonText={"Yes"}
+          isCancelButtonVisible={true}
+          cancelButtonText={"Cancel"}
+          onCancel={() => {
+            setOpenAlert(false);
+          }}
+          onConfirm={goBack}
+        />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

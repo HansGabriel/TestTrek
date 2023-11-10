@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { TouchableOpacity, Text, View, Alert } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import { MoreCircleIcon } from "../../icons/question-options";
 import { Ionicons } from "@expo/vector-icons";
 
 import type { FC } from "react";
+import { AlertModal } from "../../components/modals/AlertModal";
 
 interface Props {
   onSave: () => void;
@@ -12,46 +13,16 @@ interface Props {
 
 const PlayDropdown: FC<Props> = ({ onSave, onExit }) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [openExitAlert, setOpenExitAlert] = useState(false);
+  const [openSaveAlert, setOpenSaveAlert] = useState(false);
 
-  const exitAlert = () =>
-    Alert.alert(
-      "Exit",
-      "Are you sure you want to exit? You will lose all your progress.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Exit",
-          onPress: onExit,
-          style: "destructive",
-        },
-      ],
-      {
-        cancelable: true,
-      },
-    );
+  const exitAlert = () => {
+    setOpenExitAlert(true);
+  };
 
-  const saveAlert = () =>
-    Alert.alert(
-      "Stop",
-      "Are you sure you want to stop? You will end the test early.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Stop",
-          onPress: onSave,
-          style: "default",
-        },
-      ],
-      {
-        cancelable: true,
-      },
-    );
+  const saveAlert = () => {
+    setOpenSaveAlert(true);
+  };
 
   return (
     <View className="relative">
@@ -83,6 +54,34 @@ const PlayDropdown: FC<Props> = ({ onSave, onExit }) => {
           </TouchableOpacity>
         </View>
       )}
+      <AlertModal
+        isVisible={openExitAlert}
+        alertTitle={"Exit"}
+        alertDescription={
+          "Are you sure you want to exit? You will lose all your progress"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenExitAlert(false);
+        }}
+        onConfirm={onExit}
+      />
+      <AlertModal
+        isVisible={openSaveAlert}
+        alertTitle={"Stop"}
+        alertDescription={
+          "Are you sure you want to stop? You will end the test early"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenExitAlert(false);
+        }}
+        onConfirm={onSave}
+      />
     </View>
   );
 };

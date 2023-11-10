@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   ImageBackground,
   StyleSheet,
-  Alert,
   BackHandler,
   Dimensions,
 } from "react-native";
@@ -54,6 +53,7 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
+import { AlertModal } from "../../components/modals/AlertModal";
 
 type FormProps = Omit<TestInput, "questions">;
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
@@ -64,7 +64,6 @@ interface Props {
   onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
-  handleExitScreen: () => void;
 }
 
 const CreateTestForm: FC<Props> = ({
@@ -73,18 +72,17 @@ const CreateTestForm: FC<Props> = ({
   onSubmit,
   isCreatingQuiz = false,
   isUploading = false,
-  handleExitScreen,
 }) => {
   const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
+  const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [aiQuestion, setAiQuestion] = useState<string>("");
-  const [isPromptModalOpen, setIsPromptModalOpen] = useState(false);
   const [openCreationChoice, setOpenCreationChoice] = useState(false);
   const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
     useState(false);
@@ -127,7 +125,7 @@ const CreateTestForm: FC<Props> = ({
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<FormProps>({
     resolver: zodResolver(
       testInputSchema.omit({
@@ -166,10 +164,6 @@ const CreateTestForm: FC<Props> = ({
     setShowNumberOfQuestionsModal(false);
   };
 
-  const handleClosePromptModal = () => {
-    setIsPromptModalOpen(false);
-  };
-
   const handleCloseAiModal = () => {
     setShowAiModal(false);
   };
@@ -177,14 +171,6 @@ const CreateTestForm: FC<Props> = ({
   const handleCloseCreationChoice = () => {
     setOpenCreationChoice(false);
   };
-
-  useEffect(() => {
-    if (questions.length < 5 && isBottomSheetOpen) {
-      setIsPromptModalOpen(true);
-    } else {
-      setIsPromptModalOpen(false);
-    }
-  }, [isBottomSheetOpen]);
 
   const goToCreateQuestion = () => {
     setOpenCreationChoice(true);
@@ -232,20 +218,21 @@ const CreateTestForm: FC<Props> = ({
     });
   }, [image, testDetails?.image]);
 
+  const handleExitScreen = () => {
+    if (isDirty || questions.length > 0) {
+      setOpenAlert(true);
+    } else {
+      goBack();
+    }
+  };
+
   useEffect(() => {
     const backAction = () => {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all unsaved progress if you exit this screen",
-        [
-          {
-            text: "CANCEL",
-            onPress: () => null,
-            style: "cancel",
-          },
-          { text: "OK", onPress: () => goBack() },
-        ],
-      );
+      if (isDirty || questions.length > 0) {
+        setOpenAlert(true);
+      } else {
+        goBack();
+      }
       return true;
     };
 
@@ -255,7 +242,7 @@ const CreateTestForm: FC<Props> = ({
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [isDirty, questions]);
 
   const goToViewAllQuestions = () => {
     navigation.navigate("ViewAll", {
@@ -388,7 +375,7 @@ const CreateTestForm: FC<Props> = ({
       >
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="flex flex-col">
-            <View className="mb-6">
+            <View className="mb-6 mt-5">
               <Controller
                 control={control}
                 render={({ field: { value } }) => {
@@ -644,6 +631,7 @@ const CreateTestForm: FC<Props> = ({
           closeBottomSheet={closeBottomSheet}
         />
       </BottomSheet>
+
       <RightSidebar
         isOpen={isSidebarOpen}
         onClose={() => {
@@ -654,24 +642,6 @@ const CreateTestForm: FC<Props> = ({
           setIsSidebarOpen(false);
         }}
         confirmButtonText={"Confirm"}
-      />
-
-      <PromptModal
-        isVisible={isPromptModalOpen}
-        onConfirm={handleClosePromptModal}
-        modalIcon={
-          <MaterialCommunityIcons
-            name="bell-ring-outline"
-            size={40}
-            color="#7c3aed"
-          />
-        }
-        modalTitle={"Reminder"}
-        modalDescription={
-          "Please create at least five (5) questions to save the test!"
-        }
-        confirmButtonText={"Ok"}
-        isCancelButtonVisible={false}
       />
 
       <PromptModal
@@ -704,7 +674,10 @@ const CreateTestForm: FC<Props> = ({
         options={numberOfQuestionOptions}
         setOptions={setNumberOfQuestionOptions}
         isVisible={showNumberofQuestionsModal}
-        setIsVisible={handleCloseNumberOfQuestionsModal}
+        setIsVisible={() => {
+          handleCloseNumberOfQuestionsModal();
+          setOpenCreationChoice(true);
+        }}
         isLoading={isGenerating}
         handleAIPress={() => {
           setShowNumberOfQuestionsModal(false);
@@ -732,6 +705,21 @@ const CreateTestForm: FC<Props> = ({
           setShowNumberOfQuestionsModal(true);
         }}
         hasError={errorInAIQuestion}
+      />
+
+      <AlertModal
+        isVisible={openAlert}
+        alertTitle={"Are you sure?"}
+        alertDescription={
+          "You will lose all unsaved progress if you exit this screen"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenAlert(false);
+        }}
+        onConfirm={goBack}
       />
     </SafeAreaView>
   );

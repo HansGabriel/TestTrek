@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert,
   Dimensions,
 } from "react-native";
 import useGoBack from "../hooks/useGoBack";
@@ -44,33 +43,18 @@ export const AddCoverImageScreen: FC<RootStackScreenProps<"AddCoverImage">> = ({
   });
 
   const handleImageSelect = (image: string) => {
-    Alert.alert(
-      "Set Cover Image",
-      "Are you sure you want to set this image as your cover image?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Set",
-          onPress: () => {
-            const settingFunction =
-              type === "test"
-                ? setImage
-                : type === "collection"
-                ? setCollectionImage
-                : type === "editCollection"
-                ? setEditCollectionImage
-                : type === "reviewer"
-                ? setReviewerImage
-                : setQuestionImage;
-            settingFunction(image);
-            goBack();
-          },
-        },
-      ],
-    );
+    const settingFunction =
+      type === "test"
+        ? setImage
+        : type === "collection"
+        ? setCollectionImage
+        : type === "editCollection"
+        ? setEditCollectionImage
+        : type === "reviewer"
+        ? setReviewerImage
+        : setQuestionImage;
+    settingFunction(image);
+    goBack();
   };
 
   if (!unsplashImage) {

@@ -20,6 +20,7 @@ interface ButtonProps extends TouchableOpacityProps {
   Vwidth?: string;
   isLoading?: boolean;
   loadingColor?: string;
+  Vheight?: string;
 }
 
 const borderRadiusSize = (size: string | undefined) => {
@@ -58,6 +59,7 @@ export const AppButton = ({
   fontStyle,
   TOwidth,
   Vwidth,
+  Vheight = "14",
   isLoading = false,
   loadingColor = "black",
   ...props
@@ -70,9 +72,9 @@ export const AppButton = ({
       disabled={isLoading}
     >
       <View
-        className={` h-14 w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(
+        className={` h-${Vheight} w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(
           borderRadius,
-        )}] border-b-4 border-t border-l border-r border-${borderShadowColor} bg-${buttonColor} ${classNameValue} `}
+        )}] border-b-4 border-l border-r border-t border-${borderShadowColor} bg-${buttonColor} ${classNameValue} `}
       >
         {iconLeft}
         <Text

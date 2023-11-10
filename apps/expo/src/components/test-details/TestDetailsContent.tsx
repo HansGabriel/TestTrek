@@ -7,7 +7,6 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  Alert,
 } from "react-native";
 //import { Ionicons } from "@expo/vector-icons";
 import { IMAGE_PLACEHOLDER } from "../../constants";
@@ -95,27 +94,6 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
 
   const { id: testId } = testDetails;
 
-  const handlePlayTest = () => {
-    Alert.alert(
-      "Play Test",
-      "Are you sure you want to play this test?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Play",
-          onPress: () =>
-            playTest({
-              testId,
-            }),
-        },
-      ],
-      { cancelable: false },
-    );
-  };
-
   const goToViewAllQuestions = () => {
     navigation.navigate("ViewAll", {
       fetchedData: "questions",
@@ -167,7 +145,11 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
         </Text>
 
         <AppButton
-          onPress={handlePlayTest}
+          onPress={() => {
+            playTest({
+              testId,
+            });
+          }}
           text="Play Now"
           classNameValue="mb-5 mt-5"
           buttonColor="violet-600"
