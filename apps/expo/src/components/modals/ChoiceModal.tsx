@@ -9,6 +9,7 @@ import { chunk } from "lodash";
 
 import type { FC } from "react";
 import { AppButton } from "../buttons/AppButton";
+import XIcon from "../../icons/XIcon";
 
 type Option = {
   id: string;
@@ -40,7 +41,6 @@ const ChoiceModal: FC<Props> = ({
   isLoading = false,
   selectButtonText = "Select Reviewer",
 }) => {
-
   const handleOptionPress = (id: string) => {
     const newOptions = options.map((option) => {
       //{DO NOT REMOVE YET}
@@ -73,7 +73,14 @@ const ChoiceModal: FC<Props> = ({
         <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
             <View className="flex h-[60%] w-[90%] flex-col items-center justify-evenly rounded-2xl bg-white">
-              <View>
+              <TouchableOpacity
+                className="-mt-[9%] mr-2 self-end"
+                onPress={setIsVisible}
+              >
+                <XIcon className="self-end" />
+              </TouchableOpacity>
+
+              <View className="-mt-7 w-[90%]">
                 <Text className="self-center px-5 text-center text-2xl font-bold">
                   {title}
                 </Text>
@@ -83,14 +90,14 @@ const ChoiceModal: FC<Props> = ({
                 {chunk(options, 2).map((row, idx) => (
                   <View
                     key={idx}
-                    className="my-5 flex w-[100%] flex-row items-center justify-around self-center"
+                    className="my-3 flex w-[100%] flex-row items-center justify-around self-center"
                   >
                     {row.map((option) => (
                       <TouchableOpacity
                         key={option.id}
                         className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl border-b-2 ${
                           option.isSelected
-                            ? "border-indigo-700 bg-violet-600"
+                            ? "border-indigo-700 bg-purple-500"
                             : "border-neutral-200 bg-neutral-100"
                         } p-3`}
                         onPress={() => handleOptionPress(option.id)}
@@ -110,7 +117,7 @@ const ChoiceModal: FC<Props> = ({
                   </View>
                 ))}
               </View>
-
+              <View className="h-[0px] w-full self-center border border-zinc-100" />
               <View className="w-[90%] flex-row justify-evenly">
                 <View>
                   <AppButton
@@ -138,22 +145,6 @@ const ChoiceModal: FC<Props> = ({
                     TOwidth="full"
                     Vwidth="32"
                     onPress={handleAIPress}
-                    disabled={isLoading}
-                  />
-                </View>
-              </View>
-              <View className="w-[90%] flex-row justify-center">
-                <View>
-                  <AppButton
-                    text="Cancel"
-                    buttonColor="white"
-                    borderShadowColor="indigo-800"
-                    borderRadius="full"
-                    fontStyle="bold"
-                    textColor="violet-600"
-                    TOwidth="full"
-                    Vwidth="32"
-                    onPress={setIsVisible}
                     disabled={isLoading}
                   />
                 </View>

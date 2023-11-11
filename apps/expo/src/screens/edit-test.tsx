@@ -127,47 +127,47 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
     );
   };
 
-  const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            goBack();
-          },
-        },
-      ],
-    );
-  };
+  // const handleExitScreen = () => {
+  //   Alert.alert(
+  //     "Are you sure?",
+  //     "You will lose all unsaved progress if you exit this screen",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "OK",
+  //         onPress: () => {
+  //           goBack();
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
 
-  const handleDeleteTest = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            deleteTest({ testId });
-          },
-        },
-      ],
-    );
-  };
+  // const handleDeleteTest = () => {
+  //   Alert.alert(
+  //     "Are you sure?",
+  //     "You will lose all unsaved progress if you exit this screen",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "OK",
+  //         onPress: () => {
+  //           deleteTest({ testId });
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
 
-  const handleOnSave = () => {
-    console.log("save");
-  };
+  // const handleOnSave = () => {
+  //   console.log("save");
+  // };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
@@ -196,7 +196,6 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           onSubmit={submitTestDetails}
           isCreatingQuiz={isEditingTest}
           isUploading={isUploading}
-          handleExitScreen={handleExitScreen}
         />
       </View>
     </SafeAreaView>

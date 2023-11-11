@@ -8,7 +8,6 @@ import {
   Text,
   Dimensions,
   ActivityIndicator,
-  Alert,
   BackHandler,
 } from "react-native";
 import {
@@ -39,6 +38,7 @@ import {
   errorToast,
   successToast,
 } from "../components/notifications/ToastNotifications";
+import { AlertModal } from "../components/modals/AlertModal";
 
 export const CreateReviewerScreen = ({
   navigation,
@@ -51,6 +51,7 @@ export const CreateReviewerScreen = ({
   };
   const richText = useRef<RichEditor | null>(null);
   const [isToggled, setIsToggled] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const reviewerImage = useImageStore((state) => state.reviewerImage);
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
@@ -103,7 +104,7 @@ export const CreateReviewerScreen = ({
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Reviewers>({
     resolver: zodResolver(reviewerSchema),
     defaultValues: {
@@ -208,45 +209,22 @@ export const CreateReviewerScreen = ({
   }, [reviewerDetails]);
 
   const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            resetReviewerImage();
-            goBack();
-          },
-        },
-      ],
-    );
+    if (isDirty) {
+      setOpenAlert(true);
+    } else {
+      resetReviewerImage();
+      goBack();
+    }
   };
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all unsaved progress if you exit this screen",
-        [
-          {
-            text: "CANCEL",
-            onPress: () => null,
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: () => {
-              resetReviewerImage();
-              goBack();
-            },
-          },
-        ],
-      );
+      if (isDirty) {
+        setOpenAlert(true);
+      } else {
+        resetReviewerImage();
+        goBack();
+      }
       return true;
     };
 
@@ -256,7 +234,7 @@ export const CreateReviewerScreen = ({
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [isDirty]);
 
   useEffect(() => {
     if (errors) {
@@ -304,7 +282,7 @@ export const CreateReviewerScreen = ({
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="w-[90%] self-center">
+        <View className="mt-5 w-[90%] self-center">
           <Controller
             control={control}
             render={({ field: { value } }) => {
@@ -460,6 +438,21 @@ export const CreateReviewerScreen = ({
         iconMap={{
           [actions.hiliteColor]: highlightIcon,
         }}
+      />
+
+      <AlertModal
+        isVisible={openAlert}
+        alertTitle={"Are you sure?"}
+        alertDescription={
+          "You will lose all unsaved progress if you exit this screen"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenAlert(false);
+        }}
+        onConfirm={goBack}
       />
     </SafeAreaView>
   );

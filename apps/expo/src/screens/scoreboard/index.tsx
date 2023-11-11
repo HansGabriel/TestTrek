@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { StatusBar, View, Image, Text, TouchableOpacity } from "react-native";
+import {
+  StatusBar,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import PodiumComponent from "./PodiumComponent";
 import { LinearGradient } from "expo-linear-gradient";
 import DownloadIcon from "../../icons/DownloadIcon";
@@ -36,11 +43,30 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
     testId,
   });
 
+  const goToHome = () => {
+    setIsScoreboardScreen(false);
+    navigation.navigate("Home");
+  };
+
   useEffect(() => {
     setIsShowingConfetti(true);
     setTimeout(() => {
       setIsShowingConfetti(false);
     }, 10000);
+  }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      goToHome();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
@@ -57,11 +83,6 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
   if (!topTrekersList) {
     return <></>;
   }
-
-  const goToHome = () => {
-    setIsScoreboardScreen(false);
-    navigation.navigate("Home");
-  };
 
   const firstPlaceTreker = topTrekersList[0];
   const secondPlaceTreker = topTrekersList[1];

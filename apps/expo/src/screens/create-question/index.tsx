@@ -12,7 +12,6 @@ import {
   Switch,
   Image,
   StyleSheet,
-  Alert,
   BackHandler,
   Dimensions,
 } from "react-native";
@@ -27,7 +26,6 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import ChoiceBottomSheet from "../../components/bottom-sheet/ChoiceBottomSheet";
 import useQuestionStore from "../../stores/useQuestionStore";
 import { useNavigation } from "@react-navigation/native";
-import { alertExit } from "../../hooks/useAlert";
 import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import useError from "./hooks";
@@ -44,6 +42,7 @@ import {
   successToast,
 } from "../../components/notifications/ToastNotifications";
 import { AskAiModal } from "../../components/modals/AskAiModal";
+import { AlertModal } from "../../components/modals/AlertModal";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -145,6 +144,7 @@ export const CreateQuestionScreen: FC = () => {
       isSelected: option.value === question?.points,
     })),
   );
+  const [openAlert, setOpenAlert] = useState(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -359,18 +359,12 @@ export const CreateQuestionScreen: FC = () => {
 
     useEffect(() => {
       const backAction = () => {
-        Alert.alert(
-          "Are you sure?",
-          "You will lose all unsaved progress if you exit this screen",
-          [
-            {
-              text: "CANCEL",
-              onPress: () => null,
-              style: "cancel",
-            },
-            { text: "EXIT", onPress: () => goBack() },
-          ],
-        );
+        if (question?.inEdit) {
+          setOpenAlert(true);
+        } else {
+          resetQuestionImage();
+          goBack();
+        }
         return true;
       };
 
@@ -468,11 +462,11 @@ export const CreateQuestionScreen: FC = () => {
     setIsSaved(false);
   };
 
-  const handleGoBack = () => {
-    resetQuestionImage();
+  const handleExitScreen = () => {
     if (question?.inEdit) {
-      alertExit({ handleExit: goBack });
+      setOpenAlert(true);
     } else {
+      resetQuestionImage();
       goBack();
     }
   };
@@ -560,7 +554,7 @@ export const CreateQuestionScreen: FC = () => {
         screenName={"Create Question"}
         optionIcon={<QuestionOptionsDropdown onDelete={handleDelete} />}
         backIcon={<Feather name="x" size={24} color="black" />}
-        handleExit={handleGoBack}
+        handleExit={handleExitScreen}
       />
       <View className="w-[90%] flex-1 self-center">
         <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
@@ -807,6 +801,21 @@ export const CreateQuestionScreen: FC = () => {
             closeBottomSheet={() => bottomSheetRef.current?.close()}
           />
         </BottomSheet>
+
+        <AlertModal
+          isVisible={openAlert}
+          alertTitle={"Are you sure?"}
+          alertDescription={
+            "You will lose all unsaved progress if you exit this screen"
+          }
+          confirmButtonText={"Yes"}
+          isCancelButtonVisible={true}
+          cancelButtonText={"Cancel"}
+          onCancel={() => {
+            setOpenAlert(false);
+          }}
+          onConfirm={goBack}
+        />
       </View>
     </SafeAreaView>
   );

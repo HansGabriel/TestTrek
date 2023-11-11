@@ -11,7 +11,6 @@ import {
   Platform,
   ScrollView,
   BackHandler,
-  Alert,
   Dimensions,
 } from "react-native";
 import TestImagePicker from "../../components/ImagePicker";
@@ -34,6 +33,7 @@ import {
   successToast,
 } from "../../components/notifications/ToastNotifications";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
+import { AlertModal } from "../../components/modals/AlertModal";
 
 export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   route,
@@ -42,6 +42,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   const { collectionId } = route.params;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const { data: collectionData, refetch: refetchCurrentCollection } =
     trpc.collection.getByCollectionId.useQuery({
@@ -77,7 +78,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     control,
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Collections>({
     resolver: zodResolver(collectionsSchema),
     defaultValues: {
@@ -155,43 +156,20 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   }, [errors]);
 
   const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            goBack();
-          },
-        },
-      ],
-    );
+    if (isDirty) {
+      setOpenAlert(true);
+    } else {
+      goBack();
+    }
   };
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert(
-        "Are you sure?",
-        "You will lose all unsaved progress if you exit this screen",
-        [
-          {
-            text: "CANCEL",
-            onPress: () => null,
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: () => {
-              goBack();
-            },
-          },
-        ],
-      );
+      if (isDirty) {
+        setOpenAlert(true);
+      } else {
+        goBack();
+      }
       return true;
     };
 
@@ -201,7 +179,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [isDirty]);
 
   if (!collectionData) {
     return (
@@ -342,6 +320,20 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
         handleConfirmPress={() => {
           setIsSidebarOpen(false);
         }}
+      />
+      <AlertModal
+        isVisible={openAlert}
+        alertTitle={"Are you sure?"}
+        alertDescription={
+          "You will lose all unsaved progress if you exit this screen"
+        }
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenAlert(false);
+        }}
+        onConfirm={goBack}
       />
     </KeyboardAvoidingView>
   );

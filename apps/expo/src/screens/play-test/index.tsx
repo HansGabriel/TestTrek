@@ -5,7 +5,6 @@ import {
   Image,
   ScrollView,
   StatusBar,
-  Alert,
   BackHandler,
   Dimensions,
 } from "react-native";
@@ -42,6 +41,7 @@ import {
   unloadAudio,
 } from "../../services/audioService";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AlertModal } from "../../components/modals/AlertModal";
 
 const choiceStyles: ChoiceStyle[] = [
   {
@@ -117,6 +117,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [points, setPoints] = useState<number>(0);
   const [time, setTime] = useState<number>(0);
   const [isTimerReady, setIsTimerReady] = useState(false);
+  const [openExitAlert, setOpenExitAlert] = useState(false);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
   const { mutate: finishTest, isLoading: isFinished } =
@@ -160,14 +161,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to exit?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel",
-        },
-        { text: "YES", onPress: () => goBack() },
-      ]);
+      setOpenExitAlert(true);
       return true;
     };
 
@@ -202,50 +196,37 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
-    Alert.alert("Confirm", "Are you sure you want to submit your answer?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-      {
-        text: "OK",
-        onPress: () => {
-          if (question.type === "multiple_choice") {
-            const selectedChoice = choices.find(
-              (choice) => choice.id === choiceId,
-            );
-            if (selectedChoice) {
-              if (selectedChoice.isCorrect) {
-                const elapsedTime =
-                  countdownTimerRef.current?.elapsedTime ?? question.time;
-                setPoints((prevPoints) => prevPoints + question.points);
-                setTime((prevTime) => prevTime + elapsedTime);
-                setModalType("correct");
-                if (isEffectsPlaying) {
-                  playEffects({
-                    sound: correctSoundInstance,
-                    music: correctSound,
-                  });
-                }
-              } else {
-                setModalType("incorrect");
-                if (isEffectsPlaying) {
-                  playEffects({ sound: wrongSoundInstance, music: wrongSound });
-                }
-                const errorResult = getErrorMessage("incorrect");
-                setErrorMessage(errorResult);
-              }
-            } else {
-              setModalType("incorrect");
-            }
+    if (question.type === "multiple_choice") {
+      const selectedChoice = choices.find((choice) => choice.id === choiceId);
+      if (selectedChoice) {
+        if (selectedChoice.isCorrect) {
+          const elapsedTime =
+            countdownTimerRef.current?.elapsedTime ?? question.time;
+          setPoints((prevPoints) => prevPoints + question.points);
+          setTime((prevTime) => prevTime + elapsedTime);
+          setModalType("correct");
+          if (isEffectsPlaying) {
+            playEffects({
+              sound: correctSoundInstance,
+              music: correctSound,
+            });
           }
+        } else {
+          setModalType("incorrect");
+          if (isEffectsPlaying) {
+            playEffects({ sound: wrongSoundInstance, music: wrongSound });
+          }
+          const errorResult = getErrorMessage("incorrect");
+          setErrorMessage(errorResult);
+        }
+      } else {
+        setModalType("incorrect");
+      }
+    }
 
-          countdownTimerRef.current?.pauseTimer();
-          showUpperBar();
-          setIsDone(true);
-        },
-      },
-    ]);
+    countdownTimerRef.current?.pauseTimer();
+    showUpperBar();
+    setIsDone(true);
   };
 
   const renderChoice = (choice: ModifiedChoice) => {
@@ -466,6 +447,19 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         barStyle={
           upperBarRef.current?.isVisible ? "light-content" : "dark-content"
         }
+      />
+
+      <AlertModal
+        isVisible={openExitAlert}
+        alertTitle={"Hold on!"}
+        alertDescription={"Are you sure you want to exit?"}
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenExitAlert(false);
+        }}
+        onConfirm={goBack}
       />
     </>
   );

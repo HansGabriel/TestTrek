@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, SafeAreaView, Alert } from "react-native";
-import useGoBack from "../hooks/useGoBack";
+import { View, SafeAreaView } from "react-native";
 import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import useQuestionStore from "../stores/useQuestionStore";
@@ -17,7 +16,6 @@ import {
 type FormProps = Omit<TestInput, "questions">;
 
 export const CreateTestScreen: FC = () => {
-  const goBack = useGoBack();
   const trpcUtils = trpc.useContext();
   const navigation = useNavigation();
   const questions = useQuestionStore((state) => state.questions);
@@ -68,25 +66,6 @@ export const CreateTestScreen: FC = () => {
     );
   };
 
-  const handleExitScreen = () => {
-    Alert.alert(
-      "Are you sure?",
-      "You will lose all unsaved progress if you exit this screen",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            goBack();
-          },
-        },
-      ],
-    );
-  };
-
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {
       resetQuestions();
@@ -103,7 +82,6 @@ export const CreateTestScreen: FC = () => {
           onSubmit={submitTestDetails}
           isCreatingQuiz={isCreatingQuiz}
           isUploading={isUploading}
-          handleExitScreen={handleExitScreen}
         />
       </View>
     </SafeAreaView>

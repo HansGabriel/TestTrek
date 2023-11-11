@@ -1,10 +1,16 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import {
   TestIcon,
   TFIcon,
   ChatIcon,
   CheckboxIcon,
 } from "../../icons/bottom-sheet";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import type { FC } from "react";
 
@@ -17,20 +23,35 @@ const ChoiceBottomSheet: FC<Props> = ({
   goToCreateQuestion,
   closeBottomSheet,
 }) => {
+
   const handleChoicePress = () => {
     goToCreateQuestion();
     closeBottomSheet?.();
   };
   return (
     <View className="flex-1 bg-white pt-2 shadow shadow-black">
-      <View className="flex flex-row items-center justify-center">
-        <Text className="text-center text-2xl font-semibold leading-[38.40px] text-neutral-800">
-          Add Question
-        </Text>
+      <View className="mx-6 my-4 flex flex-row">
+        <View className=" w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
+          <View className="mt-2">
+            <MaterialCommunityIcons
+              name="bell-ring-outline"
+              size={25}
+              color="#7c3aed"
+            />
+          </View>
+          <View className="my-2">
+            <Text className="font-nunito-bold self-center text-center text-lg">
+              Reminder
+            </Text>
+            <Text className="font-nunito-semibold self-center text-center text-sm px-8">
+              Please create at least five (5) questions to save the test!
+            </Text>
+          </View>
+        </View>
       </View>
 
       {/* Horizontal Line */}
-      <View className="my-5 h-[0px] w-[382px] border border-zinc-100 self-center" />
+      <View className="mb-3 h-[0px] w-[382px] self-center border border-zinc-100" />
 
       {/* Cards Choices */}
       <ScrollView showsVerticalScrollIndicator={false}>
