@@ -54,6 +54,7 @@ import {
   successToast,
 } from "../../components/notifications/ToastNotifications";
 import { AlertModal } from "../../components/modals/AlertModal";
+import { type QuestionType } from "../../stores/useQuestionStore";
 
 type FormProps = Omit<TestInput, "questions">;
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
@@ -172,14 +173,14 @@ const CreateTestForm: FC<Props> = ({
     setOpenCreationChoice(false);
   };
 
-  const goToCreateQuestion = () => {
+  const goToCreateQuestion = (questionType: QuestionType) => {
     setOpenCreationChoice(true);
     if (isLastQuestionInEdit()) {
       //create
       setLastIndex();
     } else {
       //edit
-      addEmptyQuestion("multiple_choice");
+      addEmptyQuestion(questionType);
       setLastIndex();
     }
   };

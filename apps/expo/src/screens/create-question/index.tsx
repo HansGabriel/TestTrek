@@ -43,11 +43,25 @@ import {
 } from "../../components/notifications/ToastNotifications";
 import { AskAiModal } from "../../components/modals/AskAiModal";
 import { AlertModal } from "../../components/modals/AlertModal";
+import { mapQuestionType } from "./utils";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
   { type: "multiple_choice" }
 >;
+
+type TrueOrFalseQuestion = Extract<PartialQuestion, { type: "true_or_false" }>;
+type IdentificationQuestion = Extract<
+  PartialQuestion,
+  { type: "identification" }
+>;
+type MultiSelectQuestion = Extract<PartialQuestion, { type: "multi_select" }>;
+
+type ArrayQuestions =
+  | MultipleChoiceQuestion
+  | TrueOrFalseQuestion
+  | MultiSelectQuestion;
+type GeneralQuestion = ArrayQuestions | IdentificationQuestion;
 
 const choiceStyles: ChoiceStyle[] = [
   {
@@ -89,12 +103,17 @@ export const CreateQuestionScreen: FC = () => {
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
   const question = getSelectedQuestion();
+  const questionType = question?.type;
 
   const getSelectedChoices = () => {
     if (!question) {
       return [];
     }
-    if (question.type === "multiple_choice") {
+    if (
+      question.type === "multiple_choice" ||
+      question.type === "true_or_false" ||
+      question.type === "multi_select"
+    ) {
       return question.choices.map((choice, idx) => ({
         id: idx,
         text: choice.text ?? "",
@@ -102,6 +121,7 @@ export const CreateQuestionScreen: FC = () => {
         styles: choiceStyles[idx]!.styles,
       }));
     }
+
     return Array.from({ length: 2 }, (_, idx) => ({
       id: idx,
       text: undefined,
@@ -115,7 +135,11 @@ export const CreateQuestionScreen: FC = () => {
       return [];
     }
 
-    if (question.type === "multiple_choice") {
+    if (
+      question.type === "multiple_choice" ||
+      question.type === "true_or_false" ||
+      question.type === "multi_select"
+    ) {
       return question.choices.map((choice, idx) => ({
         id: idx,
         text: undefined,
@@ -170,6 +194,8 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const goToCreateQuestion = () => {
+    if (!questionType) return;
+    console.log(questionType + " is selected");
     if (isLastQuestionInEdit()) {
       setLastIndex();
       setTimeLimitOptions(TIME_LIMIT_OPTIONS);
@@ -179,7 +205,7 @@ export const CreateQuestionScreen: FC = () => {
       setQuestionImage(undefined);
       navigation.navigate("CreateQuestion");
     } else {
-      addEmptyQuestion("multiple_choice");
+      addEmptyQuestion(questionType);
       setLastIndex();
       setTimeLimitOptions(TIME_LIMIT_OPTIONS);
       setPointOptions(POINT_OPTIONS);
@@ -286,6 +312,7 @@ export const CreateQuestionScreen: FC = () => {
   const selectedImage = getSelectedImage();
 
   const handleSaveQuestion = () => {
+    if (!questionType) return false;
     resetErrors();
     const errors = checkErrors({
       answers: choices,
@@ -297,21 +324,43 @@ export const CreateQuestionScreen: FC = () => {
     if (errors) {
       return errorState;
     }
-    const multipleChoiceQuestion: MultipleChoiceQuestion = {
-      title: questionTitle,
-      choices: choices.map((choice, idx) => ({
-        id: idx.toString(),
-        text: choice.text ?? "",
-        isCorrect: choice.isCorrect,
-      })),
-      image: selectedImage,
-      inEdit: false,
-      type: "multiple_choice",
-      points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
-      time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
-    };
+    let question: GeneralQuestion | undefined = undefined;
+    if (
+      questionType === "multi_select" ||
+      questionType === "multiple_choice" ||
+      questionType === "true_or_false"
+    ) {
+      question = {
+        title: questionTitle,
+        choices: choices.map((choice, idx) => ({
+          id: idx.toString(),
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+        })),
+        image: selectedImage,
+        inEdit: false,
+        type: questionType,
+        points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
+        time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
+      };
+    }
+    if (questionType === "identification") {
+      question = {
+        title: questionTitle,
+        answer: "",
+        possibleAnswers: [],
+        image: selectedImage,
+        inEdit: false,
+        type: questionType,
+        points: pointOptions.find((option) => option.isSelected)?.value ?? 0,
+        time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
+      };
+    }
+
+    if (!question) return false;
+
     resetErrors();
-    editQuestion(selectedIndex!, multipleChoiceQuestion);
+    editQuestion(selectedIndex!, question);
     resetQuestionImage();
     successToast({
       title: "Success",
@@ -434,7 +483,11 @@ export const CreateQuestionScreen: FC = () => {
     setQuestionImage(questions[index]?.image ?? undefined);
     const selectedQuestion = questions[index];
 
-    if (selectedQuestion?.type === "multiple_choice") {
+    if (
+      selectedQuestion?.type === "multiple_choice" ||
+      selectedQuestion?.type === "true_or_false" ||
+      selectedQuestion?.type === "multi_select"
+    ) {
       setQuestionTitle(selectedQuestion.title);
       setChoices(
         selectedQuestion.choices.map((choice, idx) => ({
@@ -479,7 +532,11 @@ export const CreateQuestionScreen: FC = () => {
     setQuestionImage(questions[index]?.image ?? undefined);
     const selectedQuestion = questions[index];
 
-    if (selectedQuestion?.type === "multiple_choice") {
+    if (
+      selectedQuestion?.type === "multiple_choice" ||
+      selectedQuestion?.type === "true_or_false" ||
+      selectedQuestion?.type === "multi_select"
+    ) {
       setQuestionTitle(selectedQuestion.title);
       setChoices(
         selectedQuestion.choices.map((choice, idx) => ({
@@ -506,12 +563,12 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleGenerateQuestion = () => {
-    if (aiQuestion.length <= 0) {
+    if (aiQuestion.length <= 0 || !questionType) {
       setErrorInAIQuestion(true);
     } else {
       generateQuestion({
         message: aiQuestion,
-        questionType: "multipleChoice",
+        questionType: mapQuestionType(questionType),
       });
       setErrorInAIQuestion(false);
     }
@@ -628,16 +685,28 @@ export const CreateQuestionScreen: FC = () => {
             </>
           </View>
 
-          <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-            <View className="space-y-4">
-              <View>{renderChoice(choices[0]!)}</View>
-              <View>{renderChoice(choices[1]!)}</View>
-            </View>
-            <View className="space-y-4">
-              <View>{renderChoice(choices[2]!)}</View>
-              <View>{renderChoice(choices[3]!)}</View>
-            </View>
-          </View>
+          {match(questionType)
+            .with("multiple_choice", () => (
+              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                <View className="space-y-4">
+                  <View>{renderChoice(choices[0]!)}</View>
+                  <View>{renderChoice(choices[1]!)}</View>
+                </View>
+                <View className="space-y-4">
+                  <View>{renderChoice(choices[2]!)}</View>
+                  <View>{renderChoice(choices[3]!)}</View>
+                </View>
+              </View>
+            ))
+            .with("true_or_false", () => (
+              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                <View className="space-y-4">
+                  <View>{renderChoice(choices[0]!)}</View>
+                  <View>{renderChoice(choices[1]!)}</View>
+                </View>
+              </View>
+            ))
+            .run()}
 
           <TouchableOpacity
             className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
