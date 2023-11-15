@@ -8,7 +8,6 @@ import { useRouter } from "./user";
 import { playRouter } from "./play";
 import { gptApiRouter } from "./gptApi";
 import { reviewerRouter } from "./reviewer";
-import { algoliaRouter } from "./algoliaSearch";
 
 export const appRouter = router({
   auth: authRouter,
@@ -20,7 +19,6 @@ export const appRouter = router({
   play: playRouter,
   gptApi: gptApiRouter,
   reviewer: reviewerRouter,
-  algolia: algoliaRouter,
 });
 
 // export type definition of API
