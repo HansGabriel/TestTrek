@@ -25,7 +25,6 @@ export async function getUnsplashImages(
 
   const photos: any[] = query ? data.results : data;
 
-  // Map the Unsplash photo data to the StockImages type
   return photos.map((photo) => ({
     id: photo.id,
     description: photo.description || "No description", // Unsplash photos may not have a description
