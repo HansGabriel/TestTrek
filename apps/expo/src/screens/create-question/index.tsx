@@ -257,6 +257,40 @@ export const CreateQuestionScreen: FC = () => {
               );
             },
           )
+          .with(
+            {
+              type: "trueOrFalse",
+            },
+            (data) => {
+              setQuestionTitle(data.question);
+              setChoices([
+                {
+                  id: 0,
+                  text: "True",
+                  isCorrect: data.answer,
+                  styles: choiceStyles[0]!.styles,
+                },
+                {
+                  id: 1,
+                  text: "False",
+                  isCorrect: !data.answer,
+                  styles: choiceStyles[1]!.styles,
+                },
+              ]);
+              setTimeLimitOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.timeLimit,
+                })),
+              );
+              setPointOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.points,
+                })),
+              );
+            },
+          )
           .run();
 
         setAiQuestion("");
