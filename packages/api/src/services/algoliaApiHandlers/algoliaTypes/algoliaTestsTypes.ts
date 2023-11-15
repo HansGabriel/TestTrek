@@ -24,3 +24,32 @@ export type TestsForAlgolia = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type UsersForAlgolia = {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  imageUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CollectionsForAlgolia = {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  user?: UserSelect;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ReviewersForAlgolia = {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  user?: UserSelect;
+  createdAt: Date;
+  updatedAt: Date;
+};

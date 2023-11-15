@@ -1,4 +1,9 @@
-import { TestsForAlgolia } from "./algoliaTypes/algoliaTestsTypes";
+import {
+  CollectionsForAlgolia,
+  ReviewersForAlgolia,
+  TestsForAlgolia,
+  UsersForAlgolia,
+} from "./algoliaTypes/algoliaTestsTypes";
 import algoliasearch from "algoliasearch";
 
 import "dotenv/config";
@@ -42,4 +47,85 @@ export const addAllTestsToAlgolia = async (
   });
 };
 
-const parseUsersToAlgolia = async () => {};
+const parseUsersToAlgolia = async (data: Promise<UsersForAlgolia[]>) => {
+  const usersAlgoliaRecords = (await data).map(({ id, ...rest }) => ({
+    objectID: id,
+    ...rest,
+  }));
+
+  return usersAlgoliaRecords;
+};
+
+export const addAllUsersToAlgolia = async (
+  queriedUsers: Promise<UsersForAlgolia[]>,
+) => {
+  const data = queriedUsers;
+
+  const usersAlgoliaRecords = parseUsersToAlgolia(data);
+
+  const client = initializeAlgoliaClient();
+  const usersIndex = client.initIndex("users");
+
+  usersIndex.saveObjects(await usersAlgoliaRecords).then(({ objectIDs }) => {
+    console.log(objectIDs);
+    console.log("Users Succesfully Added to Algolia Index");
+  });
+};
+
+const parseCollectionsToAlgolia = async (
+  data: Promise<CollectionsForAlgolia[]>,
+) => {
+  const collectionsAlgoliaRecords = (await data).map(({ id, ...rest }) => ({
+    objectID: id,
+    ...rest,
+  }));
+
+  return collectionsAlgoliaRecords;
+};
+
+export const addAllCollectionsToAlgolia = async (
+  queriedCollections: Promise<CollectionsForAlgolia[]>,
+) => {
+  const data = queriedCollections;
+
+  const collectionsAlgoliaRecords = parseCollectionsToAlgolia(data);
+
+  const client = initializeAlgoliaClient();
+  const collectionsIndex = client.initIndex("collections");
+
+  collectionsIndex
+    .saveObjects(await collectionsAlgoliaRecords)
+    .then(({ objectIDs }) => {
+      console.log(objectIDs);
+      console.log("Collections Succesfully Added to Algolia Index");
+    });
+};
+
+const parseReviewersToAlgolia = async (
+  data: Promise<ReviewersForAlgolia[]>,
+) => {
+  const reviewersAlgoliaRecords = (await data).map(({ id, ...rest }) => ({
+    objectID: id,
+    ...rest,
+  }));
+
+  return reviewersAlgoliaRecords;
+};
+
+export const addAllReviewersToAlgolia = async (
+  queriedReviewers: Promise<ReviewersForAlgolia[]>,
+) => {
+  const data = queriedReviewers;
+
+  const reviewersAlgoliaRecords = parseReviewersToAlgolia(data);
+
+  const client = initializeAlgoliaClient();
+  const reviewersIndex = client.initIndex("reviewers");
+
+  reviewersIndex
+    .saveObjects(await reviewersAlgoliaRecords)
+    .then(({ objectIDs }) => {
+      console.log(objectIDs);
+      console.log("Reviewers Succesfully Added to Algolia Index");
+    });
+};
