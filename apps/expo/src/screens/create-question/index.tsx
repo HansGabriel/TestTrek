@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
@@ -12,11 +13,9 @@ import {
   Switch,
   Image,
   StyleSheet,
-  BackHandler,
   Dimensions,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
-import CheckboxIcon from "../../icons/CheckboxIcon";
 import TestImagePicker from "../../components/ImagePicker";
 import OptionModal from "../../components/modals/OptionModal";
 import { TIME_LIMIT_OPTIONS, POINT_OPTIONS } from "./constants";
@@ -30,11 +29,13 @@ import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import useError from "./hooks";
 import useToggleImageStore from "../../stores/useToggleImageStore";
-import { isEqual } from "lodash";
 
 import type { FC } from "react";
 import type { Choice, Option, ChoiceStyle } from "./types";
-import type { PartialQuestion } from "../../stores/useQuestionStore";
+import type {
+  PartialQuestion,
+  QuestionType,
+} from "../../stores/useQuestionStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
 import {
@@ -44,6 +45,11 @@ import {
 import { AskAiModal } from "../../components/modals/AskAiModal";
 import { AlertModal } from "../../components/modals/AlertModal";
 import { mapQuestionType } from "./utils";
+import {
+  MultipleChoiceCard,
+  TrueOrFalseCard,
+  type MultipleChoiceCardProps,
+} from "./ChoiceCard";
 
 type MultipleChoiceQuestion = Extract<
   PartialQuestion,
@@ -96,6 +102,9 @@ export const CreateQuestionScreen: FC = () => {
   const setQuestionImage = useImageStore((state) => state.setQuestionImage);
   const resetQuestionImage = useImageStore((state) => state.resetQuestionImage);
   const deleteQuestion = useQuestionStore((state) => state.deleteQuestion);
+  const deleteLastQuestion = useQuestionStore(
+    (state) => state.deleteLastQuestion,
+  );
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
   );
@@ -181,7 +190,7 @@ export const CreateQuestionScreen: FC = () => {
   );
   const [aiQuestion, setAiQuestion] = useState<string>("");
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
-  const [choices, setChoices] = useState<Choice[]>(getSelectedChoices());
+  const [choices, setChoices] = useState<Choice[]>([]);
 
   const { height, width } = Dimensions.get("window");
 
@@ -193,10 +202,10 @@ export const CreateQuestionScreen: FC = () => {
     bottomSheetRef.current?.expand();
   };
 
-  const goToCreateQuestion = () => {
-    if (!questionType) return;
-    console.log(questionType + " is selected");
+  const goToCreateQuestion = (selectedQuestionType: QuestionType) => {
     if (isLastQuestionInEdit()) {
+      deleteLastQuestion();
+      addEmptyQuestion(selectedQuestionType);
       setLastIndex();
       setTimeLimitOptions(TIME_LIMIT_OPTIONS);
       setPointOptions(POINT_OPTIONS);
@@ -205,7 +214,7 @@ export const CreateQuestionScreen: FC = () => {
       setQuestionImage(undefined);
       navigation.navigate("CreateQuestion");
     } else {
-      addEmptyQuestion(questionType);
+      addEmptyQuestion(selectedQuestionType);
       setLastIndex();
       setTimeLimitOptions(TIME_LIMIT_OPTIONS);
       setPointOptions(POINT_OPTIONS);
@@ -395,86 +404,29 @@ export const CreateQuestionScreen: FC = () => {
     }
   }, [errorState]);
 
+  useEffect(() => {
+    const selectedChoices = getSelectedChoices();
+    setChoices(selectedChoices);
+  }, [question]);
+
   const renderChoice = (choice: Choice) => {
-    const getTextSize = (text: string) => {
-      if (text.length <= 10) {
-        return "text-base";
-      } else if (text.length <= 18) {
-        return "text-sm";
-      } else {
-        return "text-xs";
-      }
+    const props = {
+      choice,
+      choices,
+      errorState,
+      getSelectedChoices,
+      goBack,
+      handleOpenModal,
+      isSaved,
+      pointOptions,
+      question,
+      questionTitle,
+      resetQuestionImage,
+      setIsSaved,
+      setOpenAlert,
+      timeLimitOptions,
     };
-
-    useEffect(() => {
-      const backAction = () => {
-        if (question?.inEdit) {
-          setOpenAlert(true);
-        } else {
-          resetQuestionImage();
-          goBack();
-        }
-        return true;
-      };
-
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        backAction,
-      );
-
-      return () => backHandler.remove();
-    }, []);
-
-    useEffect(() => {
-      if (!isSaved) {
-        const isTitleSame = question?.title === questionTitle;
-        const isTimeLimitSame =
-          question?.time ===
-          timeLimitOptions.filter(
-            (timeLimitOption) => timeLimitOption.isSelected,
-          )[0]?.value;
-        const isPointSame =
-          question?.points ===
-          pointOptions.filter((pointOption) => pointOption.isSelected)[0]
-            ?.value;
-        const isChoicesSame = isEqual(choices, getSelectedChoices());
-        const isTheSameValues =
-          isTitleSame && isTimeLimitSame && isPointSame && isChoicesSame;
-
-        setIsSaved(isTheSameValues ? false : true);
-      }
-    }, [questionTitle, timeLimitOptions, pointOptions, choices]);
-
-    return (
-      <TouchableOpacity
-        key={choice.id}
-        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
-          choice.styles
-        } ${
-          errorState.choicesError[choice.id]?.length !== undefined
-            ? "border-2 border-red-500"
-            : ""
-        } p-5`}
-        onPress={handleOpenModal(choice.id)}
-      >
-        <>
-          {choice.isCorrect && (
-            <View className="absolute right-2 top-2 h-5 w-5">
-              <CheckboxIcon />
-            </View>
-          )}
-          <View className="h-full w-full items-center justify-center">
-            <Text
-              className={`self-center text-center ${getTextSize(
-                choice.text ? choice.text : "Add answer",
-              )} font-bold text-white`}
-            >
-              {choice.text ? choice.text : "Add answer"}
-            </Text>
-          </View>
-        </>
-      </TouchableOpacity>
-    );
+    return <MultipleChoiceCard {...props} />;
   };
 
   const handleClickQuestion = (index: number) => () => {
@@ -594,11 +546,6 @@ export const CreateQuestionScreen: FC = () => {
     [choices, selectedQuestionId],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const hasOneCorrectAnswer = useMemo(
-    () => choices.filter((choice) => choice.isCorrect).length >= 1,
-    [choices],
-  );
   return (
     <SafeAreaView
       className="flex-1"
@@ -699,6 +646,26 @@ export const CreateQuestionScreen: FC = () => {
               </View>
             ))
             .with("true_or_false", () => (
+              <TrueOrFalseCards
+                {...{
+                  choices,
+                  setChoices,
+                  errorState,
+                  getSelectedChoices,
+                  goBack,
+                  handleOpenModal,
+                  isSaved,
+                  pointOptions,
+                  question,
+                  questionTitle,
+                  resetQuestionImage,
+                  setIsSaved,
+                  setOpenAlert,
+                  timeLimitOptions,
+                }}
+              />
+            ))
+            .with("identification", () => (
               <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
                 <View className="space-y-4">
                   <View>{renderChoice(choices[0]!)}</View>
@@ -706,7 +673,24 @@ export const CreateQuestionScreen: FC = () => {
                 </View>
               </View>
             ))
-            .run()}
+            .with("enumeration", () => (
+              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                <View className="space-y-4">
+                  <View>{renderChoice(choices[0]!)}</View>
+                  <View>{renderChoice(choices[1]!)}</View>
+                </View>
+              </View>
+            ))
+            .with("multi_select", () => (
+              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                <View className="space-y-4">
+                  <View>{renderChoice(choices[0]!)}</View>
+                  <View>{renderChoice(choices[1]!)}</View>
+                </View>
+              </View>
+            ))
+            .with(undefined, () => <></>)
+            .exhaustive()}
 
           <TouchableOpacity
             className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
@@ -887,6 +871,61 @@ export const CreateQuestionScreen: FC = () => {
         />
       </View>
     </SafeAreaView>
+  );
+};
+
+interface TrueOrFalseCardsProps
+  extends Omit<MultipleChoiceCardProps, "choice"> {
+  setChoices: React.Dispatch<React.SetStateAction<Choice[]>>;
+}
+
+const TrueOrFalseCards = ({
+  choices,
+  setChoices,
+  ...props
+}: TrueOrFalseCardsProps) => {
+  const toggleChoiceCorrect = (index: number) => () => {
+    setChoices((prev) =>
+      prev.map((choice) => {
+        if (choice.id === index) {
+          return { ...choice, isCorrect: !choice.isCorrect };
+        }
+        if (choice.isCorrect) {
+          return { ...choice, isCorrect: false };
+        }
+        return choice;
+      }),
+    );
+  };
+
+  const firstChoice = choices[0];
+  const secondChoice = choices[1];
+
+  if (!firstChoice || !secondChoice) {
+    return <></>;
+  }
+
+  return (
+    <View className="mt-5 flex flex-row items-center space-x-4 self-center">
+      <View>
+        <TrueOrFalseCard
+          {...props}
+          choices={choices}
+          choice={firstChoice}
+          isSelected={firstChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(0)}
+        />
+      </View>
+      <View>
+        <TrueOrFalseCard
+          {...props}
+          choices={choices}
+          choice={secondChoice}
+          isSelected={secondChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(1)}
+        />
+      </View>
+    </View>
   );
 };
 
