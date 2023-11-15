@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { View, Text, TouchableOpacity, BackHandler } from "react-native";
 import CheckboxIcon from "../../icons/CheckboxIcon";
+import useImageStore from "../../stores/useImageStore";
 import { isEqual } from "lodash";
 
 import type { FC } from "react";
@@ -43,6 +44,8 @@ export const MultipleChoiceCard: FC<MultipleChoiceCardProps> = ({
   errorState,
   getSelectedChoices,
 }) => {
+  const questionImage = useImageStore((state) => state.questionImage);
+
   const getTextSize = (text: string) => {
     if (text.length <= 10) {
       return "text-base";
@@ -74,6 +77,7 @@ export const MultipleChoiceCard: FC<MultipleChoiceCardProps> = ({
 
   useEffect(() => {
     if (!isSaved) {
+      const isImageSame = question?.image === questionImage;
       const isTitleSame = question?.title === questionTitle;
       const isTimeLimitSame =
         question?.time ===
@@ -85,11 +89,15 @@ export const MultipleChoiceCard: FC<MultipleChoiceCardProps> = ({
         pointOptions.filter((pointOption) => pointOption.isSelected)[0]?.value;
       const isChoicesSame = isEqual(choices, getSelectedChoices());
       const isTheSameValues =
-        isTitleSame && isTimeLimitSame && isPointSame && isChoicesSame;
+        isImageSame &&
+        isTitleSame &&
+        isTimeLimitSame &&
+        isPointSame &&
+        isChoicesSame;
 
       setIsSaved(isTheSameValues ? false : true);
     }
-  }, [questionTitle, timeLimitOptions, pointOptions, choices]);
+  }, [questionImage, questionTitle, timeLimitOptions, pointOptions, choices]);
 
   if (!choice) {
     return <></>;
@@ -151,6 +159,8 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
   isSelected,
   onPressCard,
 }) => {
+  const questionImage = useImageStore((state) => state.questionImage);
+
   useEffect(() => {
     const backAction = () => {
       if (question?.inEdit) {
@@ -172,6 +182,7 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
 
   useEffect(() => {
     if (!isSaved) {
+      const isImageSame = question?.image === questionImage;
       const isTitleSame = question?.title === questionTitle;
       const isTimeLimitSame =
         question?.time ===
@@ -183,11 +194,15 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
         pointOptions.filter((pointOption) => pointOption.isSelected)[0]?.value;
       const isChoicesSame = isEqual(choices, getSelectedChoices());
       const isTheSameValues =
-        isTitleSame && isTimeLimitSame && isPointSame && isChoicesSame;
+        isImageSame &&
+        isTitleSame &&
+        isTimeLimitSame &&
+        isPointSame &&
+        isChoicesSame;
 
       setIsSaved(isTheSameValues ? false : true);
     }
-  }, [questionTitle, timeLimitOptions, pointOptions, choices]);
+  }, [questionImage, questionTitle, timeLimitOptions, pointOptions, choices]);
 
   const choiceText = choice?.text;
 
