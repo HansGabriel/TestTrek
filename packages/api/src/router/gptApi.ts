@@ -12,6 +12,7 @@ import { questionSchema, questionsSchema } from "@acme/schema/src/question";
 import {
   generateQuestionPrompt,
   parseMultipleChoiceQuestions,
+  parseTrueOrFalseQuestions,
 } from "../functions/testCreationHandlers";
 import {
   multipleQuestionsPromptInput,
@@ -85,6 +86,9 @@ export const gptApiRouter = router({
       switch (questionType) {
         case "multipleChoice":
           answer = parseMultipleChoiceQuestions(generatedMessage);
+          break;
+        case "trueOrFalse":
+          answer = parseTrueOrFalseQuestions(generatedMessage);
           break;
         //Handle other question types soon
         default:

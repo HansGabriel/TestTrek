@@ -44,7 +44,7 @@ import {
 } from "../../components/notifications/ToastNotifications";
 import { AskAiModal } from "../../components/modals/AskAiModal";
 import { AlertModal } from "../../components/modals/AlertModal";
-import { mapQuestionType } from "./utils";
+import { mapQuestionType } from "../../utils/helpers/strings";
 import {
   MultipleChoiceCard,
   TrueOrFalseCard,
