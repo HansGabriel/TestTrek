@@ -41,8 +41,7 @@ export const addAllTestsToAlgolia = async (
   const client = initializeAlgoliaClient();
   const testsIndex = client.initIndex("tests");
 
-  testsIndex.saveObjects(await testsAlgoliaRecords).then(({ objectIDs }) => {
-    console.log(objectIDs);
+  testsIndex.saveObjects(await testsAlgoliaRecords).then(() => {
     console.log("Tests Succesfully Added to Algolia Index");
   });
 };
@@ -66,8 +65,7 @@ export const addAllUsersToAlgolia = async (
   const client = initializeAlgoliaClient();
   const usersIndex = client.initIndex("users");
 
-  usersIndex.saveObjects(await usersAlgoliaRecords).then(({ objectIDs }) => {
-    console.log(objectIDs);
+  usersIndex.saveObjects(await usersAlgoliaRecords).then(() => {
     console.log("Users Succesfully Added to Algolia Index");
   });
 };
@@ -93,12 +91,9 @@ export const addAllCollectionsToAlgolia = async (
   const client = initializeAlgoliaClient();
   const collectionsIndex = client.initIndex("collections");
 
-  collectionsIndex
-    .saveObjects(await collectionsAlgoliaRecords)
-    .then(({ objectIDs }) => {
-      console.log(objectIDs);
-      console.log("Collections Succesfully Added to Algolia Index");
-    });
+  collectionsIndex.saveObjects(await collectionsAlgoliaRecords).then(() => {
+    console.log("Collections Succesfully Added to Algolia Index");
+  });
 };
 
 const parseReviewersToAlgolia = async (
@@ -122,10 +117,7 @@ export const addAllReviewersToAlgolia = async (
   const client = initializeAlgoliaClient();
   const reviewersIndex = client.initIndex("reviewers");
 
-  reviewersIndex
-    .saveObjects(await reviewersAlgoliaRecords)
-    .then(({ objectIDs }) => {
-      console.log(objectIDs);
-      console.log("Reviewers Succesfully Added to Algolia Index");
-    });
+  reviewersIndex.saveObjects(await reviewersAlgoliaRecords).then(() => {
+    console.log("Reviewers Succesfully Added to Algolia Index");
+  });
 };

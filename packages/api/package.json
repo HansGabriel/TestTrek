@@ -8,7 +8,8 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "algolia-generate": "ts-node src/services/algoliaApiHandlers/algoliaInitialize.ts"
   },
   "dependencies": {
     "@acme/db": "*",
@@ -20,6 +21,7 @@
     "p-map": "^6.0.0",
     "shutterstock-api": "^1.1.35",
     "superjson": "^1.9.1",
+    "ts-node": "^10.9.1",
     "unsplash-js": "^7.0.18",
     "zod": "^3.18.0"
   },

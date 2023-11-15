@@ -1,4 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src", "index.ts", "transformer.ts", "globals.d.ts"]
+  "include": ["src", "index.ts", "transformer.ts", "globals.d.ts"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
 }
