@@ -44,6 +44,7 @@ type CheckErrorsProps = {
   timeLimits: Option[];
   points: Option[];
   answers: Choice[];
+  isMultiSelect?: boolean;
 };
 
 const initialState: ErrorState = {
@@ -123,7 +124,6 @@ const useError = () => {
   };
 
   const checkChoiceError = (index: number, choice: string) => {
-    console.log(choice.length);
     if (choice === "") {
       dispatch({
         type: "SET_CHOICES_ERROR",
@@ -169,8 +169,18 @@ const useError = () => {
     return hasError;
   };
 
-  const checkAnswerError = (answers: Choice[]) => {
+  const checkAnswerError = (answers: Choice[], isMultiSelect = false) => {
     const correctCount = answers.filter((answer) => answer.isCorrect).length;
+    if (isMultiSelect) {
+      if (correctCount === 0) {
+        dispatch({
+          type: "SET_ANSWER_ERROR",
+          payload: "At least one answer must be correct",
+        });
+        return true;
+      }
+      return false;
+    }
     if (correctCount !== 1) {
       dispatch({
         type: "SET_ANSWER_ERROR",
@@ -187,13 +197,15 @@ const useError = () => {
     timeLimits,
     points,
     answers,
+    isMultiSelect = false,
   }: CheckErrorsProps) => {
     let hasError = false;
     hasError = checkTitleError(title) || hasError;
     hasError = checkChoicesError(choices) || hasError;
     hasError = checkTimeLimitError(timeLimits) || hasError;
     hasError = checkPointsError(points) || hasError;
-    hasError = checkAnswerError(answers) || hasError;
+    hasError = checkAnswerError(answers, isMultiSelect) || hasError;
+
     return hasError;
   };
 

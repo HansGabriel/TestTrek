@@ -237,3 +237,247 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
     </TouchableOpacity>
   );
 };
+
+interface MultiSelectCardProps extends MultipleChoiceCardProps {
+  onPressCard: () => void;
+  isSelected: boolean;
+}
+
+export const MultiSelectCard: FC<MultiSelectCardProps> = ({
+  choice,
+  question,
+  setOpenAlert,
+  resetQuestionImage,
+  goBack,
+  isSaved,
+  questionTitle,
+  timeLimitOptions,
+  pointOptions,
+  setIsSaved,
+  handleOpenModal,
+  choices,
+  errorState,
+  getSelectedChoices,
+}) => {
+  const questionImage = useImageStore((state) => state.questionImage);
+
+  const getTextSize = (text: string) => {
+    if (text.length <= 10) {
+      return "text-base";
+    } else if (text.length <= 18) {
+      return "text-sm";
+    } else {
+      return "text-xs";
+    }
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (question?.inEdit) {
+        setOpenAlert(true);
+      } else {
+        resetQuestionImage();
+        goBack();
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
+    if (!isSaved) {
+      const isImageSame = question?.image === questionImage;
+      const isTitleSame = question?.title === questionTitle;
+      const isTimeLimitSame =
+        question?.time ===
+        timeLimitOptions.filter(
+          (timeLimitOption) => timeLimitOption.isSelected,
+        )[0]?.value;
+      const isPointSame =
+        question?.points ===
+        pointOptions.filter((pointOption) => pointOption.isSelected)[0]?.value;
+      const isChoicesSame = isEqual(choices, getSelectedChoices());
+      const isTheSameValues =
+        isImageSame &&
+        isTitleSame &&
+        isTimeLimitSame &&
+        isPointSame &&
+        isChoicesSame;
+
+      setIsSaved(isTheSameValues ? false : true);
+    }
+  }, [questionImage, questionTitle, timeLimitOptions, pointOptions, choices]);
+
+  if (!choice) {
+    return <></>;
+  }
+
+  return (
+    <>
+      <TouchableOpacity
+        key={choice.id}
+        className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
+          choice.styles
+        } ${
+          errorState.choicesError[choice.id]?.length !== undefined
+            ? "border-2 border-red-500"
+            : ""
+        } p-5`}
+        onPress={handleOpenModal(choice.id)}
+      >
+        <>
+          {choice.isCorrect && (
+            <View className="absolute right-4 top-[20px] h-5 w-5">
+              <CheckboxIcon />
+            </View>
+          )}
+          <View className="h-full w-full items-center justify-center">
+            <Text
+              className={`self-center text-center ${getTextSize(
+                choice.text ? choice.text : "Add answer",
+              )} font-bold text-white`}
+            >
+              {choice.text ? choice.text : "Add answer"}
+            </Text>
+          </View>
+        </>
+      </TouchableOpacity>
+    </>
+  );
+};
+
+interface TrueOrFalseCardsProps
+  extends Omit<MultipleChoiceCardProps, "choice"> {
+  setChoices: React.Dispatch<React.SetStateAction<Choice[]>>;
+}
+
+export const TrueOrFalseCards = ({
+  choices,
+  setChoices,
+  ...props
+}: TrueOrFalseCardsProps) => {
+  const toggleChoiceCorrect = (index: number) => () => {
+    setChoices((prev) =>
+      prev.map((choice) => {
+        if (choice.id === index) {
+          return { ...choice, isCorrect: !choice.isCorrect };
+        }
+        if (choice.isCorrect) {
+          return { ...choice, isCorrect: false };
+        }
+        return choice;
+      }),
+    );
+  };
+
+  const firstChoice = choices[0];
+  const secondChoice = choices[1];
+
+  if (!firstChoice || !secondChoice) {
+    return <></>;
+  }
+
+  return (
+    <View className="mt-5 flex flex-row items-center space-x-4 self-center">
+      <View>
+        <TrueOrFalseCard
+          {...props}
+          choices={choices}
+          choice={firstChoice}
+          isSelected={firstChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(0)}
+        />
+      </View>
+      <View>
+        <TrueOrFalseCard
+          {...props}
+          choices={choices}
+          choice={secondChoice}
+          isSelected={secondChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(1)}
+        />
+      </View>
+    </View>
+  );
+};
+
+interface MultiSelectCardsProps
+  extends Omit<MultipleChoiceCardProps, "choice"> {
+  setChoices: React.Dispatch<React.SetStateAction<Choice[]>>;
+}
+
+export const MultiSelectCards = ({
+  choices,
+  setChoices,
+  ...props
+}: MultiSelectCardsProps) => {
+  const toggleChoiceCorrect = (index: number) => () => {
+    setChoices((prev) =>
+      prev.map((choice) => {
+        if (choice.id === index) {
+          return { ...choice, isCorrect: !choice.isCorrect };
+        }
+        if (choice.isCorrect) {
+          return { ...choice, isCorrect: false };
+        }
+        return choice;
+      }),
+    );
+  };
+
+  const firstChoice = choices[0];
+  const secondChoice = choices[1];
+  const thirdChoice = choices[2];
+  const fourthChoice = choices[3];
+
+  if (!firstChoice || !secondChoice || !thirdChoice || !fourthChoice) {
+    return <></>;
+  }
+
+  return (
+    <View className="mt-5 flex w-full flex-col items-center space-y-2 self-center">
+      <View>
+        <MultiSelectCard
+          {...props}
+          choices={choices}
+          choice={firstChoice}
+          isSelected={firstChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(0)}
+        />
+      </View>
+      <View>
+        <MultiSelectCard
+          {...props}
+          choices={choices}
+          choice={secondChoice}
+          isSelected={secondChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(1)}
+        />
+      </View>
+      <View>
+        <MultiSelectCard
+          {...props}
+          choices={choices}
+          choice={thirdChoice}
+          isSelected={secondChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(1)}
+        />
+      </View>
+      <View>
+        <MultiSelectCard
+          {...props}
+          choices={choices}
+          choice={fourthChoice}
+          isSelected={secondChoice.isCorrect}
+          onPressCard={toggleChoiceCorrect(1)}
+        />
+      </View>
+    </View>
+  );
+};

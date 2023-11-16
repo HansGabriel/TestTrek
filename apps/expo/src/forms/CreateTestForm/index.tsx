@@ -312,6 +312,16 @@ const CreateTestForm: FC<Props> = ({
                     points: question.points,
                   };
                 }
+                if (question.type === "multiselect") {
+                  return {
+                    type: "multi_select",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 if (question.type === "trueOrFalse") {
                   return {
                     type: "true_or_false",
