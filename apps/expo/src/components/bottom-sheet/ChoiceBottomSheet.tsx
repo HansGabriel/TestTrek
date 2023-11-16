@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import {
   TestIcon,
   TFIcon,
@@ -13,9 +8,10 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import type { FC } from "react";
+import type { QuestionType } from "../../stores/useQuestionStore";
 
 interface Props {
-  goToCreateQuestion: () => void;
+  goToCreateQuestion: (questionType: QuestionType) => void;
   closeBottomSheet?: () => void;
 }
 
@@ -23,11 +19,11 @@ const ChoiceBottomSheet: FC<Props> = ({
   goToCreateQuestion,
   closeBottomSheet,
 }) => {
-
-  const handleChoicePress = () => {
-    goToCreateQuestion();
+  const handleChoicePress = (questionType: QuestionType) => () => {
+    goToCreateQuestion(questionType);
     closeBottomSheet?.();
   };
+
   return (
     <View className="flex-1 bg-white pt-2 shadow shadow-black">
       <View className="mx-6 my-4 flex flex-row">
@@ -43,7 +39,7 @@ const ChoiceBottomSheet: FC<Props> = ({
             <Text className="font-nunito-bold self-center text-center text-lg">
               Reminder
             </Text>
-            <Text className="font-nunito-semibold self-center text-center text-sm px-8">
+            <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
               Please create at least five (5) questions to save the test!
             </Text>
           </View>
@@ -58,7 +54,7 @@ const ChoiceBottomSheet: FC<Props> = ({
         <View className="flex flex-col items-center">
           <View className="mx-6 flex flex-row">
             <TouchableOpacity
-              onPress={handleChoicePress}
+              onPress={handleChoicePress("multiple_choice")}
               className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"
             >
               <View className="h-10 w-10 items-center justify-center px-[7px] py-1">
@@ -68,7 +64,10 @@ const ChoiceBottomSheet: FC<Props> = ({
                 Multiple Choice
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
+            <TouchableOpacity
+              onPress={handleChoicePress("true_or_false")}
+              className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"
+            >
               <View className="h-10 w-10 items-center justify-center px-[7px] py-1">
                 <TFIcon />
               </View>

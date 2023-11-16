@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { createContextInner } from "../../context";
 import { PrismaClient, Prisma } from "@acme/db";
 import { SignedInAuthObject, SignedOutAuthObject } from "@clerk/backend";

@@ -27,7 +27,6 @@ export const imageRouter = router({
     .query(async ({ input }) => {
       const { query } = input;
       const unsplashImages = await getUnsplashImages(query);
-      console.log(unsplashImages);
       return unsplashImages;
     }),
 });
