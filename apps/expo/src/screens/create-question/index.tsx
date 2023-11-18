@@ -47,8 +47,8 @@ import { AlertModal } from "../../components/modals/AlertModal";
 import { mapQuestionType } from "../../utils/helpers/strings";
 import {
   MultipleChoiceCard,
-  TrueOrFalseCard,
-  type MultipleChoiceCardProps,
+  TrueOrFalseCards,
+  MultiSelectCards,
 } from "./ChoiceCard";
 
 type MultipleChoiceQuestion = Extract<
@@ -291,6 +291,34 @@ export const CreateQuestionScreen: FC = () => {
               );
             },
           )
+          .with(
+            {
+              type: "multiselect",
+            },
+            (data) => {
+              setQuestionTitle(data.question);
+              setChoices(
+                data.choices.map((choice, idx) => ({
+                  id: idx,
+                  text: choice.text ?? "",
+                  isCorrect: choice.isCorrect,
+                  styles: choiceStyles[idx]!.styles,
+                })),
+              );
+              setTimeLimitOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.timeLimit,
+                })),
+              );
+              setPointOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.points,
+                })),
+              );
+            },
+          )
           .run();
 
         setAiQuestion("");
@@ -325,13 +353,13 @@ export const CreateQuestionScreen: FC = () => {
     );
   };
 
-  const toggleChoiceCorrect = (index: number) => () => {
+  const toggleChoiceCorrect = (index: number, isMultiple = false) => {
     setChoices((prev) =>
       prev.map((choice) => {
         if (choice.id === index) {
           return { ...choice, isCorrect: !choice.isCorrect };
         }
-        if (choice.isCorrect) {
+        if (!isMultiple && choice.isCorrect) {
           return { ...choice, isCorrect: false };
         }
         return choice;
@@ -363,6 +391,7 @@ export const CreateQuestionScreen: FC = () => {
       points: pointOptions,
       timeLimits: timeLimitOptions,
       title: questionTitle,
+      isMultiSelect: questionType === "multi_select",
     });
     if (errors) {
       return errorState;
@@ -433,6 +462,14 @@ export const CreateQuestionScreen: FC = () => {
         errorToast({
           title: "Missing field",
           message: "Points cannot be empty",
+        });
+      } else if (
+        errorState.answerError !== null &&
+        questionType !== "multi_select"
+      ) {
+        errorToast({
+          title: "Missing field",
+          message: "Please select a correct answer",
         });
       }
     }
@@ -562,10 +599,11 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleSaveAnswer = (callback?: () => void) => () => {
     const isValidInput = handleSaveQuestion();
-    if (isValidInput) {
+    if (typeof isValidInput === "boolean" && isValidInput) {
       callback?.();
     } else {
-      const answerError = checkAnswerError(choices);
+      const isMultiSelect = questionType === "multi_select";
+      const answerError = checkAnswerError(choices, isMultiSelect);
       if (answerError) {
         errorToast({
           title: "No correct answer",
@@ -716,12 +754,24 @@ export const CreateQuestionScreen: FC = () => {
               </View>
             ))
             .with("multi_select", () => (
-              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-                <View className="space-y-4">
-                  <View>{renderChoice(choices[0]!)}</View>
-                  <View>{renderChoice(choices[1]!)}</View>
-                </View>
-              </View>
+              <MultiSelectCards
+                {...{
+                  choices,
+                  setChoices,
+                  errorState,
+                  getSelectedChoices,
+                  goBack,
+                  handleOpenModal,
+                  isSaved,
+                  pointOptions,
+                  question,
+                  questionTitle,
+                  resetQuestionImage,
+                  setIsSaved,
+                  setOpenAlert,
+                  timeLimitOptions,
+                }}
+              />
             ))
             .with(undefined, () => <></>)
             .exhaustive()}
@@ -785,7 +835,15 @@ export const CreateQuestionScreen: FC = () => {
                       </Text>
                       <Switch
                         value={selectedChoice?.isCorrect}
-                        onValueChange={toggleChoiceCorrect(selectedQuestionId)}
+                        onValueChange={() => {
+                          if (questionType === "multiple_choice") {
+                            toggleChoiceCorrect(selectedQuestionId);
+                          }
+                          if (questionType === "multi_select") {
+                            const isMultiple = true;
+                            toggleChoiceCorrect(selectedQuestionId, isMultiple);
+                          }
+                        }}
                         trackColor={{ true: "#10049FF" }}
                       />
                     </View>
@@ -905,61 +963,6 @@ export const CreateQuestionScreen: FC = () => {
         />
       </View>
     </SafeAreaView>
-  );
-};
-
-interface TrueOrFalseCardsProps
-  extends Omit<MultipleChoiceCardProps, "choice"> {
-  setChoices: React.Dispatch<React.SetStateAction<Choice[]>>;
-}
-
-const TrueOrFalseCards = ({
-  choices,
-  setChoices,
-  ...props
-}: TrueOrFalseCardsProps) => {
-  const toggleChoiceCorrect = (index: number) => () => {
-    setChoices((prev) =>
-      prev.map((choice) => {
-        if (choice.id === index) {
-          return { ...choice, isCorrect: !choice.isCorrect };
-        }
-        if (choice.isCorrect) {
-          return { ...choice, isCorrect: false };
-        }
-        return choice;
-      }),
-    );
-  };
-
-  const firstChoice = choices[0];
-  const secondChoice = choices[1];
-
-  if (!firstChoice || !secondChoice) {
-    return <></>;
-  }
-
-  return (
-    <View className="mt-5 flex flex-row items-center space-x-4 self-center">
-      <View>
-        <TrueOrFalseCard
-          {...props}
-          choices={choices}
-          choice={firstChoice}
-          isSelected={firstChoice.isCorrect}
-          onPressCard={toggleChoiceCorrect(0)}
-        />
-      </View>
-      <View>
-        <TrueOrFalseCard
-          {...props}
-          choices={choices}
-          choice={secondChoice}
-          isSelected={secondChoice.isCorrect}
-          onPressCard={toggleChoiceCorrect(1)}
-        />
-      </View>
-    </View>
   );
 };
 
