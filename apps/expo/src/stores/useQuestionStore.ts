@@ -70,13 +70,13 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
             choices: [
               {
                 id: "1",
-                isCorrect: false,
-                text: "",
+                isCorrect: true,
+                text: "True",
               },
               {
                 id: "2",
                 isCorrect: false,
-                text: "",
+                text: "False",
               },
             ],
             inEdit: true,

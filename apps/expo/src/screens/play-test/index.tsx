@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   View,
   Text,
@@ -67,6 +68,15 @@ const getSelectedChoices = (question: Question) => {
     return [];
   }
   if (question.type === "multiple_choice") {
+    return question.choices.map((choice, idx) => ({
+      id: idx,
+      text: choice.text ?? "",
+      isCorrect: choice.isCorrect,
+      styles: choiceStyles[idx]?.styles ?? "",
+      isSelected: false,
+    }));
+  }
+  if (question.type === "true_or_false") {
     return question.choices.map((choice, idx) => ({
       id: idx,
       text: choice.text ?? "",
@@ -196,7 +206,10 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
-    if (question.type === "multiple_choice") {
+    if (
+      question.type === "multiple_choice" ||
+      question.type === "true_or_false"
+    ) {
       const selectedChoice = choices.find((choice) => choice.id === choiceId);
       if (selectedChoice) {
         if (selectedChoice.isCorrect) {
@@ -392,16 +405,39 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               </Text>
             </View>
 
-            <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-              <View className="space-y-4">
-                <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
-                <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
-              </View>
-              <View className="space-y-4">
-                <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
-                <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
-              </View>
-            </View>
+            {match(question?.type)
+              .with("multiple_choice", () => (
+                <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                  <View className="space-y-4">
+                    <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
+                    <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
+                  </View>
+                  <View className="space-y-4">
+                    <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
+                    <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
+                  </View>
+                </View>
+              ))
+              .with("true_or_false", () => (
+                <View className="mt-14 flex flex-row items-center space-x-8 self-center">
+                  <View>
+                    <TrueOrFalseCard
+                      choice={choices[0]}
+                      isDone={isDone}
+                      handlePressChoice={handlePressChoice}
+                    />
+                  </View>
+                  <View>
+                    <TrueOrFalseCard
+                      choice={choices[1]}
+                      isDone={isDone}
+                      handlePressChoice={handlePressChoice}
+                    />
+                  </View>
+                </View>
+              ))
+              .with(undefined, () => <></>)
+              .run()}
 
             {isDone && (
               <>
@@ -462,5 +498,59 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         onConfirm={goBack}
       />
     </>
+  );
+};
+
+const TrueOrFalseCard = ({
+  choice,
+  isDone,
+  handlePressChoice,
+}: {
+  choice: ModifiedChoice | undefined;
+  isDone: boolean;
+  handlePressChoice: (choiceId: number) => () => void;
+}) => {
+  if (!choice) {
+    return <></>;
+  }
+
+  const getTextSize = (text: string) => {
+    if (text.length <= 10) {
+      return "text-base";
+    } else if (text.length <= 18) {
+      return "text-sm";
+    } else {
+      return "text-xs";
+    }
+  };
+
+  const doneStyle = choice.isCorrect
+    ? "border-emerald-600 bg-emerald-500"
+    : "border-rose-500 bg-rose-600";
+
+  return (
+    <TouchableOpacity
+      key={choice.id}
+      disabled={isDone}
+      className={`flex h-[260px] w-40 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
+        isDone ? doneStyle : choice.styles
+      } p-5`}
+      onPress={handlePressChoice(choice.id)}
+    >
+      {isDone ? (
+        <View className="absolute right-2 top-2 h-5 w-5">
+          {choice.isCorrect ? <CheckboxIcon /> : <CloseSquareIcon />}
+        </View>
+      ) : null}
+      <View className="h-full w-full items-center justify-center">
+        <Text
+          className={`self-center text-center ${getTextSize(
+            choice.text || "",
+          )} font-bold text-white`}
+        >
+          {choice.text}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };

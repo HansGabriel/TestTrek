@@ -1,6 +1,8 @@
 import {
   MultipleChoicePrompt,
+  TrueOrFalsePrompt,
   parseMultipleChoiceResponse,
+  parseTrueOrFalseResponse,
   promptGenerators,
 } from "./gptHandlers";
 
@@ -46,6 +48,17 @@ export const parseMultipleChoiceQuestions = (
     .filter((segment) => segment.trim().length > 0)
     .map((segment) => {
       return parseMultipleChoiceResponse(segment.trim());
+    });
+};
+
+export const parseTrueOrFalseQuestions = (
+  generatedMessage: string,
+): TrueOrFalsePrompt[] => {
+  return generatedMessage
+    .split(/(?=Question:)/)
+    .filter((segment) => segment.trim().length > 0)
+    .map((segment) => {
+      return parseTrueOrFalseResponse(segment.trim());
     });
 };
 

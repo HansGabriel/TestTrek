@@ -56,6 +56,15 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
                   image: question.image,
                   inEdit: false,
                 }))
+                .with("true_or_false", (questionType) => ({
+                  type: questionType,
+                  choices: question.choices,
+                  points: question.points,
+                  time: question.time,
+                  title: question.title,
+                  image: question.image,
+                  inEdit: false,
+                }))
                 .run(),
             ),
           );
@@ -126,48 +135,6 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
       },
     );
   };
-
-  // const handleExitScreen = () => {
-  //   Alert.alert(
-  //     "Are you sure?",
-  //     "You will lose all unsaved progress if you exit this screen",
-  //     [
-  //       {
-  //         text: "Cancel",
-  //         style: "cancel",
-  //       },
-  //       {
-  //         text: "OK",
-  //         onPress: () => {
-  //           goBack();
-  //         },
-  //       },
-  //     ],
-  //   );
-  // };
-
-  // const handleDeleteTest = () => {
-  //   Alert.alert(
-  //     "Are you sure?",
-  //     "You will lose all unsaved progress if you exit this screen",
-  //     [
-  //       {
-  //         text: "Cancel",
-  //         style: "cancel",
-  //       },
-  //       {
-  //         text: "OK",
-  //         onPress: () => {
-  //           deleteTest({ testId });
-  //         },
-  //       },
-  //     ],
-  //   );
-  // };
-
-  // const handleOnSave = () => {
-  //   console.log("save");
-  // };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", () => {

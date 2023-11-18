@@ -3,7 +3,7 @@ import { useReducer } from "react";
 import type { Option, Choice } from "./types";
 import type { Reducer } from "react";
 
-type ErrorState = {
+export type ErrorState = {
   titleError: string | null;
   choicesError: (string | undefined)[];
   timeLimitError: string | null;

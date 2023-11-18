@@ -53,7 +53,9 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
+import { mapQuestionType } from "../../utils/helpers/strings";
 import { AlertModal } from "../../components/modals/AlertModal";
+import { type QuestionType } from "../../stores/useQuestionStore";
 
 type FormProps = Omit<TestInput, "questions">;
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
@@ -77,6 +79,8 @@ const CreateTestForm: FC<Props> = ({
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
+  const [selectedQuestionType, setSelectedQuestionType] =
+    useState<QuestionType | null>(null);
   const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -172,14 +176,15 @@ const CreateTestForm: FC<Props> = ({
     setOpenCreationChoice(false);
   };
 
-  const goToCreateQuestion = () => {
+  const goToCreateQuestion = (questionType: QuestionType) => {
     setOpenCreationChoice(true);
+    setSelectedQuestionType(questionType);
     if (isLastQuestionInEdit()) {
       //create
       setLastIndex();
     } else {
       //edit
-      addEmptyQuestion("multiple_choice");
+      addEmptyQuestion(questionType);
       setLastIndex();
     }
   };
@@ -277,13 +282,19 @@ const CreateTestForm: FC<Props> = ({
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
 
+    if (selectedQuestionType === null) {
+      return;
+    }
+
+    const mappedQuestionType = mapQuestionType(selectedQuestionType);
+
     if (inputMessage.length <= 0) {
       setErrorInAIQuestion(true);
     } else {
       generateMultipleQuestions(
         {
           message: inputMessage,
-          questionType: "multipleChoice",
+          questionType: mappedQuestionType,
           numOfQuestions: numOfQuestions,
           numOfChoicesPerQuestion: 4,
         },
@@ -301,6 +312,25 @@ const CreateTestForm: FC<Props> = ({
                     points: question.points,
                   };
                 }
+                if (question.type === "trueOrFalse") {
+                  return {
+                    type: "true_or_false",
+                    choices: [
+                      {
+                        text: "True",
+                        isCorrect: question.answer,
+                      },
+                      {
+                        text: "False",
+                        isCorrect: !question.answer,
+                      },
+                    ],
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
                   choices: [],
@@ -310,7 +340,7 @@ const CreateTestForm: FC<Props> = ({
               }),
             );
             removeBlankQuestions();
-            addEmptyQuestion("multiple_choice");
+            addEmptyQuestion(selectedQuestionType);
             setLastIndex();
             setErrorInAIQuestion(false);
             setShowNumberOfQuestionsModal(false);
