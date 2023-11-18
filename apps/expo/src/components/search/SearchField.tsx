@@ -1,10 +1,12 @@
-import React, { FC } from "react";
-
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { SearchBar } from "@rneui/themed";
 import SearchIcon from "../../icons/SearchIcon";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
+import { SearchContent } from "./SearchContent";
+import { trpc } from "../../utils/trpc";
+import { debounce } from "lodash";
 
 interface FieldProps {
   searchString: string;
@@ -24,15 +26,38 @@ export const SearchField: FC<FieldProps> = ({
   const fieldBgColor = clicked ? "rgb(237 233 254)" : "lightgray";
   const fieldBorderColor = clicked ? "rgba(105, 73, 255, 1)" : "lightgray";
 
+  const [debouncedQuery, setDebouncedQuery] = useState(searchString);
+
+  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(
+    [
+      { indexName: "tests", query: debouncedQuery },
+      { indexName: "users", query: debouncedQuery },
+      { indexName: "collections", query: debouncedQuery },
+      { indexName: "reviewers", query: debouncedQuery },
+    ],
+    {
+      enabled: debouncedQuery.length > 0,
+    },
+  );
+
+  const debouncedOnChange = useCallback(
+    debounce((query: string) => setDebouncedQuery(query), 500),
+    [],
+  );
+
+  useEffect(() => {
+    debouncedOnChange(searchString);
+  }, [searchString, debouncedOnChange]);
+
   return (
     <View className="flex-1">
       <Animated.View
         entering={SlideInRight}
         exiting={SlideOutRight}
-        className=" w-80 flex-row self-center"
+        className="w-[90%] flex-row self-center"
       >
         <TouchableOpacity
-          className="mr-3 w-[10%] items-center justify-center"
+          className="mr-1 w-[10%] items-center justify-center"
           onPress={onClose}
         >
           <LeftArrowIcon />
@@ -42,7 +67,7 @@ export const SearchField: FC<FieldProps> = ({
           onFocus={setClicked}
           onChangeText={onChange}
           value={searchString}
-          placeholder={"Search tests or collections"}
+          placeholder={"Search"}
           lightTheme={true}
           containerStyle={{
             backgroundColor: "transparent",
@@ -50,7 +75,7 @@ export const SearchField: FC<FieldProps> = ({
             borderTopColor: "transparent",
             borderLeftColor: "transparent",
             borderRightColor: "transparent",
-            width: "90%",
+            width: "80%", // Adjusted width
             borderWidth: 0,
             padding: 0,
             flex: 1,
@@ -75,14 +100,19 @@ export const SearchField: FC<FieldProps> = ({
         />
       </Animated.View>
       {/* Don't remove this. This is for displaying search contents */}
-      
-      {/* {clicked ? (
+
+      {clicked ? (
         <View className="z-50 flex-1">
-          <SearchContent query={searchString} />
+          <SearchContent
+            query={searchString}
+            results={
+              hits || { tests: [], users: [], collections: [], reviewers: [] }
+            }
+          />
         </View>
       ) : (
         ""
-      )} */}
+      )}
     </View>
   );
 };
