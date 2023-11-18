@@ -89,17 +89,15 @@ model ReviewerOnTest {
 }
 
 model Question {
-    id              String       @id @default(cuid())
-    testId          String
-    title           String
-    image           String?
-    time            Int
-    points          Int
-    type            QuestionType
-    test            Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
-    choices         Choice[]
-    answer          String?
-    possibleAnswers String[]
+    id      String       @id @default(cuid())
+    testId  String
+    title   String
+    image   String?
+    time    Int
+    points  Int
+    type    QuestionType
+    test    Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+    choices Choice[]
 }
 
 model Choice {

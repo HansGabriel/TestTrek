@@ -419,8 +419,11 @@ export const CreateQuestionScreen: FC = () => {
     if (questionType === "identification") {
       question = {
         title: questionTitle,
-        answer: "",
-        possibleAnswers: [],
+        choices: choices.map((choice, idx) => ({
+          id: idx.toString(),
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+        })),
         image: selectedImage,
         inEdit: false,
         type: questionType,
