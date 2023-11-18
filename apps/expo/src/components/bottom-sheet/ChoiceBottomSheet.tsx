@@ -78,7 +78,10 @@ const ChoiceBottomSheet: FC<Props> = ({
           </View>
 
           <View className="mx-6 flex flex-row">
-            <TouchableOpacity className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
+            <TouchableOpacity
+              onPress={handleChoicePress("multi_select")}
+              className="m-1 flex basis-1/2 flex-col items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4"
+            >
               <View className="h-10 w-10 items-center justify-center px-[7px] py-1">
                 <CheckboxIcon />
               </View>
