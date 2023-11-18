@@ -65,6 +65,15 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
                   image: question.image,
                   inEdit: false,
                 }))
+                .with("multi_select", (questionType) => ({
+                  type: questionType,
+                  choices: question.choices,
+                  points: question.points,
+                  time: question.time,
+                  title: question.title,
+                  image: question.image,
+                  inEdit: false,
+                }))
                 .run(),
             ),
           );

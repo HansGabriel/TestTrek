@@ -14,7 +14,6 @@ import CheckboxIcon from "../../icons/CheckboxIcon";
 import CloseSquareIcon from "../../icons/CloseSquareIcon";
 import { trpc } from "../../utils/trpc";
 import { AppButton } from "../../components/buttons/AppButton";
-import { RouterOutputs } from "../../utils/trpc";
 import CountdownTimer, { type CountdownTimerRef } from "./CountdownTimer";
 import UpperBar, { type UpperBarRef } from "./UpperBar";
 import { match } from "ts-pattern";
@@ -26,10 +25,15 @@ import {
   DEFAULT_ERROR_MESSAGE,
   type ErrorMessage,
 } from "./hooks";
+import {
+  MultiSelectCards,
+  TrueOrFalseCard,
+  getSelectedChoices,
+} from "./TestCard";
 
 import type { FC } from "react";
 import type { RootStackScreenProps } from "../../types";
-import type { ChoiceStyle } from "../create-question/types";
+import type { ModifiedChoice, ModifiedChoices } from "./TestCard";
 
 import correctSound from "../../../assets/sounds/correct.mp3";
 import wrongSound from "../../../assets/sounds/wrong.mp3";
@@ -44,58 +48,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertModal } from "../../components/modals/AlertModal";
 
-const choiceStyles: ChoiceStyle[] = [
-  {
-    styles: "border-blue-700 bg-blue-500",
-  },
-  {
-    styles: "border-rose-500 bg-rose-600",
-  },
-  {
-    styles: "border-orange-500 bg-amber-500",
-  },
-  {
-    styles: "border-emerald-600 bg-emerald-500",
-  },
-];
-
-type Question = NonNullable<
-  RouterOutputs["play"]["getTest"]
->["test"]["questions"][number];
-
-const getSelectedChoices = (question: Question) => {
-  if (!question) {
-    return [];
-  }
-  if (question.type === "multiple_choice") {
-    return question.choices.map((choice, idx) => ({
-      id: idx,
-      text: choice.text ?? "",
-      isCorrect: choice.isCorrect,
-      styles: choiceStyles[idx]?.styles ?? "",
-      isSelected: false,
-    }));
-  }
-  if (question.type === "true_or_false") {
-    return question.choices.map((choice, idx) => ({
-      id: idx,
-      text: choice.text ?? "",
-      isCorrect: choice.isCorrect,
-      styles: choiceStyles[idx]?.styles ?? "",
-      isSelected: false,
-    }));
-  }
-  return Array.from({ length: 2 }, (_, idx) => ({
-    id: idx,
-    text: undefined,
-    isCorrect: false,
-    styles: choiceStyles[idx]?.styles ?? "",
-    isSelected: false,
-  }));
-};
-
-type ModifiedChoices = ReturnType<typeof getSelectedChoices>;
-type ModifiedChoice = ModifiedChoices[number];
+export type ChoiceStatus = [boolean, boolean, boolean, boolean];
 
 export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   route,
@@ -128,6 +81,12 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [time, setTime] = useState<number>(0);
   const [isTimerReady, setIsTimerReady] = useState(false);
   const [openExitAlert, setOpenExitAlert] = useState(false);
+  const [choiceStatus, setChoiceStatus] = useState<ChoiceStatus>([
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
   const { mutate: finishTest, isLoading: isFinished } =
@@ -242,6 +201,44 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     setIsDone(true);
   };
 
+  const handleMultiSelectSubmit = () => {
+    if (!question) {
+      return;
+    }
+
+    if (question.type === "multi_select") {
+      const allCorrect = choices.every(
+        (choice) => choiceStatus[choice.id] === choice.isCorrect,
+      );
+      if (allCorrect) {
+        const elapsedTime =
+          countdownTimerRef.current?.elapsedTime ?? question.time;
+        setPoints((prevPoints) => prevPoints + question.points);
+        setTime((prevTime) => prevTime + elapsedTime);
+        setModalType("correct");
+        if (isEffectsPlaying) {
+          playEffects({
+            sound: correctSoundInstance,
+            music: correctSound,
+          });
+        }
+      } else {
+        setModalType("incorrect");
+        if (isEffectsPlaying) {
+          playEffects({ sound: wrongSoundInstance, music: wrongSound });
+        }
+        const errorResult = getErrorMessage("incorrect");
+        setErrorMessage(errorResult);
+      }
+    } else {
+      setModalType("incorrect");
+    }
+
+    countdownTimerRef.current?.pauseTimer();
+    showUpperBar();
+    setIsDone(true);
+  };
+
   const renderChoice = (choice: ModifiedChoice) => {
     const getTextSize = (text: string) => {
       if (text.length <= 10) {
@@ -314,7 +311,10 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
-    if (question.type === "multiple_choice") {
+    if (
+      question.type === "multiple_choice" ||
+      question.type === "true_or_false"
+    ) {
       const selectedChoice = choices.find((choice) => choice.isSelected);
       if (selectedChoice) {
         if (selectedChoice.isCorrect) {
@@ -342,6 +342,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         const errorResult = getErrorMessage("times-up");
         setErrorMessage(errorResult);
       }
+    }
+
+    if (question.type === "multi_select") {
     }
 
     showUpperBar();
@@ -396,9 +399,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               </View>
             )}
             <View
-              className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
-         
-        `}
+              className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8`}
             >
               <Text className="self-stretch text-center text-xl font-bold leading-loose text-black">
                 {questions[index]?.title}
@@ -435,6 +436,17 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                     />
                   </View>
                 </View>
+              ))
+              .with("multi_select", () => (
+                <>
+                  <MultiSelectCards
+                    choiceStatus={choiceStatus}
+                    setChoiceStatus={setChoiceStatus}
+                    choices={choices}
+                    isDone={isDone}
+                    handleMultiSelectSubmit={handleMultiSelectSubmit}
+                  />
+                </>
               ))
               .with(undefined, () => <></>)
               .run()}
@@ -498,59 +510,5 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         onConfirm={goBack}
       />
     </>
-  );
-};
-
-const TrueOrFalseCard = ({
-  choice,
-  isDone,
-  handlePressChoice,
-}: {
-  choice: ModifiedChoice | undefined;
-  isDone: boolean;
-  handlePressChoice: (choiceId: number) => () => void;
-}) => {
-  if (!choice) {
-    return <></>;
-  }
-
-  const getTextSize = (text: string) => {
-    if (text.length <= 10) {
-      return "text-base";
-    } else if (text.length <= 18) {
-      return "text-sm";
-    } else {
-      return "text-xs";
-    }
-  };
-
-  const doneStyle = choice.isCorrect
-    ? "border-emerald-600 bg-emerald-500"
-    : "border-rose-500 bg-rose-600";
-
-  return (
-    <TouchableOpacity
-      key={choice.id}
-      disabled={isDone}
-      className={`flex h-[260px] w-40 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
-        isDone ? doneStyle : choice.styles
-      } p-5`}
-      onPress={handlePressChoice(choice.id)}
-    >
-      {isDone ? (
-        <View className="absolute right-2 top-2 h-5 w-5">
-          {choice.isCorrect ? <CheckboxIcon /> : <CloseSquareIcon />}
-        </View>
-      ) : null}
-      <View className="h-full w-full items-center justify-center">
-        <Text
-          className={`self-center text-center ${getTextSize(
-            choice.text || "",
-          )} font-bold text-white`}
-        >
-          {choice.text}
-        </Text>
-      </View>
-    </TouchableOpacity>
   );
 };
