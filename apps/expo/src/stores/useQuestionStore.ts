@@ -111,8 +111,7 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
           .with("identification", () => ({
             title: "",
             type: "identification",
-            answer: "",
-            possibleAnswers: [],
+            choices: [],
             inEdit: true,
           }))
           .with("enumeration", () => ({
@@ -175,8 +174,7 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
         } else if (question.type === "identification") {
           return (
             question.title !== "" &&
-            question.answer !== "" &&
-            question.possibleAnswers.every((answer) => answer !== "")
+            question.choices.every((choice) => choice.text !== "")
           );
         } else if (question.type === "enumeration") {
           return (
