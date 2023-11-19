@@ -37,7 +37,12 @@ export const questionSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     question: z.string(),
-    answer: z.string(),
+    choices: z.array(
+      z.object({
+        isCorrect: z.boolean(),
+        text: z.string(),
+      }),
+    ),
     type: z.literal("identification"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,

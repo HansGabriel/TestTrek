@@ -25,7 +25,6 @@ export const testRouter = router({
         },
         questions: {
           select: {
-            answer: true,
             choices: {
               select: {
                 id: true,
@@ -36,7 +35,6 @@ export const testRouter = router({
             id: true,
             image: true,
             points: true,
-            possibleAnswers: true,
             time: true,
             title: true,
             type: true,
@@ -165,7 +163,6 @@ export const testRouter = router({
           updatedAt: true,
           questions: {
             select: {
-              answer: true,
               choices: {
                 select: {
                   id: true,
@@ -176,7 +173,6 @@ export const testRouter = router({
               id: true,
               image: true,
               points: true,
-              possibleAnswers: true,
               time: true,
               title: true,
               type: true,
@@ -250,9 +246,17 @@ export const testRouter = router({
 
         const identificationQuestionInput: QuestionCreateInput = {
           ...baseQuestionInput,
-          answer: type === "identification" ? question.answer : undefined,
-          possibleAnswers:
-            type === "identification" ? question.possibleAnswers : undefined,
+          choices:
+            type === "identification"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
         };
 
         const enumerationQuestionInput: QuestionCreateInput = {
@@ -386,9 +390,17 @@ export const testRouter = router({
 
         const identificationQuestionInput: QuestionCreateInput = {
           ...baseQuestionInput,
-          answer: type === "identification" ? question.answer : undefined,
-          possibleAnswers:
-            type === "identification" ? question.possibleAnswers : undefined,
+          choices:
+            type === "identification"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
         };
 
         const enumerationQuestionInput: QuestionCreateInput = {
