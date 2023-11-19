@@ -145,7 +145,7 @@ export const IdentificationCard = ({
       {isDone && (
         <>
           <Text className="font-nunito-extrabold my-3 text-center text-2xl leading-[38.40px] text-neutral-800">
-            Another correct answer:
+            Correct Answers:
           </Text>
           <View className="mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2">
             {choices?.map((choice) => (
