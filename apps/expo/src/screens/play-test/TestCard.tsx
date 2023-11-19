@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import CloseSquareIcon from "../../icons/CloseSquareIcon";
 import { RouterOutputs } from "../../utils/trpc";
@@ -113,6 +114,70 @@ export const TrueOrFalseCard = ({
         </Text>
       </View>
     </TouchableOpacity>
+  );
+};
+
+export const IdentificationCard = ({
+  choices,
+  isDone,
+  handleSubmit,
+}: {
+  choices: ModifiedChoice[] | undefined;
+  isDone: boolean;
+  handleSubmit: (answer: string) => void;
+}) => {
+  const [answer, setAnswer] = useState<string>("");
+
+  return (
+    <>
+      <TextInput
+        multiline={true}
+        maxLength={100}
+        className="mx-5 mt-5 h-[30%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
+        selectionColor="white"
+        value={answer}
+        onChangeText={setAnswer}
+        placeholder="Tap to write an answer"
+        placeholderTextColor="#FFFFFF"
+        editable={!isDone}
+      />
+
+      {isDone && (
+        <>
+          <Text className="font-nunito-extrabold my-3 text-center text-2xl leading-[38.40px] text-neutral-800">
+            Another correct answer:
+          </Text>
+          <View className="mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2">
+            {choices?.map((choice) => (
+              <View
+                key={choice.id}
+                className={`inline-flex h-[70px] w-[150px] flex-col items-center justify-center rounded-2xl border-b-4 ${choice.styles}`}
+              >
+                <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
+                  {choice.text}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </>
+      )}
+
+      {!isDone && answer.length > 0 && (
+        <AppButton
+          onPress={() => handleSubmit(answer)}
+          text="Submit"
+          classNameValue="my-10"
+          buttonColor="violet-600"
+          borderShadowColor="indigo-800"
+          borderRadius="full"
+          fontStyle="bold"
+          textColor="white"
+          TOwidth="full"
+          Vwidth="full"
+          isLoading={false}
+        />
+      )}
+    </>
   );
 };
 

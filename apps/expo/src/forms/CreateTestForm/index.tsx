@@ -341,6 +341,16 @@ const CreateTestForm: FC<Props> = ({
                     points: question.points,
                   };
                 }
+                if (question.type === "identification") {
+                  return {
+                    type: "identification",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
                   choices: [],

@@ -27,6 +27,10 @@ interface QuestionStore {
   resetQuestions: () => void;
   deleteLastQuestion: () => void;
   removeBlankQuestions: () => void;
+  addChoiceToQuestion: () => void;
+  getChoicesFromQuestion: () => PartialQuestion["choices"] | undefined;
+  deleteChoiceFromQuestion: (choiceIndex: number) => void;
+  // editChoiceFromQuestion: (choiceIndex: number, text: string) => void;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -184,6 +188,46 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
         }
       }),
     })),
+  addChoiceToQuestion: () => {
+    const { selectedIndex, getSelectedQuestion, editQuestion } = get();
+    const selectedQuestion = getSelectedQuestion();
+
+    if (selectedQuestion && selectedIndex !== undefined) {
+      const newChoices = [...selectedQuestion.choices];
+      if (newChoices.length >= 4) return;
+      newChoices.push({
+        isCorrect: true,
+        text: "",
+      });
+      const newQuestion = {
+        ...selectedQuestion,
+        choices: newChoices,
+      };
+      editQuestion(selectedIndex, newQuestion);
+    }
+  },
+  getChoicesFromQuestion: () => {
+    const { selectedIndex, getSelectedQuestion } = get();
+    const selectedQuestion = getSelectedQuestion();
+
+    if (selectedQuestion && selectedIndex !== undefined) {
+      return selectedQuestion.choices;
+    }
+  },
+  deleteChoiceFromQuestion: (choiceIndex) => {
+    const { selectedIndex, getSelectedQuestion, editQuestion } = get();
+    const selectedQuestion = getSelectedQuestion();
+
+    if (selectedQuestion && selectedIndex !== undefined) {
+      const newChoices = [...selectedQuestion.choices];
+      newChoices.splice(choiceIndex, 1);
+      const newQuestion = {
+        ...selectedQuestion,
+        choices: newChoices,
+      };
+      editQuestion(selectedIndex, newQuestion);
+    }
+  },
 }));
 
 export default useQuestionStore;
