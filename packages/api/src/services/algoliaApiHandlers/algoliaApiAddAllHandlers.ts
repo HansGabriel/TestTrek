@@ -8,7 +8,7 @@ import algoliasearch from "algoliasearch";
 
 import "dotenv/config";
 
-const initializeAlgoliaClient = () => {
+export const initializeAlgoliaClient = () => {
   const applicationId = process.env.ALGOLIA_APP_ID;
   const adminKey = process.env.ALGOLIA_ADMIN_KEY;
 
