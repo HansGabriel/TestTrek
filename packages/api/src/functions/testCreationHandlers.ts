@@ -1,7 +1,11 @@
 import {
   MultipleChoicePrompt,
+  MultiselectPrompt,
+  IdentificationPrompt,
   TrueOrFalsePrompt,
   parseMultipleChoiceResponse,
+  parseMultiselectResponse,
+  parseIdentificationResponse,
   parseTrueOrFalseResponse,
   promptGenerators,
 } from "./gptHandlers";
@@ -51,6 +55,28 @@ export const parseMultipleChoiceQuestions = (
     });
 };
 
+export const parseMultiselectQuestions = (
+  generatedMessage: string,
+): MultiselectPrompt[] => {
+  return generatedMessage
+    .split(/(?=Question:)/)
+    .filter((segment) => segment.trim().length > 0)
+    .map((segment) => {
+      return parseMultiselectResponse(segment.trim());
+    });
+};
+
+export const parseIdentificationQuestions = (
+  generatedMessage: string,
+): IdentificationPrompt[] => {
+  return generatedMessage
+    .split(/(?=Question:)/)
+    .filter((segment) => segment.trim().length > 0)
+    .map((segment) => {
+      return parseIdentificationResponse(segment.trim());
+    });
+};
+
 export const parseTrueOrFalseQuestions = (
   generatedMessage: string,
 ): TrueOrFalsePrompt[] => {
@@ -61,5 +87,3 @@ export const parseTrueOrFalseQuestions = (
       return parseTrueOrFalseResponse(segment.trim());
     });
 };
-
-//Handle other question types soon

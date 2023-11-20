@@ -6,6 +6,10 @@ import { TRPCError } from "@trpc/server";
 
 import { Prisma } from "@acme/db";
 import type { PlayersHighscore } from "@acme/schema/src/types";
+import {
+  deleteTestFromAlgolia,
+  updateTestInAlgolia,
+} from "../services/algoliaApiHandlers/algoliaTestCudHandlers";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -25,7 +29,6 @@ export const testRouter = router({
         },
         questions: {
           select: {
-            answer: true,
             choices: {
               select: {
                 id: true,
@@ -36,7 +39,6 @@ export const testRouter = router({
             id: true,
             image: true,
             points: true,
-            possibleAnswers: true,
             time: true,
             title: true,
             type: true,
@@ -165,7 +167,6 @@ export const testRouter = router({
           updatedAt: true,
           questions: {
             select: {
-              answer: true,
               choices: {
                 select: {
                   id: true,
@@ -176,7 +177,6 @@ export const testRouter = router({
               id: true,
               image: true,
               points: true,
-              possibleAnswers: true,
               time: true,
               title: true,
               type: true,
@@ -250,9 +250,17 @@ export const testRouter = router({
 
         const identificationQuestionInput: QuestionCreateInput = {
           ...baseQuestionInput,
-          answer: type === "identification" ? question.answer : undefined,
-          possibleAnswers:
-            type === "identification" ? question.possibleAnswers : undefined,
+          choices:
+            type === "identification"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
         };
 
         const enumerationQuestionInput: QuestionCreateInput = {
@@ -293,6 +301,25 @@ export const testRouter = router({
       });
 
       await ctx.prisma.$transaction(questionTransactions);
+
+      if (test.visibility == "public") {
+        const testForAlgolia = {
+          id: test.id,
+          title: test.title,
+          description: test.description,
+          imageUrl: test.imageUrl,
+          keywords: keywords.map((keyword) => ({ name: keyword })),
+          visibility: test.visibility,
+          createdAt: test.createdAt,
+          updatedAt: test.updatedAt,
+        };
+
+        try {
+          await updateTestInAlgolia(testForAlgolia);
+        } catch (error) {
+          console.error(`Error updating test in Algolia: ${error}`);
+        }
+      }
 
       return test;
     }),
@@ -386,9 +413,17 @@ export const testRouter = router({
 
         const identificationQuestionInput: QuestionCreateInput = {
           ...baseQuestionInput,
-          answer: type === "identification" ? question.answer : undefined,
-          possibleAnswers:
-            type === "identification" ? question.possibleAnswers : undefined,
+          choices:
+            type === "identification"
+              ? {
+                  createMany: {
+                    data: question.choices.map((choice) => ({
+                      isCorrect: choice.isCorrect,
+                      text: choice.text,
+                    })),
+                  },
+                }
+              : undefined,
         };
 
         const enumerationQuestionInput: QuestionCreateInput = {
@@ -435,6 +470,25 @@ export const testRouter = router({
       });
 
       await ctx.prisma.$transaction(questionTransactions);
+
+      if (test.visibility == "public") {
+        const testForAlgolia = {
+          id: test.id,
+          title: test.title,
+          description: test.description,
+          imageUrl: test.imageUrl,
+          keywords: keywords.map((keyword) => ({ name: keyword })),
+          visibility: test.visibility,
+          createdAt: test.createdAt,
+          updatedAt: test.updatedAt,
+        };
+
+        try {
+          await updateTestInAlgolia(testForAlgolia);
+        } catch (error) {
+          console.error(`Error updating test in Algolia: ${error}`);
+        }
+      }
 
       return test;
     }),
@@ -645,6 +699,13 @@ export const testRouter = router({
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { testId } = input;
+
+      try {
+        await deleteTestFromAlgolia(testId);
+        console.log(`Test ${testId} deleted from Algolia`);
+      } catch (error) {
+        console.error(`Error deleting test from Algolia: ${error}`);
+      }
 
       return ctx.prisma.test.delete({
         where: {

@@ -75,7 +75,6 @@ export const collectionRouter = router({
                   },
                   questions: {
                     select: {
-                      answer: true,
                       choices: {
                         select: {
                           id: true,
@@ -86,7 +85,6 @@ export const collectionRouter = router({
                       id: true,
                       image: true,
                       points: true,
-                      possibleAnswers: true,
                       time: true,
                       title: true,
                       type: true,
@@ -154,7 +152,6 @@ export const collectionRouter = router({
                   },
                   questions: {
                     select: {
-                      answer: true,
                       choices: {
                         select: {
                           id: true,
@@ -165,7 +162,6 @@ export const collectionRouter = router({
                       id: true,
                       image: true,
                       points: true,
-                      possibleAnswers: true,
                       time: true,
                       title: true,
                       type: true,
@@ -219,7 +215,6 @@ export const collectionRouter = router({
                   },
                   questions: {
                     select: {
-                      answer: true,
                       choices: {
                         select: {
                           id: true,
@@ -230,7 +225,6 @@ export const collectionRouter = router({
                       id: true,
                       image: true,
                       points: true,
-                      possibleAnswers: true,
                       time: true,
                       title: true,
                       type: true,
@@ -298,7 +292,6 @@ export const collectionRouter = router({
               },
               questions: {
                 select: {
-                  answer: true,
                   choices: {
                     select: {
                       id: true,
@@ -309,7 +302,6 @@ export const collectionRouter = router({
                   id: true,
                   image: true,
                   points: true,
-                  possibleAnswers: true,
                   time: true,
                   title: true,
                   type: true,

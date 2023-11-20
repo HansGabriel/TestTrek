@@ -42,8 +42,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
     type: z.literal("identification"),
-    answer: z.string().min(1).max(100),
-    possibleAnswers: z.array(z.string().min(1).max(100)),
+    choices: z.array(choiceSchema),
   }),
   z.object({
     title: z.string().min(1).max(150),
