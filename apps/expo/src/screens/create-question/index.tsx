@@ -29,9 +29,10 @@ import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import useError from "./hooks";
 import useToggleImageStore from "../../stores/useToggleImageStore";
+import { choiceStyles } from "./constants";
 
 import type { FC } from "react";
-import type { Choice, Option, ChoiceStyle } from "./types";
+import type { Choice, Option } from "./types";
 import type {
   PartialQuestion,
   QuestionType,
@@ -49,6 +50,7 @@ import {
   MultipleChoiceCard,
   TrueOrFalseCards,
   MultiSelectCards,
+  IdentificationCards,
 } from "./ChoiceCard";
 
 type MultipleChoiceQuestion = Extract<
@@ -68,21 +70,6 @@ type ArrayQuestions =
   | TrueOrFalseQuestion
   | MultiSelectQuestion;
 type GeneralQuestion = ArrayQuestions | IdentificationQuestion;
-
-const choiceStyles: ChoiceStyle[] = [
-  {
-    styles: "border-blue-700 bg-blue-500",
-  },
-  {
-    styles: "border-rose-500 bg-rose-600",
-  },
-  {
-    styles: "border-orange-500 bg-amber-500",
-  },
-  {
-    styles: "border-emerald-600 bg-emerald-500",
-  },
-];
 
 export const CreateQuestionScreen: FC = () => {
   const goBack = useGoBack();
@@ -121,7 +108,8 @@ export const CreateQuestionScreen: FC = () => {
     if (
       question.type === "multiple_choice" ||
       question.type === "true_or_false" ||
-      question.type === "multi_select"
+      question.type === "multi_select" ||
+      question.type === "identification"
     ) {
       return question.choices.map((choice, idx) => ({
         id: idx,
@@ -147,12 +135,13 @@ export const CreateQuestionScreen: FC = () => {
     if (
       question.type === "multiple_choice" ||
       question.type === "true_or_false" ||
-      question.type === "multi_select"
+      question.type === "multi_select" ||
+      question.type === "identification"
     ) {
       return question.choices.map((choice, idx) => ({
         id: idx,
         text: undefined,
-        isCorrect: false,
+        isCorrect: question.type === "identification" ? true : false,
         styles: choiceStyles[idx]!.styles,
       }));
     }
@@ -319,6 +308,34 @@ export const CreateQuestionScreen: FC = () => {
               );
             },
           )
+          .with(
+            {
+              type: "identification",
+            },
+            (data) => {
+              setQuestionTitle(data.question);
+              setChoices(
+                data.choices.map((choice, idx) => ({
+                  id: idx,
+                  text: choice.text ?? "",
+                  isCorrect: choice.isCorrect,
+                  styles: choiceStyles[idx]!.styles,
+                })),
+              );
+              setTimeLimitOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.timeLimit,
+                })),
+              );
+              setPointOptions((prev) =>
+                prev.map((option) => ({
+                  ...option,
+                  isSelected: option.value === data.points,
+                })),
+              );
+            },
+          )
           .run();
 
         setAiQuestion("");
@@ -391,7 +408,8 @@ export const CreateQuestionScreen: FC = () => {
       points: pointOptions,
       timeLimits: timeLimitOptions,
       title: questionTitle,
-      isMultiSelect: questionType === "multi_select",
+      isMultiSelect:
+        questionType === "multi_select" || questionType === "identification",
     });
     if (errors) {
       return errorState;
@@ -400,7 +418,8 @@ export const CreateQuestionScreen: FC = () => {
     if (
       questionType === "multi_select" ||
       questionType === "multiple_choice" ||
-      questionType === "true_or_false"
+      questionType === "true_or_false" ||
+      questionType === "identification"
     ) {
       question = {
         title: questionTitle,
@@ -512,7 +531,8 @@ export const CreateQuestionScreen: FC = () => {
     if (
       selectedQuestion?.type === "multiple_choice" ||
       selectedQuestion?.type === "true_or_false" ||
-      selectedQuestion?.type === "multi_select"
+      selectedQuestion?.type === "multi_select" ||
+      selectedQuestion?.type === "identification"
     ) {
       setQuestionTitle(selectedQuestion.title);
       setChoices(
@@ -561,7 +581,8 @@ export const CreateQuestionScreen: FC = () => {
     if (
       selectedQuestion?.type === "multiple_choice" ||
       selectedQuestion?.type === "true_or_false" ||
-      selectedQuestion?.type === "multi_select"
+      selectedQuestion?.type === "multi_select" ||
+      selectedQuestion?.type === "identification"
     ) {
       setQuestionTitle(selectedQuestion.title);
       setChoices(
@@ -741,12 +762,24 @@ export const CreateQuestionScreen: FC = () => {
               />
             ))
             .with("identification", () => (
-              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-                <View className="space-y-4">
-                  <View>{renderChoice(choices[0]!)}</View>
-                  <View>{renderChoice(choices[1]!)}</View>
-                </View>
-              </View>
+              <IdentificationCards
+                {...{
+                  choices,
+                  setChoices,
+                  errorState,
+                  getSelectedChoices,
+                  goBack,
+                  handleOpenModal,
+                  isSaved,
+                  pointOptions,
+                  question,
+                  questionTitle,
+                  resetQuestionImage,
+                  setIsSaved,
+                  setOpenAlert,
+                  timeLimitOptions,
+                }}
+              />
             ))
             .with("enumeration", () => (
               <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
@@ -832,24 +865,29 @@ export const CreateQuestionScreen: FC = () => {
                       </Text>
                     ) : null}
 
-                    <View className="flex flex-row items-center justify-center rounded-b-2xl bg-white px-5 py-8">
-                      <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
-                        Correct Answer
-                      </Text>
-                      <Switch
-                        value={selectedChoice?.isCorrect}
-                        onValueChange={() => {
-                          if (questionType === "multiple_choice") {
-                            toggleChoiceCorrect(selectedQuestionId);
-                          }
-                          if (questionType === "multi_select") {
-                            const isMultiple = true;
-                            toggleChoiceCorrect(selectedQuestionId, isMultiple);
-                          }
-                        }}
-                        trackColor={{ true: "#10049FF" }}
-                      />
-                    </View>
+                    {questionType !== "identification" && (
+                      <View className="flex flex-row items-center justify-center rounded-b-2xl bg-white px-5 py-8">
+                        <Text className="shrink grow basis-0 text-lg font-bold leading-[28.80px] text-neutral-800">
+                          Correct Answer
+                        </Text>
+                        <Switch
+                          value={selectedChoice?.isCorrect}
+                          onValueChange={() => {
+                            if (questionType === "multiple_choice") {
+                              toggleChoiceCorrect(selectedQuestionId);
+                            }
+                            if (questionType === "multi_select") {
+                              const isMultiple = true;
+                              toggleChoiceCorrect(
+                                selectedQuestionId,
+                                isMultiple,
+                              );
+                            }
+                          }}
+                          trackColor={{ true: "#10049FF" }}
+                        />
+                      </View>
+                    )}
                   </View>
                 </View>
               </View>
