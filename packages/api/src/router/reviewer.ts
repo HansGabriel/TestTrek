@@ -5,6 +5,7 @@ import {
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { updateReviewerInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const reviewerRouter = router({
   getAllReviewers: protectedProcedure
@@ -127,12 +128,11 @@ export const reviewerRouter = router({
 
   createReviewer: protectedProcedure
     .input(reviewerSchema)
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { title, imageUrl, content, visibility } = input;
-
       const userId = ctx.auth.userId;
 
-      return ctx.prisma.reviewer.create({
+      const newReviewer = await ctx.prisma.reviewer.create({
         data: {
           title,
           imageUrl,
@@ -141,6 +141,42 @@ export const reviewerRouter = router({
           userId,
         },
       });
+
+      if (newReviewer.visibility === "public") {
+        const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
+          where: {
+            id: newReviewer.id,
+          },
+          select: {
+            id: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            title: true,
+            imageUrl: true,
+            createdAt: true,
+            updatedAt: true,
+            visibility: true,
+          },
+        });
+
+        if (reviewerForAlgolia !== null) {
+          try {
+            await updateReviewerInAlgolia(reviewerForAlgolia);
+            console.log(`Public reviewer ${newReviewer.id} added to Algolia`);
+          } catch (error) {
+            console.error(`Error adding reviewer to Algolia: `, error);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      }
+
+      return newReviewer;
     }),
 
   updateReviewer: protectedProcedure
@@ -169,7 +205,7 @@ export const reviewerRouter = router({
         });
       }
 
-      return ctx.prisma.reviewer.update({
+      const updatedReviewer = await ctx.prisma.reviewer.update({
         where: { id: reviewerId },
         data: {
           title,
@@ -178,5 +214,44 @@ export const reviewerRouter = router({
           visibility,
         },
       });
+
+      if (updatedReviewer.visibility === "public") {
+        const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
+          where: {
+            id: updatedReviewer.id,
+          },
+          select: {
+            id: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            title: true,
+            imageUrl: true,
+            content: true,
+            createdAt: true,
+            updatedAt: true,
+            visibility: true,
+          },
+        });
+
+        if (reviewerForAlgolia !== null) {
+          try {
+            await updateReviewerInAlgolia(reviewerForAlgolia);
+            console.log(
+              `Public reviewer ${updatedReviewer.id} updated in Algolia`,
+            );
+          } catch (error) {
+            console.error(`Error updating reviewer in Algolia: `, error);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      }
+
+      return updatedReviewer;
     }),
 });

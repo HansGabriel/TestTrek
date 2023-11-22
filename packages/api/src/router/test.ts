@@ -9,7 +9,7 @@ import type { PlayersHighscore } from "@acme/schema/src/types";
 import {
   deleteTestFromAlgolia,
   updateTestInAlgolia,
-} from "../services/algoliaApiHandlers/algoliaTestCudHandlers";
+} from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -302,22 +302,47 @@ export const testRouter = router({
 
       await ctx.prisma.$transaction(questionTransactions);
 
-      if (test.visibility == "public") {
-        const testForAlgolia = {
-          id: test.id,
-          title: test.title,
-          description: test.description,
-          imageUrl: test.imageUrl,
-          keywords: keywords.map((keyword) => ({ name: keyword })),
-          visibility: test.visibility,
-          createdAt: test.createdAt,
-          updatedAt: test.updatedAt,
-        };
+      if (test.visibility === "public") {
+        const testForAlgolia = await ctx.prisma.test.findUnique({
+          where: {
+            id: test.id,
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            imageUrl: true,
+            keywords: {
+              select: {
+                name: true,
+              },
+            },
+            questions: {
+              select: {
+                id: true,
+              },
+            },
+            visibility: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
 
-        try {
-          await updateTestInAlgolia(testForAlgolia);
-        } catch (error) {
-          console.error(`Error updating test in Algolia: ${error}`);
+        if (testForAlgolia !== null) {
+          try {
+            await updateTestInAlgolia(testForAlgolia);
+          } catch (error) {
+            console.error(`Error updating test in Algolia: ${error}`);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
         }
       }
 
@@ -471,22 +496,47 @@ export const testRouter = router({
 
       await ctx.prisma.$transaction(questionTransactions);
 
-      if (test.visibility == "public") {
-        const testForAlgolia = {
-          id: test.id,
-          title: test.title,
-          description: test.description,
-          imageUrl: test.imageUrl,
-          keywords: keywords.map((keyword) => ({ name: keyword })),
-          visibility: test.visibility,
-          createdAt: test.createdAt,
-          updatedAt: test.updatedAt,
-        };
+      if (test.visibility === "public") {
+        const testForAlgolia = await ctx.prisma.test.findUnique({
+          where: {
+            id: test.id,
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            imageUrl: true,
+            keywords: {
+              select: {
+                name: true,
+              },
+            },
+            questions: {
+              select: {
+                id: true,
+              },
+            },
+            visibility: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
 
-        try {
-          await updateTestInAlgolia(testForAlgolia);
-        } catch (error) {
-          console.error(`Error updating test in Algolia: ${error}`);
+        if (testForAlgolia !== null) {
+          try {
+            await updateTestInAlgolia(testForAlgolia);
+          } catch (error) {
+            console.error(`Error updating test in Algolia: ${error}`);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
         }
       }
 

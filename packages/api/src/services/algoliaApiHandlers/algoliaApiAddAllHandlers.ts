@@ -3,7 +3,7 @@ import {
   ReviewersForAlgolia,
   TestsForAlgolia,
   UsersForAlgolia,
-} from "./algoliaTypes/algoliaTestsTypes";
+} from "./algoliaTypes/algoliaTypes";
 import algoliasearch from "algoliasearch";
 
 import "dotenv/config";
