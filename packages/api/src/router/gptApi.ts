@@ -11,7 +11,9 @@ import "dotenv/config";
 import { questionSchema, questionsSchema } from "@acme/schema/src/question";
 import {
   generateQuestionPrompt,
+  parseIdentificationQuestions,
   parseMultipleChoiceQuestions,
+  parseMultiselectQuestions,
   parseTrueOrFalseQuestions,
 } from "../functions/testCreationHandlers";
 import {
@@ -90,7 +92,12 @@ export const gptApiRouter = router({
         case "trueOrFalse":
           answer = parseTrueOrFalseQuestions(generatedMessage);
           break;
-        //Handle other question types soon
+        case "multiselect":
+          answer = parseMultiselectQuestions(generatedMessage);
+          break;
+        case "identification":
+          answer = parseIdentificationQuestions(generatedMessage);
+          break;
         default:
           answer = generatedMessage;
           break;

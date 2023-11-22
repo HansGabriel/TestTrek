@@ -18,7 +18,7 @@ export interface MultiselectPrompt {
 
 export interface IdentificationPrompt {
   question: string;
-  answer: string;
+  choices: { text: string; isCorrect: boolean }[];
   type: "identification";
   timeLimit: number;
   points: number;
@@ -26,7 +26,7 @@ export interface IdentificationPrompt {
 
 export interface TrueOrFalsePrompt {
   question: string;
-  answer: boolean;
+  choices: { text: string; isCorrect: boolean }[];
   type: "trueOrFalse";
   timeLimit: number;
   points: number;
@@ -306,9 +306,11 @@ export const parseIdentificationResponse = (
     }
   });
 
+  const choices = [{ text: answer, isCorrect: true }];
+
   return {
     question,
-    answer,
+    choices,
     timeLimit,
     points,
     type: "identification",
@@ -345,9 +347,14 @@ export const parseTrueOrFalseResponse = (
     }
   });
 
+  const choices = [
+    { text: "True", isCorrect: answer },
+    { text: "False", isCorrect: !answer },
+  ];
+
   return {
     question,
-    answer,
+    choices,
     timeLimit,
     points,
     type: "trueOrFalse",
