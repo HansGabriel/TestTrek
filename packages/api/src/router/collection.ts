@@ -6,6 +6,7 @@ import {
 } from "@acme/schema/src/collection";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { updateCollectionInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const collectionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -315,12 +316,12 @@ export const collectionRouter = router({
 
   create: protectedProcedure
     .input(collectionsSchema)
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { title, image, visibility } = input;
 
       const userId = ctx.auth.userId;
 
-      return ctx.prisma.collection.create({
+      const newCollection = await ctx.prisma.collection.create({
         data: {
           title,
           imageUrl: image,
@@ -328,17 +329,55 @@ export const collectionRouter = router({
           visibility,
         },
       });
+
+      if (newCollection.visibility === "public") {
+        const collectionForAlgolia = await ctx.prisma.collection.findUnique({
+          where: {
+            id: newCollection.id,
+          },
+          select: {
+            id: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            title: true,
+            imageUrl: true,
+            createdAt: true,
+            updatedAt: true,
+            visibility: true,
+          },
+        });
+
+        if (collectionForAlgolia !== null) {
+          try {
+            await updateCollectionInAlgolia(collectionForAlgolia);
+            console.log(
+              `Public collection ${newCollection.id} added to Algolia`,
+            );
+          } catch (error) {
+            console.error(`Error adding collection to Algolia: `, error);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      }
+
+      return newCollection;
     }),
 
   editCollection: protectedProcedure
     .input(collectionsSchema)
     .input(z.object({ collectionId: z.string() }))
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { image, title, visibility, collectionId } = input;
 
       const userId = ctx.auth.userId;
 
-      return ctx.prisma.collection.update({
+      const editedCollection = await ctx.prisma.collection.update({
         where: {
           id: collectionId,
         },
@@ -353,6 +392,44 @@ export const collectionRouter = router({
           },
         },
       });
+
+      if (editedCollection.visibility === "public") {
+        const collectionForAlgolia = await ctx.prisma.collection.findUnique({
+          where: {
+            id: editedCollection.id,
+          },
+          select: {
+            id: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            title: true,
+            imageUrl: true,
+            createdAt: true,
+            updatedAt: true,
+            visibility: true,
+          },
+        });
+
+        if (collectionForAlgolia !== null) {
+          try {
+            await updateCollectionInAlgolia(collectionForAlgolia);
+            console.log(
+              `Public collection ${editedCollection.id} added to Algolia`,
+            );
+          } catch (error) {
+            console.error(`Error adding collection to Algolia: `, error);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      }
+
+      return editedCollection;
     }),
   getTopCollections: protectedProcedure
     .input(highlightCollectionsInput)

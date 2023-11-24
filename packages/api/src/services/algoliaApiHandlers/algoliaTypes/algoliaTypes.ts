@@ -41,6 +41,7 @@ export type CollectionsForAlgolia = {
   title: string;
   imageUrl: string | null;
   user?: UserSelect;
+  visibility: "public" | "private";
   createdAt: Date;
   updatedAt: Date;
 };
@@ -50,6 +51,7 @@ export type ReviewersForAlgolia = {
   title: string;
   imageUrl: string | null;
   user?: UserSelect;
+  visibility: "public" | "private";
   createdAt: Date;
   updatedAt: Date;
 };
