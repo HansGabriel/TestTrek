@@ -8,6 +8,7 @@ import TestSearchCard from "./search-cards/TestSearchCard";
 import UserSearchCard from "./search-cards/UserSearchCard";
 import CollectionSearchCard from "./search-cards/CollectionSearchCard";
 import ReviewerSearchCard from "./search-cards/ReviewerSearchCard";
+import { Text } from "react-native";
 import {
   CompiledAlgoliaHits,
   ReturnedAlgoliaCollections,
@@ -20,6 +21,8 @@ import { useNavigation } from "@react-navigation/native";
 interface ContentProps {
   query: string;
   results: CompiledAlgoliaHits;
+  selectedCategories: { [key: string]: boolean };
+  toggleCategory: (category: string) => void;
 }
 
 interface CombinedItem {
@@ -31,7 +34,22 @@ interface CombinedItem {
     | ReturnedAlgoliaReviewers;
 }
 
-export const SearchContent: FC<ContentProps> = ({ results }) => {
+const categoryDisplayNames = {
+  tests: "Tests",
+  users: "Trekkers",
+  collections: "Collections",
+  reviewers: "Reviewers",
+};
+
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const SearchContent: FC<ContentProps> = ({
+  results,
+  selectedCategories,
+  toggleCategory,
+}) => {
   const navigation = useNavigation();
 
   const combinedItems: CombinedItem[] = [
@@ -75,7 +93,6 @@ export const SearchContent: FC<ContentProps> = ({ results }) => {
     navigation.navigate("ReviewerDetails", { reviewerId });
   };
 
-  // Function to render item based on its type
   const renderItem = ({ item }: { item: CombinedItem }) => {
     switch (item.type) {
       case "test":
@@ -119,6 +136,30 @@ export const SearchContent: FC<ContentProps> = ({ results }) => {
     }
   };
 
+  const categoryButtons = Object.keys(selectedCategories).map((category) => (
+    <TouchableOpacity
+      key={category}
+      onPress={() => toggleCategory(category)}
+      className="m-2"
+    >
+      <View
+        className={`items-center justify-center rounded-lg 
+                    ${
+                      selectedCategories[category]
+                        ? "border-violet-600 bg-violet-600"
+                        : "border-gray-400 bg-gray-400"
+                    } 
+                    border-2`}
+      >
+        <Text className="font-nunito-semibold text-s m-1 mx-2 text-white">
+          {categoryDisplayNames[
+            category as keyof typeof categoryDisplayNames
+          ] || capitalizeFirstLetter(category)}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  ));
+
   return (
     <View>
       <Animated.View
@@ -128,6 +169,16 @@ export const SearchContent: FC<ContentProps> = ({ results }) => {
       >
         <View>
           <View className="my-3 border border-zinc-100" />
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            padding: 5,
+          }}
+        >
+          {categoryButtons}
         </View>
 
         <FlashList
