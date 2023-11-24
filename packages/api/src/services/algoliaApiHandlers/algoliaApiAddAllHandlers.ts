@@ -13,7 +13,7 @@ export const initializeAlgoliaClient = () => {
   const adminKey = process.env.ALGOLIA_ADMIN_KEY;
 
   if (!applicationId || !adminKey) {
-    throw new Error("ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY are required");
+    throw new Error("Api: ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY are required");
   }
 
   return algoliasearch(applicationId, adminKey);

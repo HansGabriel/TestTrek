@@ -5,6 +5,7 @@ import { userWebhookSchema } from "@acme/schema/src/user";
 import { env } from "../../env/server.mjs";
 import { prisma } from "@acme/db";
 import { Webhook } from "svix";
+import { updateUserInAlgolia } from "./algoliaUserHandler";
 
 export default async function handler(
   req: NextApiRequestWithSvixRequiredHeaders,
@@ -16,6 +17,7 @@ export default async function handler(
 
   const wh = new Webhook(webhookSecret);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let evt: any;
   try {
     evt = wh.verify(payload, headers);
@@ -59,9 +61,35 @@ export default async function handler(
     res.status(201).json({
       message: "User created",
     });
+
+    const userForAlgolia = await prisma.user.findUnique({
+      where: {
+        userId: id,
+      },
+      select: {
+        id: true,
+        userId: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (userForAlgolia !== null) {
+      try {
+        await updateUserInAlgolia(userForAlgolia);
+      } catch (error) {
+        console.error(`Error adding user to Algolia: `, error);
+        console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+      }
+    }
   }
 }
 
 type NextApiRequestWithSvixRequiredHeaders = NextApiRequest & {
   headers: IncomingHttpHeaders & WebhookRequiredHeaders;
 };
+//

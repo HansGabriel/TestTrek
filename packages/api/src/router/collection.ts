@@ -379,10 +379,6 @@ export const collectionRouter = router({
       const { image, title, visibility, collectionId } = input;
 
       const userId = ctx.auth.userId;
-      const currentVisibility = await ctx.prisma.collection.findUnique({
-        where: { id: collectionId },
-        select: { visibility: true },
-      });
 
       const editedCollection = await ctx.prisma.collection.update({
         where: {
@@ -400,10 +396,7 @@ export const collectionRouter = router({
         },
       });
 
-      if (
-        currentVisibility?.visibility === "private" &&
-        editedCollection.visibility === "public"
-      ) {
+      if (editedCollection.visibility === "public") {
         const collectionForAlgolia = await ctx.prisma.collection.findUnique({
           where: {
             id: editedCollection.id,
@@ -437,10 +430,7 @@ export const collectionRouter = router({
             console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
           }
         }
-      } else if (
-        currentVisibility?.visibility === "public" &&
-        editedCollection.visibility === "private"
-      ) {
+      } else if (editedCollection.visibility === "private") {
         try {
           await deleteCollectionFromAlgolia(collectionId);
         } catch (error) {
