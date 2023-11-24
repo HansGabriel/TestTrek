@@ -365,6 +365,11 @@ export const testRouter = router({
 
       const userId = ctx.auth.userId;
 
+      const currentVisibility = await ctx.prisma.test.findUnique({
+        where: { id: testId },
+        select: { visibility: true },
+      });
+
       await ctx.prisma.test.update({
         where: {
           id: testId,
@@ -496,7 +501,15 @@ export const testRouter = router({
 
       await ctx.prisma.$transaction(questionTransactions);
 
-      if (test.visibility === "public") {
+      const updatedVisibility = await ctx.prisma.test.findUnique({
+        where: { id: testId },
+        select: { visibility: true },
+      });
+
+      if (
+        currentVisibility?.visibility === "private" &&
+        updatedVisibility?.visibility === "public"
+      ) {
         const testForAlgolia = await ctx.prisma.test.findUnique({
           where: {
             id: test.id,
@@ -537,6 +550,15 @@ export const testRouter = router({
             console.error(`Error updating test in Algolia: ${error}`);
             console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
           }
+        }
+      } else if (
+        currentVisibility?.visibility === "public" &&
+        updatedVisibility?.visibility === "private"
+      ) {
+        try {
+          await deleteTestFromAlgolia(testId);
+        } catch (error) {
+          console.error(`Error removing test from Algolia: ${error}`);
         }
       }
 

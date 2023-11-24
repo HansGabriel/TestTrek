@@ -6,7 +6,10 @@ import {
 } from "@acme/schema/src/collection";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { updateCollectionInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
+import {
+  deleteCollectionFromAlgolia,
+  updateCollectionInAlgolia,
+} from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const collectionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -376,6 +379,10 @@ export const collectionRouter = router({
       const { image, title, visibility, collectionId } = input;
 
       const userId = ctx.auth.userId;
+      const currentVisibility = await ctx.prisma.collection.findUnique({
+        where: { id: collectionId },
+        select: { visibility: true },
+      });
 
       const editedCollection = await ctx.prisma.collection.update({
         where: {
@@ -393,7 +400,10 @@ export const collectionRouter = router({
         },
       });
 
-      if (editedCollection.visibility === "public") {
+      if (
+        currentVisibility?.visibility === "private" &&
+        editedCollection.visibility === "public"
+      ) {
         const collectionForAlgolia = await ctx.prisma.collection.findUnique({
           where: {
             id: editedCollection.id,
@@ -426,6 +436,15 @@ export const collectionRouter = router({
             console.error(`Error adding collection to Algolia: `, error);
             console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
           }
+        }
+      } else if (
+        currentVisibility?.visibility === "public" &&
+        editedCollection.visibility === "private"
+      ) {
+        try {
+          await deleteCollectionFromAlgolia(collectionId);
+        } catch (error) {
+          console.error(`Error removing collection from Algolia: ${error}`);
         }
       }
 
