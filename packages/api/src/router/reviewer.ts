@@ -5,7 +5,10 @@ import {
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { updateReviewerInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
+import {
+  deleteReviewerFromAlgolia,
+  updateReviewerInAlgolia,
+} from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const reviewerRouter = router({
   getAllReviewers: protectedProcedure
@@ -186,6 +189,10 @@ export const reviewerRouter = router({
       const { reviewerId, title, imageUrl, content, visibility } = input;
 
       const userId = ctx.auth.userId;
+      const currentVisibility = await ctx.prisma.reviewer.findUnique({
+        where: { id: reviewerId },
+        select: { visibility: true },
+      });
 
       const reviewer = await ctx.prisma.reviewer.findUnique({
         where: { id: reviewerId },
@@ -215,7 +222,10 @@ export const reviewerRouter = router({
         },
       });
 
-      if (updatedReviewer.visibility === "public") {
+      if (
+        currentVisibility?.visibility === "private" &&
+        updatedReviewer.visibility === "public"
+      ) {
         const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
           where: {
             id: updatedReviewer.id,
@@ -249,6 +259,15 @@ export const reviewerRouter = router({
             console.error(`Error updating reviewer in Algolia: `, error);
             console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
           }
+        }
+      } else if (
+        currentVisibility?.visibility === "public" &&
+        updatedReviewer.visibility === "private"
+      ) {
+        try {
+          await deleteReviewerFromAlgolia(reviewerId);
+        } catch (error) {
+          console.error(`Error removing reviewer from Algolia: ${error}`);
         }
       }
 
