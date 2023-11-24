@@ -58,6 +58,23 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
   const { mutate: editCollection, isLoading: IsEditingCollection } =
     trpc.collection.editCollection.useMutation();
 
+  const { mutate: deleteCollection, isLoading: isDeleting } =
+    trpc.collection.deleteCollection.useMutation({
+      onSuccess: () => {
+        successToast({
+          title: "Success",
+          message: "Collection deleted successfully",
+        });
+        navigation.navigate("MyLibrary");
+      },
+      onError: () => {
+        errorToast({
+          title: "Error",
+          message: "An error occurred",
+        });
+      },
+    });
+
   const getDisplayImage = () => {
     if (collectionData?.imageUrl && !editImage) {
       return collectionData?.imageUrl;
@@ -223,6 +240,13 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
         className="mt-7"
+        showDropdown={true}
+        onDropdownPress={() =>
+          deleteCollection({
+            collectionId,
+          })
+        }
+        isLoadingDropdown={isDeleting}
       />
 
       <ScrollView

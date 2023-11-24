@@ -10,6 +10,7 @@ import {
   deleteCollectionFromAlgolia,
   updateCollectionInAlgolia,
 } from "../services/algoliaApiHandlers/algoliaCudHandlers";
+import { TRPCError } from "@trpc/server";
 
 export const collectionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -489,6 +490,49 @@ export const collectionRouter = router({
               skipDuplicates: true,
             },
           },
+        },
+      });
+    }),
+
+  deleteCollection: protectedProcedure
+    .input(z.object({ collectionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { collectionId } = input;
+
+      const collection = await ctx.prisma.collection.findUnique({
+        where: {
+          id: collectionId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!collection) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Collection not found",
+        });
+      }
+
+      if (collection?.userId !== ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to delete this collection",
+        });
+      }
+
+      try {
+        await deleteCollectionFromAlgolia(collectionId);
+        console.log(`Collection ${collectionId} removed from Algolia`);
+      } catch (error) {
+        console.error(`Error removing collection from Algolia: `, error);
+        console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+      }
+
+      return ctx.prisma.collection.delete({
+        where: {
+          id: collectionId,
         },
       });
     }),

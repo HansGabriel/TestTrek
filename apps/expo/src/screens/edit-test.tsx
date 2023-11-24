@@ -172,6 +172,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
         <CreateTestForm
           testTitle="Edit Test"
           testDetails={{
+            id: testDetails.id,
             description: testDetails.description,
             title: testDetails.title,
             image: testDetails.imageUrl,
