@@ -273,4 +273,42 @@ export const reviewerRouter = router({
 
       return updatedReviewer;
     }),
+
+  delete: protectedProcedure
+    .input(z.object({ reviewerId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { reviewerId } = input;
+
+      const userId = ctx.auth.userId;
+
+      const reviewer = await ctx.prisma.reviewer.findUnique({
+        where: { id: reviewerId },
+      });
+
+      if (!reviewer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Reviewer not found.",
+        });
+      }
+
+      if (reviewer.userId !== userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not allowed to delete this reviewer.",
+        });
+      }
+
+      const deletedReviewer = await ctx.prisma.reviewer.delete({
+        where: { id: reviewerId },
+      });
+
+      try {
+        await deleteReviewerFromAlgolia(reviewerId);
+      } catch (error) {
+        console.error(`Error removing reviewer from Algolia: ${error}`);
+      }
+
+      return deletedReviewer;
+    }),
 });

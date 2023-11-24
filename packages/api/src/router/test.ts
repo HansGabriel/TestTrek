@@ -772,6 +772,29 @@ export const testRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { testId } = input;
 
+      const test = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!test) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Test not found",
+        });
+      }
+
+      if (test?.userId !== ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authorized to delete this test",
+        });
+      }
+
       try {
         await deleteTestFromAlgolia(testId);
         console.log(`Test ${testId} deleted from Algolia`);

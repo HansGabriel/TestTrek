@@ -44,6 +44,7 @@ export const CreateReviewerScreen = ({
   navigation,
   route,
 }: RootStackScreenProps<"CreateReviewer">) => {
+  const trpcUtils = trpc.useContext();
   const { height, width } = Dimensions.get("window");
   const { reviewerId, type } = route.params ?? {
     reviewerId: undefined,
@@ -71,6 +72,27 @@ export const CreateReviewerScreen = ({
     isLoading: isCreatingReviewer,
     reset,
   } = trpc.reviewer.createReviewer.useMutation();
+
+  const { mutate: deleteReviewer, isLoading: isDeleting } =
+    trpc.reviewer.delete.useMutation({
+      onSuccess: () => {
+        successToast({
+          title: "Success",
+          message: "Reviewer deleted successfully",
+        });
+        trpcUtils.reviewer.invalidate();
+        resetReviewerImage();
+        reset();
+        navigation.navigate("MyLibrary");
+      },
+      onError: () => {
+        errorToast({
+          title: "Error",
+          message: "An error occurred",
+        });
+        resetReviewerImage();
+      },
+    });
 
   const { mutate: updateReviewer, isLoading: isUpdatingReviewer } =
     trpc.reviewer.updateReviewer.useMutation();
@@ -279,6 +301,13 @@ export const CreateReviewerScreen = ({
             />
           )
         }
+        showDropdown={type === "edit"}
+        onDropdownPress={() => {
+          deleteReviewer({
+            reviewerId: reviewerId ?? "",
+          });
+        }}
+        isLoadingDropdown={isDeleting}
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
