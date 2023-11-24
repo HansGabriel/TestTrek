@@ -4,6 +4,7 @@ import { protectedProcedure, router } from "../trpc";
 import { Prisma } from "@acme/db";
 import { PlayersHighscore } from "@acme/schema/src/types";
 import pMap from "p-map";
+import { updateUserInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const useRouter = router({
   getTop: protectedProcedure
@@ -217,7 +218,7 @@ export const useRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { userName, firstName, lastName, email, about } = input;
 
-      return ctx.prisma.user.update({
+      const editedUser = await ctx.prisma.user.update({
         where: {
           userId: ctx.auth.userId,
         },
@@ -229,5 +230,32 @@ export const useRouter = router({
           about,
         },
       });
+
+      const userForAlgolia = await ctx.prisma.user.findUnique({
+        where: {
+          id: editedUser.id,
+        },
+        select: {
+          id: true,
+          userId: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          imageUrl: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (userForAlgolia !== null) {
+        try {
+          await updateUserInAlgolia(userForAlgolia);
+        } catch (error) {
+          console.error(`Error adding user to Algolia: `, error);
+          console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+        }
+      }
+
+      return editedUser;
     }),
 });
