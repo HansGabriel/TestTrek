@@ -1,6 +1,5 @@
 import {
   parseMultipleChoiceResponse,
-  parseEnumerationResponse,
   parseMultiselectResponse,
   parseIdentificationResponse,
   parseTrueOrFalseResponse,
@@ -213,99 +212,6 @@ describe("parseMultipleChoiceResponse", () => {
       timeLimit: 0, // Default when missing
       points: 0, // Default when missing
     });
-  });
-});
-
-describe("parseEnumerationResponse", () => {
-  it("should correctly parse a well-formatted enumeration response", () => {
-    const generatedMessage = `
-      Question: List fruits.
-      Answers: 1. Apple, 2. Banana, 3. Cherry
-      Time Limit: 30
-      Points: 50
-    `;
-    const result = parseEnumerationResponse(generatedMessage);
-    expect(result).toEqual({
-      question: "List fruits.",
-      answers: ["Apple", "Banana", "Cherry"],
-      timeLimit: 30,
-      points: 50,
-    });
-  });
-
-  it("should handle missing question", () => {
-    const generatedMessageWithoutQuestion = `
-      Answers: 1. Apple, 2. Banana, 3. Cherry
-      Time Limit: 30
-      Points: 50
-    `;
-    const result = parseEnumerationResponse(generatedMessageWithoutQuestion);
-    expect(result).toEqual({
-      question: "", // question is missing
-      answers: ["Apple", "Banana", "Cherry"],
-      timeLimit: 30,
-      points: 50,
-    });
-  });
-
-  it("should handle missing answers", () => {
-    const generatedMessageWithoutAnswers = `
-      Question: List fruits.
-      Time Limit: 30
-      Points: 50
-    `;
-    const result = parseEnumerationResponse(generatedMessageWithoutAnswers);
-    expect(result).toEqual({
-      question: "List fruits.",
-      answers: [], // answers are missing
-      timeLimit: 30,
-      points: 50,
-    });
-  });
-
-  it("should handle incorrect answer format", () => {
-    const generatedMessageWithIncorrectAnswers = `
-      Question: List fruits.
-      Answers: Apple, Banana, Cherry
-      Time Limit: 30
-      Points: 50
-    `;
-    const result = parseEnumerationResponse(
-      generatedMessageWithIncorrectAnswers,
-    );
-    expect(result).toEqual({
-      question: "List fruits.",
-      answers: ["Apple", "Banana", "Cherry"], // even without numbers, it extracts the answers
-      timeLimit: 30,
-      points: 50,
-    });
-  });
-
-  it("should handle missing time and points", () => {
-    const generatedMessageWithoutTimeAndPoints = `
-      Question: List fruits.
-      Answers: 1. Apple, 2. Banana, 3. Cherry
-    `;
-    const result = parseEnumerationResponse(
-      generatedMessageWithoutTimeAndPoints,
-    );
-    expect(result).toEqual({
-      question: "List fruits.",
-      answers: ["Apple", "Banana", "Cherry"],
-      timeLimit: 0, // defaults to 0 when missing
-      points: 0, // defaults to 0 when missing
-    });
-  });
-
-  it("should handle completely empty input", () => {
-    const resultForEmpty = parseEnumerationResponse("");
-    const expectedResult = {
-      question: "",
-      answers: [],
-      timeLimit: 0,
-      points: 0,
-    };
-    expect(resultForEmpty).toEqual(expectedResult);
   });
 });
 

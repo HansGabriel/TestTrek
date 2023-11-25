@@ -38,14 +38,6 @@ export const questionSchema = z.discriminatedUnion("type", [
     type: z.literal("identification"),
     choices: z.array(choiceSchema),
   }),
-  z.object({
-    title: z.string().min(1).max(150),
-    image: z.string().min(5).max(200).nullable().optional(),
-    time: z.number().min(1).max(1000),
-    points: z.number().min(1).max(10_000),
-    type: z.literal("enumeration"),
-    choices: z.array(choiceSchema),
-  }),
 ]);
 
 export const testDetailsSchema = z.object({
@@ -108,7 +100,7 @@ export const testInputSchema = z.object({
   ),
   questions: z
     .array(questionSchema)
-    .min(5, {
+    .min(1, {
       message: "At least five questions is required",
     })
     .max(100, {

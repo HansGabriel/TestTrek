@@ -648,7 +648,6 @@ const CreateTestForm: FC<Props> = ({
                                 .with("true_or_false", () => "True or False")
                                 .with("multi_select", () => "Multi Select")
                                 .with("identification", () => "Identification")
-                                .with("enumeration", () => "Enumeration")
                                 .exhaustive()}
                             </Text>
                             <Text
@@ -672,8 +671,8 @@ const CreateTestForm: FC<Props> = ({
             <TouchableOpacity
               className="w-[45%] items-center justify-center rounded-[100px] border-b-2 border-l border-r border-t border-violet-300 bg-violet-100 py-[18px]"
               onPress={handleSubmit(submitForm)}
-              disabled={questions.length < 5}
-              style={[questions.length < 5 ? styles.disabledButton : {}]}
+              disabled={questions.length < 1}
+              style={[questions.length < 1 ? styles.disabledButton : {}]}
             >
               {isCreatingQuiz || isUploading ? (
                 <ActivityIndicator color="black" />

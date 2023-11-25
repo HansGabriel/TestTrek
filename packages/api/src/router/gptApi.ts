@@ -1,7 +1,6 @@
 import { protectedProcedure, router } from "../trpc";
 import {
   parseMultipleChoiceResponse,
-  parseEnumerationResponse,
   parseIdentificationResponse,
   parseMultiselectResponse,
   parseTrueOrFalseResponse,
@@ -50,9 +49,6 @@ export const gptApiRouter = router({
           break;
         case "trueOrFalse":
           answer = parseTrueOrFalseResponse(generatedMessage);
-          break;
-        case "enumeration":
-          answer = parseEnumerationResponse(generatedMessage);
           break;
         case "multiselect":
           answer = parseMultiselectResponse(generatedMessage);
