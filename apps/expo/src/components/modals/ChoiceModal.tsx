@@ -24,10 +24,11 @@ interface Props {
   isVisible: boolean;
   setIsVisible: () => void;
   setOptions: (options: Option[]) => void;
-  handleAIPress: () => void;
+  handleAIPress?: () => void;
   selectButtonText?: string;
   handleSelectPress: () => void;
   isLoading?: boolean;
+  showAskAIOption?: boolean;
 }
 
 const ChoiceModal: FC<Props> = ({
@@ -40,6 +41,7 @@ const ChoiceModal: FC<Props> = ({
   handleSelectPress,
   isLoading = false,
   selectButtonText = "Select Reviewer",
+  showAskAIOption = true,
 }) => {
   const handleOptionPress = (id: string) => {
     const newOptions = options.map((option) => {
@@ -118,7 +120,11 @@ const ChoiceModal: FC<Props> = ({
                 ))}
               </View>
               <View className="h-[0px] w-full self-center border border-zinc-100" />
-              <View className="w-[90%] flex-row justify-evenly">
+              <View
+                className={`w-[90%] flex-row ${
+                  showAskAIOption ? "justify-evenly" : "justify-center"
+                }`}
+              >
                 <View>
                   <AppButton
                     text={selectButtonText}
@@ -135,18 +141,20 @@ const ChoiceModal: FC<Props> = ({
                   />
                 </View>
                 <View>
-                  <AppButton
-                    text="Ask AI"
-                    buttonColor="violet-600"
-                    borderShadowColor="indigo-800"
-                    borderRadius="full"
-                    fontStyle="bold"
-                    textColor="white"
-                    TOwidth="full"
-                    Vwidth="32"
-                    onPress={handleAIPress}
-                    disabled={isLoading}
-                  />
+                  {showAskAIOption && (
+                    <AppButton
+                      text="Ask AI"
+                      buttonColor="violet-600"
+                      borderShadowColor="indigo-800"
+                      borderRadius="full"
+                      fontStyle="bold"
+                      textColor="white"
+                      TOwidth="full"
+                      Vwidth="32"
+                      onPress={handleAIPress}
+                      disabled={isLoading}
+                    />
+                  )}
                 </View>
               </View>
             </View>

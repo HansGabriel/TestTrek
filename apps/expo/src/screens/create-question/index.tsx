@@ -196,7 +196,7 @@ export const CreateQuestionScreen: FC = () => {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ["5%", "25%", "60%"], []);
+  const snapPoints = useMemo(() => ["5%", "25%", "70%"], []);
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
@@ -635,14 +635,14 @@ export const CreateQuestionScreen: FC = () => {
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
       />
-      <View className="w-[90%] flex-1 self-center">
+      <View className="w-full flex-1 self-center">
         <ScrollView className="mt-5 pb-20" showsVerticalScrollIndicator={false}>
           {isImageVisible && (
-            <View className="my-5 flex flex-col ">
+            <View className="my-5 flex w-[90%] flex-col self-center">
               <TestImagePicker image={selectedImage} type="question" />
             </View>
           )}
-          <View className="flex w-[100%] flex-row items-center justify-evenly self-center">
+          <View className="flex w-[90%] flex-row items-center justify-evenly self-center">
             <TouchableOpacity
               className={`flex items-center justify-center rounded-[100px] bg-violet-600 px-4 py-2 ${
                 errorState.timeLimitError !== null
@@ -709,7 +709,7 @@ export const CreateQuestionScreen: FC = () => {
 
           {match(questionType)
             .with("multiple_choice", () => (
-              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+              <View className="mt-5 flex w-[90%] flex-row items-center justify-evenly self-center">
                 <View className="space-y-4">
                   <View>{renderChoice(choices[0]!)}</View>
                   <View>{renderChoice(choices[1]!)}</View>
@@ -780,7 +780,7 @@ export const CreateQuestionScreen: FC = () => {
             .exhaustive()}
 
           <TouchableOpacity
-            className={`mt-10 w-full items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
+            className={`mt-10 w-[90%] self-center items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
               !isSaved ? "opacity-50" : ""
             }`}
             // eslint-disable-next-line @typescript-eslint/no-empty-function

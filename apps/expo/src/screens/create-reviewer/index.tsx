@@ -15,30 +15,34 @@ import {
   RichEditor,
   RichToolbar,
 } from "react-native-pell-rich-editor";
-import { ReusableHeader } from "../components/headers/ReusableHeader";
+import { ReusableHeader } from "../../components/headers/ReusableHeader";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FAB } from "@rneui/themed";
 import { Controller, useForm } from "react-hook-form";
-import TestImagePicker from "../components/ImagePicker";
+import TestImagePicker from "../../components/ImagePicker";
 import { Reviewers } from "@acme/schema/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewerSchema } from "@acme/schema/src/reviewer";
-import useImageStore from "../stores/useImageStore";
-import AppPicker, { LabelOption } from "../components/pickers/AppPicker";
-import { trpc } from "../utils/trpc";
+import useImageStore from "../../stores/useImageStore";
+import AppPicker, { LabelOption } from "../../components/pickers/AppPicker";
+import { trpc } from "../../utils/trpc";
 import { match } from "ts-pattern";
 import { Feather } from "@expo/vector-icons";
-
-import type { RootStackScreenProps } from "../types";
-import useGoBack from "../hooks/useGoBack";
+import type { RootStackScreenProps } from "../../types";
+import useGoBack from "../../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   errorToast,
   successToast,
-} from "../components/notifications/ToastNotifications";
-import { AlertModal } from "../components/modals/AlertModal";
+} from "../../components/notifications/ToastNotifications";
+import { AlertModal } from "../../components/modals/AlertModal";
+import ChoiceModal from "../../components/modals/ChoiceModal";
+import type { Option } from "./types";
+import { NUMBER_OF_QUESTIONS_OPTIONS } from "./constants";
+import useQuestionStore from "../../stores/useQuestionStore";
+import { AppButton } from "../../components/buttons/AppButton";
+import * as DocumentPicker from "expo-document-picker";
 
 export const CreateReviewerScreen = ({
   navigation,
@@ -50,8 +54,26 @@ export const CreateReviewerScreen = ({
     type: "create",
   };
   const richText = useRef<RichEditor | null>(null);
-  const [isToggled, setIsToggled] = useState(false);
+  let highlightedText = "";
+  const regex =
+    /<span style="(?:font-size: 1em; )?background-color: yellow;">(?:<b>)?(?:<i>)?(?:<u>)?(.*?)(?:<\/u>)?(?:<\/i>)?(?:<\/b>)?<\/span>/g;
+
+  const [isHighlighterToggled, setIsHighlighterToggled] = useState(false);
+  const [isChoiceModalToggled, setIsChoiceModalToggled] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
+  const [numberOfQuestionOptions, setNumberOfQuestionOptions] = useState<
+    Option[]
+  >(
+    NUMBER_OF_QUESTIONS_OPTIONS.map((option) => ({
+      ...option,
+    })),
+  );
+  const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
+    useState(false);
+
+  const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
+  const setLastIndex = useQuestionStore((state) => state.setLastIndex);
+  const { addQuestions, removeBlankQuestions } = useQuestionStore();
 
   const reviewerImage = useImageStore((state) => state.reviewerImage);
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
@@ -66,6 +88,9 @@ export const CreateReviewerScreen = ({
     },
   );
 
+  const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
+    trpc.gptApi.generateMultipleQuestions.useMutation();
+
   const {
     mutate: createReviewer,
     isLoading: isCreatingReviewer,
@@ -74,24 +99,6 @@ export const CreateReviewerScreen = ({
 
   const { mutate: updateReviewer, isLoading: isUpdatingReviewer } =
     trpc.reviewer.updateReviewer.useMutation();
-
-  const toggleHighlighter = () => {
-    setIsToggled(!isToggled);
-    if (richText.current) {
-      richText.current.setHiliteColor(!isToggled ? "yellow" : "#ffffff");
-    }
-  };
-
-  const highlightIcon = () => {
-    return (
-      <FontAwesome5
-        name="highlighter"
-        size={18}
-        color={isToggled ? "#7c3aed" : "black"}
-        onPress={toggleHighlighter}
-      />
-    );
-  };
 
   const getDisplayImage = () => {
     if (reviewerImage) {
@@ -105,6 +112,7 @@ export const CreateReviewerScreen = ({
     handleSubmit,
     setValue,
     formState: { errors, isDirty },
+    getValues,
   } = useForm<Reviewers>({
     resolver: zodResolver(reviewerSchema),
     defaultValues: {
@@ -115,6 +123,42 @@ export const CreateReviewerScreen = ({
     },
   });
 
+  const toggleHighlighter = () => {
+    setIsHighlighterToggled(!isHighlighterToggled);
+    if (richText.current) {
+      richText.current.setHiliteColor(
+        !isHighlighterToggled ? "yellow" : "#ffffff",
+      );
+    }
+  };
+
+  const toggleChoiceModal = () => {
+    setIsChoiceModalToggled(!isChoiceModalToggled);
+    setShowNumberOfQuestionsModal(true);
+  };
+
+  const highlightIcon = () => {
+    return (
+      <FontAwesome5
+        name="highlighter"
+        size={18}
+        color={isHighlighterToggled ? "#7c3aed" : "black"}
+        onPress={toggleHighlighter}
+      />
+    );
+  };
+
+  const generateAiIcon = () => {
+    return (
+      <MaterialCommunityIcons
+        name="robot-happy"
+        size={18}
+        color={isChoiceModalToggled ? "#7c3aed" : "black"}
+        onPress={toggleChoiceModal}
+      />
+    );
+  };
+
   useEffect(() => {
     navigation.addListener("focus", () => {
       if (reviewerImage) {
@@ -123,19 +167,18 @@ export const CreateReviewerScreen = ({
     });
   }, [reviewerImage]);
 
-  const removeTags = (htmlContent: string) => {
-    if (htmlContent === null || htmlContent === "") {
-      return "";
-    } else {
-      htmlContent = htmlContent.toString();
-    }
+  const filePicker = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "application/pdf",
+      copyToCacheDirectory: true,
+    });
 
-    return htmlContent.replace(/(<([^>]+)>)/gi, " ");
+    if (result.type === "success") {
+      console.log(result.uri);
+    }
   };
 
   const submitReviewerData = (createdData: Reviewers) => {
-    const formatContent = removeTags(createdData.content);
-
     if (type === "edit") {
       updateReviewer(
         {
@@ -143,7 +186,7 @@ export const CreateReviewerScreen = ({
           title: createdData.title,
           imageUrl: createdData.imageUrl,
           visibility: createdData.visibility,
-          content: formatContent,
+          content: createdData.content,
         },
         {
           onSuccess: () => {
@@ -173,7 +216,7 @@ export const CreateReviewerScreen = ({
           title: createdData.title,
           imageUrl: createdData.imageUrl,
           visibility: createdData.visibility,
-          content: formatContent,
+          content: createdData.content,
         },
         {
           onSuccess: () => {
@@ -196,6 +239,89 @@ export const CreateReviewerScreen = ({
       );
       return;
     }
+  };
+
+  const createMultipleQuestions = (inputMessage: string) => {
+    const numOfQuestions =
+      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
+
+    generateMultipleQuestions(
+      {
+        message: inputMessage,
+        questionType: "multipleChoice",
+        numOfQuestions: numOfQuestions,
+        numOfChoicesPerQuestion: 4,
+      },
+      {
+        onSuccess: (data) => {
+          addQuestions(
+            data.map((question) => {
+              if (question.type === "multipleChoice") {
+                return {
+                  type: "multiple_choice",
+                  choices: question.choices,
+                  inEdit: false,
+                  title: question.question,
+                  time: question.timeLimit,
+                  points: question.points,
+                };
+              }
+              if (question.type === "multiselect") {
+                return {
+                  type: "multi_select",
+                  choices: question.choices,
+                  inEdit: false,
+                  title: question.question,
+                  time: question.timeLimit,
+                  points: question.points,
+                };
+              }
+              if (question.type === "trueOrFalse") {
+                return {
+                  type: "true_or_false",
+                  choices: [
+                    {
+                      text: "True",
+                      isCorrect: question.answer,
+                    },
+                    {
+                      text: "False",
+                      isCorrect: !question.answer,
+                    },
+                  ],
+                  inEdit: false,
+                  title: question.question,
+                  time: question.timeLimit,
+                  points: question.points,
+                };
+              }
+              return {
+                type: "multiple_choice",
+                choices: [],
+                inEdit: false,
+                title: "",
+              };
+            }),
+          );
+          removeBlankQuestions();
+          addEmptyQuestion("multiple_choice");
+          setLastIndex();
+          setShowNumberOfQuestionsModal(false);
+          successToast({
+            title: "Success",
+            message: "Questions generated successfully",
+          });
+          navigation.navigate("CreateTest");
+          navigation.navigate("CreateQuestion");
+        },
+        onError: (error) => {
+          errorToast({
+            title: "Error",
+            message: error.message,
+          });
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -360,7 +486,7 @@ export const CreateReviewerScreen = ({
         <View className="my-3 h-[50%] w-[90%] self-center border border-zinc-100">
           <Controller
             control={control}
-            render={({ field: { onChange, onBlur } }) => {
+            render={({ field: { onChange, onBlur, value } }) => {
               return (
                 <>
                   <Text
@@ -380,6 +506,7 @@ export const CreateReviewerScreen = ({
                       className="flex-1"
                     >
                       <RichEditor
+                        initialContentHTML={value}
                         ref={richText}
                         onBlur={onBlur}
                         onChange={onChange}
@@ -401,25 +528,20 @@ export const CreateReviewerScreen = ({
             name="content"
           />
         </View>
-      </ScrollView>
-      {isToggled ? (
-        <View className="z-50 my-3 self-center">
-          <FAB
-            size="small"
-            color="rgb(79 70 229)"
-            title="Generate With AI"
-            icon={
-              <MaterialCommunityIcons
-                name="robot-happy"
-                size={24}
-                color="white"
-              />
-            }
+        <View>
+          <AppButton
+            text="Upload PDF file"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="36"
+            Vwidth="36"
+            onPress={filePicker}
           />
         </View>
-      ) : (
-        ""
-      )}
+      </ScrollView>
 
       <RichToolbar
         editor={richText}
@@ -434,9 +556,11 @@ export const CreateReviewerScreen = ({
           actions.redo,
           actions.removeFormat,
           actions.hiliteColor,
+          "toggleChoiceModal",
         ]}
         iconMap={{
           [actions.hiliteColor]: highlightIcon,
+          toggleChoiceModal: generateAiIcon,
         }}
       />
 
@@ -453,6 +577,34 @@ export const CreateReviewerScreen = ({
           setOpenAlert(false);
         }}
         onConfirm={goBack}
+      />
+
+      <ChoiceModal
+        title="No. of questions you want to generate"
+        selectButtonText="Generate Questions"
+        options={numberOfQuestionOptions}
+        setOptions={setNumberOfQuestionOptions}
+        isVisible={showNumberofQuestionsModal}
+        setIsVisible={() => {
+          setShowNumberOfQuestionsModal(false);
+          setIsChoiceModalToggled(false);
+        }}
+        isLoading={isGenerating}
+        showAskAIOption={false}
+        handleSelectPress={() => {
+          const reviewerContent = getValues().content;
+          const matchArray = [...reviewerContent.matchAll(regex)];
+
+          for (const match of matchArray) {
+            highlightedText = highlightedText + " " + match[1];
+          }
+
+          console.log(highlightedText);
+
+          createMultipleQuestions(highlightedText);
+
+          setIsChoiceModalToggled(false);
+        }}
       />
     </SafeAreaView>
   );
