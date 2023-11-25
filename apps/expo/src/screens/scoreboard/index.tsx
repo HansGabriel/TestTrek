@@ -8,9 +8,6 @@ import {
   BackHandler,
 } from "react-native";
 import PodiumComponent from "./PodiumComponent";
-import { LinearGradient } from "expo-linear-gradient";
-import DownloadIcon from "../../icons/DownloadIcon";
-import ShareIcon from "../../icons/ShareIcon";
 import ConfettiCannon from "react-native-confetti-cannon";
 import { FlashList } from "@shopify/flash-list";
 import { BronzeMedalIcon, GoldMedalIcon, SilverMedalIcon } from "./icons";
@@ -218,26 +215,6 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           )}
         </View>
       </View>
-
-      <LinearGradient
-        colors={["#856BFF", "#704FFF"]}
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 1, y: 0.5 }}
-        className="flex flex-row items-center justify-between px-6 pb-9 pt-6"
-      >
-        <TouchableOpacity className="flex w-[48%] flex-row items-center justify-center gap-x-2 rounded-[100px] border-b-4 border-neutral-200 bg-white py-[18px]">
-          <DownloadIcon />
-          <Text className="font-nunito-bold text-center text-base font-bold leading-snug tracking-tight text-violet-600">
-            Save
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="flex w-[48%] flex-row items-center justify-center gap-x-2 rounded-[100px] border-b-4 border-neutral-200 bg-white py-[18px]">
-          <ShareIcon />
-          <Text className="font-nunito-bold text-center text-base font-bold leading-snug tracking-tight text-violet-600">
-            Share
-          </Text>
-        </TouchableOpacity>
-      </LinearGradient>
 
       <StatusBar barStyle="light-content" />
       {isShowinConfetti && (
