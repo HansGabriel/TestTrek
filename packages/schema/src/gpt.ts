@@ -6,7 +6,6 @@ export const singleQuestionPromptInput = z.object({
     "multipleChoice",
     "identification",
     "trueOrFalse",
-    "enumeration",
     "multiselect",
   ]),
 });
@@ -17,7 +16,6 @@ export const multipleQuestionsPromptInput = z.object({
     "multipleChoice",
     "identification",
     "trueOrFalse",
-    "enumeration",
     "multiselect",
   ]),
   numOfQuestions: z.number().optional(),

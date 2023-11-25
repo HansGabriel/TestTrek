@@ -66,18 +66,6 @@ export const questionSchema = z.discriminatedUnion("type", [
     timeLimit: timeLimitSchema,
     points: pointsSchema,
   }),
-  z.object({
-    question: z.string(),
-    choices: z.array(
-      z.object({
-        isCorrect: z.boolean(),
-        text: z.string(),
-      }),
-    ),
-    type: z.literal("enumeration"),
-    timeLimit: timeLimitSchema,
-    points: pointsSchema,
-  }),
 ]);
 
 export const questionsSchema = z.array(questionSchema);

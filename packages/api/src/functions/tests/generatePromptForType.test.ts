@@ -53,16 +53,6 @@ ${timeAndPointsPrompt}`,
     );
   });
 
-  it("should generate prompt for enumeration with default number of answers", () => {
-    const result = generatePromptForType(message, "enumeration");
-    expect(result).toEqual(
-      `Provide an enumeration question (maximum of 100 characters) related to "${message}" with a maximum of 4 inputs. The choices or answer must not exceed 68 characters. Format as:
-Question: [Your question here]
-Answers: [1. Answer1, 2. Answer2, 3. Answer3, 4. Answer4]
-${timeAndPointsPrompt}`,
-    );
-  });
-
   it("should generate default prompt", () => {
     // Use a type not handled
     const result = generatePromptForType(message, "unhandledType" as any);

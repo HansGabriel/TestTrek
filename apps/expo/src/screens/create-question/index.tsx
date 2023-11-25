@@ -781,14 +781,6 @@ export const CreateQuestionScreen: FC = () => {
                 }}
               />
             ))
-            .with("enumeration", () => (
-              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-                <View className="space-y-4">
-                  <View>{renderChoice(choices[0]!)}</View>
-                  <View>{renderChoice(choices[1]!)}</View>
-                </View>
-              </View>
-            ))
             .with("multi_select", () => (
               <MultiSelectCards
                 {...{
@@ -813,7 +805,7 @@ export const CreateQuestionScreen: FC = () => {
             .exhaustive()}
 
           <TouchableOpacity
-            className={`mt-10 w-[90%] self-center items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
+            className={`mt-10 w-[90%] items-center justify-center self-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
               !isSaved ? "opacity-50" : ""
             }`}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
