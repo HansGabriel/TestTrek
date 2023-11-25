@@ -8,7 +8,14 @@ import { updateUserInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHa
 
 export const useRouter = router({
   getTop: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/top",
+      },
+    })
     .input(highlightUsersInput)
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.user.findMany({
         ...(input && input.amountOfUsers
