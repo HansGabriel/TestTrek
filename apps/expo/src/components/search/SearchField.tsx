@@ -14,6 +14,7 @@ interface FieldProps {
   onClose: () => void;
   clicked: boolean;
   setClicked: () => void;
+  filterByCurrentUser?: boolean;
 }
 
 export const SearchField: FC<FieldProps> = ({
@@ -22,6 +23,7 @@ export const SearchField: FC<FieldProps> = ({
   onClose,
   clicked,
   setClicked,
+  filterByCurrentUser = false,
 }) => {
   const fieldBgColor = clicked ? "rgb(237 233 254)" : "lightgray";
   const fieldBorderColor = clicked ? "rgba(105, 73, 255, 1)" : "lightgray";
@@ -34,6 +36,9 @@ export const SearchField: FC<FieldProps> = ({
     reviewers: false,
   });
 
+  const { data: currentUser } = trpc.user.getUserDetails.useQuery();
+  const currentUserId = filterByCurrentUser ? currentUser?.userId : undefined;
+
   const toggleCategory = (category: string | number) => {
     setSelectedCategories((prev) => ({
       ...prev,
@@ -41,19 +46,25 @@ export const SearchField: FC<FieldProps> = ({
     }));
   };
 
-  const allCategories = ["tests", "users", "collections", "reviewers"];
   const isAnyCategorySelected = Object.values(selectedCategories).some(
     (value) => value,
   );
-  const searchQueries = isAnyCategorySelected
-    ? Object.entries(selectedCategories)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .filter(([_, isSelected]) => isSelected)
-        .map(([category]) => ({ indexName: category, query: debouncedQuery }))
-    : allCategories.map((category) => ({
-        indexName: category,
-        query: debouncedQuery,
-      }));
+
+  const searchQueries = Object.entries(selectedCategories)
+    .filter(([category, isSelected]) => {
+      return (
+        (isSelected || !isAnyCategorySelected) &&
+        !(currentUserId && category === "users")
+      );
+    })
+    .map(([category]) => ({
+      indexName: category,
+      query: debouncedQuery,
+      ...(filterByCurrentUser &&
+        currentUserId && {
+          params: { filters: `user.userId:${currentUserId}` },
+        }),
+    }));
 
   const { data: hits } = trpc.algolia.algoliaSearch.useQuery(searchQueries, {
     enabled: debouncedQuery.length > 0,

@@ -19,9 +19,18 @@ export const algoliaSearch = router({
     .output(z.any())
     .query(async ({ input }) => {
       const client = algoliaSearchClient();
-      const { results } = await client.multipleQueries(input);
+
+      const modifiedQueries = input.map((item) => {
+        return item.params
+          ? { ...item }
+          : { indexName: item.indexName, query: item.query };
+      });
+
+      console.log("lolol: ", modifiedQueries);
+      const { results } = await client.multipleQueries(modifiedQueries);
 
       const compiledHits = compileAlgoliaHits(results as AlgoliaSearchResult[]);
+
       console.log("Algolia Results From Router:", compiledHits);
       return compiledHits;
     }),
