@@ -13,20 +13,36 @@ import {
 import { TRPCError } from "@trpc/server";
 
 export const collectionRouter = router({
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.collection.findMany({
-      select: {
-        id: true,
-        title: true,
-        userId: true,
-        imageUrl: true,
-        tests: true,
+  getAll: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/collections",
       },
-    });
-  }),
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.collection.findMany({
+        select: {
+          id: true,
+          title: true,
+          userId: true,
+          imageUrl: true,
+          tests: true,
+        },
+      });
+    }),
 
   getCollectionsByUserId: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/collections/user/{userId}",
+      },
+    })
     .input(collectionByUserIdSchema)
+    .output(z.any())
     .query(({ ctx, input }) => {
       const { userId, sortBy } = input;
 
@@ -104,7 +120,14 @@ export const collectionRouter = router({
     }),
 
   getByUserId: protectedProcedure
+    // .meta({
+    //   openapi: {
+    //     method: "GET",
+    //     path: "/collections/user",
+    //   },
+    // })
     .input(collectionSortSchema)
+    .output(z.any())
     .query(({ ctx, input }) => {
       const { sortBy } = input;
 
@@ -181,7 +204,14 @@ export const collectionRouter = router({
     }),
 
   getByCollectionId: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/collections/collection/{collectionId}",
+      },
+    })
     .input(z.object({ collectionId: z.string() }))
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.collection.findUnique({
         where: {
@@ -244,6 +274,12 @@ export const collectionRouter = router({
     }),
 
   getTestsInCollection: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/collections/tests/{collectionId}",
+      },
+    })
     .input(
       z.object({
         collectionId: z.string(),
@@ -254,6 +290,7 @@ export const collectionRouter = router({
         ]),
       }),
     )
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.testOnCollection.findMany({
         where: {
@@ -319,7 +356,14 @@ export const collectionRouter = router({
     }),
 
   create: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/collections",
+      },
+    })
     .input(collectionsSchema)
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { title, image, visibility } = input;
 
@@ -374,8 +418,15 @@ export const collectionRouter = router({
     }),
 
   editCollection: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/collections",
+      },
+    })
     .input(collectionsSchema)
     .input(z.object({ collectionId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { image, title, visibility, collectionId } = input;
 
@@ -442,7 +493,14 @@ export const collectionRouter = router({
       return editedCollection;
     }),
   getTopCollections: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/collections/top",
+      },
+    })
     .input(highlightCollectionsInput)
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.collection.findMany({
         ...(input && input.amountOfCollections
@@ -462,12 +520,19 @@ export const collectionRouter = router({
     }),
 
   updateTestsOnCollection: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/collections/tests",
+      },
+    })
     .input(
       z.object({
         collectionId: z.string(),
         testIds: z.array(z.string()),
       }),
     )
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { collectionId, testIds } = input;
 
@@ -495,7 +560,14 @@ export const collectionRouter = router({
     }),
 
   deleteCollection: protectedProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/collections",
+      },
+    })
     .input(z.object({ collectionId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { collectionId } = input;
 

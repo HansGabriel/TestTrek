@@ -32,11 +32,18 @@ export const useRouter = router({
     }),
 
   getUserById: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/{userId}",
+      },
+    })
     .input(
       z.object({
         userId: z.string(),
       }),
     )
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.user.findUnique({
         where: {
@@ -45,16 +52,32 @@ export const useRouter = router({
       });
     }),
 
-  getUserDetails: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findFirst({
-      where: {
-        userId: ctx.auth.userId,
+  getUserDetails: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me",
       },
-    });
-  }),
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.user.findFirst({
+        where: {
+          userId: ctx.auth.userId,
+        },
+      });
+    }),
 
   getPlaysByUserId: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/{userId}/plays",
+      },
+    })
     .input(z.object({ userId: z.string() }))
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { userId } = input;
 
@@ -68,32 +91,50 @@ export const useRouter = router({
       });
     }),
 
-  getUserPlays: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.play.aggregate({
-      _count: {
-        playerId: true,
+  getUserPlays: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/plays",
       },
-      where: {
-        playerId: ctx.auth.userId,
-        isFinished: true,
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.play.aggregate({
+        _count: {
+          playerId: true,
+        },
+        where: {
+          playerId: ctx.auth.userId,
+          isFinished: true,
+        },
+      });
+    }),
+
+  getTimesUserOnTop: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/top",
       },
-    });
-  }),
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const userPlays = await ctx.prisma.play.findMany({
+        where: {
+          playerId: ctx.auth.userId,
+        },
+      });
 
-  getTimesUserOnTop: protectedProcedure.query(async ({ ctx }) => {
-    const userPlays = await ctx.prisma.play.findMany({
-      where: {
-        playerId: ctx.auth.userId,
-      },
-    });
+      let totalTop3Count = 0;
 
-    let totalTop3Count = 0;
-
-    await pMap(
-      userPlays,
-      async (item) => {
-        const top3Plays = await ctx.prisma
-          .$queryRaw<PlayersHighscore>(Prisma.sql`
+      await pMap(
+        userPlays,
+        async (item) => {
+          const top3Plays = await ctx.prisma
+            .$queryRaw<PlayersHighscore>(Prisma.sql`
       SELECT
         DISTINCT ON ("Play"."playerId")
         "User"."firstName",
@@ -119,109 +160,143 @@ export const useRouter = router({
       LIMIT 3;
     `);
 
-        const userTop3Count = top3Plays.filter(
-          (topPlay) => topPlay.id === ctx.auth.userId,
-        ).length;
-        totalTop3Count += userTop3Count;
+          const userTop3Count = top3Plays.filter(
+            (topPlay) => topPlay.id === ctx.auth.userId,
+          ).length;
+          totalTop3Count += userTop3Count;
+        },
+        { concurrency: 5 },
+      );
+
+      return totalTop3Count;
+    }),
+
+  getTotalScore: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/score",
       },
-      { concurrency: 5 },
-    );
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.play.aggregate({
+        _sum: {
+          score: true,
+        },
+        where: {
+          playerId: ctx.auth.userId,
+        },
+      });
+    }),
 
-    return totalTop3Count;
-  }),
-
-  getTotalScore: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.play.aggregate({
-      _sum: {
-        score: true,
+  getTotalTests: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/tests",
       },
-      where: {
-        playerId: ctx.auth.userId,
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.test.aggregate({
+        _count: {
+          userId: true,
+        },
+        where: {
+          userId: ctx.auth.userId,
+        },
+      });
+    }),
+
+  getUserWeeklyAndDailyScores: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/scores",
       },
-    });
-  }),
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const currentDate = new Date();
 
-  getTotalTests: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.test.aggregate({
-      _count: {
-        userId: true,
-      },
-      where: {
-        userId: ctx.auth.userId,
-      },
-    });
-  }),
+      const startOfWeek = new Date(currentDate);
+      startOfWeek.setDate(
+        currentDate.getDate() -
+          currentDate.getDay() +
+          (currentDate.getDay() === 0 ? -6 : 1),
+      );
+      startOfWeek.setHours(0, 0, 0, 0);
 
-  getUserWeeklyAndDailyScores: protectedProcedure.query(async ({ ctx }) => {
-    const currentDate = new Date();
+      const endOfWeek = new Date(currentDate);
+      endOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 7);
+      endOfWeek.setHours(23, 59, 59, 999);
 
-    const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(
-      currentDate.getDate() -
-        currentDate.getDay() +
-        (currentDate.getDay() === 0 ? -6 : 1),
-    );
-    startOfWeek.setHours(0, 0, 0, 0);
+      const days = [...Array(7).keys()].map((dayOffset) => {
+        const startOfDay = new Date(startOfWeek);
+        startOfDay.setDate(startOfWeek.getDate() + dayOffset);
+        const endOfDay = new Date(startOfDay);
+        endOfDay.setHours(23, 59, 59, 999);
 
-    const endOfWeek = new Date(currentDate);
-    endOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 7);
-    endOfWeek.setHours(23, 59, 59, 999);
+        const startOfDayTimestamp = startOfDay.toISOString();
+        const endOfDayTimestamp = endOfDay.toISOString();
 
-    const days = [...Array(7).keys()].map((dayOffset) => {
-      const startOfDay = new Date(startOfWeek);
-      startOfDay.setDate(startOfWeek.getDate() + dayOffset);
-      const endOfDay = new Date(startOfDay);
-      endOfDay.setHours(23, 59, 59, 999);
+        return {
+          startOfDay: startOfDayTimestamp,
+          endOfDay: endOfDayTimestamp,
+        };
+      });
 
-      const startOfDayTimestamp = startOfDay.toISOString();
-      const endOfDayTimestamp = endOfDay.toISOString();
+      const dailyScores = await Promise.all(
+        days.map(async (day) => {
+          const dailyScore = await ctx.prisma.play.aggregate({
+            _sum: {
+              score: true,
+            },
+            where: {
+              playerId: ctx.auth.userId,
+              createdAt: {
+                gte: new Date(day.startOfDay),
+                lte: new Date(day.endOfDay),
+              },
+            },
+          });
+
+          return dailyScore._sum.score || 0;
+        }),
+      );
+
+      const weeklyScore = await ctx.prisma.play.aggregate({
+        _sum: {
+          score: true,
+        },
+        where: {
+          playerId: ctx.auth.userId,
+          createdAt: {
+            gte: new Date(startOfWeek.toISOString()),
+            lte: new Date(endOfWeek.toISOString()),
+          },
+        },
+      });
 
       return {
-        startOfDay: startOfDayTimestamp,
-        endOfDay: endOfDayTimestamp,
+        weeklyScore: weeklyScore._sum.score || 0,
+        dailyScores,
       };
-    });
-
-    const dailyScores = await Promise.all(
-      days.map(async (day) => {
-        const dailyScore = await ctx.prisma.play.aggregate({
-          _sum: {
-            score: true,
-          },
-          where: {
-            playerId: ctx.auth.userId,
-            createdAt: {
-              gte: new Date(day.startOfDay),
-              lte: new Date(day.endOfDay),
-            },
-          },
-        });
-
-        return dailyScore._sum.score || 0;
-      }),
-    );
-
-    const weeklyScore = await ctx.prisma.play.aggregate({
-      _sum: {
-        score: true,
-      },
-      where: {
-        playerId: ctx.auth.userId,
-        createdAt: {
-          gte: new Date(startOfWeek.toISOString()),
-          lte: new Date(endOfWeek.toISOString()),
-        },
-      },
-    });
-
-    return {
-      weeklyScore: weeklyScore._sum.score || 0,
-      dailyScores,
-    };
-  }),
+    }),
 
   editUserDetails: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/users/me",
+      },
+    })
     .input(userStoredSchema)
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { userName, firstName, lastName, email, about } = input;
 

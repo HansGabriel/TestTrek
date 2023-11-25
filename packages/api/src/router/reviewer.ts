@@ -12,7 +12,14 @@ import {
 
 export const reviewerRouter = router({
   getAllReviewers: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/reviewers",
+      },
+    })
     .input(reviewerFiltersSchema)
+    .output(z.any())
     .query(({ ctx, input }) => {
       const { reviewerType, sortBy } = input;
 
@@ -68,11 +75,18 @@ export const reviewerRouter = router({
     }),
 
   getReviewerById: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/reviewers/{reviewerId}",
+      },
+    })
     .input(
       z.object({
         reviewerId: z.string(),
       }),
     )
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { reviewerId } = input;
 
@@ -102,7 +116,14 @@ export const reviewerRouter = router({
     }),
 
   getDetails: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/reviewers/{reviewerId}/details",
+      },
+    })
     .input(z.object({ reviewerId: z.string() }))
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { reviewerId } = input;
 
@@ -130,7 +151,14 @@ export const reviewerRouter = router({
     }),
 
   createReviewer: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/reviewers",
+      },
+    })
     .input(reviewerSchema)
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { title, imageUrl, content, visibility } = input;
       const userId = ctx.auth.userId;
@@ -183,8 +211,15 @@ export const reviewerRouter = router({
     }),
 
   updateReviewer: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/reviewers/{reviewerId}",
+      },
+    })
     .input(reviewerSchema)
     .input(z.object({ reviewerId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { reviewerId, title, imageUrl, content, visibility } = input;
 
@@ -262,7 +297,14 @@ export const reviewerRouter = router({
     }),
 
   delete: protectedProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/reviewers/{reviewerId}",
+      },
+    })
     .input(z.object({ reviewerId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { reviewerId } = input;
 

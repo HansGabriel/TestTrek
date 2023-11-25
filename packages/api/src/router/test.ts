@@ -14,61 +14,77 @@ import {
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
 export const testRouter = router({
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.test.findMany({
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        questions: {
-          select: {
-            choices: {
-              select: {
-                id: true,
-                isCorrect: true,
-                text: true,
-              },
-            },
-            id: true,
-            image: true,
-            points: true,
-            time: true,
-            title: true,
-            type: true,
-          },
-        },
-        collections: {
-          include: {
-            collection: true,
-          },
-        },
-        visibility: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        createdAt: true,
-        updatedAt: true,
+  getAll: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests",
       },
-    });
-  }),
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(({ ctx }) => {
+      return ctx.prisma.test.findMany({
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          imageUrl: true,
+          keywords: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          questions: {
+            select: {
+              choices: {
+                select: {
+                  id: true,
+                  isCorrect: true,
+                  text: true,
+                },
+              },
+              id: true,
+              image: true,
+              points: true,
+              time: true,
+              title: true,
+              type: true,
+            },
+          },
+          collections: {
+            include: {
+              collection: true,
+            },
+          },
+          visibility: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    }),
   getCollectionTests: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/collection/{collectionId}",
+      },
+    })
     .input(
       z.object({
         collectionId: z.string(),
         type: z.enum(["all", "public", "private"]).default("all"),
       }),
     )
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { collectionId, type } = input;
 
@@ -132,7 +148,14 @@ export const testRouter = router({
       return mappedPublicTests;
     }),
   getById: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/{testId}",
+      },
+    })
     .input(z.object({ testId: z.string() }))
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findUnique({
         where: {
@@ -187,7 +210,14 @@ export const testRouter = router({
     }),
 
   create: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/tests",
+      },
+    })
     .input(testInputSchema)
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { title, description, image, keywords, visibility, questions } =
         input;
@@ -349,8 +379,15 @@ export const testRouter = router({
       return test;
     }),
   edit: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/tests/{testId}",
+      },
+    })
     .input(z.object({ testId: z.string() }))
     .input(testInputSchema)
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const {
         testId,
@@ -555,7 +592,14 @@ export const testRouter = router({
     }),
 
   getDiscoverTests: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/discover",
+      },
+    })
     .input(highlightTestsInput)
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
         ...(input && input.amountOfTests
@@ -598,7 +642,14 @@ export const testRouter = router({
     }),
 
   getTrendingTests: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/trending",
+      },
+    })
     .input(highlightTestsInput)
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
         ...(input && input.amountOfTests
@@ -653,7 +704,14 @@ export const testRouter = router({
     }),
 
   getTopPicks: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/top-picks",
+      },
+    })
     .input(highlightTestsInput)
+    .output(z.any())
     .query(({ ctx, input }) => {
       return ctx.prisma.test.findMany({
         ...(input && input.amountOfTests
@@ -708,7 +766,14 @@ export const testRouter = router({
     }),
 
   getDetails: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/details/{testId}",
+      },
+    })
     .input(z.object({ testId: z.string() }))
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { testId } = input;
 
@@ -757,7 +822,14 @@ export const testRouter = router({
     }),
 
   delete: protectedProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/tests/{testId}",
+      },
+    })
     .input(z.object({ testId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { testId } = input;
 
@@ -799,7 +871,14 @@ export const testRouter = router({
     }),
 
   play: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/tests/play",
+      },
+    })
     .input(z.object({ testId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.play.create({
         data: {
@@ -818,6 +897,12 @@ export const testRouter = router({
     }),
 
   getScoreboard: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/scoreboard/{testId}",
+      },
+    })
     .input(z.object({ testId: z.string() }))
     .output(playersHighscoreSchema)
     .query(async ({ ctx, input }) => {
@@ -860,6 +945,12 @@ export const testRouter = router({
     }),
 
   getIsFavorite: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/tests/favorite",
+      },
+    })
     .input(z.object({ testId: z.string() }))
     .output(z.boolean())
     .query(async ({ ctx, input }) => {
@@ -896,7 +987,14 @@ export const testRouter = router({
     }),
 
   toggleFavorite: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/tests/favorite",
+      },
+    })
     .input(z.object({ testId: z.string() }))
+    .output(z.any())
     .mutation(async ({ ctx, input }) => {
       const { testId } = input;
 
