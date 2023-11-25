@@ -126,20 +126,21 @@ export const MyLibraryScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, height: height, width: width }}>
-      <SafeAreaView className="mx-6 flex-row items-center justify-between space-x-4">
+      <SafeAreaView className="z-50 flex-row items-center justify-between space-x-4">
         {isSearchPressed ? (
-          <View className="sticky z-50 flex-row justify-between self-center bg-white">
+          <View className=" z-50 flex-row justify-between self-center bg-white">
             <SearchField
               searchString={query}
               onChange={updateQuery}
               onClose={() => setIsSearchPressed(false)}
               clicked={isClicked}
               setClicked={() => setIsClicked(!isClicked)}
+              filterByCurrentUser={true}
             />
           </View>
         ) : (
           <Animated.View
-            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white pb-3"
+            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white px-5 pb-3"
             entering={SlideInLeft}
             exiting={SlideOutLeft}
           >

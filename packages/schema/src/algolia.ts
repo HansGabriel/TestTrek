@@ -5,6 +5,9 @@ const multipleAlgoliaQueriesSchema = z.object({
   query: z.string(),
 });
 
-export const multipleAlgoliaQueriesArraySchema = z.array(
-  multipleAlgoliaQueriesSchema,
-);
+const multipleAlgoliaQueriesArraySchema = z.array(multipleAlgoliaQueriesSchema);
+
+export const algoliaQueries = z.object({
+  details: multipleAlgoliaQueriesArraySchema,
+  filterBySignedUser: z.boolean(),
+});

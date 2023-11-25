@@ -378,39 +378,34 @@ export const collectionRouter = router({
         },
       });
 
-      if (newCollection.visibility === "public") {
-        const collectionForAlgolia = await ctx.prisma.collection.findUnique({
-          where: {
-            id: newCollection.id,
-          },
-          select: {
-            id: true,
-            user: {
-              select: {
-                userId: true,
-                imageUrl: true,
-                firstName: true,
-                lastName: true,
-              },
+      const collectionForAlgolia = await ctx.prisma.collection.findUnique({
+        where: {
+          id: newCollection.id,
+        },
+        select: {
+          id: true,
+          user: {
+            select: {
+              userId: true,
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
             },
-            title: true,
-            imageUrl: true,
-            createdAt: true,
-            updatedAt: true,
-            visibility: true,
           },
-        });
+          title: true,
+          imageUrl: true,
+          createdAt: true,
+          updatedAt: true,
+          visibility: true,
+        },
+      });
 
-        if (collectionForAlgolia !== null) {
-          try {
-            await updateCollectionInAlgolia(collectionForAlgolia);
-            console.log(
-              `Public collection ${newCollection.id} added to Algolia`,
-            );
-          } catch (error) {
-            console.error(`Error adding collection to Algolia: `, error);
-            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
-          }
+      if (collectionForAlgolia !== null) {
+        try {
+          await updateCollectionInAlgolia(collectionForAlgolia);
+        } catch (error) {
+          console.error(`Error adding collection to Algolia: `, error);
+          console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
         }
       }
 
@@ -448,45 +443,34 @@ export const collectionRouter = router({
         },
       });
 
-      if (editedCollection.visibility === "public") {
-        const collectionForAlgolia = await ctx.prisma.collection.findUnique({
-          where: {
-            id: editedCollection.id,
-          },
-          select: {
-            id: true,
-            user: {
-              select: {
-                userId: true,
-                imageUrl: true,
-                firstName: true,
-                lastName: true,
-              },
+      const collectionForAlgolia = await ctx.prisma.collection.findUnique({
+        where: {
+          id: editedCollection.id,
+        },
+        select: {
+          id: true,
+          user: {
+            select: {
+              userId: true,
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
             },
-            title: true,
-            imageUrl: true,
-            createdAt: true,
-            updatedAt: true,
-            visibility: true,
           },
-        });
+          title: true,
+          imageUrl: true,
+          createdAt: true,
+          updatedAt: true,
+          visibility: true,
+        },
+      });
 
-        if (collectionForAlgolia !== null) {
-          try {
-            await updateCollectionInAlgolia(collectionForAlgolia);
-            console.log(
-              `Public collection ${editedCollection.id} added to Algolia`,
-            );
-          } catch (error) {
-            console.error(`Error adding collection to Algolia: `, error);
-            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
-          }
-        }
-      } else if (editedCollection.visibility === "private") {
+      if (collectionForAlgolia !== null) {
         try {
-          await deleteCollectionFromAlgolia(collectionId);
+          await updateCollectionInAlgolia(collectionForAlgolia);
         } catch (error) {
-          console.error(`Error removing collection from Algolia: ${error}`);
+          console.error(`Error adding collection to Algolia: `, error);
+          console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
         }
       }
 
