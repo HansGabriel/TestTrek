@@ -531,7 +531,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 />
               ))
               .with(undefined, () => <></>)
-              .run()}
+              .exhaustive()}
 
             {isDone && (
               <>

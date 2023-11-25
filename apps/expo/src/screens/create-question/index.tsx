@@ -336,7 +336,7 @@ export const CreateQuestionScreen: FC = () => {
               );
             },
           )
-          .run();
+          .exhaustive();
 
         setAiQuestion("");
         setShowQuestionModal(false);

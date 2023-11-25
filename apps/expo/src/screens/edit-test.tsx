@@ -83,7 +83,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
                   image: question.image,
                   inEdit: false,
                 }))
-                .run(),
+                .exhaustive(),
             ),
           );
         }

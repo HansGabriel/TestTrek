@@ -25,7 +25,7 @@ model User {
     collections   Collection[]
     plays         Play[]
     favoriteTests UserOnFavoriteTest[]
-    Reviewer      Reviewer[]
+    reviewer      Reviewer[]
     testHistories TestHistory[]
 }
 
@@ -65,20 +65,21 @@ model Test {
 }
 
 model TestHistory {
-    id          String            @id @default(cuid())
-    userId      String
-    creatorId   String
-    imageUrl    String
-    title       String
-    description String
-    visibility  Visibility
-    keywords    String[]
-    score       Int
-    time        Int
-    questions   QuestionHistory[]
-    user        User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
-    createdAt   DateTime          @default(now())
-    updatedAt   DateTime          @updatedAt
+    id              String            @id @default(cuid())
+    userId          String
+    creatorName     String
+    creatorUsername String
+    imageUrl        String
+    title           String
+    description     String
+    visibility      Visibility
+    keywords        String[]
+    score           Int
+    time            Int
+    questions       QuestionHistory[]
+    user            User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
 }
 
 model QuestionHistory {
@@ -102,6 +103,8 @@ model ChoiceHistory {
     isCorrect  Boolean
     isChosen   Boolean
     question   QuestionHistory @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    createdAt  DateTime        @default(now())
+    updatedAt  DateTime        @updatedAt
 }
 
 model Reviewer {
@@ -147,6 +150,8 @@ model Choice {
     text       String
     isCorrect  Boolean
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }
 
 model Keyword {
