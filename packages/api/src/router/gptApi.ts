@@ -24,6 +24,12 @@ import { fetchGPT } from "../services/gptApiHandlers";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/gpt/question",
+      },
+    })
     .input(singleQuestionPromptInput)
     .output(questionSchema)
     .mutation(async ({ input }) => {
@@ -60,6 +66,12 @@ export const gptApiRouter = router({
     }),
 
   generateMultipleQuestions: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/gpt/questions",
+      },
+    })
     .input(multipleQuestionsPromptInput)
     .output(questionsSchema)
     .mutation(async ({ input }) => {

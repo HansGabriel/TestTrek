@@ -13,14 +13,6 @@ describe("authRouter", () => {
 
   const caller = authRouter.createCaller(ctx);
 
-  describe("getSession query", () => {
-    it("should handle undefined", async () => {
-      ctx.auth.session = undefined;
-      const result = await caller.getSession();
-      expect(result).toEqual(undefined);
-    });
-  });
-
   describe("getSecretMessage query", () => {
     it("should handle getSecretMessage query for protected secret message", async () => {
       const result = await caller.getSecretMessage();

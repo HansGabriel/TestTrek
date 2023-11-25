@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import {
   testByUserIdSchema,
@@ -6,7 +7,14 @@ import {
 
 export const testFilterRouter = router({
   getAll: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/test-filters",
+      },
+    })
     .input(testFiltersSchema)
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { testType, sortBy } = input;
 
@@ -86,7 +94,14 @@ export const testFilterRouter = router({
       });
     }),
   getByUserId: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/test-filters/{userId}",
+      },
+    })
     .input(testByUserIdSchema)
+    .output(z.any())
     .query(async ({ ctx, input }) => {
       const { userId, sortBy, testType } = input;
 
