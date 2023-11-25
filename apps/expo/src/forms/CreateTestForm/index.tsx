@@ -57,7 +57,9 @@ import { mapQuestionType } from "../../utils/helpers/strings";
 import { AlertModal } from "../../components/modals/AlertModal";
 import { type QuestionType } from "../../stores/useQuestionStore";
 
-type FormProps = Omit<TestInput, "questions">;
+type FormProps = Omit<TestInput, "questions"> & {
+  id: string;
+};
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
 
 interface Props {
@@ -75,6 +77,7 @@ const CreateTestForm: FC<Props> = ({
   isCreatingQuiz = false,
   isUploading = false,
 }) => {
+  const trpcUtils = trpc.useContext();
   const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
@@ -104,6 +107,24 @@ const CreateTestForm: FC<Props> = ({
 
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
     trpc.gptApi.generateMultipleQuestions.useMutation();
+
+  const { mutate: deleteTest, isLoading: isDeleting } =
+    trpc.test.delete.useMutation({
+      onSuccess: () => {
+        successToast({
+          title: "Success",
+          message: "Test deleted successfully",
+        });
+        trpcUtils.test.invalidate();
+        navigation.navigate("MyLibrary");
+      },
+      onError: (error) => {
+        errorToast({
+          title: "Error",
+          message: error.message,
+        });
+      },
+    });
 
   const getDisplayImage = (isDefault = false) => {
     if (testDetails?.image && !image) {
@@ -341,6 +362,16 @@ const CreateTestForm: FC<Props> = ({
                     points: question.points,
                   };
                 }
+                if (question.type === "identification") {
+                  return {
+                    type: "identification",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
                   choices: [],
@@ -406,6 +437,13 @@ const CreateTestForm: FC<Props> = ({
         onIconPress={() => setIsSidebarOpen(true)}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
+        showDropdown={testTitle === "Edit Test"}
+        onDropdownPress={() =>
+          deleteTest({
+            testId: testDetails?.id ?? "",
+          })
+        }
+        isLoadingDropdown={isDeleting}
       />
 
       <KeyboardAvoidingView

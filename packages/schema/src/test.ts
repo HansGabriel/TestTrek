@@ -5,12 +5,6 @@ export const choiceSchema = z.object({
   isCorrect: z.boolean(),
 });
 
-export const modifiedChoiceSchema = choiceSchema.merge(
-  z.object({
-    possibleAnswers: z.array(z.string().min(1).max(100)),
-  }),
-);
-
 export const questionSchema = z.discriminatedUnion("type", [
   z.object({
     title: z.string().min(1).max(150),
@@ -50,7 +44,7 @@ export const questionSchema = z.discriminatedUnion("type", [
     time: z.number().min(1).max(1000),
     points: z.number().min(1).max(10_000),
     type: z.literal("enumeration"),
-    choices: z.array(modifiedChoiceSchema),
+    choices: z.array(choiceSchema),
   }),
 ]);
 

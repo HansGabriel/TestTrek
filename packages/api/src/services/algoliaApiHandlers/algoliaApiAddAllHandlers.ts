@@ -3,17 +3,17 @@ import {
   ReviewersForAlgolia,
   TestsForAlgolia,
   UsersForAlgolia,
-} from "./algoliaTypes/algoliaTestsTypes";
+} from "./algoliaTypes/algoliaTypes";
 import algoliasearch from "algoliasearch";
 
 import "dotenv/config";
 
-const initializeAlgoliaClient = () => {
+export const initializeAlgoliaClient = () => {
   const applicationId = process.env.ALGOLIA_APP_ID;
   const adminKey = process.env.ALGOLIA_ADMIN_KEY;
 
   if (!applicationId || !adminKey) {
-    throw new Error("ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY are required");
+    throw new Error("Api: ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY are required");
   }
 
   return algoliasearch(applicationId, adminKey);

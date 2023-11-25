@@ -1,14 +1,19 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import LeftArrowIcon from "../../icons/LeftArrowIcon";
+import DeleteDropdown from "../dropdowns/DeleteDropdown";
+
 import type { FC } from "react";
 import type { ViewProps } from "react-native";
 
 interface HeaderProps extends ViewProps {
   screenName: string;
+  showDropdown?: boolean;
+  onDropdownPress?: () => void;
   optionIcon?: React.ReactNode;
   onIconPress?: () => void;
   backIcon?: React.ReactNode;
   handleExit?: () => void;
+  isLoadingDropdown?: boolean;
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({
@@ -17,6 +22,9 @@ export const ReusableHeader: FC<HeaderProps> = ({
   onIconPress,
   backIcon = <LeftArrowIcon />,
   handleExit,
+  showDropdown = false,
+  onDropdownPress,
+  isLoadingDropdown = false,
   ...props
 }) => {
   return (
@@ -36,9 +44,17 @@ export const ReusableHeader: FC<HeaderProps> = ({
             {screenName}
           </Text>
         </View>
-        <TouchableOpacity onPress={onIconPress} className="self-center">
-          {optionIcon}
-        </TouchableOpacity>
+        <View className="flex flex-row items-center gap-x-4">
+          {showDropdown && onDropdownPress && (
+            <DeleteDropdown
+              onDelete={onDropdownPress}
+              isLoading={isLoadingDropdown}
+            />
+          )}
+          <TouchableOpacity onPress={onIconPress} className="self-center">
+            {optionIcon}
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   );

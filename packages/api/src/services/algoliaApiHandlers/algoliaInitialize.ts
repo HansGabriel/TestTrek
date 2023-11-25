@@ -3,12 +3,27 @@ import {
   addAllReviewersToAlgolia,
   addAllTestsToAlgolia,
   addAllUsersToAlgolia,
+  initializeAlgoliaClient,
 } from "./algoliaApiAddAllHandlers";
 import { prisma } from "@acme/db";
+
+const clearAlgoliaIndex = async (indexName: string) => {
+  const client = initializeAlgoliaClient();
+  const index = client.initIndex(indexName);
+
+  await index.clearObjects();
+  console.log(`Cleared Algolia Index: ${indexName}`);
+};
 
 const initializeAlgolia = async () => {
   try {
     console.log("Running initialization tasks...");
+
+    await clearAlgoliaIndex("tests");
+    await clearAlgoliaIndex("users");
+    await clearAlgoliaIndex("collections");
+    await clearAlgoliaIndex("reviewers");
+
     await addAllTestsToAlgolia(
       prisma.test.findMany({
         where: {
@@ -79,6 +94,7 @@ const initializeAlgolia = async () => {
           },
           title: true,
           imageUrl: true,
+          visibility: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -100,6 +116,7 @@ const initializeAlgolia = async () => {
               lastName: true,
             },
           },
+          visibility: true,
           createdAt: true,
           updatedAt: true,
         },

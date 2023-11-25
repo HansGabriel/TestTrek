@@ -6,6 +6,10 @@ import { TRPCError } from "@trpc/server";
 
 import { Prisma } from "@acme/db";
 import type { PlayersHighscore } from "@acme/schema/src/types";
+import {
+  deleteTestFromAlgolia,
+  updateTestInAlgolia,
+} from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -298,6 +302,50 @@ export const testRouter = router({
 
       await ctx.prisma.$transaction(questionTransactions);
 
+      if (test.visibility === "public") {
+        const testForAlgolia = await ctx.prisma.test.findUnique({
+          where: {
+            id: test.id,
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            imageUrl: true,
+            keywords: {
+              select: {
+                name: true,
+              },
+            },
+            questions: {
+              select: {
+                id: true,
+              },
+            },
+            visibility: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+
+        if (testForAlgolia !== null) {
+          try {
+            await updateTestInAlgolia(testForAlgolia);
+          } catch (error) {
+            console.error(`Error updating test in Algolia: ${error}`);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      }
+
       return test;
     }),
   edit: protectedProcedure
@@ -447,6 +495,61 @@ export const testRouter = router({
       });
 
       await ctx.prisma.$transaction(questionTransactions);
+
+      const updatedVisibility = await ctx.prisma.test.findUnique({
+        where: { id: testId },
+        select: { visibility: true },
+      });
+
+      if (updatedVisibility?.visibility === "public") {
+        const testForAlgolia = await ctx.prisma.test.findUnique({
+          where: {
+            id: test.id,
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            imageUrl: true,
+            keywords: {
+              select: {
+                name: true,
+              },
+            },
+            questions: {
+              select: {
+                id: true,
+              },
+            },
+            visibility: true,
+            user: {
+              select: {
+                userId: true,
+                imageUrl: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+
+        if (testForAlgolia !== null) {
+          try {
+            await updateTestInAlgolia(testForAlgolia);
+          } catch (error) {
+            console.error(`Error updating test in Algolia: ${error}`);
+            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
+          }
+        }
+      } else if (updatedVisibility?.visibility === "private") {
+        try {
+          await deleteTestFromAlgolia(testId);
+        } catch (error) {
+          console.error(`Error removing test from Algolia: ${error}`);
+        }
+      }
 
       return test;
     }),
@@ -657,6 +760,36 @@ export const testRouter = router({
     .input(z.object({ testId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { testId } = input;
+
+      const test = await ctx.prisma.test.findUnique({
+        where: {
+          id: testId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!test) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Test not found",
+        });
+      }
+
+      if (test?.userId !== ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authorized to delete this test",
+        });
+      }
+
+      try {
+        await deleteTestFromAlgolia(testId);
+        console.log(`Test ${testId} deleted from Algolia`);
+      } catch (error) {
+        console.error(`Error deleting test from Algolia: ${error}`);
+      }
 
       return ctx.prisma.test.delete({
         where: {

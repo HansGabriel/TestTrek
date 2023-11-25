@@ -74,6 +74,15 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
                   image: question.image,
                   inEdit: false,
                 }))
+                .with("identification", (questionType) => ({
+                  type: questionType,
+                  choices: question.choices,
+                  points: question.points,
+                  time: question.time,
+                  title: question.title,
+                  image: question.image,
+                  inEdit: false,
+                }))
                 .run(),
             ),
           );
@@ -163,6 +172,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
         <CreateTestForm
           testTitle="Edit Test"
           testDetails={{
+            id: testDetails.id,
             description: testDetails.description,
             title: testDetails.title,
             image: testDetails.imageUrl,

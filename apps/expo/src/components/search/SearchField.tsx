@@ -27,18 +27,37 @@ export const SearchField: FC<FieldProps> = ({
   const fieldBorderColor = clicked ? "rgba(105, 73, 255, 1)" : "lightgray";
 
   const [debouncedQuery, setDebouncedQuery] = useState(searchString);
+  const [selectedCategories, setSelectedCategories] = useState({
+    tests: false,
+    users: false,
+    collections: false,
+    reviewers: false,
+  });
 
-  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(
-    [
-      { indexName: "tests", query: debouncedQuery },
-      { indexName: "users", query: debouncedQuery },
-      { indexName: "collections", query: debouncedQuery },
-      { indexName: "reviewers", query: debouncedQuery },
-    ],
-    {
-      enabled: debouncedQuery.length > 0,
-    },
+  const toggleCategory = (category: string | number) => {
+    setSelectedCategories((prev) => ({
+      ...prev,
+      [category as keyof typeof prev]: !prev[category as keyof typeof prev],
+    }));
+  };
+
+  const allCategories = ["tests", "users", "collections", "reviewers"];
+  const isAnyCategorySelected = Object.values(selectedCategories).some(
+    (value) => value,
   );
+  const searchQueries = isAnyCategorySelected
+    ? Object.entries(selectedCategories)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([_, isSelected]) => isSelected)
+        .map(([category]) => ({ indexName: category, query: debouncedQuery }))
+    : allCategories.map((category) => ({
+        indexName: category,
+        query: debouncedQuery,
+      }));
+
+  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(searchQueries, {
+    enabled: debouncedQuery.length > 0,
+  });
 
   const debouncedOnChange = useCallback(
     debounce((query: string) => setDebouncedQuery(query), 500),
@@ -47,7 +66,7 @@ export const SearchField: FC<FieldProps> = ({
 
   useEffect(() => {
     debouncedOnChange(searchString);
-  }, [searchString, debouncedOnChange]);
+  }, [searchString, debouncedOnChange, selectedCategories]);
 
   return (
     <View className="flex-1">
@@ -108,6 +127,8 @@ export const SearchField: FC<FieldProps> = ({
             results={
               hits || { tests: [], users: [], collections: [], reviewers: [] }
             }
+            selectedCategories={selectedCategories}
+            toggleCategory={toggleCategory}
           />
         </View>
       ) : (

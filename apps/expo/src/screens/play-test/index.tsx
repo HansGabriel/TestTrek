@@ -28,7 +28,9 @@ import {
 import {
   MultiSelectCards,
   TrueOrFalseCard,
+  IdentificationCard,
   getSelectedChoices,
+  choiceStyles,
 } from "./TestCard";
 
 import type { FC } from "react";
@@ -239,6 +241,44 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     setIsDone(true);
   };
 
+  const handleSubmitIdentification = (answer: string) => {
+    if (!question) {
+      return;
+    }
+
+    if (question.type === "identification") {
+      const isCorrectAnswer = question.choices.some(
+        (choice) => choice.text === answer,
+      );
+      if (isCorrectAnswer) {
+        const elapsedTime =
+          countdownTimerRef.current?.elapsedTime ?? question.time;
+        setPoints((prevPoints) => prevPoints + question.points);
+        setTime((prevTime) => prevTime + elapsedTime);
+        setModalType("correct");
+        if (isEffectsPlaying) {
+          playEffects({
+            sound: correctSoundInstance,
+            music: correctSound,
+          });
+        }
+      } else {
+        setModalType("incorrect");
+        if (isEffectsPlaying) {
+          playEffects({ sound: wrongSoundInstance, music: wrongSound });
+        }
+        const errorResult = getErrorMessage("incorrect");
+        setErrorMessage(errorResult);
+      }
+    } else {
+      setModalType("incorrect");
+    }
+
+    countdownTimerRef.current?.pauseTimer();
+    showUpperBar();
+    setIsDone(true);
+  };
+
   const renderChoice = (choice: ModifiedChoice) => {
     const getTextSize = (text: string) => {
       if (text.length <= 10) {
@@ -313,8 +353,38 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
     if (
       question.type === "multiple_choice" ||
-      question.type === "true_or_false"
+      question.type === "true_or_false" ||
+      question.type === "identification" ||
+      question.type === "multi_select"
     ) {
+      if (question.type === "multi_select") {
+        const allCorrect = choices.every(
+          (choice) => choiceStatus[choice.id] === choice.isCorrect,
+        );
+        if (allCorrect) {
+          const elapsedTime =
+            countdownTimerRef.current?.elapsedTime ?? question.time;
+          setPoints((prevPoints) => prevPoints + question.points);
+          setTime((prevTime) => prevTime + elapsedTime);
+          setModalType("correct");
+          if (isEffectsPlaying) {
+            playEffects({
+              sound: correctSoundInstance,
+              music: correctSound,
+            });
+          }
+        } else {
+          setModalType("incorrect");
+          if (isEffectsPlaying) {
+            playEffects({ sound: wrongSoundInstance, music: wrongSound });
+          }
+          const errorResult = getErrorMessage("times-up");
+          setErrorMessage(errorResult);
+        }
+        showUpperBar();
+        setIsDone(true);
+        return;
+      }
       const selectedChoice = choices.find((choice) => choice.isSelected);
       if (selectedChoice) {
         if (selectedChoice.isCorrect) {
@@ -342,9 +412,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         const errorResult = getErrorMessage("times-up");
         setErrorMessage(errorResult);
       }
-    }
-
-    if (question.type === "multi_select") {
     }
 
     showUpperBar();
@@ -447,6 +514,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                     handleMultiSelectSubmit={handleMultiSelectSubmit}
                   />
                 </>
+              ))
+              .with("identification", () => (
+                <IdentificationCard
+                  choices={question?.choices?.map((choice, id) => {
+                    return {
+                      id,
+                      text: choice.text,
+                      isCorrect: choice.isCorrect,
+                      styles: choiceStyles[id]?.styles ?? "",
+                      isSelected: false,
+                    };
+                  })}
+                  isDone={isDone}
+                  handleSubmit={handleSubmitIdentification}
+                />
               ))
               .with(undefined, () => <></>)
               .run()}
