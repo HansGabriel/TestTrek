@@ -290,7 +290,6 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
                               .with("true_or_false", () => "True or False")
                               .with("multi_select", () => "Multi Select")
                               .with("identification", () => "Identification")
-                              .with("enumeration", () => "Enumeration")
                               .exhaustive()}
                           </Text>
                           <Text

@@ -26,6 +26,7 @@ model User {
     plays         Play[]
     favoriteTests UserOnFavoriteTest[]
     Reviewer      Reviewer[]
+    testHistories TestHistory[]
 }
 
 model Post {
@@ -61,6 +62,46 @@ model Test {
     plays          Play[]
     reviewers      ReviewerOnTest[]
     favoritedUsers UserOnFavoriteTest[]
+}
+
+model TestHistory {
+    id          String            @id @default(cuid())
+    userId      String
+    creatorId   String
+    imageUrl    String
+    title       String
+    description String
+    visibility  Visibility
+    keywords    String[]
+    score       Int
+    time        Int
+    questions   QuestionHistory[]
+    user        User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+}
+
+model QuestionHistory {
+    id        String          @id @default(cuid())
+    testId    String
+    title     String
+    image     String?
+    time      Int
+    points    Int
+    type      QuestionType
+    choices   ChoiceHistory[]
+    test      TestHistory     @relation(fields: [testId], references: [id], onDelete: Cascade)
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+}
+
+model ChoiceHistory {
+    id         String          @id @default(cuid())
+    questionId String
+    text       String
+    isCorrect  Boolean
+    isChosen   Boolean
+    question   QuestionHistory @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Reviewer {
@@ -163,5 +204,4 @@ enum QuestionType {
     true_or_false
     multi_select
     identification
-    enumeration
 }

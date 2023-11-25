@@ -293,21 +293,6 @@ export const testRouter = router({
               : undefined,
         };
 
-        const enumerationQuestionInput: QuestionCreateInput = {
-          ...baseQuestionInput,
-          choices:
-            type === "enumeration"
-              ? {
-                  createMany: {
-                    data: question.choices.map((choice) => ({
-                      isCorrect: choice.isCorrect,
-                      text: choice.text,
-                    })),
-                  },
-                }
-              : undefined,
-        };
-
         let mergedQuestionInput: QuestionCreateInput;
         switch (type) {
           case "true_or_false":
@@ -317,9 +302,6 @@ export const testRouter = router({
             break;
           case "identification":
             mergedQuestionInput = identificationQuestionInput;
-            break;
-          case "enumeration":
-            mergedQuestionInput = enumerationQuestionInput;
             break;
           default:
             throw new Error("Invalid question type");
@@ -488,21 +470,6 @@ export const testRouter = router({
               : undefined,
         };
 
-        const enumerationQuestionInput: QuestionCreateInput = {
-          ...baseQuestionInput,
-          choices:
-            type === "enumeration"
-              ? {
-                  createMany: {
-                    data: question.choices.map((choice) => ({
-                      isCorrect: choice.isCorrect,
-                      text: choice.text,
-                    })),
-                  },
-                }
-              : undefined,
-        };
-
         let mergedQuestionInput: QuestionCreateInput;
         switch (type) {
           case "true_or_false":
@@ -512,9 +479,6 @@ export const testRouter = router({
             break;
           case "identification":
             mergedQuestionInput = identificationQuestionInput;
-            break;
-          case "enumeration":
-            mergedQuestionInput = enumerationQuestionInput;
             break;
           default:
             throw new Error("Invalid question type");

@@ -48,14 +48,6 @@ const generateChoicesPrompt = (numChoices: number) => {
   return choicesPrompt.trim();
 };
 
-const generateEnumerationAnswersPrompt = (numItems: number) => {
-  const items = Array.from(
-    { length: numItems },
-    (_, i) => `${i + 1}. Answer${i + 1}`,
-  ).join(", ");
-  return `Answers: [${items}]`;
-};
-
 export const promptGenerators: {
   [key: string]: (
     message: string,
@@ -102,17 +94,6 @@ ${timeAndPointsPrompt}`,
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
-${timeAndPointsPrompt}`,
-
-  enumeration: (
-    message,
-    numAnswers = 4,
-    maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
-  ) =>
-    `Provide an enumeration question (maximum of ${maxCharsForQuestion} characters) related to "${message}" with a maximum of ${numAnswers} inputs. The choices or answer must not exceed ${maxCharsForChoice} characters. Format as:
-Question: [Your question here]
-${generateEnumerationAnswersPrompt(numAnswers)}
 ${timeAndPointsPrompt}`,
 };
 
@@ -190,39 +171,6 @@ export const parseMultipleChoiceResponse = (
     timeLimit,
     points,
   };
-};
-
-export const parseEnumerationResponse = (generatedMessage: string) => {
-  const lines = generatedMessage.split("\n").map((line) => line.trim());
-
-  let question = "";
-  let timeLimit = 0;
-  let points = 0;
-  const answers: string[] = [];
-
-  lines.forEach((line) => {
-    if (line.startsWith("Question:")) {
-      question = line.replace("Question:", "").trim();
-    } else if (line.startsWith("Answers:")) {
-      const ans = line
-        .replace("Answers:", "")
-        .split(",")
-        .map((a) => a.trim().replace(/^\d+\.\s*/, ""));
-      answers.push(...ans);
-    } else if (line.startsWith("Time Limit:")) {
-      const timeMatch = line.match(/\d+/);
-      if (timeMatch && timeMatch[0]) {
-        timeLimit = parseInt(timeMatch[0], 10);
-      }
-    } else if (line.startsWith("Points:")) {
-      const pointsMatch = line.match(/\d+/);
-      if (pointsMatch && pointsMatch[0]) {
-        points = parseInt(pointsMatch[0], 10);
-      }
-    }
-  });
-
-  return { question, answers, timeLimit, points };
 };
 
 export const parseMultiselectResponse = (
