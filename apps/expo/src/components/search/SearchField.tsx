@@ -60,15 +60,19 @@ export const SearchField: FC<FieldProps> = ({
     .map(([category]) => ({
       indexName: category,
       query: debouncedQuery,
-      ...(filterByCurrentUser &&
-        currentUserId && {
-          params: { filters: `user.userId:${currentUserId}` },
-        }),
     }));
 
-  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(searchQueries, {
-    enabled: debouncedQuery.length > 0,
-  });
+  const algoliaQueriesWithUserFilter = {
+    details: searchQueries,
+    filterBySignedUser: filterByCurrentUser,
+  };
+
+  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(
+    algoliaQueriesWithUserFilter,
+    {
+      enabled: debouncedQuery.length > 0,
+    },
+  );
 
   const debouncedOnChange = useCallback(
     debounce((query: string) => setDebouncedQuery(query), 500),
