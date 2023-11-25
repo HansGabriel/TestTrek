@@ -178,7 +178,7 @@ const CreateTestForm: FC<Props> = ({
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ["5%", "35%", "60%"], []);
+  const snapPoints = useMemo(() => ["5%", "35%", "65%"], []);
 
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
@@ -198,7 +198,6 @@ const CreateTestForm: FC<Props> = ({
   };
 
   const goToCreateQuestion = (questionType: QuestionType) => {
-    setOpenCreationChoice(true);
     setSelectedQuestionType(questionType);
     if (isLastQuestionInEdit()) {
       //create
@@ -208,6 +207,7 @@ const CreateTestForm: FC<Props> = ({
       addEmptyQuestion(questionType);
       setLastIndex();
     }
+    navigation.navigate("CreateQuestion");
   };
 
   const goToEditQuestion = (questionIndex: number) => () => {
@@ -684,7 +684,7 @@ const CreateTestForm: FC<Props> = ({
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={openBottomSheet}
+              onPress={() => setOpenCreationChoice(true)}
               className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-indigo-700 py-[18px]"
             >
               <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
@@ -734,7 +734,7 @@ const CreateTestForm: FC<Props> = ({
         cancelButtonText={"Manual Input"}
         onCancel={() => {
           handleCloseCreationChoice();
-          navigation.navigate("CreateQuestion");
+          openBottomSheet();
         }}
         onConfirm={() => {
           handleCloseCreationChoice();

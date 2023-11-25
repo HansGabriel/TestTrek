@@ -128,6 +128,9 @@ importers:
       expo-document-picker:
         specifier: ^11.2.2
         version: 11.2.2(expo@48.0.10)
+      expo-file-system:
+        specifier: 15.2.2
+        version: 15.2.2(expo@48.0.10)
       expo-font:
         specifier: ^11.1.1
         version: 11.1.1(expo@48.0.10)
@@ -397,6 +400,9 @@ importers:
       '@trpc/server':
         specifier: ^10.1.0
         version: 10.5.0
+      '@types/pdf-parse':
+        specifier: ^1.1.4
+        version: 1.1.4
       algoliasearch:
         specifier: ^4.20.0
         version: 4.20.0
@@ -406,6 +412,9 @@ importers:
       p-map:
         specifier: ^6.0.0
         version: 6.0.0
+      pdf-parse:
+        specifier: ^1.1.1
+        version: 1.1.1
       shutterstock-api:
         specifier: ^1.1.35
         version: 1.1.35
@@ -4158,6 +4167,10 @@ packages:
 
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    dev: false
+
+  /@types/pdf-parse@1.1.4:
+    resolution: {integrity: sha512-+gbBHbNCVGGYw1S9lAIIvrHW47UYOhMIFUsJcMkMrzy1Jf0vulBN3XQIjPgnoOXveMuHnF3b57fXROnY/Or7eg==}
     dev: false
 
   /@types/prop-types@15.7.5:
@@ -9539,6 +9552,10 @@ packages:
       minimatch: 3.1.2
     dev: false
 
+  /node-ensure@0.0.0:
+    resolution: {integrity: sha512-DRI60hzo2oKN1ma0ckc6nQWlHU69RH6xN0sjQTjMpChPfTYvKZdcQFfdYK2RWbJcKyUizSIy/l8OTGxMAM1QDw==}
+    dev: false
+
   /node-fetch-native@1.0.1:
     resolution: {integrity: sha512-VzW+TAk2wE4X9maiKMlT+GsPU4OMmR1U9CrHSmd3DFLn2IcZ9VJ6M6BBugGfYUnPCLSYxXdZy17M0BEJyhUTwg==}
     dev: false
@@ -9973,6 +9990,16 @@ packages:
 
   /pathval@1.1.1:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
+    dev: false
+
+  /pdf-parse@1.1.1:
+    resolution: {integrity: sha512-v6ZJ/efsBpGrGGknjtq9J/oC8tZWq0KWL5vQrk2GlzLEQPUDB1ex+13Rmidl1neNN358Jn9EHZw5y07FFtaC7A==}
+    engines: {node: '>=6.8.1'}
+    dependencies:
+      debug: 3.2.7
+      node-ensure: 0.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /picocolors@1.0.0:

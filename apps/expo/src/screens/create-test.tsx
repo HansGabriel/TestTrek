@@ -12,6 +12,7 @@ import {
   errorToast,
   successToast,
 } from "../components/notifications/ToastNotifications";
+import useGoBack from "../hooks/useGoBack";
 
 type FormProps = Omit<TestInput, "questions">;
 
@@ -21,6 +22,7 @@ export const CreateTestScreen: FC = () => {
   const questions = useQuestionStore((state) => state.questions);
   const resetImage = useImageStore((state) => state.resetImage);
   const resetQuestions = useQuestionStore((state) => state.resetQuestions);
+  const goBack = useGoBack();
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -55,7 +57,7 @@ export const CreateTestScreen: FC = () => {
             message: "Test created successfully",
           });
           resetQuestions();
-          navigation.navigate("MyLibrary");
+          goBack();
         },
         onError: (error) => {
           setIsUploading(false);

@@ -4,6 +4,7 @@ import React from "react";
 import { Dimensions } from "react-native";
 
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { RichEditor } from "react-native-pell-rich-editor";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import useGoBack from "../../hooks/useGoBack";
@@ -141,10 +142,24 @@ export const ReviewerDetailsContent = ({
           </TouchableOpacity>
         </View>
         <View className="my-5 flex-1">
-          <Text className="font-nunito-bold break-words text-xl font-bold leading-[32px] text-[#212121]">
-            Reviewer Content
-          </Text>
-          <Text>{reviewerDetails.content}</Text>
+          <View>
+            <Text className="font-nunito-bold break-words text-xl font-bold leading-[32px] text-[#212121]">
+              Reviewer Content
+            </Text>
+          </View>
+          <View className="my-5">
+            <RichEditor
+              disabled
+              initialContentHTML={reviewerDetails.content}
+              androidLayerType="software"
+              className=" font-nunito-medium"
+              useContainer={false}
+              containerStyle={{
+                minHeight: 500,
+                maxHeight: Dimensions.get("window").height,
+              }}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
