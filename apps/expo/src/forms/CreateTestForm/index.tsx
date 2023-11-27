@@ -82,8 +82,19 @@ const CreateTestForm: FC<Props> = ({
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
+  const types: QuestionType[] = [
+    "multiple_choice",
+    "true_or_false",
+    "multi_select",
+    "identification",
+  ];
+
+  const randomizeQuestionType = Math.floor(Math.random() * types.length);
+  const questionType = types[randomizeQuestionType];
   const [selectedQuestionType, setSelectedQuestionType] =
-    useState<QuestionType | null>(null);
+    useState<QuestionType>(
+      questionType !== undefined ? questionType : "multiple_choice",
+    );
   const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -303,15 +314,12 @@ const CreateTestForm: FC<Props> = ({
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
 
-    if (selectedQuestionType === null) {
-      return;
-    }
-
     const mappedQuestionType = mapQuestionType(selectedQuestionType);
 
     if (inputMessage.length <= 0) {
       setErrorInAIQuestion(true);
     } else {
+      setErrorInAIQuestion(false);
       generateMultipleQuestions(
         {
           message: inputMessage,

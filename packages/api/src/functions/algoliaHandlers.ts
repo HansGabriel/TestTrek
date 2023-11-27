@@ -32,6 +32,7 @@ export interface CompiledAlgoliaHits {
 
 export const compileAlgoliaHits = (
   results: AlgoliaSearchResult[],
+  signedUserIdFilter = "",
 ): CompiledAlgoliaHits => {
   const compiledHits: CompiledAlgoliaHits = {
     tests: [],
@@ -41,30 +42,35 @@ export const compileAlgoliaHits = (
   };
 
   results.forEach((result) => {
-    const hitsWithIndex = result.hits.map(({ objectID, ...rest }) => ({
-      ...rest,
-      id: objectID,
-      index: result.index,
-    }));
+    result.hits.forEach((hit) => {
+      const { objectID, ...rest } = hit;
+      const hitWithIndex = { ...rest, id: objectID, index: result.index };
 
-    switch (result.index) {
-      case "tests":
-        compiledHits.tests.push(...(hitsWithIndex as ReturnedAlgoliaTests[]));
-        break;
-      case "users":
-        compiledHits.users.push(...(hitsWithIndex as ReturnedAlgoliaUsers[]));
-        break;
-      case "collections":
-        compiledHits.collections.push(
-          ...(hitsWithIndex as ReturnedAlgoliaCollections[]),
-        );
-        break;
-      case "reviewers":
-        compiledHits.reviewers.push(
-          ...(hitsWithIndex as ReturnedAlgoliaReviewers[]),
-        );
-        break;
-    }
+      if (
+        (hit.visibility === "private" &&
+          hit.user?.userId !== signedUserIdFilter) ||
+        (signedUserIdFilter !== "" && hit.user?.userId !== signedUserIdFilter)
+      ) {
+        return;
+      }
+
+      switch (result.index) {
+        case "tests":
+          compiledHits.tests.push(hitWithIndex as ReturnedAlgoliaTests);
+          break;
+        case "users":
+          compiledHits.users.push(hitWithIndex as ReturnedAlgoliaUsers);
+          break;
+        case "collections":
+          compiledHits.collections.push(
+            hitWithIndex as ReturnedAlgoliaCollections,
+          );
+          break;
+        case "reviewers":
+          compiledHits.reviewers.push(hitWithIndex as ReturnedAlgoliaReviewers);
+          break;
+      }
+    });
   });
 
   return compiledHits;

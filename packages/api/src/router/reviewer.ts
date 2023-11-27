@@ -173,37 +173,34 @@ export const reviewerRouter = router({
         },
       });
 
-      if (newReviewer.visibility === "public") {
-        const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
-          where: {
-            id: newReviewer.id,
-          },
-          select: {
-            id: true,
-            user: {
-              select: {
-                userId: true,
-                imageUrl: true,
-                firstName: true,
-                lastName: true,
-              },
+      const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
+        where: {
+          id: newReviewer.id,
+        },
+        select: {
+          id: true,
+          user: {
+            select: {
+              userId: true,
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
             },
-            title: true,
-            imageUrl: true,
-            createdAt: true,
-            updatedAt: true,
-            visibility: true,
           },
-        });
+          title: true,
+          imageUrl: true,
+          createdAt: true,
+          updatedAt: true,
+          visibility: true,
+        },
+      });
 
-        if (reviewerForAlgolia !== null) {
-          try {
-            await updateReviewerInAlgolia(reviewerForAlgolia);
-            console.log(`Public reviewer ${newReviewer.id} added to Algolia`);
-          } catch (error) {
-            console.error(`Error adding reviewer to Algolia: `, error);
-            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
-          }
+      if (reviewerForAlgolia !== null) {
+        try {
+          await updateReviewerInAlgolia(reviewerForAlgolia);
+        } catch (error) {
+          console.error(`Error adding reviewer to Algolia: `, error);
+          console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
         }
       }
 
@@ -253,43 +250,35 @@ export const reviewerRouter = router({
         },
       });
 
-      if (updatedReviewer.visibility === "public") {
-        const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
-          where: {
-            id: updatedReviewer.id,
-          },
-          select: {
-            id: true,
-            user: {
-              select: {
-                userId: true,
-                imageUrl: true,
-                firstName: true,
-                lastName: true,
-              },
+      const reviewerForAlgolia = await ctx.prisma.reviewer.findUnique({
+        where: {
+          id: updatedReviewer.id,
+        },
+        select: {
+          id: true,
+          user: {
+            select: {
+              userId: true,
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
             },
-            title: true,
-            imageUrl: true,
-            content: true,
-            createdAt: true,
-            updatedAt: true,
-            visibility: true,
           },
-        });
+          title: true,
+          imageUrl: true,
+          content: true,
+          createdAt: true,
+          updatedAt: true,
+          visibility: true,
+        },
+      });
 
-        if (reviewerForAlgolia !== null) {
-          try {
-            await updateReviewerInAlgolia(reviewerForAlgolia);
-          } catch (error) {
-            console.error(`Error updating reviewer in Algolia: `, error);
-            console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
-          }
-        }
-      } else if (updatedReviewer.visibility === "private") {
+      if (reviewerForAlgolia !== null) {
         try {
-          await deleteReviewerFromAlgolia(reviewerId);
+          await updateReviewerInAlgolia(reviewerForAlgolia);
         } catch (error) {
-          console.error(`Error removing reviewer from Algolia: ${error}`);
+          console.error(`Error updating reviewer in Algolia: `, error);
+          console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
         }
       }
 

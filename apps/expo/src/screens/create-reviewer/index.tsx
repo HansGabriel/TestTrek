@@ -40,9 +40,10 @@ import { AlertModal } from "../../components/modals/AlertModal";
 import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "./types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "./constants";
-import useQuestionStore from "../../stores/useQuestionStore";
+import useQuestionStore, { QuestionType } from "../../stores/useQuestionStore";
 import { AppButton } from "../../components/buttons/AppButton";
 import * as DocumentPicker from "expo-document-picker";
+import { mapQuestionType } from "../../utils/helpers/strings";
 
 export const CreateReviewerScreen = ({
   navigation,
@@ -58,7 +59,18 @@ export const CreateReviewerScreen = ({
   let highlightedText = "";
   const regex =
     /<span style="(?:font-size: 1em; )?background-color: yellow;">(?:<b>)?(?:<i>)?(?:<u>)?(.*?)(?:<\/u>)?(?:<\/i>)?(?:<\/b>)?<\/span>/g;
+  const types: QuestionType[] = [
+    "multiple_choice",
+    "true_or_false",
+    "multi_select",
+    "identification",
+  ];
 
+  const randomizeQuestionType = Math.floor(Math.random() * types.length);
+  const questionType = types[randomizeQuestionType];
+  const mappedQuestionType = mapQuestionType(
+    questionType !== undefined ? questionType : "multiple_choice",
+  );
   const [isHighlighterToggled, setIsHighlighterToggled] = useState(false);
   const [isChoiceModalToggled, setIsChoiceModalToggled] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
@@ -270,7 +282,7 @@ export const CreateReviewerScreen = ({
     generateMultipleQuestions(
       {
         message: inputMessage,
-        questionType: "multipleChoice",
+        questionType: mappedQuestionType,
         numOfQuestions: numOfQuestions,
         numOfChoicesPerQuestion: 4,
       },
@@ -627,8 +639,6 @@ export const CreateReviewerScreen = ({
           for (const match of matchArray) {
             highlightedText = highlightedText + " " + match[1];
           }
-
-          console.log(highlightedText);
 
           createMultipleQuestions(highlightedText);
 
