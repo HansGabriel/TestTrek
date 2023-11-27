@@ -25,12 +25,10 @@ import TestImagePicker from "../../components/ImagePicker";
 import useQuestionStore from "../../stores/useQuestionStore";
 import { FlashList } from "@shopify/flash-list";
 import RightArrowIcon from "../../icons/RightArrowIcon";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 import AppPicker, {
   type LabelOption,
 } from "../../components/pickers/AppPicker";
 import useImageStore from "../../stores/useImageStore";
-import { match } from "ts-pattern";
 import { trpc } from "../../utils/trpc";
 import { truncateString } from "@acme/utils/src/strings";
 import { Octicons } from "@expo/vector-icons";
@@ -49,6 +47,7 @@ import type { Option } from "../types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "../constants";
 import { ReusableHeader } from "../../components/headers/ReusableHeader";
 import { AskAiModal } from "../../components/modals/AskAiModal";
+import QuestionCard from "../../components/cards/QuestionCard";
 import {
   errorToast,
   successToast,
@@ -627,46 +626,11 @@ const CreateTestForm: FC<Props> = ({
                     showsVerticalScrollIndicator={true}
                     renderItem={({ item: question, index }) => {
                       return (
-                        <TouchableOpacity
-                          className="my-2 flex h-[105px] items-center justify-start"
-                          key={index}
-                          onPress={goToEditQuestion(index)}
-                        >
-                          <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
-                            <View className="relative w-[140px] self-stretch">
-                              <ImageBackground
-                                source={{
-                                  uri:
-                                    question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                                }}
-                                imageStyle={{
-                                  borderTopLeftRadius: 12,
-                                  borderBottomLeftRadius: 12,
-                                }}
-                                className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                              />
-                            </View>
-                            <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
-                              {index + 1} -{" "}
-                              {match(question.type)
-                                .with(
-                                  "multiple_choice",
-                                  () => "Multiple Choice",
-                                )
-                                .with("true_or_false", () => "True or False")
-                                .with("multi_select", () => "Multi Select")
-                                .with("identification", () => "Identification")
-                                .exhaustive()}
-                            </Text>
-                            <Text
-                              className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700"
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                            >
-                              {truncateString(question.title, 25)}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
+                        <QuestionCard
+                          question={question}
+                          index={index}
+                          goToEditQuestion={goToEditQuestion}
+                        />
                       );
                     }}
                   />

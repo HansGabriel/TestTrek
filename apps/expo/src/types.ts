@@ -89,6 +89,9 @@ export type RootStackParamList = {
         type?: "create" | "edit";
       }
     | undefined;
+  TestHistory: {
+    testId: string;
+  };
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
