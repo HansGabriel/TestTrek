@@ -1,13 +1,8 @@
 import { z } from "zod";
 
 export const createTestHistoryInputSchema = z.object({
-  creatorName: z.string(),
-  creatorUsername: z.string(),
-  imageUrl: z.string(),
-  title: z.string(),
-  description: z.string(),
-  visibility: z.enum(["public", "private"]),
-  keywords: z.array(z.string()),
+  testId: z.string(),
+  playId: z.string(),
   score: z.number().int(),
   time: z.number().int(),
   questions: z.array(
@@ -16,6 +11,8 @@ export const createTestHistoryInputSchema = z.object({
       image: z.string().optional(),
       time: z.number().int(),
       points: z.number().int(),
+      pointsEarned: z.number().int(),
+      timeElapsed: z.number().int(),
       type: z.enum([
         "multiple_choice",
         "true_or_false",
@@ -32,3 +29,9 @@ export const createTestHistoryInputSchema = z.object({
     }),
   ),
 });
+
+export type CreateTestHistoryInput = z.infer<
+  typeof createTestHistoryInputSchema
+>;
+export type QuestionHistory = CreateTestHistoryInput["questions"];
+export type ChoiceHistory = QuestionHistory[0]["choices"][0];

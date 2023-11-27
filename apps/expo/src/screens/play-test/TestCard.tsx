@@ -128,6 +128,11 @@ export const IdentificationCard = ({
 }) => {
   const [answer, setAnswer] = useState<string>("");
 
+  const onPress = () => {
+    handleSubmit(answer);
+    setAnswer("");
+  };
+
   return (
     <>
       <TextInput
@@ -164,7 +169,7 @@ export const IdentificationCard = ({
 
       {!isDone && answer.length > 0 && (
         <AppButton
-          onPress={() => handleSubmit(answer)}
+          onPress={onPress}
           text="Submit"
           classNameValue="my-1"
           buttonColor="violet-600"

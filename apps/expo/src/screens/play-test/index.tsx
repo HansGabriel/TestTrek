@@ -50,6 +50,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertModal } from "../../components/modals/AlertModal";
 
+import type { QuestionHistory } from "@acme/schema/src/testHistory";
+
 export type ChoiceStatus = [boolean, boolean, boolean, boolean];
 
 export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
@@ -89,10 +91,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     false,
     false,
   ]);
+  const [questionHistories, setQuestionHistories] = useState<QuestionHistory>(
+    [],
+  );
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
-  const { mutate: finishTest, isLoading: isFinished } =
-    trpc.play.finishTest.useMutation({
+  // const { mutate: finishTest, isLoading: isFinished } =
+  //   trpc.play.finishTest.useMutation({
+  //     onSuccess: () => {
+  //       navigation.navigate("Scoreboard", {
+  //         testId: testId,
+  //       });
+  //     },
+  //   });
+  const { mutate: saveTestHistory, isLoading: isSavingTestHistory } =
+    trpc.testHistory.createTestHistory.useMutation({
       onSuccess: () => {
         navigation.navigate("Scoreboard", {
           testId: testId,
@@ -167,11 +180,12 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
+    const selectedChoice = choices.find((choice) => choice.id === choiceId);
+
     if (
       question.type === "multiple_choice" ||
       question.type === "true_or_false"
     ) {
-      const selectedChoice = choices.find((choice) => choice.id === choiceId);
       if (selectedChoice) {
         if (selectedChoice.isCorrect) {
           const elapsedTime =
@@ -201,6 +215,24 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     countdownTimerRef.current?.pauseTimer();
     showUpperBar();
     setIsDone(true);
+    setQuestionHistories((prevQuestionHistories) => {
+      const mappedChoices = choices.map((choice) => ({
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+        isChosen: choice.isSelected,
+      }));
+      return prevQuestionHistories.concat([
+        {
+          points: question.points,
+          time: question.time,
+          title: question.title,
+          type: question.type,
+          choices: mappedChoices,
+          pointsEarned: selectedChoice?.isCorrect ? question.points : 0,
+          timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
+        },
+      ]);
+    });
   };
 
   const handleMultiSelectSubmit = () => {
@@ -208,10 +240,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
+    const allCorrect = choices.every(
+      (choice) => choiceStatus[choice.id] === choice.isCorrect,
+    );
+
     if (question.type === "multi_select") {
-      const allCorrect = choices.every(
-        (choice) => choiceStatus[choice.id] === choice.isCorrect,
-      );
       if (allCorrect) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
@@ -239,6 +272,24 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     countdownTimerRef.current?.pauseTimer();
     showUpperBar();
     setIsDone(true);
+    setQuestionHistories((prevQuestionHistories) => {
+      const mappedChoices = choices.map((choice) => ({
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+        isChosen: choice.isSelected,
+      }));
+      return prevQuestionHistories.concat([
+        {
+          points: question.points,
+          time: question.time,
+          title: question.title,
+          type: question.type,
+          choices: mappedChoices,
+          pointsEarned: allCorrect ? question.points : 0,
+          timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
+        },
+      ]);
+    });
   };
 
   const handleSubmitIdentification = (answer: string) => {
@@ -246,10 +297,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
+    const isCorrectAnswer = question.choices.some(
+      (choice) => choice.text === answer,
+    );
+
     if (question.type === "identification") {
-      const isCorrectAnswer = question.choices.some(
-        (choice) => choice.text === answer,
-      );
       if (isCorrectAnswer) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
@@ -277,6 +329,25 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     countdownTimerRef.current?.pauseTimer();
     showUpperBar();
     setIsDone(true);
+    setQuestionHistories((prevQuestionHistories) => {
+      const mappedChoices = question.choices.map((choice) => ({
+        text: choice.text,
+        isCorrect: choice.isCorrect,
+        isChosen: choice.text === answer,
+      }));
+
+      return prevQuestionHistories.concat([
+        {
+          points: question.points,
+          time: question.time,
+          title: question.title,
+          type: question.type,
+          choices: mappedChoices,
+          pointsEarned: isCorrectAnswer ? question.points : 0,
+          timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
+        },
+      ]);
+    });
   };
 
   const renderChoice = (choice: ModifiedChoice) => {
@@ -323,11 +394,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
   const handleGoToNextQuestion = () => {
     if (index + 1 >= totalQuestions) {
-      finishTest({
+      saveTestHistory({
         playId,
+        testId,
         score: points,
         time,
+        questions: questionHistories,
       });
+
       return;
     } else {
       setIndex((prevIndex) => prevIndex + 1);
@@ -424,10 +498,12 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   };
 
   const handleSave = () => {
-    finishTest({
+    saveTestHistory({
       playId,
+      testId,
       score: points,
       time,
+      questions: questionHistories,
     });
   };
 
@@ -546,7 +622,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                   textColor="white"
                   TOwidth="full"
                   Vwidth="full"
-                  isLoading={isFinished}
+                  isLoading={isSavingTestHistory}
                 />
               </>
             )}
