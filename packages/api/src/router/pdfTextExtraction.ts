@@ -10,16 +10,18 @@ export const textExtractionRouter = router({
     .input(
       z.object({
         file: z.string(),
+        fileType: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
-      const { file } = input;
+      const { file, fileType } = input;
 
       const apiKey = process.env.OCR_API;
       const apiEndpoint = "https://api.ocr.space/parse/image";
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("base64image", file);
+      formData.append("filetype", fileType);
       if (apiKey) {
         formData.append("apikey", apiKey);
       }

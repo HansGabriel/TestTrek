@@ -46,6 +46,16 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { mapQuestionType } from "../../utils/helpers/strings";
 
+interface CacheOptions {
+  name: string;
+  uri: string;
+}
+
+interface FilePickerType {
+  fileType: string;
+  base64ContentType: string;
+}
+
 export const CreateReviewerScreen = ({
   navigation,
   route,
@@ -74,6 +84,8 @@ export const CreateReviewerScreen = ({
   );
   const [isHighlighterToggled, setIsHighlighterToggled] = useState(false);
   const [isChoiceModalToggled, setIsChoiceModalToggled] = useState(false);
+  const [isPDFUploading, setIsPDFUploading] = useState(false);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [numberOfQuestionOptions, setNumberOfQuestionOptions] = useState<
     Option[]
@@ -101,6 +113,8 @@ export const CreateReviewerScreen = ({
       enabled: reviewerId !== undefined,
     },
   );
+
+  const { mutate: readFile } = trpc.pdfTextExtraction.extractText.useMutation();
 
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
     trpc.gptApi.generateMultipleQuestions.useMutation();
@@ -202,21 +216,79 @@ export const CreateReviewerScreen = ({
     });
   }, [reviewerImage]);
 
-  const filePicker = async () => {
+  const createCacheFile = async ({ name, uri }: CacheOptions) => {
+    if (
+      !(await FileSystem.getInfoAsync(FileSystem.cacheDirectory + "uploads/"))
+        .exists
+    ) {
+      await FileSystem.makeDirectoryAsync(
+        FileSystem.cacheDirectory + "uploads/",
+      );
+    }
+    const cacheFilePath = FileSystem.cacheDirectory + "uploads/" + name;
+    await FileSystem.copyAsync({ from: uri, to: cacheFilePath });
+    return cacheFilePath;
+  };
+
+  const filePicker = async ({
+    fileType,
+    base64ContentType,
+  }: FilePickerType) => {
     const result = await DocumentPicker.getDocumentAsync({
-      type: "application/pdf",
-      copyToCacheDirectory: true,
+      type: fileType,
+      copyToCacheDirectory: false,
+      multiple: false,
     });
 
-    if (result.type === "success") {
-      //upload result.uri to google cloud storage
-      //fetch the file in the cloud
-      //convert to base64
-      //feed to OCR API
-      const base64 = await FileSystem.readAsStringAsync(result.uri, {
+    if (result.type !== "cancel") {
+      if (fileType === "image/*") {
+        setIsImageUploading(true);
+      } else {
+        setIsPDFUploading(true);
+      }
+
+      const convertedFile = await createCacheFile({
+        name: result.name,
+        uri: result.uri,
+      });
+
+      const base64 = await FileSystem.readAsStringAsync(convertedFile, {
         encoding: "base64",
       });
-      console.log(base64);
+
+      if (base64) {
+        const formatBase64 = `data:${base64ContentType};base64,${base64}`;
+        readFile(
+          {
+            file: formatBase64,
+            fileType: `${fileType === "image/*" ? "JPG" : "PDF"}`,
+          },
+          {
+            onSuccess: (data) => {
+              if (richText.current) {
+                richText.current.insertHTML(data.text);
+              }
+              successToast({
+                title: "Success",
+                message: `${
+                  fileType === "image/*" ? "Image" : "File"
+                } transcribed successfully`,
+              });
+
+              setIsImageUploading(false);
+              setIsPDFUploading(false);
+            },
+            onError: (error) => {
+              errorToast({
+                title: "Error",
+                message: error.message,
+              });
+              setIsImageUploading(false);
+              setIsPDFUploading(false);
+            },
+          },
+        );
+      }
     }
   };
 
@@ -577,9 +649,9 @@ export const CreateReviewerScreen = ({
             name="content"
           />
         </View>
-        <View>
+        <View className="w-[90%] flex-row justify-around self-center">
           <AppButton
-            text="Upload PDF file"
+            text="Upload PDF"
             buttonColor="violet-600"
             borderShadowColor="indigo-800"
             borderRadius="full"
@@ -587,7 +659,30 @@ export const CreateReviewerScreen = ({
             textColor="white"
             TOwidth="36"
             Vwidth="36"
-            onPress={filePicker}
+            isLoading={isPDFUploading}
+            onPress={() =>
+              filePicker({
+                fileType: "application/pdf",
+                base64ContentType: "application/pdf",
+              })
+            }
+          />
+          <AppButton
+            text="Upload Image"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="36"
+            Vwidth="36"
+            isLoading={isImageUploading}
+            onPress={() =>
+              filePicker({
+                fileType: "image/*",
+                base64ContentType: "image/jpg",
+              })
+            }
           />
         </View>
       </ScrollView>
