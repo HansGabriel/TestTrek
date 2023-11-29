@@ -33,6 +33,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
       foregroundImage: "./assets/icon.png",
       backgroundColor: "#fff",
     },
+    permissions: ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
   },
   extra: {
     eas: {

@@ -43,6 +43,7 @@ import { NUMBER_OF_QUESTIONS_OPTIONS } from "./constants";
 import useQuestionStore, { QuestionType } from "../../stores/useQuestionStore";
 import { AppButton } from "../../components/buttons/AppButton";
 import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
 import { mapQuestionType } from "../../utils/helpers/strings";
 
 export const CreateReviewerScreen = ({
@@ -208,7 +209,14 @@ export const CreateReviewerScreen = ({
     });
 
     if (result.type === "success") {
-      console.log(result.uri);
+      //upload result.uri to google cloud storage
+      //fetch the file in the cloud
+      //convert to base64
+      //feed to OCR API
+      const base64 = await FileSystem.readAsStringAsync(result.uri, {
+        encoding: "base64",
+      });
+      console.log(base64);
     }
   };
 

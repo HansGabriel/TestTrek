@@ -1,6 +1,9 @@
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { readPDFFile } from "../services/pdfTextExtractor";
+
+type OCRResult = {
+  text: string;
+};
 
 export const textExtractionRouter = router({
   extractText: protectedProcedure
@@ -12,8 +15,29 @@ export const textExtractionRouter = router({
     .mutation(async ({ input }) => {
       const { file } = input;
 
-      const content = await readPDFFile(file);
+      const apiKey = process.env.OCR_API;
+      const apiEndpoint = "https://api.ocr.space/parse/image";
 
-      return content;
+      const formData = new FormData();
+      formData.append("file", file);
+      if (apiKey) {
+        formData.append("apikey", apiKey);
+      }
+
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("OCR request failed");
+      }
+
+      const data = await response.json();
+      const ocrResult: OCRResult = {
+        text: data.ParsedResults?.[0]?.ParsedText || "",
+      };
+
+      return ocrResult;
     }),
 });
