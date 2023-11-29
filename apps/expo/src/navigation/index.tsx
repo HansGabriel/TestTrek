@@ -40,6 +40,7 @@ import { CreateReviewerScreen } from "../screens/create-reviewer";
 import { ReviewerDetailsScreen } from "../screens/reviewer-details";
 import { TestHistoryScreen } from "../screens/test-history";
 import { QuestionHistoryScreen } from "../screens/test-history/question";
+import { HistoryTestScreen } from "../screens/settings/HistoryTest";
 
 export default function Navigation() {
   return (
@@ -261,6 +262,13 @@ const RootNavigator = () => {
             <Stack.Screen
               name="QuestionHistory"
               component={QuestionHistoryScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="HistoryTest"
+              component={HistoryTestScreen}
               options={{
                 headerShown: false,
               }}

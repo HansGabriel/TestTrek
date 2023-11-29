@@ -1,10 +1,10 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import PersonalInfoIcon from "../../icons/settings/PersonalInfoIcon";
-import RedNotificationIcon from "../../icons/settings/RedNotificationIcon";
 import MusicAndEffectsIcon from "../../icons/settings/MusicAndEffectsIcon";
 import AboutIcon from "../../icons/settings/AboutIcon";
 import RedLogoutIcon from "../../icons/settings/RedLogoutIcon";
+import HistoryIcon from "../../icons/settings/HistoryIcon";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,8 +27,8 @@ const SettingsButtons: FC<LogoutProps> = ({ openBottomSheet }) => {
       </View>
 
       <View className="mt-5 w-80 self-center">
-        <TouchableOpacity>
-          <RedNotificationIcon width={"100%"} />
+        <TouchableOpacity onPress={() => navigation.navigate("HistoryTest")}>
+          <HistoryIcon width={"100%"} />
         </TouchableOpacity>
       </View>
 

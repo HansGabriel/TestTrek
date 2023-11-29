@@ -6,6 +6,7 @@ import { ReusableHeader } from "../../components/headers/ReusableHeader";
 import { Feather } from "@expo/vector-icons";
 import { trpc } from "../../utils/trpc";
 import { AppButton } from "../../components/buttons/AppButton";
+import useGoBack from "../../hooks/useGoBack";
 
 import type { FC } from "react";
 
@@ -17,6 +18,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
 }) => {
   const { height, width } = Dimensions.get("window");
   const { historyId, testId } = route.params;
+  const goBack = useGoBack();
 
   const { data: testHistory, isLoading: isFetchingUser } =
     trpc.testHistory.getUserHistoryById.useQuery({
@@ -24,6 +26,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
     });
 
   const goToScoreBoard = () => {
+    if (!testId) return;
     navigation.navigate("Scoreboard", {
       testId,
     });
@@ -65,7 +68,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
       <ReusableHeader
         screenName="Test History"
         backIcon={<Feather name="x" size={24} color="black" />}
-        handleExit={goToHome}
+        handleExit={testId ? goToHome : goBack}
       />
       <View className="mx-5 h-full flex-1">
         <FlashList
@@ -84,21 +87,23 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
           }}
         />
       </View>
-      <View className="mb-4 mt-10 w-[90%] flex-row items-center justify-evenly self-center">
-        <AppButton
-          text="Go to Scoreboard"
-          buttonColor="violet-600"
-          borderShadowColor="indigo-800"
-          borderRadius="full"
-          fontStyle="bold"
-          textColor="white"
-          TOwidth="full"
-          Vwidth="full"
-          Vheight="10"
-          onPress={goToScoreBoard}
-          isLoading={isFetchingUser}
-        />
-      </View>
+      {testId && (
+        <View className="mb-4 mt-10 w-[90%] flex-row items-center justify-evenly self-center">
+          <AppButton
+            text="Go to Scoreboard"
+            buttonColor="violet-600"
+            borderShadowColor="indigo-800"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="white"
+            TOwidth="full"
+            Vwidth="full"
+            Vheight="10"
+            onPress={goToScoreBoard}
+            isLoading={isFetchingUser}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

@@ -91,11 +91,12 @@ export type RootStackParamList = {
     | undefined;
   TestHistory: {
     historyId: string;
-    testId: string;
+    testId?: string;
   };
   QuestionHistory: {
     questionId: string;
   };
+  HistoryTest: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

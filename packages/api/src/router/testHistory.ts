@@ -4,7 +4,7 @@ import { createTestHistoryInputSchema } from "@acme/schema/src/testHistory";
 import { TRPCError } from "@trpc/server";
 
 export const testHistoryRouter = router({
-  getUserHistories: protectedProcedure
+  getUserTestHistories: protectedProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -110,6 +110,7 @@ export const testHistoryRouter = router({
               firstName: true,
               lastName: true,
               username: true,
+              imageUrl: true,
             },
           },
           title: true,
@@ -137,6 +138,7 @@ export const testHistoryRouter = router({
           userId,
           creatorName: `${testDetails.user.firstName} ${testDetails.user.lastName}`,
           creatorUsername: testDetails.user.username,
+          creatorImage: testDetails.user.imageUrl,
           imageUrl: testDetails.imageUrl,
           title: testDetails.title,
           description: testDetails.description,

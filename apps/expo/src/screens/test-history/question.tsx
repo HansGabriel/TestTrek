@@ -25,6 +25,7 @@ import {
 
 import type { FC } from "react";
 import type { ModifiedChoice } from "../play-test/TestCard";
+import { ChoiceStatus } from "../play-test";
 
 type QuestionHistoryProps = RootStackScreenProps<"QuestionHistory">;
 
@@ -82,6 +83,9 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
   };
 
   const choices = getSelectedChoices(question);
+  const choiceStatus = question.choices.map(
+    (choice) => choice.isCorrect,
+  ) as ChoiceStatus;
 
   return (
     <>
@@ -145,7 +149,7 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
               .with("multi_select", () => (
                 <>
                   <MultiSelectCards
-                    choiceStatus={[false, false, false, false]}
+                    choiceStatus={choiceStatus}
                     setChoiceStatus={() => {}}
                     choices={choices}
                     isDone={true}
