@@ -128,12 +128,17 @@ export const IdentificationCard = ({
 }) => {
   const [answer, setAnswer] = useState<string>("");
 
+  const onPress = () => {
+    handleSubmit(answer);
+    setAnswer("");
+  };
+
   return (
     <>
       <TextInput
         multiline={true}
         maxLength={100}
-        className="mx-5 my-5 h-[10%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
+        className="mx-5 my-5 h-[20%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
         value={answer}
         onChangeText={setAnswer}
@@ -164,7 +169,7 @@ export const IdentificationCard = ({
 
       {!isDone && answer.length > 0 && (
         <AppButton
-          onPress={() => handleSubmit(answer)}
+          onPress={onPress}
           text="Submit"
           classNameValue="my-1"
           buttonColor="violet-600"

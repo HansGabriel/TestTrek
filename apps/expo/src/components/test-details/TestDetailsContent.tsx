@@ -6,17 +6,13 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  ImageBackground,
 } from "react-native";
-//import { Ionicons } from "@expo/vector-icons";
+import QuestionCard from "../cards/QuestionCard";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { AppButton } from "../buttons/AppButton";
 import { trpc } from "../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import RightArrowIcon from "../../icons/RightArrowIcon";
-
-import { match } from "ts-pattern";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 
 import type { FC } from "react";
 import type { RouterOutputs } from "../../utils/trpc";
@@ -260,49 +256,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
                 data={firstTenQuestions}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
-                  return (
-                    <TouchableOpacity
-                      className="my-2 flex h-[105px] items-center justify-start"
-                      key={index}
-                    >
-                      <View className="flex w-[100%] shrink grow basis-0 items-center rounded-xl border border-zinc-200 bg-white">
-                        <View className=" w-[100%]">
-                          <ImageBackground
-                            source={{
-                              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                            }}
-                            imageStyle={{
-                              borderTopLeftRadius: 12,
-                              borderBottomLeftRadius: 12,
-                            }}
-                            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                          />
-                        </View>
-                        <View className=" h-full w-[55%] self-end">
-                          <Text
-                            className="font-nunito-bold mt-1 w-full text-lg leading-[28.80px] text-neutral-800"
-                            numberOfLines={1}
-                            ellipsizeMode={"tail"}
-                          >
-                            {index + 1} -{" "}
-                            {match(question.type)
-                              .with("multiple_choice", () => "Multiple Choice")
-                              .with("true_or_false", () => "True or False")
-                              .with("multi_select", () => "Multi Select")
-                              .with("identification", () => "Identification")
-                              .exhaustive()}
-                          </Text>
-                          <Text
-                            className="font-nunito-semibold text-base leading-snug tracking-tight text-neutral-700"
-                            numberOfLines={2}
-                            ellipsizeMode={"tail"}
-                          >
-                            {question.title}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  );
+                  return <QuestionCard question={question} index={index} />;
                 }}
               />
             </SafeAreaView>
@@ -314,16 +268,5 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
     </SafeAreaView>
   );
 };
-
-/* const HiddenQuestionSection: FC = () => (
-  <View className="mb-5 inline-flex h-[88px] w-[382px] flex-col items-center justify-center gap-2 self-center rounded-2xl border border-zinc-100 bg-neutral-50 p-4">
-    <View className="inline-flex h-7 w-7 items-center justify-center px-[2.33px] pb-[3.18px] pt-[4.67px]">
-      <Ionicons name="ios-eye-off-outline" size={24} color="black" />
-    </View>
-    <Text className="font-nunito self-stretch text-center text-sm font-semibold leading-tight tracking-tight text-neutral-500">
-      Question content is not visible
-    </Text>
-  </View>
-); */
 
 export default TestDetailsContent;

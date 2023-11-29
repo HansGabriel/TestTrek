@@ -7,9 +7,9 @@ const INCORRECT_MESSAGES = [
   "That's not it!",
   "Wrong answer!",
   "Incorrect!",
-  "Not the right answer!",
-  "Incorrect answer!",
-  "Incorrect, try another!",
+  "Not right!",
+  "Incorrect one!",
+  "Try another!",
   DEFAULT_ERROR_MESSAGE,
 ] as const;
 
