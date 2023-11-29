@@ -9,6 +9,10 @@ import { createNextApiHandler } from "@trpc/server/adapters/next";
 //   createContext,
 // });
 
+export const config = {
+  maxDuration: 300,
+};
+
 // If you need to enable cors, you can do so like this:
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Enable cors

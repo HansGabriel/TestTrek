@@ -20,7 +20,7 @@ import { useAuth } from "@clerk/clerk-expo";
  * A set of typesafe hooks for consuming your API.
  */
 export const trpc = createTRPCReact<AppRouter>();
-const VERCEL_URL = "https://test-trek-nextjs.vercel.app";
+const VERCEL_URL = "https://test-trek-backend.vercel.app";
 
 const getBaseUrl = (environment?: "development" | "production") => {
   /**
