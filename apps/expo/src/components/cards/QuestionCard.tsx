@@ -24,19 +24,26 @@ interface Question {
 interface QuestionCardProps {
   question: PartialQuestion | Question;
   index: number;
+  type?: "history" | "create";
   goToEditQuestion?: (index: number) => () => void;
+  goToQuestionHistory?: (questionId: string) => () => void;
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
   question,
   index,
+  type = "create",
   goToEditQuestion,
+  goToQuestionHistory,
 }) => {
   return (
     <TouchableOpacity
       className="my-2 flex h-[105px] items-center justify-start"
       key={index}
-      onPress={goToEditQuestion?.(index)}
+      onPress={match(type)
+        .with("create", () => goToEditQuestion?.(index))
+        .with("history", () => goToQuestionHistory?.((question as Question).id))
+        .exhaustive()}
     >
       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
         <View className="relative w-[140px] self-stretch">

@@ -60,6 +60,32 @@ export const testHistoryRouter = router({
       });
     }),
 
+  getUserQuestionHistoryById: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/test-history/me/{questionId}",
+      },
+    })
+    .input(
+      z.object({
+        questionId: z.string(),
+      }),
+    )
+    .output(z.any())
+    .query(({ ctx, input }) => {
+      const { questionId } = input;
+
+      return ctx.prisma.questionHistory.findFirst({
+        where: {
+          id: questionId,
+        },
+        include: {
+          choices: true,
+        },
+      });
+    }),
+
   createTestHistory: protectedProcedure
     .meta({
       openapi: {
@@ -121,7 +147,7 @@ export const testHistoryRouter = router({
         },
       });
 
-      return ctx.prisma.$transaction(
+      await ctx.prisma.$transaction(
         questions.map((question) => {
           return ctx.prisma.questionHistory.create({
             data: {
@@ -150,6 +176,8 @@ export const testHistoryRouter = router({
           });
         }),
       );
+
+      return testHistory.id;
     }),
 
   deleteTestHistory: protectedProcedure

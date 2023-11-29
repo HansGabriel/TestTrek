@@ -39,6 +39,7 @@ import { OthersProfileScreen } from "../screens/others-profile";
 import { CreateReviewerScreen } from "../screens/create-reviewer";
 import { ReviewerDetailsScreen } from "../screens/reviewer-details";
 import { TestHistoryScreen } from "../screens/test-history";
+import { QuestionHistoryScreen } from "../screens/test-history/question";
 
 export default function Navigation() {
   return (
@@ -250,6 +251,20 @@ const RootNavigator = () => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="TestHistory"
+              component={TestHistoryScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="QuestionHistory"
+              component={QuestionHistoryScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
           </>
         ) : (
           <>
@@ -284,13 +299,6 @@ const RootNavigator = () => {
             <Stack.Screen
               name="Signin"
               component={SigninScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="TestHistory"
-              component={TestHistoryScreen}
               options={{
                 headerShown: false,
               }}

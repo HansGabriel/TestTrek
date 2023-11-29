@@ -90,7 +90,11 @@ export type RootStackParamList = {
       }
     | undefined;
   TestHistory: {
+    historyId: string;
     testId: string;
+  };
+  QuestionHistory: {
+    questionId: string;
   };
 };
 

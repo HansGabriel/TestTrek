@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Dimensions } from "react-native";
+import { View, SafeAreaView, Dimensions, Alert } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import { FlashList } from "@shopify/flash-list";
 import QuestionCard from "../../components/cards/QuestionCard";
@@ -16,16 +16,42 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
   route,
 }) => {
   const { height, width } = Dimensions.get("window");
-  const { testId } = route.params;
+  const { historyId, testId } = route.params;
 
   const { data: testHistory, isLoading: isFetchingUser } =
     trpc.testHistory.getUserHistoryById.useQuery({
-      historyId: testId,
+      historyId,
     });
 
   const goToScoreBoard = () => {
     navigation.navigate("Scoreboard", {
-      testId: testId,
+      testId,
+    });
+  };
+
+  const goToHome = () => {
+    Alert.alert(
+      "Skip Scoreboard",
+      "Are you sure you want to skip the scoreboard?",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            navigation.navigate("Home");
+          },
+        },
+      ],
+      { cancelable: false },
+    );
+  };
+
+  const goToQuestionHistory = (questionId: string) => () => {
+    navigation.navigate("QuestionHistory", {
+      questionId: questionId,
     });
   };
 
@@ -39,6 +65,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
       <ReusableHeader
         screenName="Test History"
         backIcon={<Feather name="x" size={24} color="black" />}
+        handleExit={goToHome}
       />
       <View className="mx-5 h-full flex-1">
         <FlashList
@@ -46,7 +73,14 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
           data={testHistory?.questions ?? []}
           showsVerticalScrollIndicator={false}
           renderItem={({ item: question, index }) => {
-            return <QuestionCard question={question} index={index} />;
+            return (
+              <QuestionCard
+                question={question}
+                index={index}
+                type="history"
+                goToQuestionHistory={goToQuestionHistory}
+              />
+            );
           }}
         />
       </View>

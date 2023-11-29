@@ -96,19 +96,12 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   );
 
   const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
-  // const { mutate: finishTest, isLoading: isFinished } =
-  //   trpc.play.finishTest.useMutation({
-  //     onSuccess: () => {
-  //       navigation.navigate("Scoreboard", {
-  //         testId: testId,
-  //       });
-  //     },
-  //   });
   const { mutate: saveTestHistory, isLoading: isSavingTestHistory } =
     trpc.testHistory.createTestHistory.useMutation({
-      onSuccess: () => {
-        navigation.navigate("Scoreboard", {
-          testId: testId,
+      onSuccess: (testHistoryId) => {
+        navigation.navigate("TestHistory", {
+          historyId: testHistoryId,
+          testId,
         });
       },
     });
