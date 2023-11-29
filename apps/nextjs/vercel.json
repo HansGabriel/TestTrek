@@ -3,7 +3,7 @@
     "pages/api/**/*": {
       "maxDuration": 300
     },
-    "api/*.ts": {
+    "api/**/*": {
       "maxDuration": 300
     }
   }
