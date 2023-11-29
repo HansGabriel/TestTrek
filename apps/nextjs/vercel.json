@@ -2,6 +2,9 @@
   "functions": {
     "pages/api/**/*": {
       "maxDuration": 300
+    },
+    "api/*.ts": {
+      "maxDuration": 300
     }
   }
 }
