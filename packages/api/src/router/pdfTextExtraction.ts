@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -22,6 +23,9 @@ export const textExtractionRouter = router({
       const formData = new FormData();
       formData.append("base64image", file);
       formData.append("filetype", fileType);
+      formData.append("OCREngine", "2");
+      formData.append("detectOrientation", "true");
+      formData.append("scale", "true");
       if (apiKey) {
         formData.append("apikey", apiKey);
       }
@@ -36,8 +40,20 @@ export const textExtractionRouter = router({
       }
 
       const data = await response.json();
+      if (data.IsErroredOnProcessing) {
+        throw new Error("OCR request failed");
+      }
+      let combinedText = "";
+      if (data.ParsedResults.length > 1) {
+        data.ParsedResults.forEach((item: any) => {
+          combinedText += item.ParsedText + "\n";
+        });
+      } else {
+        combinedText = data.ParsedResults?.[0]?.ParsedText;
+      }
+
       const ocrResult: OCRResult = {
-        text: data.ParsedResults?.[0]?.ParsedText || "",
+        text: combinedText,
       };
 
       return ocrResult;

@@ -67,16 +67,15 @@ export const CreateReviewerScreen = ({
     type: "create",
   };
   const richText = useRef<RichEditor | null>(null);
-  let highlightedText = "";
   const regex =
-    /<span style="(?:font-size: 1em; )?background-color: yellow;">(?:<b>)?(?:<i>)?(?:<u>)?(.*?)(?:<\/u>)?(?:<\/i>)?(?:<\/b>)?<\/span>/g;
+    /<span style="(?:font-size: 1em; )?background-color: yellow;">(?:<b>)*(?:<i>)*(?:<u>)*([\s\S]*?)(?:<\/u>)*(?:<\/i>)*(?:<\/b>)*<\/span>/g;
   const types: QuestionType[] = [
     "multiple_choice",
     "true_or_false",
     "multi_select",
     "identification",
   ];
-
+  let highlightedText = "";
   const randomizeQuestionType = Math.floor(Math.random() * types.length);
   const questionType = types[randomizeQuestionType];
   const mappedQuestionType = mapQuestionType(
@@ -281,7 +280,10 @@ export const CreateReviewerScreen = ({
             onError: (error) => {
               errorToast({
                 title: "Error",
-                message: error.message,
+                message:
+                  fileType === "image/*"
+                    ? error.message
+                    : "Cannot transcribe images from PDF",
               });
               setIsImageUploading(false);
               setIsPDFUploading(false);
@@ -649,7 +651,7 @@ export const CreateReviewerScreen = ({
             name="content"
           />
         </View>
-        <View className="w-[90%] flex-row justify-around self-center">
+        <View className="w-[90%] flex-row justify-around self-center my-5">
           <AppButton
             text="Upload PDF"
             buttonColor="violet-600"
@@ -660,6 +662,7 @@ export const CreateReviewerScreen = ({
             TOwidth="36"
             Vwidth="36"
             isLoading={isPDFUploading}
+            disabled={isImageUploading || isPDFUploading}
             onPress={() =>
               filePicker({
                 fileType: "application/pdf",
@@ -677,6 +680,7 @@ export const CreateReviewerScreen = ({
             TOwidth="36"
             Vwidth="36"
             isLoading={isImageUploading}
+            disabled={isPDFUploading || isImageUploading}
             onPress={() =>
               filePicker({
                 fileType: "image/*",
