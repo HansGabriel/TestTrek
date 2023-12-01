@@ -11,6 +11,7 @@ import { reviewerRouter } from "./reviewer";
 import { algoliaSearch } from "./algoliaSearch";
 import { textExtractionRouter } from "./pdfTextExtraction";
 import { testHistoryRouter } from "./testHistory";
+import { pdfKitRouter } from "./pdfKit";
 
 export const appRouter = router({
   auth: authRouter,
@@ -25,6 +26,7 @@ export const appRouter = router({
   algolia: algoliaSearch,
   pdfTextExtraction: textExtractionRouter,
   testHistory: testHistoryRouter,
+  pdfKit: pdfKitRouter,
 });
 
 // export type definition of API
