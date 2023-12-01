@@ -10,6 +10,7 @@ import { ReusableHeader } from "../components/headers/ReusableHeader";
 import StarIcon from "../icons/StarIcon";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SavePdfToAndroidButton from "../device-file-saving/SavePdfToAndroidButton";
 
 export const TestDetailsScreen = ({
   route,
@@ -70,6 +71,7 @@ export const TestDetailsScreen = ({
         testId={testId}
         goToEditTest={goToEditTest}
       />
+      <SavePdfToAndroidButton testId={testDetails.id} />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );
