@@ -230,6 +230,7 @@ export const parseMultiselectResponse = (
   };
 };
 
+//This is a horrible implementaion but atleast all question types are the same objects and attributes
 export const parseIdentificationResponse = (
   generatedMessage: string,
 ): IdentificationPrompt => {
@@ -265,6 +266,7 @@ export const parseIdentificationResponse = (
   };
 };
 
+//This is a horrible implementaion but atleast all question types are the same objects and attributes
 export const parseTrueOrFalseResponse = (
   generatedMessage: string,
 ): TrueOrFalsePrompt => {

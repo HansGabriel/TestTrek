@@ -333,7 +333,7 @@ describe("parseIdentificationResponse", () => {
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "Who was the first president of the United States?",
-      answer: "George Washington",
+      choices: [{ text: "George Washington", isCorrect: true }],
       timeLimit: 10,
       points: 100,
       type: "identification",
@@ -347,9 +347,10 @@ describe("parseIdentificationResponse", () => {
         Points: 200
       `;
     const result = parseIdentificationResponse(generatedMessage);
+
     expect(result).toEqual({
       question: "",
-      answer: "George Washington",
+      choices: [{ text: "George Washington", isCorrect: true }],
       timeLimit: 20,
       points: 200,
       type: "identification",
@@ -365,7 +366,7 @@ describe("parseIdentificationResponse", () => {
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "Who was the first president of the United States?",
-      answer: "",
+      choices: [{ text: "", isCorrect: true }],
       timeLimit: 30,
       points: 300,
       type: "identification",
@@ -377,7 +378,7 @@ describe("parseIdentificationResponse", () => {
     const result = parseIdentificationResponse(generatedMessage);
     expect(result).toEqual({
       question: "",
-      answer: "",
+      choices: [{ text: "", isCorrect: true }],
       timeLimit: 0,
       points: 0,
       type: "identification",
@@ -396,7 +397,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Is the sky blue?",
-      answer: true,
+      choices: [
+        { text: "True", isCorrect: true },
+        { text: "False", isCorrect: false },
+      ],
       timeLimit: 30,
       points: 5,
       type: "trueOrFalse",
@@ -413,7 +417,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Do cows fly?",
-      answer: false,
+      choices: [
+        { text: "True", isCorrect: false },
+        { text: "False", isCorrect: true },
+      ],
       timeLimit: 45,
       points: 10,
       type: "trueOrFalse",
@@ -427,7 +434,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "",
-      answer: false,
+      choices: [
+        { text: "True", isCorrect: false },
+        { text: "False", isCorrect: true },
+      ],
       timeLimit: 0,
       points: 0,
       type: "trueOrFalse",
@@ -441,7 +451,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Do cows fly?",
-      answer: false, // defaults to false
+      choices: [
+        { text: "True", isCorrect: false },
+        { text: "False", isCorrect: true },
+      ],
       timeLimit: 0,
       points: 0,
       type: "trueOrFalse",
@@ -456,7 +469,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Is the sky blue?",
-      answer: true,
+      choices: [
+        { text: "True", isCorrect: true },
+        { text: "False", isCorrect: false },
+      ],
       timeLimit: 0,
       points: 0,
       type: "trueOrFalse",
@@ -468,7 +484,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "",
-      answer: false, // defaults to false
+      choices: [
+        { text: "True", isCorrect: false },
+        { text: "False", isCorrect: true },
+      ],
       timeLimit: 0,
       points: 0,
       type: "trueOrFalse",
@@ -483,7 +502,10 @@ describe("parseTrueOrFalseResponse", () => {
     const result = parseTrueOrFalseResponse(generatedMessage);
     expect(result).toEqual({
       question: "Is the sun hot?",
-      answer: true,
+      choices: [
+        { text: "True", isCorrect: true },
+        { text: "False", isCorrect: false },
+      ],
       timeLimit: 0,
       points: 0,
       type: "trueOrFalse",
