@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, RefreshControl, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import DiscoverHomeSection from "../components/discover/DiscoverHomeSection";
+import DiscoverHomeSection from "../components/discovers/DiscoverHomeSection";
 import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayTest from "../components/playtest/PlayTest";

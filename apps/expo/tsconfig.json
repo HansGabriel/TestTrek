@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "strict": true,
-    "jsx": "react-native"
+    "jsx": "react-native",
+    "paths": {
+      "react": ["../../node_modules/@types/react"]
+    }
   },
   "include": ["src", "index.ts", "app.config.ts"]
 }
