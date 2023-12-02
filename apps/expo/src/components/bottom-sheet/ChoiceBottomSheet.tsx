@@ -40,7 +40,7 @@ const ChoiceBottomSheet: FC<Props> = ({
               Reminder
             </Text>
             <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
-              Please create at least five (5) questions to save the test!
+              Please create at least one (1) question to save the test!
             </Text>
           </View>
         </View>
