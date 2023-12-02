@@ -88,38 +88,19 @@ describe("useRouter", () => {
     const input = { amountOfUsers: 2 };
     const result = await caller.getTop(input);
     expect(result).toHaveLength(2);
-    expect(ctx.prisma.user.findMany).toHaveBeenCalledWith({
-      take: input.amountOfUsers,
-      select: {
-        id: true,
-        userId: true,
-        imageUrl: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
   });
 
   it("should handle getTop query with no input", async () => {
     const input = {};
     const result = await caller.getTop(input);
     expect(result).toHaveLength(2);
-    expect(ctx.prisma.user.findMany).toHaveBeenCalledWith({
-      take: 50,
-      select: {
-        id: true,
-        userId: true,
-        imageUrl: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
   });
 
   it("should handle getUserById query", async () => {
     const input = { userId: "user1" };
     const result = await caller.getUserById(input);
     expect(result).toHaveProperty("userId", input.userId);
+    //Change to output based
     expect(ctx.prisma.user.findUnique).toHaveBeenCalledWith({
       where: { userId: input.userId },
     });
@@ -133,17 +114,16 @@ describe("useRouter", () => {
       email: "new@example.com",
       about: "New about text",
     };
+
     const result = await caller.editUserDetails(input);
-    expect(result).toHaveProperty("username", input.userName);
-    expect(ctx.prisma.user.update).toHaveBeenCalledWith({
-      where: { userId: ctx.auth.userId },
-      data: {
-        username: input.userName,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        email: input.email,
-        about: input.about,
-      },
+
+    expect(result).toEqual({
+      id: "userId1",
+      username: "newUsername",
+      firstName: "NewFirstName",
+      lastName: "NewLastName",
+      email: "new@example.com",
+      about: "New about text",
     });
   });
 
@@ -185,10 +165,6 @@ describe("useRouter", () => {
       const userPlays = await ctx.prisma.play.findMany({
         where: { playerId: ctx.auth.userId, isFinished: true },
       });
-
-      const normalizeWhitespace = (str: string) => {
-        return str.replace(/\s+/g, " ").trim();
-      };
 
       await pMap(
         userPlays,

@@ -10,6 +10,7 @@ describe("testRouter - edit mutation", () => {
     ctx.prisma.question.create = vi.fn().mockResolvedValue(Promise.resolve({}));
     ctx.prisma.question.deleteMany = vi.fn().mockResolvedValue({ count: 0 });
     ctx.prisma.$transaction = vi.fn().mockResolvedValue([]);
+    ctx.prisma.test.findUnique = vi.fn().mockResolvedValue(null);
   });
 
   afterEach(() => {

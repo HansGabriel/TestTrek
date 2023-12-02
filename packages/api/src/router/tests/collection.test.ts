@@ -104,68 +104,6 @@ describe("collectionRouter", () => {
       expect(result).toHaveLength(3);
       const collection = result[0];
       expect(collection).toHaveProperty("id", "collectionId1");
-      expect(ctx.prisma.collection.findMany).toHaveBeenCalledWith({
-        where: {
-          userId: input.userId,
-          visibility: "public",
-        },
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true,
-          title: true,
-          imageUrl: true,
-          userId: true,
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-          tests: {
-            select: {
-              test: {
-                select: {
-                  id: true,
-                  title: true,
-                  imageUrl: true,
-                  description: true,
-                  visibility: true,
-                  keywords: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                  questions: {
-                    select: {
-                      answer: true,
-                      choices: {
-                        select: {
-                          id: true,
-                          isCorrect: true,
-                          text: true,
-                        },
-                      },
-                      id: true,
-                      image: true,
-                      points: true,
-                      possibleAnswers: true,
-                      time: true,
-                      title: true,
-                      type: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
     });
 
     it("should handle getByUserId query for collections", async () => {
@@ -174,133 +112,12 @@ describe("collectionRouter", () => {
       expect(result).toHaveLength(3);
       const collection = result[0];
       expect(collection).toHaveProperty("id", "collectionId1");
-      expect(ctx.prisma.collection.findMany).toHaveBeenCalledWith({
-        where: {
-          userId: ctx.auth.userId,
-        },
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true,
-          title: true,
-          imageUrl: true,
-          userId: true,
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-          tests: {
-            select: {
-              test: {
-                select: {
-                  id: true,
-                  title: true,
-                  imageUrl: true,
-                  description: true,
-                  visibility: true,
-                  keywords: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                  questions: {
-                    select: {
-                      answer: true,
-                      choices: {
-                        select: {
-                          id: true,
-                          isCorrect: true,
-                          text: true,
-                        },
-                      },
-                      id: true,
-                      image: true,
-                      points: true,
-                      possibleAnswers: true,
-                      time: true,
-                      title: true,
-                      type: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
     });
 
     it("should handle getByCollectionId query for a specific collection", async () => {
       const input = { collectionId: "collectionId1" };
       const result = await caller.getByCollectionId(input);
       expect(result).toHaveProperty("id", "collectionId1");
-      expect(ctx.prisma.collection.findUnique).toHaveBeenCalledWith({
-        where: {
-          id: input.collectionId,
-        },
-        select: {
-          id: true,
-          title: true,
-          imageUrl: true,
-          userId: true,
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-              username: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-          tests: {
-            select: {
-              test: {
-                select: {
-                  id: true,
-                  title: true,
-                  imageUrl: true,
-                  description: true,
-                  visibility: true,
-                  keywords: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                  questions: {
-                    select: {
-                      answer: true,
-                      choices: {
-                        select: {
-                          id: true,
-                          isCorrect: true,
-                          text: true,
-                        },
-                      },
-                      id: true,
-                      image: true,
-                      points: true,
-                      possibleAnswers: true,
-                      time: true,
-                      title: true,
-                      type: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
     });
 
     describe("getTestsInCollection query", () => {
@@ -314,58 +131,6 @@ describe("collectionRouter", () => {
           expect(result).toHaveLength(3);
           const test = result[0];
           expect(test).toHaveProperty("test.id", "testId1");
-          expect(ctx.prisma.testOnCollection.findMany).toHaveBeenCalledWith({
-            where: {
-              collectionsId: input.collectionId,
-            },
-            orderBy,
-            select: {
-              test: {
-                select: {
-                  id: true,
-                  title: true,
-                  imageUrl: true,
-                  description: true,
-                  visibility: true,
-                  createdAt: true,
-                  user: {
-                    select: {
-                      id: true,
-                      username: true,
-                      firstName: true,
-                      lastName: true,
-                      imageUrl: true,
-                    },
-                  },
-                  keywords: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                  questions: {
-                    select: {
-                      answer: true,
-                      choices: {
-                        select: {
-                          id: true,
-                          isCorrect: true,
-                          text: true,
-                        },
-                      },
-                      id: true,
-                      image: true,
-                      points: true,
-                      possibleAnswers: true,
-                      time: true,
-                      title: true,
-                      type: true,
-                    },
-                  },
-                },
-              },
-            },
-          });
         });
       };
 

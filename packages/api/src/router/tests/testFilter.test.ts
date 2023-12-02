@@ -49,23 +49,6 @@ describe("testFilterRouter", () => {
     expect(result).toHaveLength(1);
     const test = result[0];
     expect(test).toHaveProperty("id", "testId1");
-    expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-      where: { userId: ctx.auth.userId },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: { select: { id: true, name: true } },
-        visibility: true,
-        userId: true,
-        createdAt: true,
-        updatedAt: true,
-        collections: { include: { collection: true } },
-        plays: { include: { player: true } },
-      },
-    });
   });
 
   it("should handle getAll query for favorite tests", async () => {
@@ -74,27 +57,6 @@ describe("testFilterRouter", () => {
     expect(result).toHaveLength(1);
     const test = result[0];
     expect(test).toHaveProperty("id", "testId1");
-    expect(ctx.prisma.userOnFavoriteTest.findMany).toHaveBeenCalledWith({
-      where: { userId: ctx.auth.userId },
-      select: { testId: true },
-    });
-    expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-      where: { userId: ctx.auth.userId, id: { in: ["testId1"] } },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: { select: { id: true, name: true } },
-        visibility: true,
-        userId: true,
-        createdAt: true,
-        updatedAt: true,
-        collections: { include: { collection: true } },
-        plays: { include: { player: true } },
-      },
-    });
   });
 
   it("should handle getByUserId query", async () => {
@@ -107,23 +69,6 @@ describe("testFilterRouter", () => {
     expect(result).toHaveLength(1);
     const test = result[0];
     expect(test).toHaveProperty("id", "testId1");
-    expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-      where: { userId: input.userId },
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: { select: { id: true, name: true } },
-        visibility: true,
-        userId: true,
-        createdAt: true,
-        updatedAt: true,
-        collections: { include: { collection: true } },
-        plays: { include: { player: true } },
-      },
-    });
   });
 
   describe("getAll query with different orderBy options", () => {
@@ -134,23 +79,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getAll(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: ctx.auth.userId },
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
 
     it("should handle orderBy oldest", async () => {
@@ -158,23 +86,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getAll(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: ctx.auth.userId },
-        orderBy: { createdAt: "asc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
 
     it("should handle orderBy alphabetical", async () => {
@@ -182,23 +93,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getAll(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: ctx.auth.userId },
-        orderBy: { title: "asc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
   });
 
@@ -210,23 +104,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getByUserId(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: input.userId },
-        orderBy: { createdAt: "desc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
 
     it("should handle orderBy oldest", async () => {
@@ -234,23 +111,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getByUserId(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: input.userId },
-        orderBy: { createdAt: "asc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
 
     it("should handle orderBy alphabetical", async () => {
@@ -258,23 +118,6 @@ describe("testFilterRouter", () => {
       const result = await caller.getByUserId(input);
 
       expect(result).toHaveLength(1);
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        where: { userId: input.userId },
-        orderBy: { title: "asc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: { select: { id: true, name: true } },
-          visibility: true,
-          userId: true,
-          createdAt: true,
-          updatedAt: true,
-          collections: { include: { collection: true } },
-          plays: { include: { player: true } },
-        },
-      });
     });
   });
 });

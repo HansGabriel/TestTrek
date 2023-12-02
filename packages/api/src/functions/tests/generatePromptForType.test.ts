@@ -72,7 +72,6 @@ ${timeAndPointsPrompt}`,
     );
   });
 
-  // Test for custom parameters for the identification type
   it("should generate prompt for identification with custom max characters", () => {
     const result = generatePromptForType(message, "identification", 90, 60);
     expect(result).toEqual(
