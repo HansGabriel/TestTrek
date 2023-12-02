@@ -4,9 +4,10 @@ import { Question, CustomTest, Choice } from "./types/pdfKit";
 export const formatChoice = (choices: Choice[]): string => {
   return choices
     .map((choice, index) => {
-      return `${String.fromCharCode(65 + index)}. ${choice.text}`;
+      const choiceLetter = String.fromCharCode(65 + index);
+      return `${choiceLetter}) ${choice.text}`;
     })
-    .join("    ");
+    .join("\n");
 };
 
 export const formatQuestion = (
@@ -18,10 +19,10 @@ export const formatQuestion = (
     case "multi_select":
       return `${itemNumber}. ${question.title}\n\n${formatChoice(
         question.choices,
-      )}`;
+      )}\n`;
     case "true_or_false":
     case "identification":
-      return `_______________ ${itemNumber}. ${question.title}`;
+      return `__________ ${itemNumber}. ${question.title}\n\n`;
     default:
       return "";
   }
@@ -33,9 +34,15 @@ export const formatTestData = (testData: CustomTest): string => {
     .join("\n\n");
 };
 
+export const getCorrectAnswers = (question: Question): string[] => {
+  return question.choices
+    .filter((choice) => choice.isCorrect)
+    .map((choice) => choice.text);
+};
+
 export const generatePdf = async (test: CustomTest): Promise<Buffer> => {
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({ margin: 40 });
     const buffers: Buffer[] = [];
 
     doc.on("data", buffers.push.bind(buffers));
@@ -44,11 +51,41 @@ export const generatePdf = async (test: CustomTest): Promise<Buffer> => {
     });
     doc.on("error", reject);
 
-    doc.fontSize(16).text(test.title, { underline: true }).moveDown();
-    doc.fontSize(12).text(test.description).moveDown(2);
+    doc
+      .fontSize(15)
+      .font("Helvetica-Bold")
+      .text(test.title, { align: "center" })
+      .moveDown();
+
+    doc
+      .fontSize(12)
+      .font("Helvetica")
+      .text(test.description, { align: "center" })
+      .moveDown(2);
 
     const formattedData = formatTestData(test);
-    doc.text(formattedData, { indent: 20, align: "left" });
+    doc.font("Courier").fontSize(9).text(formattedData, {
+      align: "left",
+    });
+
+    doc.addPage();
+
+    doc
+      .fontSize(15)
+      .font("Helvetica-Bold")
+      .text("Answer Sheet", { align: "center" })
+      .moveDown();
+
+    test.questions.forEach((question, index) => {
+      const correctAnswers = getCorrectAnswers(question);
+      if (correctAnswers) {
+        doc
+          .fontSize(12)
+          .font("Helvetica")
+          .text(`${index + 1}. ${correctAnswers}`);
+        doc.moveDown(1.5);
+      }
+    });
 
     doc.end();
   });
