@@ -55,20 +55,33 @@ describe("reviewerRouter", () => {
   });
 
   it("should handle createReviewer mutation", async () => {
+    beforeEach(async () => {
+      ctx.prisma.test.findUnique = vi.fn().mockResolvedValue(null);
+    });
+
     const input = {
       title: "Test Title",
       imageUrl: "testImageUrl",
       content: "Test Content",
       visibility: "public",
     } as const;
+
     const result = await caller.createReviewer(input);
     expect(result).toEqual(mockReviewerData);
     expect(ctx.prisma.reviewer.create).toHaveBeenCalledWith({
       data: { ...input, userId: ctx.auth.userId },
     });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
   });
 
   it("should handle updateReviewer mutation", async () => {
+    beforeEach(async () => {
+      ctx.prisma.test.findUnique = vi.fn().mockResolvedValue(null);
+    });
+
     const input = {
       reviewerId: "reviewerId1",
       title: "Updated Title",
@@ -76,6 +89,7 @@ describe("reviewerRouter", () => {
       content: "Updated Content",
       visibility: "private",
     } as const;
+
     const result = await caller.updateReviewer(input);
     expect(result).toEqual(mockReviewerData);
     expect(ctx.prisma.reviewer.update).toHaveBeenCalledWith({
@@ -86,6 +100,10 @@ describe("reviewerRouter", () => {
         content: input.content,
         visibility: input.visibility,
       },
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
     });
   });
 });

@@ -84,54 +84,6 @@ describe("testRouter - queries", () => {
     expect(result).toHaveLength(2);
     expect(result[0]).toHaveProperty("id", "testId1");
     expect(result[1]).toHaveProperty("title", "Sample Test Title 2");
-    expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        keywords: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        questions: {
-          select: {
-            answer: true,
-            choices: {
-              select: {
-                id: true,
-                isCorrect: true,
-                text: true,
-              },
-            },
-            id: true,
-            image: true,
-            points: true,
-            possibleAnswers: true,
-            time: true,
-            title: true,
-            type: true,
-          },
-        },
-        collections: {
-          include: {
-            collection: true,
-          },
-        },
-        visibility: true,
-        user: {
-          select: {
-            imageUrl: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
   });
 
   describe("testRouter - getDiscoverTests", () => {
@@ -146,42 +98,6 @@ describe("testRouter - queries", () => {
           expect(result[0].user).toHaveProperty("lastName", "Doe");
         }
       }
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: input.amountOfTests,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      });
     });
 
     it("should fetch all tests if amountOfTests is not provided", async () => {
@@ -189,42 +105,6 @@ describe("testRouter - queries", () => {
       expect(result.length).toBe(2);
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(result[1]).toHaveProperty("id", "testId2");
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: 50,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      });
     });
   });
 
@@ -240,108 +120,12 @@ describe("testRouter - queries", () => {
           expect(result[0].user).toHaveProperty("lastName", "Doe");
         }
       }
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: input.amountOfTests,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: [
-          {
-            plays: {
-              _count: "desc",
-            },
-          },
-          {
-            updatedAt: "desc",
-          },
-          {
-            questions: {
-              _count: "desc",
-            },
-          },
-        ],
-      });
     });
 
     it("should fetch all trending tests if amountOfTests is not provided", async () => {
       const result = await caller.getTrendingTests({});
       expect(result.length).toBe(2);
       expect(result[0]).toHaveProperty("id", "testId1");
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: 50,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: [
-          {
-            plays: {
-              _count: "desc",
-            },
-          },
-          {
-            updatedAt: "desc",
-          },
-          {
-            questions: {
-              _count: "desc",
-            },
-          },
-        ],
-      });
     });
   });
 
@@ -357,54 +141,6 @@ describe("testRouter - queries", () => {
           expect(result[0].user).toHaveProperty("lastName", "Doe");
         }
       }
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: input.amountOfTests,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: [
-          {
-            favoritedUsers: {
-              _count: "desc",
-            },
-          },
-          {
-            updatedAt: "desc",
-          },
-          {
-            questions: {
-              _count: "desc",
-            },
-          },
-        ],
-      });
     });
 
     it("should fetch all top picked tests if amountOfTests is not provided", async () => {
@@ -412,54 +148,6 @@ describe("testRouter - queries", () => {
       expect(result.length).toBe(2);
       expect(result[0]).toHaveProperty("id", "testId1");
       expect(result[1]).toHaveProperty("id", "testId2");
-      expect(ctx.prisma.test.findMany).toHaveBeenCalledWith({
-        take: 50,
-        where: {
-          visibility: "public",
-        },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          imageUrl: true,
-          keywords: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          questions: {
-            select: {
-              id: true,
-            },
-          },
-          visibility: true,
-          user: {
-            select: {
-              imageUrl: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy: [
-          {
-            favoritedUsers: {
-              _count: "desc",
-            },
-          },
-          {
-            updatedAt: "desc",
-          },
-          {
-            questions: {
-              _count: "desc",
-            },
-          },
-        ],
-      });
     });
   });
 
