@@ -35,9 +35,4 @@ export const updateUserInAlgolia = async (userData: UsersForAlgolia) => {
   const index = client.initIndex("users");
 
   await index.saveObject(algoliaObject);
-  console.log(
-    `User ${
-      (algoliaObject.firstName, algoliaObject.lastName)
-    } added/updated in Algolia`,
-  );
 };

@@ -807,7 +807,6 @@ export const testRouter = router({
 
       try {
         await deleteTestFromAlgolia(testId);
-        console.log(`Test ${testId} deleted from Algolia`);
       } catch (error) {
         console.error(`Error deleting test from Algolia: ${error}`);
       }

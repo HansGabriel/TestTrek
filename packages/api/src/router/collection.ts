@@ -580,7 +580,6 @@ export const collectionRouter = router({
 
       try {
         await deleteCollectionFromAlgolia(collectionId);
-        console.log(`Collection ${collectionId} removed from Algolia`);
       } catch (error) {
         console.error(`Error removing collection from Algolia: `, error);
         console.error(`Error details: ${JSON.stringify(error, null, 2)}`);
