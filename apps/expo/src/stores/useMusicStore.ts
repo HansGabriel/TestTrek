@@ -12,10 +12,10 @@ interface MusicStore {
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
-  isMusicPlaying: false,
+  isMusicPlaying: true,
   toggleMusicPlay: () =>
     set((state) => ({ isMusicPlaying: !state.isMusicPlaying })),
-  isEffectsPlaying: false,
+  isEffectsPlaying: true,
   toggleEffectsPlay: () =>
     set((state) => ({ isEffectsPlaying: !state.isEffectsPlaying })),
   isPlayTestScreen: false,
