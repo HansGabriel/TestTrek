@@ -18,7 +18,6 @@ export const updateTestInAlgolia = async (testData: TestsForAlgolia) => {
   const index = client.initIndex("tests");
 
   await index.saveObject(algoliaObject);
-  console.log(`Test ${algoliaObject.title} added/updated in Algolia`);
 };
 
 export const deleteTestFromAlgolia = async (testId: string) => {
@@ -26,7 +25,6 @@ export const deleteTestFromAlgolia = async (testId: string) => {
   const index = client.initIndex("tests");
 
   await index.deleteObject(testId);
-  console.log(`Test ${testId} deleted from Algolia`);
 };
 
 export const updateCollectionInAlgolia = async (
@@ -43,7 +41,6 @@ export const updateCollectionInAlgolia = async (
   const index = client.initIndex("collections");
 
   await index.saveObject(algoliaObject);
-  console.log(`Collection ${algoliaObject.title} added/updated in Algolia`);
 };
 
 export const deleteCollectionFromAlgolia = async (collectionId: string) => {
@@ -51,7 +48,6 @@ export const deleteCollectionFromAlgolia = async (collectionId: string) => {
   const index = client.initIndex("collections");
 
   await index.deleteObject(collectionId);
-  console.log(`Collection ${collectionId} deleted from Algolia`);
 };
 
 export const updateReviewerInAlgolia = async (
@@ -68,7 +64,6 @@ export const updateReviewerInAlgolia = async (
   const index = client.initIndex("reviewers");
 
   await index.saveObject(algoliaObject);
-  console.log(`Reviewer ${algoliaObject.title} added/updated in Algolia`);
 };
 
 export const deleteReviewerFromAlgolia = async (reviewerId: string) => {
@@ -76,7 +71,6 @@ export const deleteReviewerFromAlgolia = async (reviewerId: string) => {
   const index = client.initIndex("reviewers");
 
   await index.deleteObject(reviewerId);
-  console.log(`Reviewer ${reviewerId} deleted from Algolia`);
 };
 
 export const updateUserInAlgolia = async (userData: UsersForAlgolia) => {
@@ -91,11 +85,6 @@ export const updateUserInAlgolia = async (userData: UsersForAlgolia) => {
   const index = client.initIndex("users");
 
   await index.saveObject(algoliaObject);
-  console.log(
-    `User ${
-      (algoliaObject.firstName, algoliaObject.lastName)
-    } added/updated in Algolia`,
-  );
 };
 
 export const deleteUserFromAlgolia = async (userId: string) => {
@@ -103,5 +92,4 @@ export const deleteUserFromAlgolia = async (userId: string) => {
   const index = client.initIndex("users");
 
   await index.deleteObject(userId);
-  console.log(`Reviewer ${userId} deleted from Algolia`);
 };

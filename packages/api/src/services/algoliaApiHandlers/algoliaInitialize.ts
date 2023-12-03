@@ -12,13 +12,10 @@ const clearAlgoliaIndex = async (indexName: string) => {
   const index = client.initIndex(indexName);
 
   await index.clearObjects();
-  console.log(`Cleared Algolia Index: ${indexName}`);
 };
 
 const initializeAlgolia = async () => {
   try {
-    console.log("Running initialization tasks...");
-
     await clearAlgoliaIndex("tests");
     await clearAlgoliaIndex("users");
     await clearAlgoliaIndex("collections");

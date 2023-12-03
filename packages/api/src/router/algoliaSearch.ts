@@ -38,7 +38,6 @@ export const algoliaSearch = router({
         filterBySignedUser,
       );
 
-      console.log("Algolia Results From Router:", compiledHits);
       return compiledHits;
     }),
 });
