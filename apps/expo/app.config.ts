@@ -41,7 +41,17 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     },
     CLERK_PUBLISHABLE_KEY,
   },
-  plugins: ["./expo-plugins/with-modify-gradle.js"],
+  plugins: [
+    "./expo-plugins/with-modify-gradle.js",
+    [
+      "expo-build-properties",
+      {
+        android: {
+          compileSdkVersion: 33,
+        },
+      },
+    ],
+  ],
 });
 
 export default defineConfig;
