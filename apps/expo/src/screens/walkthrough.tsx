@@ -105,7 +105,7 @@ export const WalkthroughScreen: FC = () => {
       </Swiper>
       <TouchableOpacity
         onPress={signInWithGoogle}
-        className="mb-1 mt-5 w-[90%] rounded-2xl border-b-4 border-l border-r border-t border-zinc-100 bg-white px-8 py-[18px]"
+        className="mb-1 mt-5 w-[90%] rounded-2xl border-2 border-zinc-100 bg-white px-8 py-[18px]"
       >
         <View className="flex flex-row items-center justify-center gap-3">
           <GoogleIcon />
@@ -116,7 +116,7 @@ export const WalkthroughScreen: FC = () => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={signInWithFacebook}
-        className="mb-5 mt-5 w-[90%] rounded-2xl border-b-4 border-l border-r border-t border-zinc-100 bg-white px-8 py-[18px]"
+        className="mb-5 mt-5 w-[90%] rounded-2xl border-2 border-zinc-100 bg-white px-8 py-[18px]"
       >
         <View className="flex flex-row items-center justify-center gap-3">
           <FacebookIcon />

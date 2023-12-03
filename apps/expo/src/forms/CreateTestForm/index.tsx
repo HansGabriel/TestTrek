@@ -656,7 +656,7 @@ const CreateTestForm: FC<Props> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setOpenCreationChoice(true)}
-              className="w-[45%] items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-indigo-700 py-[18px]"
+              className="w-[45%] items-center justify-center rounded-[100px] border-b border-l border-r border-t border-indigo-800 bg-indigo-700 py-[18px]"
             >
               <Text className="shrink grow basis-0 text-center text-base font-bold leading-snug tracking-tight text-white">
                 Add Question

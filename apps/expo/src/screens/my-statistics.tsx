@@ -37,7 +37,7 @@ export const MyStatistics = () => {
     {
       name: "Total Score",
       icon: <CoinIcon />,
-      value: totalScore?._sum.score,
+      value: totalScore?._sum.score ?? 0,
     },
     { name: "Top Three", icon: <MedalIcon />, value: totalUserOnTop },
     {

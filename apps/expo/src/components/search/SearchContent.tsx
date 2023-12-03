@@ -140,7 +140,7 @@ export const SearchContent: FC<ContentProps> = ({
     <TouchableOpacity
       key={category}
       onPress={() => toggleCategory(category)}
-      className="m-2"
+      className="m-1"
     >
       <View
         className={`items-center justify-center rounded-lg 
@@ -172,6 +172,7 @@ export const SearchContent: FC<ContentProps> = ({
         </View>
 
         <View
+        className="w-[90%] self-center"
           style={{
             flexDirection: "row",
             justifyContent: "center",

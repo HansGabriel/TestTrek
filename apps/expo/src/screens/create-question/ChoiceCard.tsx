@@ -660,19 +660,22 @@ export const IdentificationCards = ({
             </TouchableOpacity>
           </View>
         ))}
-      <AppButton
-        text="Add Choice"
-        buttonColor="violet-600"
-        borderShadowColor="indigo-800"
-        borderRadius="full"
-        fontStyle="bold"
-        textColor="white"
-        TOwidth="full"
-        Vwidth="full"
-        Vheight="10"
-        onPress={addChoice}
-        isLoading={false}
-      />
+
+      <View className="w-[90%]">
+        <AppButton
+          text="Add Choice"
+          buttonColor="violet-600"
+          borderShadowColor="indigo-800"
+          borderRadius="full"
+          fontStyle="bold"
+          textColor="white"
+          TOwidth="[50%]"
+          Vwidth="full"
+          Vheight="12"
+          onPress={addChoice}
+          isLoading={false}
+        />
+      </View>
     </View>
   );
 };

@@ -5,7 +5,7 @@ import {
   ChatIcon,
   CheckboxIcon,
 } from "../../icons/bottom-sheet";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Foundation } from "@expo/vector-icons";
 
 import type { FC } from "react";
 import type { QuestionType } from "../../stores/useQuestionStore";
@@ -29,15 +29,11 @@ const ChoiceBottomSheet: FC<Props> = ({
       <View className="mx-6 my-4 flex flex-row">
         <View className=" w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
           <View className="mt-2">
-            <MaterialCommunityIcons
-              name="bell-ring-outline"
-              size={25}
-              color="#7c3aed"
-            />
+            <Foundation name="lightbulb" size={30} color="#7c3aed" />
           </View>
           <View className="my-2">
             <Text className="font-nunito-bold self-center text-center text-lg">
-              Reminder
+              Just a tip!
             </Text>
             <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
               Please create at least one (1) question to save the test!

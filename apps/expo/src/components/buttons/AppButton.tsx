@@ -76,7 +76,7 @@ export const AppButton = ({
       <View
         className={` h-${Vheight} w-${Vwidth} flex-row items-center justify-center self-center rounded-[${borderRadiusSize(
           borderRadius,
-        )}] border-b-4 border-l border-r border-t border-${borderShadowColor} bg-${buttonColor} ${classNameValue} `}
+        )}] border-b border-l border-r border-t border-${borderShadowColor} bg-${buttonColor} ${classNameValue} `}
       >
         {iconLeft}
         <Text

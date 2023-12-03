@@ -1,6 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
-import TinyTestTrekIcon from "../icons/logos/TinyTestTrekIcon";
 import { useEffect, useState } from "react";
 import { HeaderAndContent } from "../components/my-library/HeaderAndContent";
 import Footer from "../components/Footer";
@@ -126,9 +125,9 @@ export const MyLibraryScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, height: height, width: width }}>
-      <SafeAreaView className="z-50 flex-row items-center justify-between space-x-4">
+      <SafeAreaView className="z-50 flex-row items-center justify-between space-x-4 self-center">
         {isSearchPressed ? (
-          <View className=" z-50 flex-row justify-between self-center bg-white">
+          <View className=" sticky z-50 flex-row justify-between self-center bg-white pb-3">
             <SearchField
               searchString={query}
               onChange={updateQuery}
@@ -140,21 +139,20 @@ export const MyLibraryScreen = () => {
           </View>
         ) : (
           <Animated.View
-            className="sticky top-0 z-50 h-full w-full flex-row justify-between bg-white px-5 pb-3"
+            className="sticky top-0 z-50 mb-5 h-full w-[90%] flex-row justify-between self-center bg-white pb-3"
             entering={SlideInLeft}
             exiting={SlideOutLeft}
           >
-            <View className="flex-row gap-4">
+            <View className="flex flex-row items-center gap-4">
               <TouchableOpacity
                 onPress={() => navigation.navigate("Home")}
                 className="self-center"
               >
                 <LeftArrowIcon />
               </TouchableOpacity>
-              <TinyTestTrekIcon />
-              <Text className=" font-nunito-bold text-2xl">Library</Text>
+              <Text className=" font-nunito-bold text-2xl">My Library</Text>
             </View>
-            <TouchableOpacity onPress={handlePressed}>
+            <TouchableOpacity className="self-center" onPress={handlePressed}>
               <SearchIcon />
             </TouchableOpacity>
           </Animated.View>
