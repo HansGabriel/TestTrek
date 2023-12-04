@@ -1,15 +1,22 @@
 import React, { FC } from "react";
-import { Button, Alert, Platform } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { shareAsync } from "expo-sharing";
 import { trpc } from "../utils/trpc";
+import { Feather } from "@expo/vector-icons";
+import {
+  errorToast,
+  successToast,
+} from "../components/notifications/ToastNotifications";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type DownloadPdfButtonProps = {
   testId: string;
 };
 
-const DownloadPdfButton: FC<DownloadPdfButtonProps> = (props) => {
-  const generatePdfMutation = trpc.pdfKit.generatePdfByTestId.useMutation();
+export const SaveToPDFButton: FC<DownloadPdfButtonProps> = (props) => {
+  const { mutateAsync: generatePdfMutation, isLoading: isSaving } =
+    trpc.pdfKit.generatePdfByTestId.useMutation();
 
   const saveFile = async (uri: string, filename: string) => {
     if (Platform.OS === "android") {
@@ -28,11 +35,16 @@ const DownloadPdfButton: FC<DownloadPdfButtonProps> = (props) => {
             await FileSystem.writeAsStringAsync(uri, base64, {
               encoding: FileSystem.EncodingType.Base64,
             });
-            Alert.alert("File Saved", "File has been saved successfully");
+            successToast({
+              title: "Success",
+              message: "File saved as PDF",
+            });
           })
           .catch((e) => {
-            console.log(e);
-            Alert.alert("Error", "Failed to save file");
+            errorToast({
+              title: "Error",
+              message: e.message ?? "Failed to save file",
+            });
           });
       } else {
         shareAsync(uri);
@@ -44,7 +56,7 @@ const DownloadPdfButton: FC<DownloadPdfButtonProps> = (props) => {
 
   const downloadAndSavePdf = async () => {
     try {
-      const result = await generatePdfMutation.mutateAsync(props.testId);
+      const result = await generatePdfMutation(props.testId);
       const base64pdf = result.pdfBuffer;
       const filename = `test-${Date.now()}.pdf`;
       const localUri = FileSystem.documentDirectory + filename;
@@ -55,12 +67,20 @@ const DownloadPdfButton: FC<DownloadPdfButtonProps> = (props) => {
 
       await saveFile(localUri, filename);
     } catch (error) {
-      console.error("Error saving PDF:", error);
-      Alert.alert("Error", "Unable to generate or download PDF");
+      errorToast({
+        title: "Error",
+        message: "Unable to generate or download PDF",
+      });
     }
   };
 
-  return <Button title="Save PDF" onPress={downloadAndSavePdf} />;
+  return (
+    <TouchableOpacity onPress={downloadAndSavePdf}>
+      {isSaving ? (
+        <ActivityIndicator size="small" color="black" />
+      ) : (
+        <Feather name="download" size={24} color="black" />
+      )}
+    </TouchableOpacity>
+  );
 };
-
-export default DownloadPdfButton;
