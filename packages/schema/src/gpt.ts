@@ -23,3 +23,8 @@ export const multipleQuestionsPromptInput = z.object({
   maxCharsPerQuestion: z.number().optional(),
   maxCharsPerChoice: z.number().optional(),
 });
+
+export const multipleRandomQuestionsPromptInput = z.object({
+  message: z.string(),
+  numOfQuestions: z.number(),
+});

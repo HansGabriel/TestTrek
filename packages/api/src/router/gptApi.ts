@@ -17,9 +17,14 @@ import {
 } from "../functions/testCreationHandlers";
 import {
   multipleQuestionsPromptInput,
+  multipleRandomQuestionsPromptInput,
   singleQuestionPromptInput,
 } from "../../../schema/src/gpt";
 import { fetchGPT } from "../services/gptApiHandlers";
+import {
+  generateCombinedQuestionPrompts,
+  processGeneratedQuestions,
+} from "../functions/randomQuestionsHandlers";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
@@ -112,5 +117,30 @@ export const gptApiRouter = router({
       }
 
       return answer;
+    }),
+
+  generateMultipleRandomQuestions: protectedProcedure
+    .input(multipleRandomQuestionsPromptInput)
+    .mutation(async ({ input }) => {
+      const { message, numOfQuestions } = input;
+
+      const promptText = generateCombinedQuestionPrompts(
+        numOfQuestions,
+        message,
+      );
+
+      console.log(promptText);
+
+      const generatedMessage = await fetchGPT(promptText);
+
+      console.log(generatedMessage);
+
+      console.log(
+        "==========================================================================",
+      );
+
+      const processedQuestions = processGeneratedQuestions(generatedMessage);
+
+      console.log(processedQuestions);
     }),
 });
