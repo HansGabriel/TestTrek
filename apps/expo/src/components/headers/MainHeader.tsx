@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import TinyTestTrekIcon from "../../icons/logos/TinyTestTrekIcon";
 import SearchIcon from "../../icons/SearchIcon";
-import NotificationsIcon from "../../icons/NotificationsIcon";
 
 import { FC, useState } from "react";
 
@@ -37,7 +36,7 @@ const MainHeader: FC = ({}) => {
         </View>
       ) : (
         <Animated.View
-          className="sticky top-0 z-50 mx-6 mb-5 mt-5 flex-row justify-between bg-white pt-1"
+          className="sticky top-0 z-50 mb-3 mt-5 w-[90%] flex-row justify-between self-center bg-white pb-4"
           entering={SlideInLeft}
           exiting={SlideOutLeft}
         >
@@ -53,9 +52,6 @@ const MainHeader: FC = ({}) => {
             {/* Added items-center here for consistency */}
             <TouchableOpacity onPress={handlePressed}>
               <SearchIcon />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <NotificationsIcon />
             </TouchableOpacity>
           </View>
         </Animated.View>

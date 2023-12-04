@@ -13,7 +13,7 @@ export const AddButton: FC<ButtonProps> = ({ screen }) => {
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate(screen)}
-      className="h-12 w-12 items-center justify-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600"
+      className="h-12 w-12 items-center justify-center rounded-[100px] border-b border-l border-r border-t border-indigo-800 bg-violet-600"
     >
       <Text className=" text-2xl text-white">+</Text>
     </TouchableOpacity>

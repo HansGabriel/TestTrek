@@ -705,7 +705,7 @@ export const CreateQuestionScreen: FC = () => {
           </View>
 
           <View
-            className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
+            className={`-z-10 mt-5 w-[90%] items-center self-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8
           ${
             isTextInputFocused
               ? "border-2 border-violet-600 bg-white"
@@ -805,7 +805,7 @@ export const CreateQuestionScreen: FC = () => {
             .exhaustive()}
 
           <TouchableOpacity
-            className={`mt-10 w-[90%] items-center justify-center self-center rounded-[100px] border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
+            className={`mt-10 w-[50%] items-center justify-center self-center rounded-[100px] border-b border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
               !isSaved ? "opacity-50" : ""
             }`}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -959,7 +959,7 @@ export const CreateQuestionScreen: FC = () => {
               })}
             </ScrollView>
             <TouchableOpacity
-              className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b-4 border-l border-r border-t border-indigo-800 bg-violet-600 p-[17px] shadow"
+              className="ml-5 inline-flex flex-col items-center justify-center rounded-2xl border-b border-l border-r border-t border-indigo-800 bg-violet-600 p-[17px] shadow"
               onPress={openBottomSheet}
             >
               <Feather name="plus" size={24} color="white" />
