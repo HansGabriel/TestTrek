@@ -129,18 +129,10 @@ export const gptApiRouter = router({
         message,
       );
 
-      console.log(promptText);
-
       const generatedMessage = await fetchGPT(promptText);
-
-      console.log(generatedMessage);
-
-      console.log(
-        "==========================================================================",
-      );
 
       const processedQuestions = processGeneratedQuestions(generatedMessage);
 
-      console.log(processedQuestions);
+      return processedQuestions;
     }),
 });
