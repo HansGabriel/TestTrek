@@ -522,104 +522,102 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             />
           ) : null}
         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View className="mx-6">
-            {question?.image && (
-              <View className="mb-4 mt-8 flex flex-col">
-                <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
-                  <Image
-                    source={{ uri: question?.image }}
-                    className="h-60 w-full rounded-3xl"
+        <ScrollView showsVerticalScrollIndicator={false} className="mx-6">
+          {question?.image && (
+            <View className="mb-4 mt-8 flex flex-col">
+              <View className="mx-auto h-56 w-full items-center justify-center rounded-3xl">
+                <Image
+                  source={{ uri: question?.image }}
+                  className="h-60 w-full rounded-3xl"
+                />
+              </View>
+            </View>
+          )}
+          <View
+            className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8`}
+          >
+            <Text className="self-stretch text-center text-xl font-bold leading-loose text-black">
+              {questions[index]?.title}
+            </Text>
+          </View>
+
+          {match(question?.type)
+            .with("multiple_choice", () => (
+              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                <View className="space-y-4">
+                  <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
+                  <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
+                </View>
+                <View className="space-y-4">
+                  <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
+                  <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
+                </View>
+              </View>
+            ))
+            .with("true_or_false", () => (
+              <View className="mt-14 flex flex-row items-center space-x-8 self-center">
+                <View>
+                  <TrueOrFalseCard
+                    choice={choices[0]}
+                    isDone={isDone}
+                    handlePressChoice={handlePressChoice}
+                  />
+                </View>
+                <View>
+                  <TrueOrFalseCard
+                    choice={choices[1]}
+                    isDone={isDone}
+                    handlePressChoice={handlePressChoice}
                   />
                 </View>
               </View>
-            )}
-            <View
-              className={`-z-10 mt-5 items-center justify-center rounded-2xl border border-zinc-100 bg-neutral-50 px-5 py-8`}
-            >
-              <Text className="self-stretch text-center text-xl font-bold leading-loose text-black">
-                {questions[index]?.title}
-              </Text>
-            </View>
-
-            {match(question?.type)
-              .with("multiple_choice", () => (
-                <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-                  <View className="space-y-4">
-                    <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
-                    <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
-                  </View>
-                  <View className="space-y-4">
-                    <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
-                    <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
-                  </View>
-                </View>
-              ))
-              .with("true_or_false", () => (
-                <View className="mt-14 flex flex-row items-center space-x-8 self-center">
-                  <View>
-                    <TrueOrFalseCard
-                      choice={choices[0]}
-                      isDone={isDone}
-                      handlePressChoice={handlePressChoice}
-                    />
-                  </View>
-                  <View>
-                    <TrueOrFalseCard
-                      choice={choices[1]}
-                      isDone={isDone}
-                      handlePressChoice={handlePressChoice}
-                    />
-                  </View>
-                </View>
-              ))
-              .with("multi_select", () => (
-                <>
-                  <MultiSelectCards
-                    choiceStatus={choiceStatus}
-                    setChoiceStatus={setChoiceStatus}
-                    choices={choices}
-                    isDone={isDone}
-                    handleMultiSelectSubmit={handleMultiSelectSubmit}
-                  />
-                </>
-              ))
-              .with("identification", () => (
-                <IdentificationCard
-                  choices={question?.choices?.map((choice, id) => {
-                    return {
-                      id,
-                      text: choice.text,
-                      isCorrect: choice.isCorrect,
-                      styles: choiceStyles[id]?.styles ?? "",
-                      isSelected: false,
-                    };
-                  })}
-                  isDone={isDone}
-                  handleSubmit={handleSubmitIdentification}
-                />
-              ))
-              .with(undefined, () => <></>)
-              .exhaustive()}
-
-            {isDone && (
+            ))
+            .with("multi_select", () => (
               <>
-                <AppButton
-                  onPress={handleGoToNextQuestion}
-                  text={isLastQuestion ? "Finish" : "Next Question"}
-                  classNameValue="my-10"
-                  buttonColor="violet-600"
-                  borderShadowColor="indigo-800"
-                  borderRadius="full"
-                  fontStyle="bold"
-                  textColor="white"
-                  TOwidth="full"
-                  Vwidth="full"
-                  isLoading={isSavingTestHistory}
+                <MultiSelectCards
+                  choiceStatus={choiceStatus}
+                  setChoiceStatus={setChoiceStatus}
+                  choices={choices}
+                  isDone={isDone}
+                  handleMultiSelectSubmit={handleMultiSelectSubmit}
                 />
               </>
-            )}
-          </View>
+            ))
+            .with("identification", () => (
+              <IdentificationCard
+                choices={question?.choices?.map((choice, id) => {
+                  return {
+                    id,
+                    text: choice.text,
+                    isCorrect: choice.isCorrect,
+                    styles: choiceStyles[id]?.styles ?? "",
+                    isSelected: false,
+                  };
+                })}
+                isDone={isDone}
+                handleSubmit={handleSubmitIdentification}
+              />
+            ))
+            .with(undefined, () => <></>)
+            .exhaustive()}
+
+          {isDone && (
+            <>
+              <AppButton
+                onPress={handleGoToNextQuestion}
+                text={isLastQuestion ? "Finish" : "Next Question"}
+                classNameValue="my-16"
+                buttonColor="violet-600"
+                borderShadowColor="indigo-800"
+                borderRadius="full"
+                fontStyle="bold"
+                textColor="white"
+                TOwidth="full"
+                Vwidth="full"
+                isLoading={isSavingTestHistory}
+              />
+            </>
+          )}
         </ScrollView>
       </SafeAreaView>
       {match(modalType)
