@@ -240,13 +240,13 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
         className="mt-7"
-        showDropdown={true}
-        onDropdownPress={() =>
+        showDeleteIcon={true}
+        onDeletePress={() =>
           deleteCollection({
             collectionId,
           })
         }
-        isLoadingDropdown={isDeleting}
+        isDeleting={isDeleting}
       />
 
       <ScrollView

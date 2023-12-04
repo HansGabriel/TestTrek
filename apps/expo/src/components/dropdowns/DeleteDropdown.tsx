@@ -1,56 +1,61 @@
 import React, { useState } from "react";
-import { Alert, ActivityIndicator } from "react-native";
-import { TouchableOpacity, Text, View } from "react-native";
-import { MoreCircleIcon, DeleteIcon } from "../../icons/question-options";
+import { ActivityIndicator } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 import type { FC } from "react";
+import { AlertModal } from "../modals/AlertModal";
 
 interface Props {
   onDelete: () => void;
   isLoading?: boolean;
+  itemName?: string;
 }
 
-const DeleteDropdown: FC<Props> = ({ onDelete, isLoading = false }) => {
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
-
+const DeleteDropdown: FC<Props> = ({
+  onDelete,
+  isLoading = false,
+  itemName = "item",
+}) => {
+  const [openAlert, setOpenAlert] = useState(false);
   const handleDelete = () => {
-    Alert.alert(
-      "Delete Question",
-      "Are you sure you want to delete this question?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => setShowDropdown(false),
-          style: "cancel",
-        },
-        { text: "OK", onPress: onDelete },
-      ],
-    );
+    setOpenAlert(true);
+  };
+
+  const formatItemName = (screenName: string) => {
+    const item = screenName.split(" ");
+
+    if (item) {
+      return item[1]?.toLowerCase();
+    }
+
+    return screenName;
   };
 
   return (
-    <View className="relative">
-      <TouchableOpacity onPress={() => setShowDropdown(!showDropdown)}>
-        <MoreCircleIcon />
+    <>
+      <TouchableOpacity onPress={handleDelete}>
+        {isLoading ? (
+          <ActivityIndicator size="small" color="red" />
+        ) : (
+          <AntDesign name="delete" size={24} color="red" />
+        )}
       </TouchableOpacity>
-      {showDropdown && (
-        <View className="pr-auto absolute right-0 top-10 flex h-[60px] w-[120px] flex-col items-center justify-center gap-y-4 rounded-[20px] bg-white pb-5 pt-2 shadow">
-          {isLoading ? (
-            <ActivityIndicator size="small" color="#000" />
-          ) : (
-            <TouchableOpacity
-              className="ml-4 mr-auto flex flex-row items-center justify-between"
-              onPress={handleDelete}
-            >
-              <DeleteIcon />
-              <Text className="ml-2 text-sm font-semibold leading-tight tracking-tight text-rose-500">
-                Delete
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
+      <AlertModal
+        isVisible={openAlert}
+        alertTitle={"Are you sure?"}
+        alertDescription={`Do you want to delete this ${formatItemName(
+          itemName,
+        )}?`}
+        confirmButtonText={"Yes"}
+        isCancelButtonVisible={true}
+        cancelButtonText={"Cancel"}
+        onCancel={() => {
+          setOpenAlert(false);
+        }}
+        onConfirm={onDelete}
+      />
+    </>
   );
 };
 

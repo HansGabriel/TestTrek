@@ -7,13 +7,13 @@ import type { ViewProps } from "react-native";
 
 interface HeaderProps extends ViewProps {
   screenName: string;
-  showDropdown?: boolean;
-  onDropdownPress?: () => void;
+  showDeleteIcon?: boolean;
+  onDeletePress?: () => void;
   optionIcon?: React.ReactNode;
   onIconPress?: () => void;
   backIcon?: React.ReactNode;
   handleExit?: () => void;
-  isLoadingDropdown?: boolean;
+  isDeleting?: boolean;
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({
@@ -22,9 +22,9 @@ export const ReusableHeader: FC<HeaderProps> = ({
   onIconPress,
   backIcon = <LeftArrowIcon />,
   handleExit,
-  showDropdown = false,
-  onDropdownPress,
-  isLoadingDropdown = false,
+  showDeleteIcon = false,
+  onDeletePress,
+  isDeleting = false,
   ...props
 }) => {
   return (
@@ -45,12 +45,14 @@ export const ReusableHeader: FC<HeaderProps> = ({
           </Text>
         </View>
         <View className="flex flex-row items-center gap-x-4">
-          {showDropdown && onDropdownPress && (
+          {showDeleteIcon && onDeletePress && (
             <DeleteDropdown
-              onDelete={onDropdownPress}
-              isLoading={isLoadingDropdown}
+              onDelete={onDeletePress}
+              isLoading={isDeleting}
+              itemName={screenName}
             />
           )}
+
           <TouchableOpacity onPress={onIconPress} className="self-center">
             {optionIcon}
           </TouchableOpacity>
