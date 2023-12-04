@@ -98,8 +98,6 @@ export const processGeneratedQuestions = (
     .filter((block) => block.trim() !== "");
   const parsedQuestions: ParsedQuestion[] = [];
 
-  console.log(questionBlocks);
-
   questionBlocks.forEach((questionBlock) => {
     if (questionBlock.includes("Correct Answer:")) {
       parsedQuestions.push(parseMultipleChoiceResponse(questionBlock));
