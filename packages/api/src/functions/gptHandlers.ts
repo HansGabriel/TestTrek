@@ -40,7 +40,7 @@ Points: [Select from the following options based on how difficult you think the 
   (points) => points.title,
 ).join(", ")}]`;
 
-const generateChoicesPrompt = (numChoices: number) => {
+export const generateChoicesPrompt = (numChoices: number) => {
   let choicesPrompt = "";
   for (let i = 1; i <= numChoices; i++) {
     choicesPrompt += `Option ${i}: [Choice ${i}]\n`;
