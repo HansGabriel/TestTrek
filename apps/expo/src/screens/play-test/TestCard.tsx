@@ -137,8 +137,8 @@ export const IdentificationCard = ({
     <>
       <TextInput
         multiline={true}
-        maxLength={100}
-        className="mx-5 my-5 h-[20%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
+        maxLength={75}
+        className="mx-5 my-8 h-[15%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
         value={answer}
         onChangeText={setAnswer}
@@ -149,14 +149,14 @@ export const IdentificationCard = ({
 
       {isDone && (
         <>
-          <Text className="font-nunito-extrabold my-3 text-center text-2xl leading-[38.40px] text-neutral-800">
-            Correct Answers:
+          <Text className="font-nunito-extrabold text-center text-2xl leading-[38.40px] text-neutral-800">
+            Correct Answer:
           </Text>
           <View className="mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2">
             {choices?.map((choice) => (
               <View
                 key={choice.id}
-                className={`inline-flex h-[70px] w-[150px] flex-col items-center justify-center rounded-2xl border-b-4 ${choice.styles}`}
+                className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl border-b-4 ${choice.styles}`}
               >
                 <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
                   {choice.text}
@@ -171,7 +171,7 @@ export const IdentificationCard = ({
         <AppButton
           onPress={onPress}
           text="Submit"
-          classNameValue="my-1"
+          classNameValue="mb-16"
           buttonColor="violet-600"
           borderShadowColor="indigo-800"
           borderRadius="full"
