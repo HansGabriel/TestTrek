@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, RefreshControl, Dimensions, Button } from "react-native";
+import { ScrollView, RefreshControl, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discovers/DiscoverHomeSection";
 import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
@@ -45,22 +45,6 @@ export const HomeScreen = () => {
     };
   }, [isMusicPlaying, isPlayTestScreen, isScoreboardScreen]);
 
-  const generateRandomQuestions =
-    trpc.gptApi.generateMultipleRandomQuestions.useMutation();
-
-  const handleGenerateRQ = async () => {
-    try {
-      const result = await generateRandomQuestions.mutateAsync({
-        message: "Quarks and smaller things",
-        numOfQuestions: 20,
-      });
-
-      console.log(result);
-    } catch (error) {
-      console.error("Error generating Questions:", error);
-    }
-  };
-
   return (
     <SafeAreaView style={{ flex: 1, height: height, width: width }}>
       <MainHeader />
@@ -70,7 +54,6 @@ export const HomeScreen = () => {
         }
       >
         <PlayTest />
-        <Button title="Generate RQ" onPress={handleGenerateRQ} />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
         <TopCollectionsHomeSection />
