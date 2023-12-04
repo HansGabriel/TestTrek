@@ -26,7 +26,10 @@ interface QuestionCardProps {
   index: number;
   type?: "history" | "create";
   goToEditQuestion?: (index: number) => () => void;
-  goToQuestionHistory?: (questionId: string) => () => void;
+  goToQuestionHistory?: (
+    questionId: string,
+    questionIndex: number,
+  ) => () => void;
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
@@ -42,7 +45,9 @@ const QuestionCard: FC<QuestionCardProps> = ({
       key={index}
       onPress={match(type)
         .with("create", () => goToEditQuestion?.(index))
-        .with("history", () => goToQuestionHistory?.((question as Question).id))
+        .with("history", () =>
+          goToQuestionHistory?.((question as Question).id, index),
+        )
         .exhaustive()}
     >
       <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">

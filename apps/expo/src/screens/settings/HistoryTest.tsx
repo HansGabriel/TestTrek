@@ -1,12 +1,13 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Dimensions, View, TouchableOpacity, SafeAreaView } from "react-native";
+import { Dimensions, View, TouchableOpacity } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 import { trpc } from "../../utils/trpc";
 import ViewAllScreenTestCard from "../../components/view-all-display/tests/ViewAllScreenTestCard";
 import { IMAGE_PLACEHOLDER } from "../../constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const HistoryTestScreen = () => {
   const { height, width } = Dimensions.get("window");

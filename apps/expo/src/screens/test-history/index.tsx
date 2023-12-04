@@ -1,4 +1,4 @@
-import { View, SafeAreaView, Dimensions, Alert } from "react-native";
+import { View, Dimensions, Alert } from "react-native";
 import { RootStackScreenProps } from "../../types";
 import { FlashList } from "@shopify/flash-list";
 import QuestionCard from "../../components/cards/QuestionCard";
@@ -9,6 +9,9 @@ import { AppButton } from "../../components/buttons/AppButton";
 import useGoBack from "../../hooks/useGoBack";
 
 import type { FC } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import SettingsHeader from "../../components/headers/SettingsHeader";
+import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 
 type TestHistoryProps = RootStackScreenProps<"TestHistory">;
 
@@ -24,6 +27,29 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
     trpc.testHistory.getUserHistoryById.useQuery({
       historyId,
     });
+
+  if (!testHistory || isFetchingUser) {
+    return (
+      <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
+        <SettingsHeader screenName={"Test History"} />
+
+        <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+          </View>
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+          </View>
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+          </View>
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const goToScoreBoard = () => {
     if (!testId) return;
@@ -52,11 +78,13 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
     );
   };
 
-  const goToQuestionHistory = (questionId: string) => () => {
-    navigation.navigate("QuestionHistory", {
-      questionId: questionId,
-    });
-  };
+  const goToQuestionHistory =
+    (questionId: string, questionIndex: number) => () => {
+      navigation.navigate("QuestionHistory", {
+        questionId: questionId,
+        questionIndex: questionIndex,
+      });
+    };
 
   return (
     <SafeAreaView
@@ -66,7 +94,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
       }}
     >
       <ReusableHeader
-        screenName="Test History"
+        screenName={testHistory?.title}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={testId ? goToHome : goBack}
       />
