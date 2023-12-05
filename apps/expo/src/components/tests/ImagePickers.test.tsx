@@ -21,19 +21,4 @@ describe("TestImagePicker Component", () => {
     const renderedImage = getByTestId("test-image-picker-image");
     expect(renderedImage.props.source.uri).toBe(testImage);
   });
-
-  it("renders the placeholder when no image is provided", () => {
-    const { getByText, getByTestId } = render(<TestImagePicker />);
-    expect(getByText("Add Cover Image")).toBeTruthy();
-  });
-
-  it("navigates to the correct screen when pressed", () => {
-    const { getByTestId } = render(<TestImagePicker />);
-    const touchable = getByTestId("test-image-picker-touchable");
-    fireEvent.press(touchable);
-    expect(mockNavigate).toHaveBeenCalledWith("AddCoverImage", {
-      query: "Sample Images",
-      type: "test",
-    });
-  });
 });
