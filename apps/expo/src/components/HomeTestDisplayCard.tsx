@@ -32,15 +32,15 @@ const HomeTestDisplayCard: FC<Props> = (props) => {
         </View>
         <View className="flex-shrink-0 overflow-hidden p-3">
           <Text
-            className="text-md mb-3 h-10 overflow-hidden truncate font-bold leading-5 text-black"
-            numberOfLines={2}
+            className="text-md mb-3 h-5 overflow-hidden truncate font-bold leading-5 text-black"
+            numberOfLines={1}
             ellipsizeMode="tail"
           >
             {props.title}
           </Text>
           <View className="mt-1 flex-row items-center">
             <Image
-              className="h-3 w-3 flex-shrink-0 rounded-full"
+              className="h-4 w-4 flex-shrink-0 rounded-full"
               source={props.userImageSource}
               testID="user-image"
             />

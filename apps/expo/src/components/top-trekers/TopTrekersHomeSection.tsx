@@ -2,7 +2,6 @@ import { View, FlatList, TouchableOpacity, SafeAreaView } from "react-native";
 import TopTrekersHomeCard from "./TopTrekersHomeCard";
 import SectionHeader from "../headers/SectionHeader";
 
-import { getFullName } from "@acme/utils/src/strings";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 import { trpc } from "../../utils/trpc";
 
@@ -57,7 +56,7 @@ const TopTrekersHomeSection: FC = () => {
               imageSource={{
                 uri: item.imageUrl ?? IMAGE_PLACEHOLDER,
               }}
-              name={getFullName(item.firstName, item.lastName)}
+              name={item.firstName}
             />
           </TouchableOpacity>
         )}
