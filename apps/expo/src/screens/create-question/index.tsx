@@ -100,6 +100,26 @@ export const CreateQuestionScreen: FC = () => {
 
   const question = getSelectedQuestion();
   const questionType = question?.type;
+  const [openAlert, setOpenAlert] = useState(false);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
+  const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
+  const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
+  const [showPointModal, setShowPointModal] = useState<boolean>(false);
+  const [questionTitle, setQuestionTitle] = useState<string>(
+    question?.title ?? "",
+  );
+  const [aiQuestion, setAiQuestion] = useState<string>("");
+  const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
+  const [choices, setChoices] = useState<Choice[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+
+  const { height, width } = Dimensions.get("window");
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
   const getSelectedChoices = () => {
     if (!question) {
@@ -166,24 +186,6 @@ export const CreateQuestionScreen: FC = () => {
       isSelected: option.value === question?.points,
     })),
   );
-  const [openAlert, setOpenAlert] = useState(false);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
-  const [isTextInputFocused, setIsTextInputFocused] = useState<boolean>(false);
-  const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showQuestionModal, setShowQuestionModal] = useState<boolean>(false);
-  const [showTimeLimitModal, setShowTimeLimitModal] = useState<boolean>(false);
-  const [showPointModal, setShowPointModal] = useState<boolean>(false);
-  const [questionTitle, setQuestionTitle] = useState<string>(
-    question?.title ?? "",
-  );
-  const [aiQuestion, setAiQuestion] = useState<string>("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
-  const [choices, setChoices] = useState<Choice[]>([]);
-
-  const { height, width } = Dimensions.get("window");
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
 
   const snapPoints = useMemo(() => ["5%", "25%", "70%"], []);
 
@@ -571,42 +573,53 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleDelete = () => {
-    deleteQuestion(selectedIndex!);
-    const index = selectedIndex ? selectedIndex - 1 : 0;
-    setSelectedIndex(index);
-    setSelectedQuestionId(index);
-    setQuestionImage(questions[index]?.image ?? undefined);
-    const selectedQuestion = questions[index];
+    setIsDeleting(true);
+    if (questions.length <= 1) {
+      errorToast({
+        title: "Error",
+        message: "Cannot delete first question item",
+      });
+    } else {
+      deleteQuestion(selectedIndex!);
+      const index = selectedIndex ? selectedIndex - 1 : 0;
+      setSelectedIndex(index);
+      setSelectedQuestionId(index);
+      setQuestionImage(questions[index]?.image ?? undefined);
+      const selectedQuestion = questions[index];
 
-    if (
-      selectedQuestion?.type === "multiple_choice" ||
-      selectedQuestion?.type === "true_or_false" ||
-      selectedQuestion?.type === "multi_select" ||
-      selectedQuestion?.type === "identification"
-    ) {
-      setQuestionTitle(selectedQuestion.title);
-      setChoices(
-        selectedQuestion.choices.map((choice, idx) => ({
-          id: idx,
-          text: choice.text ?? "",
-          isCorrect: choice.isCorrect,
-          styles: choiceStyles[idx]!.styles,
-        })),
-      );
+      if (
+        selectedQuestion?.type === "multiple_choice" ||
+        selectedQuestion?.type === "true_or_false" ||
+        selectedQuestion?.type === "multi_select" ||
+        selectedQuestion?.type === "identification"
+      ) {
+        setQuestionTitle(selectedQuestion.title);
+        setChoices(
+          selectedQuestion.choices.map((choice, idx) => ({
+            id: idx,
+            text: choice.text ?? "",
+            isCorrect: choice.isCorrect,
+            styles: choiceStyles[idx]!.styles,
+          })),
+        );
 
-      setTimeLimitOptions((prev) =>
-        prev.map((option) => ({
-          ...option,
-          isSelected: option.value === selectedQuestion.time,
-        })),
-      );
-      setPointOptions((prev) =>
-        prev.map((option) => ({
-          ...option,
-          isSelected: option.value === selectedQuestion.points,
-        })),
-      );
+        setTimeLimitOptions((prev) =>
+          prev.map((option) => ({
+            ...option,
+            isSelected: option.value === selectedQuestion.time,
+          })),
+        );
+        setPointOptions((prev) =>
+          prev.map((option) => ({
+            ...option,
+            isSelected: option.value === selectedQuestion.points,
+          })),
+        );
+      }
     }
+
+    setIsDeleting(false);
+    setOpenDeleteAlert(false);
   };
 
   const handleGenerateQuestion = () => {
@@ -652,7 +665,12 @@ export const CreateQuestionScreen: FC = () => {
     >
       <ReusableHeader
         screenName={"Create Question"}
-        optionIcon={<QuestionOptionsDropdown onDelete={handleDelete} />}
+        optionIcon={
+          <QuestionOptionsDropdown
+            isDeleting={isDeleting}
+            setOpenDeleteAlert={() => setOpenDeleteAlert(true)}
+          />
+        }
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
       />
@@ -993,6 +1011,17 @@ export const CreateQuestionScreen: FC = () => {
             setOpenAlert(false);
           }}
           onConfirm={goBack}
+        />
+
+        <AlertModal
+          isVisible={openDeleteAlert}
+          alertTitle={"Are you sure?"}
+          alertDescription={"Do you want to delete this question?"}
+          confirmButtonText={"Yes"}
+          isCancelButtonVisible={true}
+          cancelButtonText={"Cancel"}
+          onCancel={() => setOpenDeleteAlert(false)}
+          onConfirm={handleDelete}
         />
       </View>
     </SafeAreaView>

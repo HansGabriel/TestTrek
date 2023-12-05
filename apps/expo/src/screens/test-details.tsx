@@ -7,10 +7,8 @@ import { trpc } from "../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
-import StarIcon from "../icons/StarIcon";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
-import SavePdfToAndroidButton from "../device-file-saving/SavePdfToAndroidButton";
 
 export const TestDetailsScreen = ({
   route,
@@ -36,11 +34,7 @@ export const TestDetailsScreen = ({
           className="flex-1"
           style={{ height: height, width: width }}
         >
-          <ReusableHeader
-            screenName={"Test Details"}
-            optionIcon={<StarIcon />}
-            handleExit={goBack}
-          />
+          <ReusableHeader screenName={"Test Details"} handleExit={goBack} />
 
           <View className="h-[90%] w-[90%] items-center space-y-10 self-center">
             <View className=" h-[50%] w-[100%] items-center justify-center">
@@ -71,7 +65,6 @@ export const TestDetailsScreen = ({
         testId={testId}
         goToEditTest={goToEditTest}
       />
-      <SavePdfToAndroidButton testId={testDetails.id} />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>
   );

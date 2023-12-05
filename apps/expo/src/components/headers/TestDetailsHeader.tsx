@@ -8,6 +8,7 @@ import type { FC } from "react";
 import { ReusableHeader } from "./ReusableHeader";
 import useGoBack from "../../hooks/useGoBack";
 import { errorToast, successToast } from "../notifications/ToastNotifications";
+import { SaveToPDFButton } from "../../device-file-saving/SaveToPDFButton";
 
 interface Props {
   testId: string;
@@ -67,7 +68,7 @@ const TestDetailsHeader: FC<Props> = ({
   return (
     <>
       <View className="sticky z-50 mx-5 flex flex-row justify-between bg-white py-5">
-        <View className="flex flex-row self-center items-center gap-2">
+        <View className="flex flex-row items-center gap-2 self-center">
           <TouchableOpacity onPress={goBack}>
             <XIcon />
           </TouchableOpacity>
@@ -76,15 +77,22 @@ const TestDetailsHeader: FC<Props> = ({
           </Text>
         </View>
 
-        <View className="flex flex-row items-center gap-4">
+        <View
+          className={`flex flex-row items-center justify-between ${
+            showEditIcon ? "w-[30%]" : "w-[20%]"
+          }`}
+        >
           {showEditIcon && (
             <TouchableOpacity onPress={goToEditTest}>
               <EditIcon />
             </TouchableOpacity>
           )}
+
           <TouchableOpacity onPress={handleToggleFavorite}>
             {isFavorite ? <SelectedStarIcon /> : <StarIcon />}
           </TouchableOpacity>
+
+          <SaveToPDFButton testId={testId} />
         </View>
       </View>
     </>

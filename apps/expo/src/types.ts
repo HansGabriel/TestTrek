@@ -95,6 +95,7 @@ export type RootStackParamList = {
   };
   QuestionHistory: {
     questionId: string;
+    questionIndex: number;
   };
   HistoryTest: undefined;
 };

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import {
   View,
-  SafeAreaView,
   Dimensions,
   ScrollView,
   Text,
@@ -26,6 +25,9 @@ import {
 import type { FC } from "react";
 import type { ModifiedChoice } from "../play-test/TestCard";
 import { ChoiceStatus } from "../play-test";
+import { SafeAreaView } from "react-native-safe-area-context";
+import SettingsHeader from "../../components/headers/SettingsHeader";
+import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 
 type QuestionHistoryProps = RootStackScreenProps<"QuestionHistory">;
 
@@ -34,7 +36,7 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
   route,
 }) => {
   const { height, width } = Dimensions.get("window");
-  const { questionId } = route.params;
+  const { questionId, questionIndex } = route.params;
 
   const { data: question, isLoading: isFetchingQuestion } =
     trpc.testHistory.getUserQuestionHistoryById.useQuery({
@@ -42,7 +44,20 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
     });
 
   if (!question || isFetchingQuestion) {
-    return <></>;
+    return (
+      <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
+        <SettingsHeader screenName={"Question #"} />
+
+        <View className="my-5 h-[50%] w-[90%] flex-col justify-evenly self-center">
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={100} />
+          </View>
+          <View className="mt-7">
+            <SkeletonLoader isCircular={true} width={"100%"} height={250} />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   const renderChoice = (choice: ModifiedChoice) => {
@@ -91,7 +106,7 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
     <>
       <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
         <ReusableHeader
-          screenName="Test History"
+          screenName={"Question " + (questionIndex + 1).toString()}
           backIcon={<Feather name="x" size={24} color="black" />}
           handleExit={() => navigation.goBack()}
         />

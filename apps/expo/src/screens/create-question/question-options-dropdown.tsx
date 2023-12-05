@@ -1,58 +1,30 @@
-import React, { useState } from "react";
-import { TouchableOpacity, Text, View } from "react-native";
-import {
-  MoreCircleIcon,
-  DeleteIcon,
-} from "../../icons/question-options";
-import { Ionicons } from "@expo/vector-icons";
-import useToggleImageStore from "../../stores/useToggleImageStore";
-
+import React from "react";
+import { TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import type { FC } from "react";
 
 interface Props {
-  onDelete: () => void;
+  isDeleting: boolean;
+  setOpenDeleteAlert: () => void;
 }
 
-const QuestionOptionsDropdown: FC<Props> = ({ onDelete }) => {
-  const isVisible = useToggleImageStore((state) => state.isVisible);
-  const toggle = useToggleImageStore((state) => state.toggle);
-  const [showDropdown, setShowDropdown] = useState<boolean>(false);
-
+const QuestionOptionsDropdown: FC<Props> = ({
+  isDeleting,
+  setOpenDeleteAlert,
+}) => {
   return (
-    <View className="relative">
-      <TouchableOpacity onPress={() => setShowDropdown(!showDropdown)}>
-        <MoreCircleIcon />
+    <View className="relative flex-row space-x-4">
+      <TouchableOpacity onPress={setOpenDeleteAlert} disabled={isDeleting}>
+        {isDeleting ? (
+          <ActivityIndicator size="small" color="red" />
+        ) : (
+          <AntDesign name="delete" size={24} color="red" />
+        )}
       </TouchableOpacity>
-
-      {showDropdown && (
-        <View className=" pr-auto absolute right-1 top-10 flex h-[130px] w-[120px] flex-col items-center justify-center gap-y-4 rounded-[20px] bg-white pt-2 shadow">
-          <TouchableOpacity
-            className="ml-4 mr-auto flex flex-row items-center justify-between"
-            onPress={toggle}
-          >
-            {isVisible ? (
-              <Ionicons name="eye-off" size={24} color="black" />
-            ) : (
-              <Ionicons name="eye" size={24} color="black" />
-            )}
-            <Text className="ml-2 text-sm font-semibold leading-tight tracking-tight text-neutral-800">
-              Image
-            </Text>
-          </TouchableOpacity>
-          <View className="relative h-[0px] w-[85px]">
-            <View className="absolute left-0 top-0 h-[0px] w-[85px] border border-zinc-100"></View>
-          </View>
-          <TouchableOpacity
-            className="ml-4 mr-auto flex flex-row items-center justify-between"
-            onPress={onDelete}
-          >
-            <DeleteIcon />
-            <Text className="ml-2 text-sm font-semibold leading-tight tracking-tight text-rose-500">
-              Delete
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <TouchableOpacity>
+        <Entypo name="save" size={25} color="rgb(79 70 229)" />
+      </TouchableOpacity>
     </View>
   );
 };

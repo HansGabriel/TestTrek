@@ -52,7 +52,11 @@ import {
   errorToast,
   successToast,
 } from "../../components/notifications/ToastNotifications";
-import { mapQuestionType } from "../../utils/helpers/strings";
+import {
+  extractHighlightedText,
+  mapQuestionType,
+  removeTags,
+} from "../../utils/helpers/strings";
 import { AlertModal } from "../../components/modals/AlertModal";
 import { type QuestionType } from "../../stores/useQuestionStore";
 
@@ -317,6 +321,12 @@ const CreateTestForm: FC<Props> = ({
 
     if (inputMessage.length <= 0) {
       setErrorInAIQuestion(true);
+    } else if (inputMessage === " ") {
+      setShowNumberOfQuestionsModal(false);
+      errorToast({
+        title: "Error",
+        message: "Selected reviewer has no highlighted content",
+      });
     } else {
       setErrorInAIQuestion(false);
       generateMultipleQuestions(
@@ -444,13 +454,13 @@ const CreateTestForm: FC<Props> = ({
         onIconPress={() => setIsSidebarOpen(true)}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
-        showDropdown={testTitle === "Edit Test"}
-        onDropdownPress={() =>
+        showDeleteIcon={testTitle === "Edit Test"}
+        onDeletePress={() =>
           deleteTest({
             testId: testDetails?.id ?? "",
           })
         }
-        isLoadingDropdown={isDeleting}
+        isDeleting={isDeleting}
       />
 
       <KeyboardAvoidingView
@@ -595,7 +605,7 @@ const CreateTestForm: FC<Props> = ({
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
-                    {truncateString(selectedReviewer.content, 25)}
+                    {truncateString(removeTags(selectedReviewer.content), 25)}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -736,7 +746,8 @@ const CreateTestForm: FC<Props> = ({
           if (!selectedReviewer?.content) {
             setIsSidebarOpen(true);
           } else {
-            createMultipleQuestions(selectedReviewer.content);
+            const reviewerContent = selectedReviewer.content;
+            createMultipleQuestions(extractHighlightedText(reviewerContent));
           }
         }}
       />

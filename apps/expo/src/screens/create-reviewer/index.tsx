@@ -44,7 +44,10 @@ import useQuestionStore, { QuestionType } from "../../stores/useQuestionStore";
 import { AppButton } from "../../components/buttons/AppButton";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { mapQuestionType } from "../../utils/helpers/strings";
+import {
+  extractHighlightedText,
+  mapQuestionType,
+} from "../../utils/helpers/strings";
 
 interface CacheOptions {
   name: string;
@@ -67,15 +70,12 @@ export const CreateReviewerScreen = ({
     type: "create",
   };
   const richText = useRef<RichEditor | null>(null);
-  const regex =
-    /<span style="(?:font-size: 1em; )?background-color: yellow;">(?:<b>)*(?:<i>)*(?:<u>)*([\s\S]*?)(?:<\/u>)*(?:<\/i>)*(?:<\/b>)*<\/span>/g;
   const types: QuestionType[] = [
     "multiple_choice",
     "true_or_false",
     "multi_select",
     "identification",
   ];
-  let highlightedText = "";
   const randomizeQuestionType = Math.floor(Math.random() * types.length);
   const questionType = types[randomizeQuestionType];
   const mappedQuestionType = mapQuestionType(
@@ -182,7 +182,15 @@ export const CreateReviewerScreen = ({
 
   const toggleChoiceModal = () => {
     setIsChoiceModalToggled(!isChoiceModalToggled);
-    setShowNumberOfQuestionsModal(true);
+    if (getValues().content) {
+      setShowNumberOfQuestionsModal(true);
+    } else {
+      errorToast({
+        title: "Error",
+        message: "Empty reviewer content",
+      });
+      setIsChoiceModalToggled(false);
+    }
   };
 
   const highlightIcon = () => {
@@ -361,83 +369,91 @@ export const CreateReviewerScreen = ({
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
 
-    generateMultipleQuestions(
-      {
-        message: inputMessage,
-        questionType: mappedQuestionType,
-        numOfQuestions: numOfQuestions,
-        numOfChoicesPerQuestion: 4,
-      },
-      {
-        onSuccess: (data) => {
-          addQuestions(
-            data.map((question) => {
-              if (question.type === "multipleChoice") {
+    if (inputMessage === " ") {
+      setShowNumberOfQuestionsModal(false);
+      errorToast({
+        title: "Error",
+        message: "No highlighted content",
+      });
+    } else {
+      generateMultipleQuestions(
+        {
+          message: inputMessage,
+          questionType: mappedQuestionType,
+          numOfQuestions: numOfQuestions,
+          numOfChoicesPerQuestion: 4,
+        },
+        {
+          onSuccess: (data) => {
+            addQuestions(
+              data.map((question) => {
+                if (question.type === "multipleChoice") {
+                  return {
+                    type: "multiple_choice",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
+                if (question.type === "multiselect") {
+                  return {
+                    type: "multi_select",
+                    choices: question.choices,
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
+                if (question.type === "trueOrFalse") {
+                  return {
+                    type: "true_or_false",
+                    choices: [
+                      {
+                        text: "True",
+                        isCorrect: question.answer,
+                      },
+                      {
+                        text: "False",
+                        isCorrect: !question.answer,
+                      },
+                    ],
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
                 return {
                   type: "multiple_choice",
-                  choices: question.choices,
+                  choices: [],
                   inEdit: false,
-                  title: question.question,
-                  time: question.timeLimit,
-                  points: question.points,
+                  title: "",
                 };
-              }
-              if (question.type === "multiselect") {
-                return {
-                  type: "multi_select",
-                  choices: question.choices,
-                  inEdit: false,
-                  title: question.question,
-                  time: question.timeLimit,
-                  points: question.points,
-                };
-              }
-              if (question.type === "trueOrFalse") {
-                return {
-                  type: "true_or_false",
-                  choices: [
-                    {
-                      text: "True",
-                      isCorrect: question.answer,
-                    },
-                    {
-                      text: "False",
-                      isCorrect: !question.answer,
-                    },
-                  ],
-                  inEdit: false,
-                  title: question.question,
-                  time: question.timeLimit,
-                  points: question.points,
-                };
-              }
-              return {
-                type: "multiple_choice",
-                choices: [],
-                inEdit: false,
-                title: "",
-              };
-            }),
-          );
-          removeBlankQuestions();
-          addEmptyQuestion("multiple_choice");
-          setLastIndex();
-          setShowNumberOfQuestionsModal(false);
-          successToast({
-            title: "Success",
-            message: "Questions generated successfully",
-          });
-          navigation.navigate("CreateTest");
-          navigation.navigate("CreateQuestion");
+              }),
+            );
+            removeBlankQuestions();
+            addEmptyQuestion("multiple_choice");
+            setLastIndex();
+            setShowNumberOfQuestionsModal(false);
+            successToast({
+              title: "Success",
+              message: "Questions generated successfully",
+            });
+            navigation.navigate("CreateTest");
+            navigation.navigate("CreateQuestion");
+          },
+          onError: (error) => {
+            errorToast({
+              title: "Error",
+              message: error.message,
+            });
+          },
         },
-        onError: (error) => {
-          errorToast({
-            title: "Error",
-            message: error.message,
-          });
-        },
-      },
-    );
+      );
+    }
   };
 
   useEffect(() => {
@@ -521,13 +537,13 @@ export const CreateReviewerScreen = ({
             />
           )
         }
-        showDropdown={type === "edit"}
-        onDropdownPress={() => {
+        showDeleteIcon={type === "edit"}
+        onDeletePress={() => {
           deleteReviewer({
             reviewerId: reviewerId ?? "",
           });
         }}
-        isLoadingDropdown={isDeleting}
+        isDeleting={isDeleting}
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -651,7 +667,7 @@ export const CreateReviewerScreen = ({
             name="content"
           />
         </View>
-        <View className="w-[90%] flex-row justify-around self-center my-5">
+        <View className="my-5 w-[90%] flex-row justify-around self-center">
           <AppButton
             text="Upload PDF"
             buttonColor="violet-600"
@@ -741,13 +757,8 @@ export const CreateReviewerScreen = ({
         showAskAIOption={false}
         handleSelectPress={() => {
           const reviewerContent = getValues().content;
-          const matchArray = [...reviewerContent.matchAll(regex)];
 
-          for (const match of matchArray) {
-            highlightedText = highlightedText + " " + match[1];
-          }
-
-          createMultipleQuestions(highlightedText);
+          createMultipleQuestions(extractHighlightedText(reviewerContent));
 
           setIsChoiceModalToggled(false);
         }}

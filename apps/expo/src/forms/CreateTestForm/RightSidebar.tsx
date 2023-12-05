@@ -19,6 +19,7 @@ import { trpc } from "../../utils/trpc";
 import { RouterOutputs } from "../../utils/trpc";
 
 import type { FC } from "react";
+import { removeTags } from "../../utils/helpers/strings";
 
 type Reviewer = RouterOutputs["reviewer"]["getAllReviewers"][number];
 
@@ -90,34 +91,37 @@ const RightSidebar: FC<Props> = ({
             <>
               <ScrollView className="mt-5 w-full flex-1">
                 <View className="mx-5 my-5 flex flex-col items-center justify-center gap-y-5">
-                  {reviewers?.map((reviewer, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      className={`flex w-[100%] flex-row gap-x-2 rounded-md border ${
-                        reviewerIndex === index
-                          ? "border-violet-600"
-                          : "border-gray-200"
-                      } py-2 pr-2`}
-                      onPress={() => handlePress(index)}
-                    >
-                      <Image
-                        source={{ uri: reviewer.imageUrl }}
-                        style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 50,
-                        }}
-                      />
-                      <View className="flex flex-col">
-                        <Text className="font-nunito-bold text-lg">
-                          {truncateString(reviewer.title, 15)}
-                        </Text>
-                        <Text className="font-nunito-regular text-sm">
-                          {truncateString(reviewer.content, 15)}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
+                  {reviewers?.map((reviewer, index) => {
+                    const formatReviewerContent = removeTags(reviewer.content);
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        className={`flex w-[100%] flex-row gap-x-2 rounded-md border ${
+                          reviewerIndex === index
+                            ? "border-violet-600"
+                            : "border-gray-200"
+                        } py-2 pr-2`}
+                        onPress={() => handlePress(index)}
+                      >
+                        <Image
+                          source={{ uri: reviewer.imageUrl }}
+                          style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 50,
+                          }}
+                        />
+                        <View className="flex flex-col">
+                          <Text className="font-nunito-bold text-lg">
+                            {truncateString(reviewer.title, 15)}
+                          </Text>
+                          <Text className="font-nunito-regular text-sm">
+                            {truncateString(formatReviewerContent, 15)}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
               </ScrollView>
               <View className="mx-3 mb-5 flex flex-row">
@@ -134,7 +138,7 @@ const RightSidebar: FC<Props> = ({
                   borderRadius="full"
                   fontStyle="bold"
                   textColor="white"
-                  TOwidth="full"
+                  TOwidth="[90%]"
                   Vwidth="full"
                 />
               </View>
