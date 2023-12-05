@@ -39,7 +39,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const { data: testDetails } = trpc.test.getById.useQuery(
+  const { data: testDetails, isLoading } = trpc.test.getById.useQuery(
     { testId },
     {
       onSuccess: (data) => {
@@ -182,6 +182,7 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
           onSubmit={submitTestDetails}
           isCreatingQuiz={isEditingTest}
           isUploading={isUploading}
+          isLoading={isLoading}
         />
       </View>
     </SafeAreaView>

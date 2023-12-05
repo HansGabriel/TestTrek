@@ -54,10 +54,10 @@ import {
 } from "../../components/notifications/ToastNotifications";
 import {
   extractHighlightedText,
-  mapQuestionType,
   removeTags,
 } from "../../utils/helpers/strings";
 import { AlertModal } from "../../components/modals/AlertModal";
+import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 import { type QuestionType } from "../../stores/useQuestionStore";
 
 type FormProps = Omit<TestInput, "questions"> & {
@@ -71,6 +71,7 @@ interface Props {
   onSubmit: (data: FormProps) => void;
   isCreatingQuiz?: boolean;
   isUploading?: boolean;
+  isLoading?: boolean;
 }
 
 const CreateTestForm: FC<Props> = ({
@@ -79,24 +80,14 @@ const CreateTestForm: FC<Props> = ({
   onSubmit,
   isCreatingQuiz = false,
   isUploading = false,
+  isLoading = false,
 }) => {
   const trpcUtils = trpc.useContext();
   const { height, width } = Dimensions.get("window");
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
-  const types: QuestionType[] = [
-    "multiple_choice",
-    "true_or_false",
-    "multi_select",
-    "identification",
-  ];
 
-  const randomizeQuestionType = Math.floor(Math.random() * types.length);
-  const questionType = types[randomizeQuestionType];
-  const [selectedQuestionType] = useState<QuestionType>(
-    questionType !== undefined ? questionType : "multiple_choice",
-  );
   const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -119,7 +110,7 @@ const CreateTestForm: FC<Props> = ({
   const { addQuestions, removeBlankQuestions } = useQuestionStore();
 
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
-    trpc.gptApi.generateMultipleQuestions.useMutation();
+    trpc.gptApi.generateMultipleRandomQuestions.useMutation();
 
   const { mutate: deleteTest, isLoading: isDeleting } =
     trpc.test.delete.useMutation({
@@ -319,8 +310,6 @@ const CreateTestForm: FC<Props> = ({
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
 
-    const mappedQuestionType = mapQuestionType(selectedQuestionType);
-
     if (inputMessage.length <= 0) {
       setErrorInAIQuestion(true);
     } else if (inputMessage === " ") {
@@ -334,9 +323,7 @@ const CreateTestForm: FC<Props> = ({
       generateMultipleQuestions(
         {
           message: inputMessage,
-          questionType: mappedQuestionType,
           numOfQuestions: numOfQuestions,
-          numOfChoicesPerQuestion: 4,
         },
         {
           onSuccess: (data) => {
@@ -368,11 +355,11 @@ const CreateTestForm: FC<Props> = ({
                     choices: [
                       {
                         text: "True",
-                        isCorrect: question.answer,
+                        isCorrect: question.choices[0]?.isCorrect ?? false,
                       },
                       {
                         text: "False",
-                        isCorrect: !question.answer,
+                        isCorrect: question.choices[1]?.isCorrect ?? false,
                       },
                     ],
                     inEdit: false,
@@ -631,20 +618,39 @@ const CreateTestForm: FC<Props> = ({
                 </View>
 
                 <SafeAreaView className="min-h-full flex-1">
-                  <FlashList
-                    estimatedItemSize={10}
-                    data={readyQuestions}
-                    showsVerticalScrollIndicator={true}
-                    renderItem={({ item: question, index }) => {
-                      return (
-                        <QuestionCard
-                          question={question}
-                          index={index}
-                          goToEditQuestion={goToEditQuestion}
+                  {isLoading ? (
+                    <View className="h-[50%] w-full flex-col justify-between self-center">
+                      <View className="my-7">
+                        <SkeletonLoader
+                          isCircular={true}
+                          width={"100%"}
+                          height={75}
                         />
-                      );
-                    }}
-                  />
+                      </View>
+                      <View className="my-7">
+                        <SkeletonLoader
+                          isCircular={true}
+                          width={"100%"}
+                          height={75}
+                        />
+                      </View>
+                    </View>
+                  ) : (
+                    <FlashList
+                      estimatedItemSize={10}
+                      data={readyQuestions}
+                      showsVerticalScrollIndicator={true}
+                      renderItem={({ item: question, index }) => {
+                        return (
+                          <QuestionCard
+                            question={question}
+                            index={index}
+                            goToEditQuestion={goToEditQuestion}
+                          />
+                        );
+                      }}
+                    />
+                  )}
                 </SafeAreaView>
               </View>
             </>
