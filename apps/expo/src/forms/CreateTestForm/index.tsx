@@ -94,10 +94,9 @@ const CreateTestForm: FC<Props> = ({
 
   const randomizeQuestionType = Math.floor(Math.random() * types.length);
   const questionType = types[randomizeQuestionType];
-  const [selectedQuestionType, setSelectedQuestionType] =
-    useState<QuestionType>(
-      questionType !== undefined ? questionType : "multiple_choice",
-    );
+  const [selectedQuestionType] = useState<QuestionType>(
+    questionType !== undefined ? questionType : "multiple_choice",
+  );
   const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -187,6 +186,9 @@ const CreateTestForm: FC<Props> = ({
   const isLastQuestionInEdit = useQuestionStore(
     (state) => state.isLastQuestionInEdit,
   );
+  const deleteLastQuestion = useQuestionStore(
+    (state) => state.deleteLastQuestion,
+  );
   const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
 
@@ -212,16 +214,16 @@ const CreateTestForm: FC<Props> = ({
   };
 
   const goToCreateQuestion = (questionType: QuestionType) => {
-    setSelectedQuestionType(questionType);
     if (isLastQuestionInEdit()) {
-      //create
-      setLastIndex();
-    } else {
-      //edit
+      deleteLastQuestion();
       addEmptyQuestion(questionType);
       setLastIndex();
+      navigation.navigate("CreateQuestion");
+    } else {
+      addEmptyQuestion(questionType);
+      setLastIndex();
+      navigation.navigate("CreateQuestion");
     }
-    navigation.navigate("CreateQuestion");
   };
 
   const goToEditQuestion = (questionIndex: number) => () => {
@@ -398,7 +400,6 @@ const CreateTestForm: FC<Props> = ({
               }),
             );
             removeBlankQuestions();
-            addEmptyQuestion(selectedQuestionType);
             setLastIndex();
             setErrorInAIQuestion(false);
             setShowNumberOfQuestionsModal(false);
