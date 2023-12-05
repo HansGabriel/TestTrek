@@ -669,6 +669,10 @@ export const CreateQuestionScreen: FC = () => {
           <QuestionOptionsDropdown
             isDeleting={isDeleting}
             setOpenDeleteAlert={() => setOpenDeleteAlert(true)}
+            isSaved={!isSaved}
+            handleSaveAnswer={handleSaveAnswer(() => {
+              setIsSaved(false);
+            })}
           />
         }
         backIcon={<Feather name="x" size={24} color="black" />}
@@ -821,21 +825,6 @@ export const CreateQuestionScreen: FC = () => {
             ))
             .with(undefined, () => <></>)
             .exhaustive()}
-
-          <TouchableOpacity
-            className={`mt-10 w-[50%] items-center justify-center self-center rounded-[100px] border-b border-l border-r border-t border-indigo-800 bg-violet-600 py-[18px] ${
-              !isSaved ? "opacity-50" : ""
-            }`}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            onPress={handleSaveAnswer(() => {
-              setIsSaved(false);
-            })}
-            disabled={!isSaved}
-          >
-            <Text className="text-center text-base font-bold text-white">
-              Save
-            </Text>
-          </TouchableOpacity>
 
           <Modal
             animationType="fade"
