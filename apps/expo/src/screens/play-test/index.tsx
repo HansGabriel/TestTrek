@@ -79,6 +79,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [modalType, setModalType] = useState<"correct" | "incorrect">(
     "incorrect",
   );
+  const [answer, setAnswer] = useState<string>("");
   const [index, setIndex] = useState<number>(0);
   const [isDone, setIsDone] = useState<boolean>(false);
   const [points, setPoints] = useState<number>(0);
@@ -405,6 +406,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       setChoices(getSelectedChoices(singleQuestion));
     }
 
+    setAnswer("");
     upperBarRef.current?.hide();
     setIsDone(false);
     setChoiceStatus([false, false, false, false]);
@@ -425,6 +427,34 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       question.type === "identification" ||
       question.type === "multi_select"
     ) {
+      if (question.type === "identification") {
+        const isCorrectAnswer = question.choices.some(
+          (choice) => choice.text === answer,
+        );
+        if (isCorrectAnswer) {
+          const elapsedTime =
+            countdownTimerRef.current?.elapsedTime ?? question.time;
+          setPoints((prevPoints) => prevPoints + question.points);
+          setTime((prevTime) => prevTime + elapsedTime);
+          setModalType("correct");
+          if (isEffectsPlaying) {
+            playEffects({
+              sound: correctSoundInstance,
+              music: correctSound,
+            });
+          }
+        } else {
+          setModalType("incorrect");
+          if (isEffectsPlaying) {
+            playEffects({ sound: wrongSoundInstance, music: wrongSound });
+          }
+          const errorResult = getErrorMessage("times-up");
+          setErrorMessage(errorResult);
+        }
+        showUpperBar();
+        setIsDone(true);
+        return;
+      }
       if (question.type === "multi_select") {
         const allCorrect = choices.every(
           (choice) => choiceStatus[choice.id] === choice.isCorrect,
@@ -586,6 +616,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             ))
             .with("identification", () => (
               <IdentificationCard
+                answer={answer}
                 choices={question?.choices?.map((choice, id) => {
                   return {
                     id,
@@ -597,6 +628,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                 })}
                 isDone={isDone}
                 handleSubmit={handleSubmitIdentification}
+                setAnswer={setAnswer}
               />
             ))
             .with(undefined, () => <></>)

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import CheckboxIcon from "../../icons/CheckboxIcon";
 import CloseSquareIcon from "../../icons/CloseSquareIcon";
@@ -117,19 +116,20 @@ export const TrueOrFalseCard = ({
 };
 
 export const IdentificationCard = ({
+  answer,
   choices,
   isDone,
+  setAnswer,
   handleSubmit,
 }: {
+  answer: string;
   choices: ModifiedChoice[] | undefined;
   isDone: boolean;
   handleSubmit: (answer: string) => void;
+  setAnswer: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const [answer, setAnswer] = useState<string>("");
-
   const onPress = () => {
     handleSubmit(answer);
-    setAnswer("");
   };
 
   return (
