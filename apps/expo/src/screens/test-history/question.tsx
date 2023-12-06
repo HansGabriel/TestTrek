@@ -189,6 +189,13 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
               ))
               .exhaustive()}
           </View>
+          <Text className="mx-6 mb-5 mt-10 text-center text-xl font-bold leading-loose text-black">
+            Your Answer:{" "}
+            {question.choices
+              .filter((choice) => choice.isChosen)
+              .map((choice) => choice.text)
+              .join(", ")}
+          </Text>
         </ScrollView>
       </SafeAreaView>
     </>

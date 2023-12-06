@@ -27,6 +27,9 @@ export const testHistoryRouter = router({
             },
           },
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
     }),
 

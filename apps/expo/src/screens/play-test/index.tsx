@@ -212,7 +212,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       const mappedChoices = choices.map((choice) => ({
         text: choice.text ?? "",
         isCorrect: choice.isCorrect,
-        isChosen: choice.isSelected,
+        isChosen: selectedChoice?.id === choice.id,
       }));
       return prevQuestionHistories.concat([
         {
@@ -269,7 +269,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       const mappedChoices = choices.map((choice) => ({
         text: choice.text ?? "",
         isCorrect: choice.isCorrect,
-        isChosen: choice.isSelected,
+        isChosen: choiceStatus[choice.id] ?? false,
       }));
       return prevQuestionHistories.concat([
         {
