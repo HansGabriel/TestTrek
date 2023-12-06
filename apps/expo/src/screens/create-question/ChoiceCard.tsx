@@ -661,7 +661,7 @@ export const IdentificationCards = ({
           </View>
         ))}
 
-      <View className="w-[90%]">
+      <View className="w-[50%] self-center">
         <AppButton
           text="Add Choice"
           buttonColor="violet-600"
@@ -669,7 +669,7 @@ export const IdentificationCards = ({
           borderRadius="full"
           fontStyle="bold"
           textColor="white"
-          TOwidth="[45%]"
+          TOwidth="full"
           Vwidth="full"
           Vheight="12"
           onPress={addChoice}

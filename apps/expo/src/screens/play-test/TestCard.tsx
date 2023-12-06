@@ -137,7 +137,7 @@ export const IdentificationCard = ({
       <TextInput
         multiline={true}
         maxLength={75}
-        className="mx-5 my-8 h-[15%] flex-col items-center justify-center rounded-2xl border-b-2 bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
+        className="mx-5 my-8 h-[15%] flex-col items-center justify-center rounded-2xl bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
         value={answer}
         onChangeText={setAnswer}
@@ -155,7 +155,7 @@ export const IdentificationCard = ({
             {choices?.map((choice) => (
               <View
                 key={choice.id}
-                className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl border-b-4 ${choice.styles}`}
+                className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl ${choice.styles}`}
               >
                 <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
                   {choice.text}
