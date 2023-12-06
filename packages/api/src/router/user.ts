@@ -28,6 +28,9 @@ export const useRouter = router({
           firstName: true,
           lastName: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
     }),
 

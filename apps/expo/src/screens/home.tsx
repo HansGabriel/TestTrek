@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, RefreshControl, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DiscoverHomeSection from "../components/discovers/DiscoverHomeSection";
-import TopTrekersHomeSection from "../components/top-trekers/TopTrekersHomeSection";
+import TopTrekersHomeSection from "../components/discover-trekers/DiscoverTrekersHomeSection";
 import MainHeader from "../components/headers/MainHeader";
 import PlayTest from "../components/playtest/PlayTest";
 import Footer from "../components/Footer";
-import TopCollectionsHomeSection from "../components/top-collections/TopCollectionsHomeSection";
-import TrendingTestsHomeSection from "../components/trending-tests/TrendingTestsHomeSection";
-import TopPicksHomeSection from "../components/top-picks-tests/TopPicksHomeSection";
+import DiscoverCollectionsHomeSection from "../components/discover-collections/DiscoverCollectionsHomeSection";
 import { Audio } from "expo-av";
 import bgMusic from "../../assets/sounds/comedy.mp3";
 import { useMusicStore } from "../stores/useMusicStore";
 import { playSound, unloadAudio } from "../services/audioService";
 import { trpc } from "../utils/trpc";
+import DiscoverReviewersHomeSection from "../components/discover-reviewers/DiscoverReviewersHomeSection";
 
 export const HomeScreen = () => {
   const { height, width } = Dimensions.get("window");
@@ -56,9 +55,8 @@ export const HomeScreen = () => {
         <PlayTest />
         <DiscoverHomeSection />
         <TopTrekersHomeSection />
-        <TopCollectionsHomeSection />
-        <TrendingTestsHomeSection />
-        <TopPicksHomeSection />
+        <DiscoverCollectionsHomeSection />
+        <DiscoverReviewersHomeSection />
       </ScrollView>
       <Footer />
     </SafeAreaView>

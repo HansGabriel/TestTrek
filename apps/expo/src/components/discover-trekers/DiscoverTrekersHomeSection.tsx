@@ -1,5 +1,5 @@
 import { View, FlatList, TouchableOpacity, SafeAreaView } from "react-native";
-import TopTrekersHomeCard from "./TopTrekersHomeCard";
+import TopTrekersHomeCard from "./DiscoverTrekersHomeCard";
 import SectionHeader from "../headers/SectionHeader";
 
 import { IMAGE_PLACEHOLDER } from "../../constants";
@@ -40,7 +40,7 @@ const TopTrekersHomeSection: FC = () => {
   return (
     <View>
       <SectionHeader
-        title="Top Trekers"
+        title="Discover Trekers"
         hasViewAll={true}
         onViewAllPress={() => {
           navigation.navigate("ViewAll", { fetchedData: "topTrekers" });

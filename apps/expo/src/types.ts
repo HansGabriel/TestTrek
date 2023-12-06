@@ -34,7 +34,8 @@ export type RootStackParamList = {
           | "trendingTests"
           | "topPicksTest"
           | "topCollections"
-          | "topTrekers";
+          | "topTrekers"
+          | "discoverReviewers";
       }
     | {
         fetchedData: "questions";

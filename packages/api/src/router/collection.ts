@@ -476,7 +476,7 @@ export const collectionRouter = router({
 
       return editedCollection;
     }),
-  getTopCollections: protectedProcedure
+  getDiscoverCollections: protectedProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -499,6 +499,9 @@ export const collectionRouter = router({
           userId: true,
           imageUrl: true,
           tests: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
     }),
