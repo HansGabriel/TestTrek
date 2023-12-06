@@ -152,16 +152,18 @@ export const IdentificationCard = ({
             Correct Answer:
           </Text>
           <View className="mt-2 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2">
-            {choices?.map((choice) => (
-              <View
-                key={choice.id}
-                className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl ${choice.styles}`}
-              >
-                <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
-                  {choice.text}
-                </Text>
-              </View>
-            ))}
+            {choices
+              ?.filter((choice) => choice.isCorrect)
+              .map((choice) => (
+                <View
+                  key={choice.id}
+                  className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl ${choice.styles}`}
+                >
+                  <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
+                    {choice.text}
+                  </Text>
+                </View>
+              ))}
           </View>
         </>
       )}

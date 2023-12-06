@@ -97,6 +97,11 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
     );
   };
 
+  const stringedAnswers = question.choices
+    .filter((choice) => choice.isChosen)
+    .map((choice) => choice.text)
+    .join(", ");
+
   const choices = getSelectedChoices(question);
   const choiceStatus = question.choices.map(
     (choice) => choice.isCorrect,
@@ -174,6 +179,7 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
               ))
               .with("identification", () => (
                 <IdentificationCard
+                  answer=""
                   choices={question?.choices?.map((choice, id) => {
                     return {
                       id,
@@ -185,16 +191,14 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
                   })}
                   isDone={true}
                   handleSubmit={() => {}}
+                  setAnswer={() => {}}
                 />
               ))
               .exhaustive()}
           </View>
           <Text className="mx-6 mb-5 mt-10 text-center text-xl font-bold leading-loose text-black">
             Your Answer:{" "}
-            {question.choices
-              .filter((choice) => choice.isChosen)
-              .map((choice) => choice.text)
-              .join(", ")}
+            {stringedAnswers.length > 0 ? stringedAnswers : "No answer given"}
           </Text>
         </ScrollView>
       </SafeAreaView>
