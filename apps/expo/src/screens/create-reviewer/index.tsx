@@ -44,9 +44,7 @@ import useQuestionStore from "../../stores/useQuestionStore";
 import { AppButton } from "../../components/buttons/AppButton";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import {
-  extractHighlightedText,
-} from "../../utils/helpers/strings";
+import { extractHighlightedText } from "../../utils/helpers/strings";
 
 interface CacheOptions {
   name: string;
@@ -90,14 +88,15 @@ export const CreateReviewerScreen = ({
   const resetReviewerImage = useImageStore((state) => state.resetReviewerImage);
   const goBack = useGoBack();
 
-  const { data: reviewerDetails } = trpc.reviewer.getReviewerById.useQuery(
-    {
-      reviewerId: reviewerId ?? "",
-    },
-    {
-      enabled: reviewerId !== undefined,
-    },
-  );
+  const { data: reviewerDetails, refetch: refetchReviewerDetails } =
+    trpc.reviewer.getReviewerById.useQuery(
+      {
+        reviewerId: reviewerId ?? "",
+      },
+      {
+        enabled: reviewerId !== undefined,
+      },
+    );
 
   const { mutate: readFile } = trpc.pdfTextExtraction.extractText.useMutation();
 
@@ -300,6 +299,7 @@ export const CreateReviewerScreen = ({
         },
         {
           onSuccess: () => {
+            refetchReviewerDetails();
             successToast({
               title: "Success",
               message: "Reviewer updated successfully",
@@ -330,6 +330,7 @@ export const CreateReviewerScreen = ({
         },
         {
           onSuccess: () => {
+            refetchReviewerDetails();
             successToast({
               title: "Success",
               message: "Reviewer created successfully",

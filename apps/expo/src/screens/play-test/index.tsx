@@ -407,6 +407,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
     upperBarRef.current?.hide();
     setIsDone(false);
+    setChoiceStatus([false, false, false, false]);
   };
 
   const showUpperBar = () => {

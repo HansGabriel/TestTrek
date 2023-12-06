@@ -7,7 +7,6 @@ import { AppButton } from "../../components/buttons/AppButton";
 
 import type { ChoiceStyle } from "../create-question/types";
 import type { ChoiceStatus } from "./index";
-import DoubleBarsIcon from "../../icons/DoubleBarsIcon";
 import CheckIcon from "../../icons/CheckIcon";
 
 export const choiceStyles: ChoiceStyle[] = [
@@ -234,7 +233,7 @@ export const MultiSelectCard = ({
       ) : null}
       {!isDone ? (
         <View className="absolute right-4 top-[19px] h-5 w-5">
-          {isSelected ? <CheckIcon /> : <DoubleBarsIcon />}
+          {isSelected ? <CheckIcon /> : ""}
         </View>
       ) : null}
       <View className="h-full w-full items-center justify-center">
