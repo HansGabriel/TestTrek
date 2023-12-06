@@ -111,7 +111,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
             textColor="white"
             TOwidth="full"
             Vwidth="full"
-            Vheight="10"
+            Vheight="12"
             onPress={goToScoreBoard}
             isLoading={isFetchingUser}
           />

@@ -307,7 +307,7 @@ export const EditPersonalInfoScreen = () => {
           </View>
 
           {edit ? (
-            <View className="mt-24">
+            <View className="mt-auto w-[50%] self-center">
               <AppButton
                 text="Save"
                 buttonColor="violet-600"
@@ -315,9 +315,9 @@ export const EditPersonalInfoScreen = () => {
                 borderRadius="full"
                 fontStyle="bold"
                 textColor="white"
-                TOwidth="[50%]"
+                TOwidth="full"
                 Vwidth="full"
-                Vheight="16"
+                Vheight="12"
                 onPress={handleSubmit(submitEditedData)}
                 isLoading={isEditingUser}
               />
