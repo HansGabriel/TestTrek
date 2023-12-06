@@ -258,13 +258,13 @@ export const CreateQuestionScreen: FC = () => {
                 {
                   id: 0,
                   text: "True",
-                  isCorrect: data.answer,
+                  isCorrect: data.choices[0]!.isCorrect,
                   styles: choiceStyles[0]!.styles,
                 },
                 {
                   id: 1,
                   text: "False",
-                  isCorrect: !data.answer,
+                  isCorrect: data.choices[1]!.isCorrect,
                   styles: choiceStyles[1]!.styles,
                 },
               ]);
