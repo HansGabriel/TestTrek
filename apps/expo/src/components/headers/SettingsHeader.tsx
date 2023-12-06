@@ -12,14 +12,18 @@ const SettingsHeader: FC<HeaderProps> = ({ screenName }) => {
   return (
     <>
       <View className="mx-5 flex  flex-row justify-between py-5">
-        <View className="flex-row gap-4 self-center">
+        <View className="w-[90%] flex-row gap-4 self-center">
           <TouchableOpacity
             onPress={goBack}
             className="flex flex-row items-center self-center"
           >
             <LeftArrowIcon />
           </TouchableOpacity>
-          <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
+          <Text
+            className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800"
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {screenName}
           </Text>
         </View>
