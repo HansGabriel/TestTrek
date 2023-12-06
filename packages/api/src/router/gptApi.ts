@@ -131,7 +131,20 @@ export const gptApiRouter = router({
 
       const generatedMessage = await fetchGPT(promptText);
 
-      const processedQuestions = processGeneratedQuestions(generatedMessage);
+      const processedQuestions = processGeneratedQuestions(
+        generatedMessage,
+        numOfQuestions,
+      );
+
+      if (processedQuestions.length < numOfQuestions) {
+        const regenerateMessage = await fetchGPT(promptText);
+        const reprocessedQuestions = processGeneratedQuestions(
+          regenerateMessage,
+          numOfQuestions,
+        );
+
+        return reprocessedQuestions;
+      }
 
       return processedQuestions;
     }),
