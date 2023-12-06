@@ -9,6 +9,7 @@ import { Foundation } from "@expo/vector-icons";
 
 import type { FC } from "react";
 import type { QuestionType } from "../../stores/useQuestionStore";
+import useError from "../../screens/create-question/hooks";
 
 interface Props {
   goToCreateQuestion: (questionType: QuestionType) => void;
@@ -19,7 +20,9 @@ const ChoiceBottomSheet: FC<Props> = ({
   goToCreateQuestion,
   closeBottomSheet,
 }) => {
+  const { resetErrors } = useError();
   const handleChoicePress = (questionType: QuestionType) => () => {
+    resetErrors();
     goToCreateQuestion(questionType);
     closeBottomSheet?.();
   };

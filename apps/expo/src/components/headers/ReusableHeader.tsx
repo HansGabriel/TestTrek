@@ -17,7 +17,7 @@ interface HeaderProps extends ViewProps {
 }
 
 export const ReusableHeader: FC<HeaderProps> = ({
-  screenName,
+  screenName = "",
   optionIcon,
   onIconPress,
   backIcon = <LeftArrowIcon />,

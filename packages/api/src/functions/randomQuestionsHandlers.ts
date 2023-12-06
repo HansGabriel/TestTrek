@@ -85,6 +85,8 @@ export const generateCombinedQuestionPrompts = (
         type
       ]()}\n`;
     }
+
+    typeCounts[type] = 0;
   });
 
   return combinedPrompts.trim();
@@ -92,6 +94,7 @@ export const generateCombinedQuestionPrompts = (
 
 export const processGeneratedQuestions = (
   generatedMessage: string,
+  numOfQuestions: number,
 ): ParsedQuestion[] => {
   const questionBlocks = generatedMessage
     .split("separator")
@@ -116,5 +119,7 @@ export const processGeneratedQuestions = (
     }
   });
 
-  return parsedQuestions;
+  const sliceParsedQuestions = parsedQuestions.slice(0, numOfQuestions);
+
+  return sliceParsedQuestions;
 };
