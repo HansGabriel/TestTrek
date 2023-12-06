@@ -8,9 +8,10 @@ import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import HomeEmptyCollection from "../home-empty-section/EmptyCollection";
 
 const TopCollectionsHomeSection: FC = () => {
-  const { data: topCollections } = trpc.collection.getTopCollections.useQuery({
-    amountOfCollections: 5,
-  });
+  const { data: topCollections } =
+    trpc.collection.getDiscoverCollections.useQuery({
+      amountOfCollections: 5,
+    });
 
   const navigation = useNavigation();
 
@@ -44,7 +45,7 @@ const TopCollectionsHomeSection: FC = () => {
   return (
     <View>
       <SectionHeader
-        title="Top Collections"
+        title="Discover Collections"
         hasViewAll={true}
         onViewAllPress={() => {
           navigation.navigate("ViewAll", { fetchedData: "topCollections" });

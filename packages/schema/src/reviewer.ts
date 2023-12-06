@@ -35,3 +35,6 @@ export const reviewerFiltersSchema = z.object({
   reviewerType: reviewerTypeSchema,
   sortBy: reviewerSortSchema,
 });
+export const highLightReviewersInput = z
+  .object({ amountOfReviewers: z.number().optional() })
+  .optional();

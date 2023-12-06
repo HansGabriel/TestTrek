@@ -1,39 +1,27 @@
 import React, { FC } from "react";
 import { TouchableOpacity, View, Dimensions } from "react-native";
-import CollectionsCard from "./CollectionsCard";
 import ViewAllScreenHeader from "../../headers/ViewAllScreenHeader";
 import { FlashList } from "@shopify/flash-list";
 import { trpc } from "../../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../../loaders/SkeletonLoader";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ViewAllScreenReviewerCard from "./ViewAllScreenReviewerCard";
 
-interface Props {
-  collectionsFor: "topCollections";
-}
-
-export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
+export const ViewAllReviewersDisplay: FC = () => {
   const { height, width } = Dimensions.get("window");
   const navigation = useNavigation();
 
-  const { data: topCollections } =
-    trpc.collection.getDiscoverCollections.useQuery();
+  const { data: discoverReviewers } =
+    trpc.reviewer.getDiscoverReviewers.useQuery();
 
-  const goToCollectionDetailsScreen = (collectionId: string) => () => {
-    navigation.navigate("CollectionDetails", { collectionId });
+  const goToCollectionDetailsScreen = (reviewerId: string) => () => {
+    navigation.navigate("ReviewerDetails", {
+      reviewerId,
+    });
   };
 
-  const formatTitle = (title: string) => {
-    let format = "";
-
-    if (title === "topCollections") {
-      format = "Discover Collections";
-    }
-
-    return format;
-  };
-
-  if (!topCollections) {
+  if (!discoverReviewers) {
     return (
       <>
         <SafeAreaView
@@ -43,7 +31,7 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
             width: width,
           }}
         >
-          <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
+          <ViewAllScreenHeader title={"Discover Reviewers"} />
           <View className="my-5 h-[50%] w-[90%] flex-col justify-between self-center">
             <View className="mt-7">
               <SkeletonLoader isCircular={true} width={"100%"} height={100} />
@@ -65,26 +53,32 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
 
   return (
     <SafeAreaView
+      className="flex-1 flex-col"
       style={{
         height: height,
         width: width,
-        flex: 1,
       }}
     >
-      <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
+      <ViewAllScreenHeader title={"Discover Reviewers"} />
       <FlashList
         showsVerticalScrollIndicator={false}
-        numColumns={2}
-        data={topCollections}
+        data={discoverReviewers}
         estimatedItemSize={200}
         renderItem={({ item, index }) => {
           return (
             <SafeAreaView className="flex-1">
               <TouchableOpacity onPress={goToCollectionDetailsScreen(item.id)}>
-                <CollectionsCard
+                <ViewAllScreenReviewerCard
                   key={index}
-                  userImage={{ uri: item.imageUrl }}
+                  imageSource={{ uri: item.imageUrl }}
+                  date={item.createdAt}
+                  userImageSource={{
+                    uri:
+                      item.user.imageUrl ??
+                      "https://example.com/dummy-image.jpg",
+                  }}
                   title={item.title}
+                  userName={`${item.user.firstName} ${item.user.lastName}`}
                 />
               </TouchableOpacity>
             </SafeAreaView>
@@ -95,4 +89,4 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
   );
 };
 
-export default ViewAllCollectionsDisplay;
+export default ViewAllReviewersDisplay;

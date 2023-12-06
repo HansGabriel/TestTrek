@@ -1,21 +1,23 @@
 import * as React from "react";
 import { View, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
-import HomeTestDisplayCard from "../HomeTestDisplayCard";
 import SectionHeader from "../headers/SectionHeader";
 import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import HomeEmptyTest from "../home-empty-section/EmptyTest";
+import DiscoverReviewersHomeDisplayCard from "./DiscoverReviewersHomeCard";
 
-const DiscoverHomeSection: FC = () => {
-  const { data } = trpc.test.getDiscoverTests.useQuery({ amountOfTests: 5 });
+const DiscoverReviewersHomeSection: FC = () => {
+  const { data } = trpc.reviewer.getDiscoverReviewers.useQuery({
+    amountOfReviewers: 5,
+  });
 
   const navigation = useNavigation();
 
-  const goToTestDetailsScreen = (testId: string) => () => {
-    navigation.navigate("TestDetails", {
-      testId,
+  const goToReviewerDetailsScreen = (reviewerId: string) => () => {
+    navigation.navigate("ReviewerDetails", {
+      reviewerId,
     });
   };
 
@@ -45,10 +47,10 @@ const DiscoverHomeSection: FC = () => {
   return (
     <View>
       <SectionHeader
-        title={"Discover Tests"}
+        title={"Discover Reviewers"}
         hasViewAll={true}
         onViewAllPress={() =>
-          navigation.navigate("ViewAll", { fetchedData: "discoverTests" })
+          navigation.navigate("ViewAll", { fetchedData: "discoverReviewers" })
         }
       />
       <FlatList
@@ -59,13 +61,11 @@ const DiscoverHomeSection: FC = () => {
         renderItem={({ item }) => {
           const fullName = `${item.user.firstName} ${item.user.lastName}`;
           return (
-            <TouchableOpacity onPress={goToTestDetailsScreen(item.id)}>
-              <HomeTestDisplayCard
+            <TouchableOpacity onPress={goToReviewerDetailsScreen(item.id)}>
+              <DiscoverReviewersHomeDisplayCard
                 imageSource={{ uri: item.imageUrl }}
                 title={item.title}
-                questions={item.questions.length}
                 date={new Date(item.createdAt)}
-                plays={0}
                 userImageSource={{
                   uri:
                     item.user.imageUrl ?? "https://example.com/dummy-image.jpg",
@@ -80,4 +80,4 @@ const DiscoverHomeSection: FC = () => {
   );
 };
 
-export default DiscoverHomeSection;
+export default DiscoverReviewersHomeSection;

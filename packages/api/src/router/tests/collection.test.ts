@@ -195,7 +195,7 @@ describe("collectionRouter", () => {
       });
     });
 
-    it("should handle getTopCollections query", async () => {
+    it("should handle getDiscoverCollections query", async () => {
       ctx.prisma.collection.findMany = vi.fn().mockResolvedValue([
         {
           id: "collectionId1",
@@ -217,7 +217,7 @@ describe("collectionRouter", () => {
         amountOfCollections: 2,
       };
 
-      const result = await caller.getTopCollections(input);
+      const result = await caller.getDiscoverCollections(input);
 
       expect(result).toHaveLength(2);
       const collection = result[0];
@@ -236,6 +236,9 @@ describe("collectionRouter", () => {
           userId: true,
           imageUrl: true,
           tests: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
     });

@@ -1,4 +1,5 @@
 import {
+  highLightReviewersInput,
   reviewerFiltersSchema,
   reviewerSchema,
 } from "@acme/schema/src/reviewer";
@@ -11,6 +12,34 @@ import {
 } from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 export const reviewerRouter = router({
+  getDiscoverReviewers: protectedProcedure
+    .input(highLightReviewersInput)
+    .output(z.any())
+    .query(({ ctx, input }) => {
+      return ctx.prisma.reviewer.findMany({
+        ...(input && input.amountOfReviewers
+          ? { take: input.amountOfReviewers }
+          : { take: 50 }),
+        select: {
+          id: true,
+          title: true,
+          userId: true,
+          imageUrl: true,
+          updatedAt: true,
+          createdAt: true,
+          user: {
+            select: {
+              imageUrl: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }),
   getAllReviewers: protectedProcedure
     .meta({
       openapi: {

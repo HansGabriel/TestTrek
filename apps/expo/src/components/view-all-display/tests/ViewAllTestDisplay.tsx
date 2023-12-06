@@ -64,7 +64,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
   if (props.testsFor == "discover") {
     const { data } = trpc.test.getDiscoverTests.useQuery();
     fetchedTestData = data;
-    headerTitle = "Discover";
+    headerTitle = "Discover Tests";
   } else if (props.testsFor == "trending") {
     const { data } = trpc.test.getTrendingTests.useQuery();
     fetchedTestData = data;
