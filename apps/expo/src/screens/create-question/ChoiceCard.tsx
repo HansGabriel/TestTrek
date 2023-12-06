@@ -634,7 +634,12 @@ export const IdentificationCards = ({
   };
 
   const addChoice = () => {
-    addChoiceToQuestion();
+    const partialChoices = choices.map((choice) => ({
+      text: choice.text ?? "",
+      isCorrect: choice.isCorrect,
+    }));
+
+    addChoiceToQuestion(partialChoices);
   };
 
   const removeChoice = (index: number) => () => {

@@ -9,6 +9,7 @@ export type PartialQuestion = SetOptional<Question, "points" | "time"> & {
 };
 
 export type QuestionType = Question["type"];
+export type QuestionChoices = Question["choices"];
 
 interface QuestionStore {
   questions: PartialQuestion[];
@@ -27,10 +28,9 @@ interface QuestionStore {
   resetQuestions: () => void;
   deleteLastQuestion: () => void;
   removeBlankQuestions: () => void;
-  addChoiceToQuestion: () => void;
+  addChoiceToQuestion: (tempChoices: QuestionChoices) => void;
   getChoicesFromQuestion: () => PartialQuestion["choices"] | undefined;
   deleteChoiceFromQuestion: (choiceIndex: number) => void;
-  // editChoiceFromQuestion: (choiceIndex: number, text: string) => void;
 }
 
 const useQuestionStore = create<QuestionStore>((set, get) => ({
@@ -177,12 +177,12 @@ const useQuestionStore = create<QuestionStore>((set, get) => ({
         }
       }),
     })),
-  addChoiceToQuestion: () => {
+  addChoiceToQuestion: (tempChoices: QuestionChoices) => {
     const { selectedIndex, getSelectedQuestion, editQuestion } = get();
     const selectedQuestion = getSelectedQuestion();
 
     if (selectedQuestion && selectedIndex !== undefined) {
-      const newChoices = [...selectedQuestion.choices];
+      const newChoices = [...tempChoices];
       if (newChoices.length >= 4) return;
       newChoices.push({
         isCorrect: true,
