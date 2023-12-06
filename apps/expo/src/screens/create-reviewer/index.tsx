@@ -40,13 +40,12 @@ import { AlertModal } from "../../components/modals/AlertModal";
 import ChoiceModal from "../../components/modals/ChoiceModal";
 import type { Option } from "./types";
 import { NUMBER_OF_QUESTIONS_OPTIONS } from "./constants";
-import useQuestionStore, { QuestionType } from "../../stores/useQuestionStore";
+import useQuestionStore from "../../stores/useQuestionStore";
 import { AppButton } from "../../components/buttons/AppButton";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import {
   extractHighlightedText,
-  mapQuestionType,
 } from "../../utils/helpers/strings";
 
 interface CacheOptions {
@@ -70,17 +69,6 @@ export const CreateReviewerScreen = ({
     type: "create",
   };
   const richText = useRef<RichEditor | null>(null);
-  const types: QuestionType[] = [
-    "multiple_choice",
-    "true_or_false",
-    "multi_select",
-    "identification",
-  ];
-  const randomizeQuestionType = Math.floor(Math.random() * types.length);
-  const questionType = types[randomizeQuestionType];
-  const mappedQuestionType = mapQuestionType(
-    questionType !== undefined ? questionType : "multiple_choice",
-  );
   const [isHighlighterToggled, setIsHighlighterToggled] = useState(false);
   const [isChoiceModalToggled, setIsChoiceModalToggled] = useState(false);
   const [isPDFUploading, setIsPDFUploading] = useState(false);
@@ -95,8 +83,6 @@ export const CreateReviewerScreen = ({
   );
   const [showNumberofQuestionsModal, setShowNumberOfQuestionsModal] =
     useState(false);
-
-  const addEmptyQuestion = useQuestionStore((state) => state.addEmptyQuestion);
   const setLastIndex = useQuestionStore((state) => state.setLastIndex);
   const { addQuestions, removeBlankQuestions } = useQuestionStore();
 
@@ -116,7 +102,7 @@ export const CreateReviewerScreen = ({
   const { mutate: readFile } = trpc.pdfTextExtraction.extractText.useMutation();
 
   const { mutate: generateMultipleQuestions, isLoading: isGenerating } =
-    trpc.gptApi.generateMultipleQuestions.useMutation();
+    trpc.gptApi.generateMultipleRandomQuestions.useMutation();
 
   const {
     mutate: createReviewer,
@@ -367,7 +353,7 @@ export const CreateReviewerScreen = ({
 
   const createMultipleQuestions = (inputMessage: string) => {
     const numOfQuestions =
-      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
+      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 5;
 
     if (inputMessage === " ") {
       setShowNumberOfQuestionsModal(false);
@@ -379,9 +365,7 @@ export const CreateReviewerScreen = ({
       generateMultipleQuestions(
         {
           message: inputMessage,
-          questionType: mappedQuestionType,
           numOfQuestions: numOfQuestions,
-          numOfChoicesPerQuestion: 4,
         },
         {
           onSuccess: (data) => {
@@ -413,13 +397,23 @@ export const CreateReviewerScreen = ({
                     choices: [
                       {
                         text: "True",
-                        isCorrect: question.answer,
+                        isCorrect: question.choices[0]?.isCorrect ?? false,
                       },
                       {
                         text: "False",
-                        isCorrect: !question.answer,
+                        isCorrect: question.choices[1]?.isCorrect ?? false,
                       },
                     ],
+                    inEdit: false,
+                    title: question.question,
+                    time: question.timeLimit,
+                    points: question.points,
+                  };
+                }
+                if (question.type === "identification") {
+                  return {
+                    type: "identification",
+                    choices: question.choices,
                     inEdit: false,
                     title: question.question,
                     time: question.timeLimit,
@@ -435,7 +429,6 @@ export const CreateReviewerScreen = ({
               }),
             );
             removeBlankQuestions();
-            addEmptyQuestion("multiple_choice");
             setLastIndex();
             setShowNumberOfQuestionsModal(false);
             successToast({

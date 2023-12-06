@@ -53,7 +53,10 @@ const DeleteDropdown: FC<Props> = ({
         onCancel={() => {
           setOpenAlert(false);
         }}
-        onConfirm={onDelete}
+        onConfirm={() => {
+          onDelete();
+          setOpenAlert(false);
+        }}
       />
     </>
   );

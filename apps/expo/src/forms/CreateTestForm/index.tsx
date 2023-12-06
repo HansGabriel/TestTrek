@@ -308,7 +308,7 @@ const CreateTestForm: FC<Props> = ({
 
   const createMultipleQuestions = (inputMessage: string) => {
     const numOfQuestions =
-      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 1;
+      numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 5;
 
     if (inputMessage.length <= 0) {
       setErrorInAIQuestion(true);

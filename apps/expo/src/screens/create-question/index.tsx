@@ -115,7 +115,7 @@ export const CreateQuestionScreen: FC = () => {
   const [selectedQuestionId, setSelectedQuestionId] = useState<number>(0);
   const [choices, setChoices] = useState<Choice[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+  const [isChoiceModalTouched, setIsChoiceModalTouched] = useState(false);
 
   const { height, width } = Dimensions.get("window");
 
@@ -194,6 +194,8 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const goToCreateQuestion = (selectedQuestionType: QuestionType) => {
+    resetErrors();
+    setIsChoiceModalTouched(false);
     if (isLastQuestionInEdit()) {
       deleteLastQuestion();
       addEmptyQuestion(selectedQuestionType);
@@ -258,13 +260,13 @@ export const CreateQuestionScreen: FC = () => {
                 {
                   id: 0,
                   text: "True",
-                  isCorrect: data.answer,
+                  isCorrect: data.choices[0]!.isCorrect,
                   styles: choiceStyles[0]!.styles,
                 },
                 {
                   id: 1,
                   text: "False",
-                  isCorrect: !data.answer,
+                  isCorrect: data.choices[1]!.isCorrect,
                   styles: choiceStyles[1]!.styles,
                 },
               ]);
@@ -357,6 +359,7 @@ export const CreateQuestionScreen: FC = () => {
 
   const handleOpenModal = (index: number) => () => {
     setSelectedQuestionId(index);
+    setIsChoiceModalTouched(true);
     setShowModal(true);
   };
 
@@ -452,12 +455,11 @@ export const CreateQuestionScreen: FC = () => {
         time: timeLimitOptions.find((option) => option.isSelected)?.value ?? 0,
       };
     }
-
     if (!question) return false;
 
-    resetErrors();
     editQuestion(selectedIndex!, question);
     resetQuestionImage();
+    resetErrors();
     successToast({
       title: "Success",
       message: "Question saved successfully",
@@ -472,7 +474,10 @@ export const CreateQuestionScreen: FC = () => {
           title: "Missing field",
           message: "Title cannot be empty",
         });
-      } else if (!errorState.choicesError.every((item) => item === undefined)) {
+      } else if (
+        isChoiceModalTouched &&
+        !errorState.choicesError.every((item) => item === undefined)
+      ) {
         errorToast({
           title: "Missing field",
           message: "Choices cannot be empty",
@@ -493,7 +498,7 @@ export const CreateQuestionScreen: FC = () => {
       ) {
         errorToast({
           title: "Missing field",
-          message: "Please select a correct answer",
+          message: "Please assign a correct answer",
         });
       }
     }
@@ -619,7 +624,6 @@ export const CreateQuestionScreen: FC = () => {
     }
 
     setIsDeleting(false);
-    setOpenDeleteAlert(false);
   };
 
   const handleGenerateQuestion = () => {
@@ -667,14 +671,15 @@ export const CreateQuestionScreen: FC = () => {
         screenName={"Create Question"}
         optionIcon={
           <QuestionOptionsDropdown
-            isDeleting={isDeleting}
-            setOpenDeleteAlert={() => setOpenDeleteAlert(true)}
             isSaved={!isSaved}
             handleSaveAnswer={handleSaveAnswer(() => {
               setIsSaved(false);
             })}
           />
         }
+        showDeleteIcon={true}
+        onDeletePress={handleDelete}
+        isDeleting={isDeleting}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
       />
@@ -1000,17 +1005,6 @@ export const CreateQuestionScreen: FC = () => {
             setOpenAlert(false);
           }}
           onConfirm={goBack}
-        />
-
-        <AlertModal
-          isVisible={openDeleteAlert}
-          alertTitle={"Are you sure?"}
-          alertDescription={"Do you want to delete this question?"}
-          confirmButtonText={"Yes"}
-          isCancelButtonVisible={true}
-          cancelButtonText={"Cancel"}
-          onCancel={() => setOpenDeleteAlert(false)}
-          onConfirm={handleDelete}
         />
       </View>
     </SafeAreaView>

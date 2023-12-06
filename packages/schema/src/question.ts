@@ -61,7 +61,12 @@ export const questionSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     question: z.string(),
-    answer: z.boolean(),
+    choices: z.array(
+      z.object({
+        isCorrect: z.boolean(),
+        text: z.string(),
+      }),
+    ),
     type: z.literal("trueOrFalse"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,
