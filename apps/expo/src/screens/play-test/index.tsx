@@ -336,7 +336,15 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           time: question.time,
           title: question.title,
           type: question.type,
-          choices: mappedChoices,
+          choices: isCorrectAnswer
+            ? mappedChoices
+            : mappedChoices.concat([
+                {
+                  text: answer,
+                  isCorrect: false,
+                  isChosen: true,
+                },
+              ]),
           pointsEarned: isCorrectAnswer ? question.points : 0,
           timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
         },
@@ -421,86 +429,21 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       return;
     }
 
-    if (
-      question.type === "multiple_choice" ||
-      question.type === "true_or_false" ||
-      question.type === "identification" ||
-      question.type === "multi_select"
-    ) {
-      if (question.type === "identification") {
-        const isCorrectAnswer = question.choices.some(
-          (choice) => choice.text === answer,
-        );
-        if (isCorrectAnswer) {
-          const elapsedTime =
-            countdownTimerRef.current?.elapsedTime ?? question.time;
-          setPoints((prevPoints) => prevPoints + question.points);
-          setTime((prevTime) => prevTime + elapsedTime);
-          setModalType("correct");
-          if (isEffectsPlaying) {
-            playEffects({
-              sound: correctSoundInstance,
-              music: correctSound,
-            });
-          }
-        } else {
-          setModalType("incorrect");
-          if (isEffectsPlaying) {
-            playEffects({ sound: wrongSoundInstance, music: wrongSound });
-          }
-          const errorResult = getErrorMessage("times-up");
-          setErrorMessage(errorResult);
-        }
-        showUpperBar();
-        setIsDone(true);
-        return;
-      }
-      if (question.type === "multi_select") {
-        const allCorrect = choices.every(
-          (choice) => choiceStatus[choice.id] === choice.isCorrect,
-        );
-        if (allCorrect) {
-          const elapsedTime =
-            countdownTimerRef.current?.elapsedTime ?? question.time;
-          setPoints((prevPoints) => prevPoints + question.points);
-          setTime((prevTime) => prevTime + elapsedTime);
-          setModalType("correct");
-          if (isEffectsPlaying) {
-            playEffects({
-              sound: correctSoundInstance,
-              music: correctSound,
-            });
-          }
-        } else {
-          setModalType("incorrect");
-          if (isEffectsPlaying) {
-            playEffects({ sound: wrongSoundInstance, music: wrongSound });
-          }
-          const errorResult = getErrorMessage("times-up");
-          setErrorMessage(errorResult);
-        }
-        showUpperBar();
-        setIsDone(true);
-        return;
-      }
-      const selectedChoice = choices.find((choice) => choice.isSelected);
-      if (selectedChoice) {
-        if (selectedChoice.isCorrect) {
-          const elapsedTime =
-            countdownTimerRef.current?.elapsedTime ?? question.time;
-          setPoints((prevPoints) => prevPoints + question.points);
-          setTime((prevTime) => prevTime + elapsedTime);
-          setModalType("correct");
-          if (isEffectsPlaying) {
-            playEffects({ sound: correctSoundInstance, music: correctSound });
-          }
-        } else {
-          setModalType("incorrect");
-          if (isEffectsPlaying) {
-            playEffects({ sound: wrongSoundInstance, music: wrongSound });
-          }
-          const errorResult = getErrorMessage("times-up");
-          setErrorMessage(errorResult);
+    if (question.type === "identification") {
+      const isCorrectAnswer = question.choices.some(
+        (choice) => choice.text === answer,
+      );
+      if (isCorrectAnswer) {
+        const elapsedTime =
+          countdownTimerRef.current?.elapsedTime ?? question.time;
+        setPoints((prevPoints) => prevPoints + question.points);
+        setTime((prevTime) => prevTime + elapsedTime);
+        setModalType("correct");
+        if (isEffectsPlaying) {
+          playEffects({
+            sound: correctSoundInstance,
+            music: correctSound,
+          });
         }
       } else {
         setModalType("incorrect");
@@ -510,10 +453,130 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         const errorResult = getErrorMessage("times-up");
         setErrorMessage(errorResult);
       }
-    }
+      showUpperBar();
+      setIsDone(true);
+      setQuestionHistories((prevQuestionHistories) => {
+        const mappedChoices = question.choices.map((choice) => ({
+          text: choice.text,
+          isCorrect: choice.isCorrect,
+          isChosen: choice.text === answer,
+        }));
 
-    showUpperBar();
-    setIsDone(true);
+        return prevQuestionHistories.concat([
+          {
+            points: question.points,
+            time: question.time,
+            title: question.title,
+            type: question.type,
+            choices: isCorrectAnswer
+              ? mappedChoices
+              : mappedChoices.concat([
+                  {
+                    text: answer,
+                    isCorrect: false,
+                    isChosen: true,
+                  },
+                ]),
+            pointsEarned: isCorrectAnswer ? question.points : 0,
+            timeElapsed:
+              countdownTimerRef.current?.elapsedTime ?? question.time,
+          },
+        ]);
+      });
+      return;
+    }
+    if (question.type === "multi_select") {
+      const allCorrect = choices.every(
+        (choice) => choiceStatus[choice.id] === choice.isCorrect,
+      );
+      if (allCorrect) {
+        const elapsedTime =
+          countdownTimerRef.current?.elapsedTime ?? question.time;
+        setPoints((prevPoints) => prevPoints + question.points);
+        setTime((prevTime) => prevTime + elapsedTime);
+        setModalType("correct");
+        if (isEffectsPlaying) {
+          playEffects({
+            sound: correctSoundInstance,
+            music: correctSound,
+          });
+        }
+      } else {
+        setModalType("incorrect");
+        if (isEffectsPlaying) {
+          playEffects({ sound: wrongSoundInstance, music: wrongSound });
+        }
+        const errorResult = getErrorMessage("times-up");
+        setErrorMessage(errorResult);
+      }
+      showUpperBar();
+      setIsDone(true);
+      setQuestionHistories((prevQuestionHistories) => {
+        const mappedChoices = choices.map((choice) => ({
+          text: choice.text ?? "",
+          isCorrect: choice.isCorrect,
+          isChosen: choiceStatus[choice.id] ?? false,
+        }));
+        return prevQuestionHistories.concat([
+          {
+            points: question.points,
+            time: question.time,
+            title: question.title,
+            type: question.type,
+            choices: mappedChoices,
+            pointsEarned: allCorrect ? question.points : 0,
+            timeElapsed:
+              countdownTimerRef.current?.elapsedTime ?? question.time,
+          },
+        ]);
+      });
+      return;
+    }
+    const selectedChoice = choices.find((choice) => choice.isSelected);
+    if (selectedChoice) {
+      if (selectedChoice.isCorrect) {
+        const elapsedTime =
+          countdownTimerRef.current?.elapsedTime ?? question.time;
+        setPoints((prevPoints) => prevPoints + question.points);
+        setTime((prevTime) => prevTime + elapsedTime);
+        setModalType("correct");
+        if (isEffectsPlaying) {
+          playEffects({ sound: correctSoundInstance, music: correctSound });
+        }
+      } else {
+        setModalType("incorrect");
+        if (isEffectsPlaying) {
+          playEffects({ sound: wrongSoundInstance, music: wrongSound });
+        }
+        const errorResult = getErrorMessage("times-up");
+        setErrorMessage(errorResult);
+      }
+    } else {
+      setModalType("incorrect");
+      if (isEffectsPlaying) {
+        playEffects({ sound: wrongSoundInstance, music: wrongSound });
+      }
+      const errorResult = getErrorMessage("times-up");
+      setErrorMessage(errorResult);
+    }
+    setQuestionHistories((prevQuestionHistories) => {
+      const mappedChoices = choices.map((choice) => ({
+        text: choice.text ?? "",
+        isCorrect: choice.isCorrect,
+        isChosen: selectedChoice?.id === choice.id,
+      }));
+      return prevQuestionHistories.concat([
+        {
+          points: question.points,
+          time: question.time,
+          title: question.title,
+          type: question.type,
+          choices: mappedChoices,
+          pointsEarned: selectedChoice?.isCorrect ? question.points : 0,
+          timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
+        },
+      ]);
+    });
   };
 
   const handleExit = () => {
