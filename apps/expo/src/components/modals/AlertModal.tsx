@@ -63,7 +63,7 @@ export const AlertModal = ({
                   Vwidth="24"
                   Vheight="10"
                   onPress={onCancel}
-                  isLoading={isLoading}
+                  disabled={isLoading}
                 />
               </View>
             )}
