@@ -67,7 +67,7 @@ export const ViewAllUserDisplay: FC<Props> = (props) => {
         width: width,
       }}
     >
-      <ViewAllScreenHeader title={headerTitle} />
+      <ViewAllScreenHeader title={headerTitle} viewAllScreenType="user" />
       <FlashList
         showsVerticalScrollIndicator={false}
         data={fetchedData}

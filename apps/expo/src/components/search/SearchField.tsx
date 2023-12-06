@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { SearchBar } from "@rneui/themed";
 import SearchIcon from "../../icons/SearchIcon";
@@ -6,7 +6,6 @@ import LeftArrowIcon from "../../icons/LeftArrowIcon";
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
 import { SearchContent } from "./SearchContent";
 import { trpc } from "../../utils/trpc";
-import { debounce } from "lodash";
 
 interface FieldProps {
   searchString: string;
@@ -15,6 +14,7 @@ interface FieldProps {
   clicked: boolean;
   setClicked: () => void;
   filterByCurrentUser?: boolean;
+  currentViewAllScreen?: "test" | "user" | "collection" | "reviewer";
 }
 
 export const SearchField: FC<FieldProps> = ({
@@ -24,11 +24,13 @@ export const SearchField: FC<FieldProps> = ({
   clicked,
   setClicked,
   filterByCurrentUser = false,
+  currentViewAllScreen,
 }) => {
   const fieldBgColor = clicked ? "rgb(237 233 254)" : "lightgray";
   const fieldBorderColor = clicked ? "rgba(105, 73, 255, 1)" : "lightgray";
 
-  const [debouncedQuery, setDebouncedQuery] = useState(searchString);
+  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState(searchString);
   const [selectedCategories, setSelectedCategories] = useState({
     tests: false,
     users: false,
@@ -59,7 +61,7 @@ export const SearchField: FC<FieldProps> = ({
     })
     .map(([category]) => ({
       indexName: category,
-      query: debouncedQuery,
+      query: query,
     }));
 
   const algoliaQueriesWithUserFilter = {
@@ -67,21 +69,18 @@ export const SearchField: FC<FieldProps> = ({
     filterBySignedUser: filterByCurrentUser,
   };
 
-  const { data: hits } = trpc.algolia.algoliaSearch.useQuery(
-    algoliaQueriesWithUserFilter,
-    {
-      enabled: debouncedQuery.length > 0,
-    },
-  );
-
-  const debouncedOnChange = useCallback(
-    debounce((query: string) => setDebouncedQuery(query), 500),
-    [],
-  );
+  const { data: hits, isLoading: queryLoading } =
+    trpc.algolia.algoliaSearch.useQuery(algoliaQueriesWithUserFilter, {
+      enabled: query.length > 0,
+    });
 
   useEffect(() => {
-    debouncedOnChange(searchString);
-  }, [searchString, debouncedOnChange, selectedCategories]);
+    setIsLoading(queryLoading);
+  }, [queryLoading]);
+
+  const handleSearchSubmit = () => {
+    setQuery(searchString);
+  };
 
   return (
     <View className="flex-1">
@@ -102,6 +101,7 @@ export const SearchField: FC<FieldProps> = ({
           onChangeText={onChange}
           value={searchString}
           placeholder={"Search"}
+          onSubmitEditing={handleSearchSubmit}
           lightTheme={true}
           containerStyle={{
             backgroundColor: "transparent",
@@ -144,6 +144,8 @@ export const SearchField: FC<FieldProps> = ({
             }
             selectedCategories={selectedCategories}
             toggleCategory={toggleCategory}
+            fixedTypeFilter={currentViewAllScreen}
+            isLoading={isLoading}
           />
         </View>
       ) : (

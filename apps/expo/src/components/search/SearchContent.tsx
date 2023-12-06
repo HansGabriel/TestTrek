@@ -23,6 +23,8 @@ interface ContentProps {
   results: CompiledAlgoliaHits;
   selectedCategories: { [key: string]: boolean };
   toggleCategory: (category: string) => void;
+  fixedTypeFilter?: "test" | "user" | "collection" | "reviewer";
+  isLoading: boolean;
 }
 
 interface CombinedItem {
@@ -49,6 +51,8 @@ export const SearchContent: FC<ContentProps> = ({
   results,
   selectedCategories,
   toggleCategory,
+  fixedTypeFilter,
+  isLoading,
 }) => {
   const navigation = useNavigation();
 
@@ -74,6 +78,13 @@ export const SearchContent: FC<ContentProps> = ({
         )
       : []),
   ];
+
+  let filteredResults = combinedItems;
+  if (fixedTypeFilter) {
+    filteredResults = combinedItems.filter(
+      (item) => item.type === fixedTypeFilter,
+    );
+  }
 
   const goToTestDetailsScreen = (testId: string) => {
     navigation.navigate("TestDetails", {
@@ -170,24 +181,32 @@ export const SearchContent: FC<ContentProps> = ({
         <View>
           <View className="my-3 border border-zinc-100" />
         </View>
-
-        <View
-        className="w-[90%] self-center"
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            padding: 5,
-          }}
-        >
-          {categoryButtons}
-        </View>
-
-        <FlashList
-          data={combinedItems}
-          renderItem={renderItem}
-          estimatedItemSize={100}
-          keyExtractor={(item, index) => `${item.type}-${index}`}
-        />
+        {!fixedTypeFilter && (
+          <View
+            className="w-[90%] self-center"
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              padding: 5,
+            }}
+          >
+            {categoryButtons}
+          </View>
+        )}
+        {!isLoading && filteredResults.length === 0 ? (
+          <View style={{ alignItems: "center", marginTop: 20 }}>
+            <Text style={{ fontSize: 16, color: "gray" }}>
+              No Search Results Found
+            </Text>
+          </View>
+        ) : (
+          <FlashList
+            data={filteredResults}
+            renderItem={renderItem}
+            estimatedItemSize={100}
+            keyExtractor={(item, index) => `${item.type}-${index}`}
+          />
+        )}
       </Animated.View>
     </View>
   );

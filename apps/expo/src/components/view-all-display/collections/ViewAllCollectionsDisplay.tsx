@@ -71,7 +71,10 @@ export const ViewAllCollectionsDisplay: FC<Props> = (props) => {
         flex: 1,
       }}
     >
-      <ViewAllScreenHeader title={formatTitle(props.collectionsFor)} />
+      <ViewAllScreenHeader
+        title={formatTitle(props.collectionsFor)}
+        viewAllScreenType="collection"
+      />
       <FlashList
         showsVerticalScrollIndicator={false}
         numColumns={2}
