@@ -6,7 +6,6 @@ import CreateTestForm from "../forms/CreateTestForm";
 import { trpc } from "../utils/trpc";
 import useQuestionStore from "../stores/useQuestionStore";
 import useImageStore from "../stores/useImageStore";
-import OptionsDropdown from "./create-question/options-dropdown";
 import { match } from "ts-pattern";
 import { mapZodError } from "../utils/helpers/zod";
 
@@ -28,7 +27,6 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
   navigation,
   route,
 }) => {
-  const { height, width } = Dimensions.get("window");
   const { testId } = route.params;
   const trpcUtils = trpc.useContext();
   const goBack = useGoBack();
@@ -113,7 +111,6 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
       onSuccess: () => {
         trpcUtils.test.invalidate();
         trpcUtils.user.getTop.invalidate();
-        trpcUtils.collection.getTopCollections.invalidate();
       },
     });
 

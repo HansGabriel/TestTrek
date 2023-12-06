@@ -31,7 +31,6 @@ export const CreateTestScreen: FC = () => {
       onSuccess: () => {
         trpcUtils.test.invalidate();
         trpcUtils.user.getTop.invalidate();
-        trpcUtils.collection.getTopCollections.invalidate();
       },
     });
 

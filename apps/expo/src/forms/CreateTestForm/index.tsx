@@ -387,7 +387,7 @@ const CreateTestForm: FC<Props> = ({
               }),
             );
             removeBlankQuestions();
-            setLastIndex();
+            setSelectedIndex(0);
             setErrorInAIQuestion(false);
             setShowNumberOfQuestionsModal(false);
             setShowAiModal(false);
