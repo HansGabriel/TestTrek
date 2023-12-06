@@ -59,7 +59,10 @@ export const ViewAllReviewersDisplay: FC = () => {
         width: width,
       }}
     >
-      <ViewAllScreenHeader title={"Discover Reviewers"} />
+      <ViewAllScreenHeader
+        title={"Discover Reviewers"}
+        viewAllScreenType="reviewer"
+      />
       <FlashList
         showsVerticalScrollIndicator={false}
         data={discoverReviewers}

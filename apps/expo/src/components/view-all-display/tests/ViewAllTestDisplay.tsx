@@ -135,7 +135,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
         width: width,
       }}
     >
-      <ViewAllScreenHeader title={headerTitle} />
+      <ViewAllScreenHeader title={headerTitle} viewAllScreenType="test" />
 
       {match(props.testsFor)
         .with("questions", () => {
