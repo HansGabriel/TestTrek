@@ -87,7 +87,6 @@ const CreateTestForm: FC<Props> = ({
   const [selectedReviewer, setSelectedReviewer] = useState<Reviewer | null>(
     null,
   );
-
   const [openAlert, setOpenAlert] = useState(false);
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [errorInAIQuestion, setErrorInAIQuestion] = useState(false);
@@ -252,7 +251,11 @@ const CreateTestForm: FC<Props> = ({
   }, [image, testDetails?.image]);
 
   const handleExitScreen = () => {
-    if (isDirty || questions.length > 0) {
+    if (
+      (testTitle === "Create Test" && isDirty) ||
+      (testTitle === "Edit Test" && isDirty) ||
+      questions.length > 0
+    ) {
       setOpenAlert(true);
     } else {
       goBack();
@@ -261,7 +264,11 @@ const CreateTestForm: FC<Props> = ({
 
   useEffect(() => {
     const backAction = () => {
-      if (isDirty || questions.length > 0) {
+      if (
+        (testTitle === "Create Test" && isDirty) ||
+        (testTitle === "Edit Test" && isDirty) ||
+        questions.length > 0
+      ) {
         setOpenAlert(true);
       } else {
         goBack();
@@ -440,7 +447,13 @@ const CreateTestForm: FC<Props> = ({
         screenName={testTitle}
         optionIcon={<Octicons name="three-bars" size={24} color="black" />}
         onIconPress={() => setIsSidebarOpen(true)}
-        backIcon={<Feather name="x" size={24} color="black" />}
+        backIcon={
+          questions.length > 0 || testTitle === "Create Test" ? (
+            <Feather name="x" size={24} color="black" />
+          ) : (
+            ""
+          )
+        }
         handleExit={handleExitScreen}
         showDeleteIcon={testTitle === "Edit Test"}
         onDeletePress={() =>
@@ -776,9 +789,9 @@ const CreateTestForm: FC<Props> = ({
 
       <AlertModal
         isVisible={openAlert}
-        alertTitle={"Are you sure?"}
+        alertTitle={"Save your test?"}
         alertDescription={
-          "You will lose all unsaved progress if you exit this screen"
+          "You will lose all unsaved changes if you exit this screen"
         }
         confirmButtonText={"Yes"}
         isCancelButtonVisible={true}
@@ -786,7 +799,8 @@ const CreateTestForm: FC<Props> = ({
         onCancel={() => {
           setOpenAlert(false);
         }}
-        onConfirm={goBack}
+        isLoading={isCreatingQuiz}
+        onConfirm={handleSubmit(submitForm)}
       />
     </SafeAreaView>
   );

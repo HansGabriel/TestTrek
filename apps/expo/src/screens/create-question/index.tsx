@@ -116,6 +116,7 @@ export const CreateQuestionScreen: FC = () => {
   const [choices, setChoices] = useState<Choice[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChoiceModalTouched, setIsChoiceModalTouched] = useState(false);
+  const [promptSaveModal, setPromptSaveModal] = useState(false);
 
   const { height, width } = Dimensions.get("window");
 
@@ -190,6 +191,7 @@ export const CreateQuestionScreen: FC = () => {
   const snapPoints = useMemo(() => ["5%", "25%", "70%"], []);
 
   const openBottomSheet = () => {
+    handleSaveQuestion();
     bottomSheetRef.current?.expand();
   };
 
@@ -569,12 +571,7 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleExitScreen = () => {
-    if (question?.inEdit) {
-      setOpenAlert(true);
-    } else {
-      resetQuestionImage();
-      goBack();
-    }
+    setOpenAlert(true);
   };
 
   const handleDelete = () => {
@@ -979,6 +976,43 @@ export const CreateQuestionScreen: FC = () => {
           </View>
         </ScrollView>
 
+        <AlertModal
+          isVisible={promptSaveModal}
+          alertTitle={"Save your question?"}
+          alertDescription={
+            "You will lose all unsaved changes if you exit this screen"
+          }
+          confirmButtonText={"Yes"}
+          isCancelButtonVisible={true}
+          cancelButtonText={"Cancel"}
+          onCancel={() => {
+            setPromptSaveModal(false);
+          }}
+          onConfirm={handleSaveAnswer(() => {
+            setIsSaved(false);
+            setPromptSaveModal(false);
+          })}
+        />
+
+        <AlertModal
+          isVisible={openAlert}
+          alertTitle={"Save your question?"}
+          alertDescription={
+            "You will lose all unsaved changes if you exit this screen"
+          }
+          confirmButtonText={"Yes"}
+          isCancelButtonVisible={true}
+          cancelButtonText={"Cancel"}
+          onCancel={() => {
+            setOpenAlert(false);
+          }}
+          onConfirm={() => {
+            handleSaveQuestion();
+            resetQuestionImage();
+            goBack();
+          }}
+        />
+
         <BottomSheet
           ref={bottomSheetRef}
           index={-1}
@@ -991,21 +1025,6 @@ export const CreateQuestionScreen: FC = () => {
             closeBottomSheet={() => bottomSheetRef.current?.close()}
           />
         </BottomSheet>
-
-        <AlertModal
-          isVisible={openAlert}
-          alertTitle={"Are you sure?"}
-          alertDescription={
-            "You will lose all unsaved progress if you exit this screen"
-          }
-          confirmButtonText={"Yes"}
-          isCancelButtonVisible={true}
-          cancelButtonText={"Cancel"}
-          onCancel={() => {
-            setOpenAlert(false);
-          }}
-          onConfirm={goBack}
-        />
       </View>
     </SafeAreaView>
   );

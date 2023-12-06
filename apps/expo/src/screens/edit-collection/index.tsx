@@ -349,7 +349,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
         isVisible={openAlert}
         alertTitle={"Are you sure?"}
         alertDescription={
-          "You will lose all unsaved progress if you exit this screen"
+          "You will lose all unsaved changes if you exit this screen"
         }
         confirmButtonText={"Yes"}
         isCancelButtonVisible={true}

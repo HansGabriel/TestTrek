@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import EditIcon from "../../icons/EditIcon";
-import LeftArrowIcon from "../../icons/LeftArrowIcon";
+import { Feather } from "@expo/vector-icons";
 
 interface ReviewerHeaderProps {
   showEditIcon: boolean;
@@ -21,7 +21,7 @@ export const ReviewerDetailsHeader = ({
             onPress={goBack}
             className="flex flex-row items-center self-center"
           >
-            <LeftArrowIcon />
+            <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text className="font-nunito-bold text-2xl leading-[38.40px] text-neutral-800">
             Reviewer Details
