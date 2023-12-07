@@ -62,7 +62,7 @@ export const promptGenerators: {
     maxCharsForQuestion = 100,
     maxCharsForChoice = 68,
   ) =>
-    `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters and there must be atleast 1 correct answer. Format as:
+    `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answer: Option [Correct option number]
