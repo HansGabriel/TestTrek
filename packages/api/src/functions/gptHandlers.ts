@@ -62,7 +62,7 @@ export const promptGenerators: {
     maxCharsForQuestion = 100,
     maxCharsForChoice = 68,
   ) =>
-    `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters. Format as:
+    `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answer: Option [Correct option number]
@@ -90,7 +90,7 @@ ${timeAndPointsPrompt}`,
     maxCharsForQuestion = 100,
     maxCharsForChoice = 68,
   ) =>
-    `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters. Multiple answers can be correct. Format as:
+    `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters and there must be atleast 1 correct answer. Multiple answers can be correct. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
 Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
