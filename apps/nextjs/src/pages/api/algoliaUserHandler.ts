@@ -27,10 +27,11 @@ export const updateUserInAlgolia = async (userData: UsersForAlgolia) => {
 
   const algoliaObject: Partial<UsersForAlgolia> & { objectID: string } = {
     ...userData,
-    objectID: userData.id,
+    objectID: userData.userId,
   };
 
   delete algoliaObject.id;
+  delete algoliaObject.userId;
 
   const index = client.initIndex("users");
 
