@@ -438,6 +438,7 @@ const CreateTestForm: FC<Props> = ({
           message: errors.description.message,
         });
       }
+      setOpenAlert(false);
     }
   }, [errors]);
 
@@ -789,15 +790,16 @@ const CreateTestForm: FC<Props> = ({
 
       <AlertModal
         isVisible={openAlert}
-        alertTitle={"Save your test?"}
+        alertTitle={"Save your changes?"}
         alertDescription={
           "You will lose all unsaved changes if you exit this screen"
         }
         confirmButtonText={"Yes"}
         isCancelButtonVisible={true}
-        cancelButtonText={"Cancel"}
+        cancelButtonText={"Exit"}
         onCancel={() => {
           setOpenAlert(false);
+          goBack();
         }}
         isLoading={isCreatingQuiz}
         onConfirm={handleSubmit(submitForm)}
