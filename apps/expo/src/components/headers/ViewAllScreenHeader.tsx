@@ -9,9 +9,13 @@ import { SearchField } from "../search/SearchField";
 interface Props {
   title?: string;
   viewAllScreenType?: "test" | "user" | "collection" | "reviewer";
+  displaySearchBar?: boolean;
 }
 
-const ViewAllScreenHeader: FC<Props> = (props) => {
+const ViewAllScreenHeader: FC<Props> = ({
+  displaySearchBar = true,
+  ...props
+}) => {
   const goBack = useGoBack();
   const [query, setQuery] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -59,9 +63,11 @@ const ViewAllScreenHeader: FC<Props> = (props) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity className="self-center" onPress={openSearchBar}>
-            <SearchIcon />
-          </TouchableOpacity>
+          {displaySearchBar && (
+            <TouchableOpacity className="self-center" onPress={openSearchBar}>
+              <SearchIcon />
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </>
