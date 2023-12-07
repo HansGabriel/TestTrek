@@ -559,6 +559,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       const errorResult = getErrorMessage("times-up");
       setErrorMessage(errorResult);
     }
+    showUpperBar();
+    setIsDone(true);
     setQuestionHistories((prevQuestionHistories) => {
       const mappedChoices = choices.map((choice) => ({
         text: choice.text ?? "",
