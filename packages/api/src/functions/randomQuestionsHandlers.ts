@@ -48,7 +48,7 @@ export const questionFormatGenerators: {
   ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]
   ${generateChoicesPrompt(
     numChoices,
-  )}\nCorrect Answer: Option [Correct option number] ${timeAndPointsPrompt}`,
+  )}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`,
 
   multiselect: (
     numChoices = 4,
@@ -56,7 +56,7 @@ export const questionFormatGenerators: {
   ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]
   ${generateChoicesPrompt(
     numChoices,
-  )}\nAll Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3] ${timeAndPointsPrompt}`,
+  )}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`,
 
   identification: (maxCharsForQuestion = 100, maxCharsForChoice = 68) =>
     `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [Your answer here, max ${maxCharsForChoice} characters] ${timeAndPointsPrompt}`,
