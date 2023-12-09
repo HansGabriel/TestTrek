@@ -294,7 +294,7 @@ export const collectionRouter = router({
     .query(({ ctx, input }) => {
       return ctx.prisma.testOnCollection.findMany({
         where: {
-          collectionsId: input.collectionId,
+          collectionId: input.collectionId,
         },
         orderBy: (() => {
           switch (input.sortType) {
@@ -525,7 +525,7 @@ export const collectionRouter = router({
 
       await ctx.prisma.testOnCollection.deleteMany({
         where: {
-          collectionsId: collectionId,
+          collectionId: collectionId,
         },
       });
 
