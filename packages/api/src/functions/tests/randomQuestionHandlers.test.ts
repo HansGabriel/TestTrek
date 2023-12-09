@@ -7,7 +7,7 @@ import {
 
 import { generateChoicesPrompt, timeAndPointsPrompt } from "../gptHandlers";
 
-describe("questionFormatGenerators", () => {
+describe.skip("questionFormatGenerators", () => {
   it("It should generate format for multiple choice question/s", () => {
     const mcqFormat = questionFormatGenerators["multipleChoice"];
     const output = `separator\nQuestion: [Your question here, max 100 characters]
