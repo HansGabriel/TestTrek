@@ -21,7 +21,8 @@
       "outputs": [".next/**", ".expo/**"]
     },
     "lint": {
-      "outputs": []
+      "outputs": [],
+      "cache": false
     },
     "clean": {
       "cache": false
