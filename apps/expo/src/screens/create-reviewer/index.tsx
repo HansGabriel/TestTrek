@@ -53,7 +53,6 @@ interface CacheOptions {
 
 interface FilePickerType {
   fileType: string;
-  base64ContentType: string;
 }
 
 export const CreateReviewerScreen = ({
@@ -222,10 +221,7 @@ export const CreateReviewerScreen = ({
     return cacheFilePath;
   };
 
-  const filePicker = async ({
-    fileType,
-    base64ContentType,
-  }: FilePickerType) => {
+  const filePicker = async ({ fileType }: FilePickerType) => {
     const result = await DocumentPicker.getDocumentAsync({
       type: fileType,
       copyToCacheDirectory: false,
@@ -249,16 +245,15 @@ export const CreateReviewerScreen = ({
       });
 
       if (base64) {
-        const formatBase64 = `data:${base64ContentType};base64,${base64}`;
         readFile(
           {
-            file: formatBase64,
-            fileType: `${fileType === "image/*" ? "JPG" : "PDF"}`,
+            file: base64,
+            fileType: fileType,
           },
           {
             onSuccess: (data) => {
               if (richText.current) {
-                richText.current.insertHTML(data.text);
+                richText.current.insertHTML(data);
               }
               successToast({
                 title: "Success",
@@ -676,7 +671,6 @@ export const CreateReviewerScreen = ({
             onPress={() =>
               filePicker({
                 fileType: "application/pdf",
-                base64ContentType: "application/pdf",
               })
             }
           />
@@ -694,7 +688,6 @@ export const CreateReviewerScreen = ({
             onPress={() =>
               filePicker({
                 fileType: "image/*",
-                base64ContentType: "image/jpg",
               })
             }
           />
