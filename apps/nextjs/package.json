@@ -8,7 +8,7 @@
     "build": "next build",
     "clean": "rm -rf .next .turbo node_modules",
     "start": "next start",
-    "lint": "pnpm with-env next lint",
+    "lint": "next lint",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
