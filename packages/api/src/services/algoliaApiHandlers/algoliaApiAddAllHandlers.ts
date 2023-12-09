@@ -47,8 +47,8 @@ export const addAllTestsToAlgolia = async (
 };
 
 const parseUsersToAlgolia = async (data: Promise<UsersForAlgolia[]>) => {
-  const usersAlgoliaRecords = (await data).map(({ id, ...rest }) => ({
-    objectID: id,
+  const usersAlgoliaRecords = (await data).map(({ userId, ...rest }) => ({
+    objectID: userId,
     ...rest,
   }));
 
