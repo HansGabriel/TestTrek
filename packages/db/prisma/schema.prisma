@@ -19,6 +19,7 @@ model User {
     lastName      String               @map("user_last_name")
     imageUrl      String?              @map("user_image_url")
     about         String?              @map("user_about") @db.Text
+    totalPoints   Int                  @default(0) @map("user_total_points")
     createdAt     DateTime             @default(now()) @map("user_created_at")
     updatedAt     DateTime             @updatedAt @map("user_updated_at")
     tests         Test[]
@@ -40,7 +41,7 @@ model UserOnFavoriteTest {
     createdAt DateTime @default(now()) @map("user_on_favorite_test_created_at")
     updatedAt DateTime @updatedAt @map("user_on_favorite_test_updated_at")
 
-    @@id([userId, testId])
+    @@id([id, userId, testId])
     @@map("user_on_favorite_test")
 }
 
@@ -58,7 +59,6 @@ model Test {
     questions      Question[]
     user           User                 @relation(fields: [userId], references: [userId])
     plays          Play[]
-    reviewers      ReviewerOnTest[]
     favoritedUsers UserOnFavoriteTest[]
 
     @@map("test")
@@ -117,32 +117,18 @@ model ChoiceHistory {
 }
 
 model Reviewer {
-    id         String           @id @default(cuid()) @map("reviewer_id")
-    title      String           @map("reviewer_title")
-    imageUrl   String           @map("reviewer_image_url")
-    testId     String?          @map("reviewer_test_id")
-    content    String           @map("reviewer_content") @db.Text
-    visibility Visibility       @map("reviewer_visibility")
-    userId     String           @map("user_id")
-    user       User             @relation(fields: [userId], references: [userId])
-    tests      ReviewerOnTest[]
-    createdAt  DateTime         @default(now()) @map("reviewer_created_at")
-    updatedAt  DateTime         @updatedAt @map("reviewer_updated_at")
+    id         String     @id @default(cuid()) @map("reviewer_id")
+    title      String     @map("reviewer_title")
+    imageUrl   String     @map("reviewer_image_url")
+    testId     String?    @map("reviewer_test_id")
+    content    String     @map("reviewer_content") @db.Text
+    visibility Visibility @map("reviewer_visibility")
+    userId     String     @map("user_id")
+    user       User       @relation(fields: [userId], references: [userId])
+    createdAt  DateTime   @default(now()) @map("reviewer_created_at")
+    updatedAt  DateTime   @updatedAt @map("reviewer_updated_at")
 
     @@map("reviewer")
-}
-
-model ReviewerOnTest {
-    id         String   @default(cuid()) @map("reviewer_on_test_id")
-    testId     String   @map("test_id")
-    test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-    reviewer   Reviewer @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
-    reviewerId String   @map("reviewer_id")
-    createdAt  DateTime @default(now()) @map("reviewer_on_test_created_at")
-    updatedAt  DateTime @updatedAt @map("reviewer_on_test_updated_at")
-
-    @@id([testId, reviewerId])
-    @@map("reviewer_on_test")
 }
 
 model Question {
@@ -207,7 +193,7 @@ model TestOnCollection {
     createdAt     DateTime   @default(now()) @map("test_on_collection_created_at")
     updatedAt     DateTime   @updatedAt @map("test_on_collection_updated_at")
 
-    @@id([testId, collectionsId])
+    @@id([id, testId, collectionsId])
     @@map("test_on_collection")
 }
 
