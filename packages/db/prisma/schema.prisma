@@ -41,7 +41,7 @@ model UserOnFavoriteTest {
     createdAt DateTime @default(now()) @map("user_on_favorite_test_created_at")
     updatedAt DateTime @updatedAt @map("user_on_favorite_test_updated_at")
 
-    @@id([id, userId, testId])
+    @@id([userId, testId])
     @@map("user_on_favorite_test")
 }
 
@@ -193,7 +193,7 @@ model TestOnCollection {
     createdAt    DateTime   @default(now()) @map("test_on_collection_created_at")
     updatedAt    DateTime   @updatedAt @map("test_on_collection_updated_at")
 
-    @@id([id, testId, collectionId])
+    @@id([testId, collectionId])
     @@map("test_on_collection")
 }
 
