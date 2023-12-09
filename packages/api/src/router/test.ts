@@ -5,11 +5,11 @@ import { playersHighscoreSchema } from "@acme/schema/src/play";
 import { TRPCError } from "@trpc/server";
 
 import { Prisma } from "@acme/db";
-import type { PlayersHighscore } from "@acme/schema/src/types";
 import {
   deleteTestFromAlgolia,
   updateTestInAlgolia,
 } from "../services/algoliaApiHandlers/algoliaCudHandlers";
+import type { _PlayersHighscore } from "../types";
 
 type QuestionCreateInput = Prisma.QuestionCreateInput;
 
@@ -857,33 +857,44 @@ export const testRouter = router({
       const { testId } = input;
 
       const playsWithHighestScore = await ctx.prisma
-        .$queryRaw<PlayersHighscore>(Prisma.sql`
-          SELECT
-            DISTINCT ON ("Play"."playerId")
-            "User"."firstName",
-            "User"."imageUrl",
-            "Play"."playerId" AS "id",
-            "Play"."createdAt",
-            MAX("Play"."score") AS "highScore"
-          FROM
-            "Play"
-          JOIN
-            "User"
-          ON
-            "Play"."playerId" = "User"."userId"
-          WHERE
-            "Play"."isFinished" = TRUE
-            AND "Play"."testId" = ${testId}
-          GROUP BY
-            "Play"."playerId",
-            "Play"."createdAt",
-            "User"."firstName",
-            "User"."imageUrl"
-          ORDER BY
-            "Play"."playerId",
-            "highScore" DESC,
-            "Play"."createdAt" ASC;
-        `);
+        .$queryRaw<_PlayersHighscore[]>(
+          Prisma.sql`
+        SELECT
+          DISTINCT ON ("play"."player_id")
+          "user"."user_first_name",
+          "user"."user_image_url",
+          "play"."player_id" AS "id",
+          "play"."play_created_at",
+          MAX("play"."play_score") AS "high_score"
+        FROM
+          "play"
+        JOIN
+          "user"
+        ON
+          "play"."player_id" = "user"."clerk_user_id"
+        WHERE
+          "play"."play_is_finished" = TRUE
+          AND "play"."test_id" = ${testId}
+        GROUP BY
+          "play"."player_id",
+          "play"."play_created_at",
+          "user"."user_first_name",
+          "user"."user_image_url"
+        ORDER BY
+          "play"."player_id",
+          "high_score" DESC,
+          "play"."play_created_at" ASC;
+      `,
+        )
+        .then((plays) =>
+          plays.map((play) => ({
+            id: play.id,
+            createdAt: play.play_created_at,
+            highScore: play.high_score,
+            firstName: play.user_first_name,
+            imageUrl: play.user_image_url,
+          })),
+        );
 
       const sortedPlays = playsWithHighestScore.sort((a, b) => {
         return b.highScore - a.highScore;

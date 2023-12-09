@@ -2,9 +2,10 @@ import { highlightUsersInput, userStoredSchema } from "@acme/schema/src/user";
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import { Prisma } from "@acme/db";
-import { PlayersHighscore } from "@acme/schema/src/types";
 import pMap from "p-map";
 import { updateUserInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
+
+import type { _PlayersHighscore } from "../types";
 
 export const useRouter = router({
   getTop: protectedProcedure
@@ -137,32 +138,42 @@ export const useRouter = router({
         userPlays,
         async (item) => {
           const top3Plays = await ctx.prisma
-            .$queryRaw<PlayersHighscore>(Prisma.sql`
-      SELECT
-        DISTINCT ON ("Play"."playerId")
-        "User"."firstName",
-        "User"."imageUrl",
-        "Play"."playerId" AS "id",
-        MAX("Play"."score") AS "highScore"
-      FROM
-        "Play"
-      JOIN
-        "User"
-      ON
-        "Play"."playerId" = "User"."userId"
-      WHERE
-        "Play"."isFinished" = TRUE
-        AND "Play"."testId" = ${item.testId}
-      GROUP BY
-        "Play"."playerId",
-        "User"."firstName",
-        "User"."imageUrl"
-      ORDER BY
-        "Play"."playerId",
-        "highScore" DESC
-      LIMIT 3;
-    `);
-
+            .$queryRaw<_PlayersHighscore[]>(
+              Prisma.sql`
+                SELECT
+                  DISTINCT ON ("play"."player_id")
+                  "user"."user_first_name",
+                  "user"."user_image_url",
+                  "play"."player_id" AS "id",
+                  MAX("play"."play_score") AS "high_score"
+                FROM
+                  "play"
+                JOIN
+                  "user"
+                ON
+                  "play"."player_id" = "user"."clerk_user_id"
+                WHERE
+                  "play"."play_is_finished" = TRUE
+                  AND "play"."test_id" = ${item.testId}
+                GROUP BY
+                  "play"."player_id",
+                  "user"."user_first_name",
+                  "user"."user_image_url"
+                ORDER BY
+                  "play"."player_id",
+                  "high_score" DESC
+                LIMIT 3;
+              `,
+            )
+            .then((plays) =>
+              plays.map((play) => ({
+                id: play.id,
+                createdAt: play.play_created_at,
+                highScore: play.high_score,
+                firstName: play.user_first_name,
+                imageUrl: play.user_image_url,
+              })),
+            );
           const userTop3Count = top3Plays.filter(
             (topPlay) => topPlay.id === ctx.auth.userId,
           ).length;
