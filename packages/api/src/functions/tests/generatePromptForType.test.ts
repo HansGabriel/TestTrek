@@ -1,6 +1,3 @@
-// ignore testss
-// @
-
 import { generatePromptForType } from "../gptHandlers";
 import { describe, it, expect } from "vitest";
 import { timeAndPointsPrompt } from "../gptHandlers";
