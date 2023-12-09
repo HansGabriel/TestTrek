@@ -203,25 +203,25 @@ describe("testRouter - queries", () => {
     beforeEach(async () => {
       ctx.prisma.$queryRaw = vi.fn().mockResolvedValue([
         {
-          firstName: "John",
-          imageUrl: "img1.jpg",
+          user_first_name: "John",
+          user_image_url: "img1.jpg",
           id: "playerId1",
-          createdAt: new Date("2023-01-10T10:00:00Z"),
-          highScore: 95,
+          play_created_at: new Date("2023-01-10T10:00:00Z"),
+          high_score: 95,
         },
         {
-          firstName: "Doe",
-          imageUrl: "img2.jpg",
+          user_first_name: "Doe",
+          user_image_url: "img2.jpg",
           id: "playerId2",
-          createdAt: new Date("2023-01-05T10:00:00Z"),
-          highScore: 89,
+          play_created_at: new Date("2023-01-05T10:00:00Z"),
+          high_score: 89,
         },
         {
-          firstName: "Alice",
-          imageUrl: "img3.jpg",
+          user_first_name: "Alice",
+          user_image_url: "img3.jpg",
           id: "playerId3",
-          createdAt: new Date("2023-01-08T10:00:00Z"),
-          highScore: 92,
+          play_created_at: new Date("2023-01-08T10:00:00Z"),
+          high_score: 92,
         },
       ]);
     });
