@@ -191,7 +191,17 @@ export const CreateQuestionScreen: FC = () => {
   const snapPoints = useMemo(() => ["5%", "25%", "70%"], []);
 
   const openBottomSheet = () => {
-    handleSaveQuestion();
+    const isValidInput = handleSaveQuestion({
+      showToasts: false,
+    });
+
+    if (typeof isValidInput !== "boolean" || !isValidInput) {
+      errorToast({
+        title: "Missing field",
+        message: "Please fill out all required fields",
+      });
+      return;
+    }
     bottomSheetRef.current?.expand();
   };
 
@@ -406,7 +416,11 @@ export const CreateQuestionScreen: FC = () => {
 
   const selectedImage = getSelectedImage();
 
-  const handleSaveQuestion = () => {
+  const handleSaveQuestion = ({
+    showToasts = true,
+  }: {
+    showToasts?: boolean;
+  } = {}) => {
     if (!questionType) return false;
     resetErrors();
     const errors = checkErrors({
@@ -462,10 +476,12 @@ export const CreateQuestionScreen: FC = () => {
     editQuestion(selectedIndex!, question);
     resetQuestionImage();
     resetErrors();
-    successToast({
-      title: "Success",
-      message: "Question saved successfully",
-    });
+    if (showToasts) {
+      successToast({
+        title: "Success",
+        message: "Question saved successfully",
+      });
+    }
     return true;
   };
 
@@ -532,6 +548,18 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleClickQuestion = (index: number) => () => {
+    const isValidInput = handleSaveQuestion({
+      showToasts: false,
+    });
+
+    if (typeof isValidInput !== "boolean" || !isValidInput) {
+      errorToast({
+        title: "Missing field",
+        message: "Please fill out all required fields",
+      });
+      return;
+    }
+
     setSelectedIndex(index);
     setSelectedQuestionId(index);
     setQuestionImage(questions[index]?.image ?? undefined);
@@ -849,7 +877,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                     <TextInput
                       multiline={true}
-                      maxLength={100}
+                      maxLength={150}
                       className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                       selectionColor="white"
                       value={selectedChoice?.text}
@@ -860,9 +888,9 @@ export const CreateQuestionScreen: FC = () => {
                       placeholderTextColor="#FFFFFF"
                     />
                     {selectedChoice?.text &&
-                    selectedChoice?.text.length >= 100 ? (
+                    selectedChoice?.text.length >= 150 ? (
                       <Text className="mt-2 text-center text-red-500 ">
-                        You've reached the maximum of 100 characters.
+                        You've reached the maximum of 150 characters.
                       </Text>
                     ) : null}
 
@@ -996,9 +1024,9 @@ export const CreateQuestionScreen: FC = () => {
 
         <AlertModal
           isVisible={openAlert}
-          alertTitle={"Save your question?"}
+          alertTitle={"Are you sure you want to exit?"}
           alertDescription={
-            "You will lose all unsaved changes if you exit this screen"
+            "Please make sure to save in order to keep your changes"
           }
           confirmButtonText={"Yes"}
           isCancelButtonVisible={true}
@@ -1007,7 +1035,19 @@ export const CreateQuestionScreen: FC = () => {
             setOpenAlert(false);
           }}
           onConfirm={() => {
-            handleSaveQuestion();
+            const isValidInput = handleSaveQuestion({
+              showToasts: false,
+            });
+
+            if (typeof isValidInput !== "boolean" || !isValidInput) {
+              setOpenAlert(false);
+              errorToast({
+                title: "Missing field",
+                message: "Please fill out all required fields",
+              });
+              return;
+            }
+
             resetQuestionImage();
             goBack();
           }}
