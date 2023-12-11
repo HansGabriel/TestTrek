@@ -5,6 +5,7 @@ import { HotStreakLogo } from "../../icons/playtest/HotStreakLogo";
 import { PhoenixLogo } from "../../icons/playtest/PhoenixLogo";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+
 export type ChallengeType = "correct-streak" | "wrong-streak";
 
 interface OverlayProps {
