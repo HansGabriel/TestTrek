@@ -1035,19 +1035,6 @@ export const CreateQuestionScreen: FC = () => {
             setOpenAlert(false);
           }}
           onConfirm={() => {
-            const isValidInput = handleSaveQuestion({
-              showToasts: false,
-            });
-
-            if (typeof isValidInput !== "boolean" || !isValidInput) {
-              setOpenAlert(false);
-              errorToast({
-                title: "Missing field",
-                message: "Please fill out all required fields",
-              });
-              return;
-            }
-
             resetQuestionImage();
             goBack();
           }}

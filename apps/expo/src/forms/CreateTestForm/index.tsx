@@ -615,20 +615,22 @@ const CreateTestForm: FC<Props> = ({
           )}
 
           <View className="mb-10 h-full flex-1 flex-col">
-            <View className="mb-6 flex flex-row items-center justify-between">
-              <Text className="text-xl font-bold leading-loose text-neutral-800">
-                Question {questions.length > 0 ? `(${questions.length})` : "()"}
-              </Text>
-              <TouchableOpacity
-                className="flex flex-row items-center gap-1"
-                onPress={goToViewAllQuestions}
-              >
-                <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                  View All
+            {questions.length > 0 && (
+              <View className="mb-6 flex flex-row items-center justify-between">
+                <Text className="text-xl font-bold leading-loose text-neutral-800">
+                  Question ({questions.length})
                 </Text>
-                <RightArrowIcon />
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  className="flex flex-row items-center gap-1"
+                  onPress={goToViewAllQuestions}
+                >
+                  <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                    View All
+                  </Text>
+                  <RightArrowIcon />
+                </TouchableOpacity>
+              </View>
+            )}
 
             <SafeAreaView className="min-h-full flex-1">
               {isLoading ? (
