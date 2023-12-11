@@ -651,20 +651,24 @@ const CreateTestForm: FC<Props> = ({
                   </View>
                 </View>
               ) : (
-                <FlashList
-                  estimatedItemSize={10}
-                  data={readyQuestions}
-                  showsVerticalScrollIndicator={true}
-                  renderItem={({ item: question, index }) => {
-                    return (
-                      <QuestionCard
-                        question={question}
-                        index={index}
-                        goToEditQuestion={goToEditQuestion}
-                      />
-                    );
-                  }}
-                />
+                <>
+                  {questions.length > 0 && (
+                    <FlashList
+                      estimatedItemSize={10}
+                      data={readyQuestions}
+                      showsVerticalScrollIndicator={true}
+                      renderItem={({ item: question, index }) => {
+                        return (
+                          <QuestionCard
+                            question={question}
+                            index={index}
+                            goToEditQuestion={goToEditQuestion}
+                          />
+                        );
+                      }}
+                    />
+                  )}
+                </>
               )}
             </SafeAreaView>
           </View>
