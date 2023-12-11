@@ -92,7 +92,7 @@ export const TrueOrFalseCard = ({
     <TouchableOpacity
       key={choice.id}
       disabled={isDone}
-      className={`flex h-[260px] w-40 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
+      className={`h-full w-full flex-1 items-center self-center rounded-2xl ${
         isDone ? doneStyle : choice.styles
       } p-5`}
       onPress={handlePressChoice(choice.id)}
@@ -223,7 +223,7 @@ export const MultiSelectCard = ({
     <TouchableOpacity
       key={choice.id}
       disabled={isDone}
-      className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
+      className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
         isDone ? doneStyle : choice.styles
       } p-5`}
       onPress={handlePressChoice(choice.id)}

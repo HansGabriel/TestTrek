@@ -14,7 +14,7 @@ interface Props {
 const DiscoverReviewersHomeDisplayCard: FC<Props> = (props) => {
   return (
     <View className="h-59 mx-1 w-48 flex-shrink-0 items-center bg-white p-2">
-      <View className="flex-1 flex-shrink-0 overflow-hidden rounded-2xl border-b-2 border-gray-300 bg-white">
+      <View className="flex-1 flex-shrink-0 overflow-hidden rounded-2xl border-b border-gray-300 bg-white">
         <View className="relative h-28">
           <View className="absolute inset-0 bg-gray-400" />
           <Image

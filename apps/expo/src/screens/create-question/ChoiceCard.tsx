@@ -214,7 +214,7 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
   return (
     <TouchableOpacity
       key={choice.id}
-      className={`flex h-[220px] w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
+      className={`h-full w-full flex-1 items-center self-center rounded-2xl ${
         choice.styles
       } ${
         errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
@@ -488,8 +488,8 @@ export const TrueOrFalseCards = ({
   }
 
   return (
-    <View className="mt-5 flex flex-row items-center space-x-4 self-center">
-      <View>
+    <View className="mt-5 flex w-[90%] flex-row items-center justify-evenly self-center">
+      <View className="h-36 w-36">
         <TrueOrFalseCard
           {...props}
           choices={choices}
@@ -498,7 +498,7 @@ export const TrueOrFalseCards = ({
           onPressCard={toggleChoiceCorrect(0)}
         />
       </View>
-      <View>
+      <View className="h-36 w-36">
         <TrueOrFalseCard
           {...props}
           choices={choices}

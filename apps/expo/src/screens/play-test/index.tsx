@@ -371,7 +371,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       <TouchableOpacity
         key={choice.id}
         disabled={isDone}
-        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${
+        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           isDone ? doneStyle : choice.styles
         } p-5`}
         onPress={handlePressChoice(choice.id)}
@@ -651,15 +651,15 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
               </View>
             ))
             .with("true_or_false", () => (
-              <View className="mt-14 flex flex-row items-center space-x-8 self-center">
-                <View>
+              <View className="mt-14 flex w-full flex-row items-center justify-evenly self-center">
+                <View className="h-36 w-36">
                   <TrueOrFalseCard
                     choice={choices[0]}
                     isDone={isDone}
                     handlePressChoice={handlePressChoice}
                   />
                 </View>
-                <View>
+                <View className="h-36 w-36">
                   <TrueOrFalseCard
                     choice={choices[1]}
                     isDone={isDone}
