@@ -175,7 +175,6 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   }, []);
 
   useEffect(() => {
-    console.warn(points)
     if (correctAnswerCounter > 2) {
       setShowChallengeOverlay(true);
       setChallengeName("correct");
