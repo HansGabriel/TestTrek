@@ -5,16 +5,19 @@ import { HotStreakLogo } from "../../icons/playtest/HotStreakLogo";
 import { PhoenixLogo } from "../../icons/playtest/PhoenixLogo";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+
+export type ChallengeType = "correct-streak" | "wrong-streak";
+
 interface OverlayProps {
   isVisible: boolean;
   toggleVisibility: () => void;
-  challengeFor: string;
+  challengeType: ChallengeType;
 }
 
 export const ChallengeOverlay: FC<OverlayProps> = ({
   isVisible,
   toggleVisibility,
-  challengeFor,
+  challengeType,
 }) => {
   const { height, width } = Dimensions.get("window");
 
@@ -35,18 +38,20 @@ export const ChallengeOverlay: FC<OverlayProps> = ({
         }}
       >
         <View className="items-center justify-center self-center">
-          {challengeFor === "correct" ? (
+          {challengeType === "correct-streak" ? (
             <HotStreakLogo width={width * 0.5} height={height * 0.2} />
           ) : (
             <PhoenixLogo width={width * 0.5} height={height * 0.2} />
           )}
           <View className="w-[80%] self-center">
             <Text className=" font-nunito-extrabold text-center text-2xl text-white">
-              {challengeFor === "correct" ? "NICE STREAK" : "REDEMPTION"}
+              {challengeType === "correct-streak"
+                ? "NICE STREAK"
+                : "REDEMPTION"}
             </Text>
             <Text className=" font-nunito-extrabold text-center text-lg text-white">
               Answer this question to gain{" "}
-              {challengeFor === "correct" ? "double" : "triple"} points!
+              {challengeType === "correct-streak" ? "double" : "triple"} points!
             </Text>
           </View>
         </View>
