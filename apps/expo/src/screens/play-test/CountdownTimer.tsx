@@ -13,6 +13,7 @@ type Props = {
 export type CountdownTimerRef = {
   pauseTimer: () => void;
   elapsedTime: number;
+  restartTimer: () => void
 };
 
 const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
@@ -48,6 +49,10 @@ const CountdownTimer = forwardRef<CountdownTimerRef, Props>(
         pause();
       },
       elapsedTime,
+      restartTimer() {
+        endTimeRef.current = dayjs().add(timeInSeconds, "second").toDate();
+        restart(endTimeRef.current);
+      },
     }));
 
     useEffect(() => {
