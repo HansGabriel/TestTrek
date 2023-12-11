@@ -260,6 +260,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
+        if (shouldMultiplyAndReset) {
+          setWrongAnswerCounter(0);
+          setShouldMultiplyScore(false);
+          setScoreMultiplier(1);
+        } else {
+          setWrongAnswerCounter((prevCounter) => prevCounter + 1);
+        }
+        setCorrectAnswerCounter(0);
       }
     }
 
@@ -339,6 +347,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       }
     } else {
       setModalType("incorrect");
+      if (shouldMultiplyAndReset) {
+        setWrongAnswerCounter(0);
+        setShouldMultiplyScore(false);
+        setScoreMultiplier(1);
+      } else {
+        setWrongAnswerCounter((prevCounter) => prevCounter + 1);
+      }
+      setCorrectAnswerCounter(0);
     }
 
     countdownTimerRef.current?.pauseTimer();
@@ -415,6 +431,14 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       }
     } else {
       setModalType("incorrect");
+      if (shouldMultiplyAndReset) {
+        setWrongAnswerCounter(0);
+        setShouldMultiplyScore(false);
+        setScoreMultiplier(1);
+      } else {
+        setWrongAnswerCounter((prevCounter) => prevCounter + 1);
+      }
+      setCorrectAnswerCounter(0);
     }
 
     countdownTimerRef.current?.pauseTimer();
