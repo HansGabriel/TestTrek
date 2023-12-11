@@ -51,7 +51,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertModal } from "../../components/modals/AlertModal";
 
 import type { QuestionHistory } from "@acme/schema/src/testHistory";
-import { ChallengeOverlay } from "../../components/overlays/ChallengeOverlay";
+import {
+  ChallengeOverlay,
+  ChallengeType,
+} from "../../components/overlays/ChallengeOverlay";
 
 export type ChoiceStatus = [boolean, boolean, boolean, boolean];
 
@@ -99,7 +102,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     [],
   );
   const [showChallengeOverlay, setShowChallengeOverlay] = useState(false);
-  const [challengeName, setChallengeName] = useState("");
+  const [challengeName, setChallengeName] =
+    useState<ChallengeType>("wrong-streak");
   const [shouldMultiplyScore, setShouldMultiplyScore] = useState(false);
   const [scoreMultiplier, setScoreMultiplier] = useState(1);
 
@@ -177,13 +181,13 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   useEffect(() => {
     if (correctAnswerCounter > 2) {
       setShowChallengeOverlay(true);
-      setChallengeName("correct");
+      setChallengeName("correct-streak");
       setShouldMultiplyScore(true);
       setScoreMultiplier((prevCounter) => prevCounter * 2);
     }
     if (wrongAnswerCounter > 2) {
       setShowChallengeOverlay(true);
-      setChallengeName("wrong");
+      setChallengeName("wrong-streak");
       setShouldMultiplyScore(true);
       setScoreMultiplier((prevCounter) => prevCounter * 3);
     }
@@ -199,8 +203,32 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const totalQuestions = questions.length;
   const isLastQuestion = index + 1 === totalQuestions;
   const shouldMultiplyAndReset =
-    (challengeName === "correct" || challengeName === "wrong") &&
+    (challengeName === "correct-streak" || challengeName === "wrong-streak") &&
     shouldMultiplyScore;
+
+  const correctChoiceMultiplyAndReset = (points: number) => {
+    if (shouldMultiplyAndReset) {
+      setPoints((prevPoints) => prevPoints + points * scoreMultiplier);
+      setCorrectAnswerCounter(0);
+      setShouldMultiplyScore(false);
+    } else {
+      setPoints((prevPoints) => prevPoints + points);
+      setCorrectAnswerCounter((prevCounter) => prevCounter + 1);
+      setScoreMultiplier(1);
+    }
+    setWrongAnswerCounter(0);
+  };
+
+  const wrongChoiceMultiplyAndReset = () => {
+    if (shouldMultiplyAndReset) {
+      setWrongAnswerCounter(0);
+      setShouldMultiplyScore(false);
+      setScoreMultiplier(1);
+    } else {
+      setWrongAnswerCounter((prevCounter) => prevCounter + 1);
+    }
+    setCorrectAnswerCounter(0);
+  };
 
   const handlePressChoice = (choiceId: number) => () => {
     if (!question) {
@@ -221,18 +249,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           setTime((prevTime) => prevTime + elapsedTime);
           setModalType("correct");
 
-          if (shouldMultiplyAndReset) {
-            setPoints(
-              (prevPoints) => prevPoints + question.points * scoreMultiplier,
-            );
-            setCorrectAnswerCounter(0);
-            setShouldMultiplyScore(false);
-          } else {
-            setPoints((prevPoints) => prevPoints + question.points);
-            setCorrectAnswerCounter((prevCounter) => prevCounter + 1);
-            setScoreMultiplier(1);
-          }
-          setWrongAnswerCounter(0);
+          correctChoiceMultiplyAndReset(question.points);
 
           if (isEffectsPlaying) {
             playEffects({
@@ -242,14 +259,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           }
         } else {
           setModalType("incorrect");
-          if (shouldMultiplyAndReset) {
-            setWrongAnswerCounter(0);
-            setShouldMultiplyScore(false);
-            setScoreMultiplier(1);
-          } else {
-            setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-          }
-          setCorrectAnswerCounter(0);
+          wrongChoiceMultiplyAndReset();
 
           if (isEffectsPlaying) {
             playEffects({ sound: wrongSoundInstance, music: wrongSound });
@@ -260,14 +270,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
-        if (shouldMultiplyAndReset) {
-          setWrongAnswerCounter(0);
-          setShouldMultiplyScore(false);
-          setScoreMultiplier(1);
-        } else {
-          setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-        }
-        setCorrectAnswerCounter(0);
+        wrongChoiceMultiplyAndReset();
       }
     }
 
@@ -310,18 +313,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
         setTime((prevTime) => prevTime + elapsedTime);
         setModalType("correct");
-        if (shouldMultiplyAndReset) {
-          setPoints(
-            (prevPoints) => prevPoints + question.points * scoreMultiplier,
-          );
-          setCorrectAnswerCounter(0);
-          setShouldMultiplyScore(false);
-        } else {
-          setPoints((prevPoints) => prevPoints + question.points);
-          setCorrectAnswerCounter((prevCounter) => prevCounter + 1);
-          setScoreMultiplier(1);
-        }
-        setWrongAnswerCounter(0);
+        correctChoiceMultiplyAndReset(question.points);
 
         if (isEffectsPlaying) {
           playEffects({
@@ -331,14 +323,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
-        if (shouldMultiplyAndReset) {
-          setWrongAnswerCounter(0);
-          setShouldMultiplyScore(false);
-          setScoreMultiplier(1);
-        } else {
-          setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-        }
-        setCorrectAnswerCounter(0);
+        wrongChoiceMultiplyAndReset();
         if (isEffectsPlaying) {
           playEffects({ sound: wrongSoundInstance, music: wrongSound });
         }
@@ -347,14 +332,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       }
     } else {
       setModalType("incorrect");
-      if (shouldMultiplyAndReset) {
-        setWrongAnswerCounter(0);
-        setShouldMultiplyScore(false);
-        setScoreMultiplier(1);
-      } else {
-        setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-      }
-      setCorrectAnswerCounter(0);
+      wrongChoiceMultiplyAndReset();
     }
 
     countdownTimerRef.current?.pauseTimer();
@@ -395,18 +373,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           countdownTimerRef.current?.elapsedTime ?? question.time;
         setTime((prevTime) => prevTime + elapsedTime);
         setModalType("correct");
-        if (shouldMultiplyAndReset) {
-          setPoints(
-            (prevPoints) => prevPoints + question.points * scoreMultiplier,
-          );
-          setCorrectAnswerCounter(0);
-          setShouldMultiplyScore(false);
-        } else {
-          setPoints((prevPoints) => prevPoints + question.points);
-          setCorrectAnswerCounter((prevCounter) => prevCounter + 1);
-          setScoreMultiplier(1);
-        }
-        setWrongAnswerCounter(0);
+        correctChoiceMultiplyAndReset(question.points);
         if (isEffectsPlaying) {
           playEffects({
             sound: correctSoundInstance,
@@ -415,14 +382,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
-        if (shouldMultiplyAndReset) {
-          setWrongAnswerCounter(0);
-          setShouldMultiplyScore(false);
-          setScoreMultiplier(1);
-        } else {
-          setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-        }
-        setCorrectAnswerCounter(0);
+        wrongChoiceMultiplyAndReset();
         if (isEffectsPlaying) {
           playEffects({ sound: wrongSoundInstance, music: wrongSound });
         }
@@ -431,14 +391,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       }
     } else {
       setModalType("incorrect");
-      if (shouldMultiplyAndReset) {
-        setWrongAnswerCounter(0);
-        setShouldMultiplyScore(false);
-        setScoreMultiplier(1);
-      } else {
-        setWrongAnswerCounter((prevCounter) => prevCounter + 1);
-      }
-      setCorrectAnswerCounter(0);
+      wrongChoiceMultiplyAndReset();
     }
 
     countdownTimerRef.current?.pauseTimer();
@@ -557,8 +510,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       if (isCorrectAnswer) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
-        setPoints((prevPoints) => prevPoints + question.points);
         setTime((prevTime) => prevTime + elapsedTime);
+        correctChoiceMultiplyAndReset(question.points);
         setModalType("correct");
         if (isEffectsPlaying) {
           playEffects({
@@ -568,6 +521,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
+        wrongChoiceMultiplyAndReset();
         if (isEffectsPlaying) {
           playEffects({ sound: wrongSoundInstance, music: wrongSound });
         }
@@ -613,9 +567,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       if (allCorrect) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
-        setPoints((prevPoints) => prevPoints + question.points);
         setTime((prevTime) => prevTime + elapsedTime);
         setModalType("correct");
+        correctChoiceMultiplyAndReset(question.points);
         if (isEffectsPlaying) {
           playEffects({
             sound: correctSoundInstance,
@@ -624,6 +578,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         }
       } else {
         setModalType("incorrect");
+        wrongChoiceMultiplyAndReset();
         if (isEffectsPlaying) {
           playEffects({ sound: wrongSoundInstance, music: wrongSound });
         }
@@ -658,14 +613,15 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       if (selectedChoice.isCorrect) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
-        setPoints((prevPoints) => prevPoints + question.points);
         setTime((prevTime) => prevTime + elapsedTime);
         setModalType("correct");
+        correctChoiceMultiplyAndReset(question.points);
         if (isEffectsPlaying) {
           playEffects({ sound: correctSoundInstance, music: correctSound });
         }
       } else {
         setModalType("incorrect");
+        wrongChoiceMultiplyAndReset();
         if (isEffectsPlaying) {
           playEffects({ sound: wrongSoundInstance, music: wrongSound });
         }
@@ -674,6 +630,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
       }
     } else {
       setModalType("incorrect");
+      wrongChoiceMultiplyAndReset();
       if (isEffectsPlaying) {
         playEffects({ sound: wrongSoundInstance, music: wrongSound });
       }
@@ -883,7 +840,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         toggleVisibility={() => {
           setShowChallengeOverlay(!showChallengeOverlay);
         }}
-        challengeFor={challengeName}
+        challengeType={challengeName}
       />
     </>
   );
