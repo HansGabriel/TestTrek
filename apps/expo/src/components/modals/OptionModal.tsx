@@ -91,7 +91,7 @@ const OptionModal: FC<Props> = ({
                   {row.map((option) => (
                     <TouchableOpacity
                       key={option.id}
-                      className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl border-b-2 border-t border-l border-r ${
+                      className={`inline-flex h-[53px] w-[138px] flex-col items-center justify-center rounded-xl ${
                         option.isSelected
                           ? "border-indigo-700 bg-violet-600"
                           : "border-neutral-200 bg-neutral-100"
