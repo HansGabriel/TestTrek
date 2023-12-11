@@ -202,6 +202,7 @@ export const CreateQuestionScreen: FC = () => {
       });
       return;
     }
+
     bottomSheetRef.current?.expand();
   };
 
@@ -548,6 +549,10 @@ export const CreateQuestionScreen: FC = () => {
   };
 
   const handleClickQuestion = (index: number) => () => {
+    if (index === selectedIndex) {
+      return;
+    }
+
     const isValidInput = handleSaveQuestion({
       showToasts: false,
     });
@@ -560,6 +565,7 @@ export const CreateQuestionScreen: FC = () => {
       return;
     }
 
+    resetErrors();
     setSelectedIndex(index);
     setSelectedQuestionId(index);
     setQuestionImage(questions[index]?.image ?? undefined);
