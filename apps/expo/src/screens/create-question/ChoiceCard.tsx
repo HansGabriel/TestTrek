@@ -113,9 +113,7 @@ export const MultipleChoiceCard: FC<MultipleChoiceCardProps> = ({
         className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
-          errorState.choicesError[choice.id]?.length !== undefined
-            ? "border-2 border-red-500"
-            : ""
+          errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
         } p-5`}
         onPress={handleOpenModal(choice.id)}
       >
@@ -219,9 +217,7 @@ export const TrueOrFalseCard: FC<TrueOrFalseCardProps> = ({
       className={`flex h-[220px] w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
         choice.styles
       } ${
-        errorState.choicesError[choice.id]?.length !== undefined
-          ? "border-2 border-red-500"
-          : ""
+        errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
       } p-5`}
       onPress={onPressCard}
     >
@@ -328,9 +324,7 @@ export const MultiSelectCard: FC<MultiSelectCardProps> = ({
         className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
-          errorState.choicesError[choice.id]?.length !== undefined
-            ? "border-2 border-red-500"
-            : ""
+          errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
         } p-5`}
         onPress={handleOpenModal(choice.id)}
       >
@@ -442,9 +436,7 @@ export const IdentificationCard: FC<IdentificationCardProps> = ({
         className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
-          errorState.choicesError[choice.id]?.length !== undefined
-            ? "border-2 border-red-500"
-            : ""
+          errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
         } p-5`}
         onPress={handleOpenModal(choice.id)}
       >
