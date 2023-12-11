@@ -613,43 +613,46 @@ const CreateTestForm: FC<Props> = ({
               </TouchableOpacity>
             </View>
           )}
-          {questions.length > 0 && (
-            <>
-              <View className="mb-10 h-full flex-1 flex-col">
-                <View className="mb-6 flex flex-row items-center justify-between">
-                  <Text className="text-xl font-bold leading-loose text-neutral-800">
-                    Question ({questions.length})
-                  </Text>
-                  <TouchableOpacity
-                    className="flex flex-row items-center gap-1"
-                    onPress={goToViewAllQuestions}
-                  >
-                    <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                      View All
-                    </Text>
-                    <RightArrowIcon />
-                  </TouchableOpacity>
-                </View>
 
-                <SafeAreaView className="min-h-full flex-1">
-                  {isLoading ? (
-                    <View className="h-[50%] w-full flex-col justify-between self-center">
-                      <View className="my-7">
-                        <SkeletonLoader
-                          isCircular={true}
-                          width={"100%"}
-                          height={75}
-                        />
-                      </View>
-                      <View className="my-7">
-                        <SkeletonLoader
-                          isCircular={true}
-                          width={"100%"}
-                          height={75}
-                        />
-                      </View>
-                    </View>
-                  ) : (
+          <View className="mb-10 h-full flex-1 flex-col">
+            {questions.length > 0 && (
+              <View className="mb-6 flex flex-row items-center justify-between">
+                <Text className="text-xl font-bold leading-loose text-neutral-800">
+                  Question ({questions.length})
+                </Text>
+                <TouchableOpacity
+                  className="flex flex-row items-center gap-1"
+                  onPress={goToViewAllQuestions}
+                >
+                  <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                    View All
+                  </Text>
+                  <RightArrowIcon />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <SafeAreaView className="min-h-full flex-1">
+              {isLoading ? (
+                <View className="h-[50%] w-full flex-col justify-between self-center">
+                  <View className="my-7">
+                    <SkeletonLoader
+                      isCircular={true}
+                      width={"100%"}
+                      height={75}
+                    />
+                  </View>
+                  <View className="my-7">
+                    <SkeletonLoader
+                      isCircular={true}
+                      width={"100%"}
+                      height={75}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <>
+                  {questions.length > 0 && (
                     <FlashList
                       estimatedItemSize={10}
                       data={readyQuestions}
@@ -665,10 +668,10 @@ const CreateTestForm: FC<Props> = ({
                       }}
                     />
                   )}
-                </SafeAreaView>
-              </View>
-            </>
-          )}
+                </>
+              )}
+            </SafeAreaView>
+          </View>
 
           <View className="mb-24 flex flex-row items-center justify-between">
             <TouchableOpacity
@@ -790,19 +793,21 @@ const CreateTestForm: FC<Props> = ({
 
       <AlertModal
         isVisible={openAlert}
-        alertTitle={"Save your changes?"}
+        alertTitle={"Are you sure you want to exit?"}
         alertDescription={
-          "You will lose all unsaved changes if you exit this screen"
+          "Please make sure to save your changes before exiting."
         }
         confirmButtonText={"Yes"}
         isCancelButtonVisible={true}
-        cancelButtonText={"Exit"}
+        cancelButtonText={"Cancel"}
         onCancel={() => {
+          setOpenAlert(false);
+        }}
+        isLoading={isCreatingQuiz}
+        onConfirm={() => {
           setOpenAlert(false);
           goBack();
         }}
-        isLoading={isCreatingQuiz}
-        onConfirm={handleSubmit(submitForm)}
       />
     </SafeAreaView>
   );
