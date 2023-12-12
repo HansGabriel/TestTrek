@@ -877,20 +877,20 @@ export const CreateQuestionScreen: FC = () => {
             >
               <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
                 <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
-                  <View className="h-[50%] w-11/12 rounded-t-2xl bg-white">
+                  <View className="h-[50%] w-11/12 rounded-2xl bg-white">
                     <Text className="mt-10 text-center text-2xl font-bold">
                       Add Answer
                     </Text>
                     <TextInput
                       multiline={true}
                       maxLength={150}
-                      className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl border-b-2 ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
+                      className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                       selectionColor="white"
                       value={selectedChoice?.text}
                       onChangeText={(modalText) =>
                         handleChoiceChange(selectedQuestionId, modalText)
                       }
-                      placeholder="Add answer"
+                      placeholder="Enter your answer here"
                       placeholderTextColor="#FFFFFF"
                     />
                     {selectedChoice?.text &&

@@ -80,7 +80,7 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
       <TouchableOpacity
         key={choice.id}
         disabled={true}
-        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl border-b-2 ${doneStyle} p-5`}
+        className={`flex h-36 w-36 flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${doneStyle} p-5`}
       >
         <View className="absolute right-2 top-2 h-5 w-5">
           {choice.isCorrect ? <CheckboxIcon /> : <CloseSquareIcon />}
@@ -169,15 +169,15 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
                 </View>
               ))
               .with("true_or_false", () => (
-                <View className="mt-14 flex flex-row items-center space-x-8 self-center">
-                  <View>
+                <View className="mt-14 flex w-full flex-row items-center justify-evenly self-center">
+                  <View className="h-36 w-36">
                     <TrueOrFalseCard
                       choice={choices[0]}
                       isDone={true}
                       handlePressChoice={() => () => {}}
                     />
                   </View>
-                  <View>
+                  <View className="h-36 w-36">
                     <TrueOrFalseCard
                       choice={choices[1]}
                       isDone={true}
