@@ -205,6 +205,97 @@ export const useRouter = router({
       });
     }),
 
+  getTotalPoints: protectedProcedure
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+
+        select: {
+          totalPoints: true,
+        },
+      });
+
+      return user;
+    }),
+
+  updateTotalPoints: protectedProcedure
+    .input(z.number())
+    .output(z.any())
+    .mutation(async ({ ctx, input }) => {
+      const currentTotal = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        select: {
+          totalPoints: true,
+        },
+      });
+
+      const newTotalSum = currentTotal?.totalPoints
+        ? currentTotal.totalPoints + input
+        : input;
+
+      const updatedTotalScore = await ctx.prisma.user.update({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        data: {
+          totalPoints: newTotalSum,
+        },
+      });
+
+      return updatedTotalScore;
+    }),
+
+  getBadges: protectedProcedure
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const badges = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+
+        select: {
+          badges: true,
+        },
+      });
+
+      return badges;
+    }),
+
+  updateBadges: protectedProcedure
+    .input(z.array(z.string()))
+    .output(z.any())
+    .mutation(async ({ ctx, input }) => {
+      const currentBadges = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        select: {
+          badges: true,
+        },
+      });
+      const updatedBadgeList = currentBadges?.badges
+        ? [...currentBadges?.badges, ...input]
+        : [...input];
+
+      const updatedUserBadges = ctx.prisma.user.update({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        data: {
+          badges: updatedBadgeList,
+        },
+      });
+
+      return updatedUserBadges;
+    }),
+
   getTotalTests: protectedProcedure
     .meta({
       openapi: {
