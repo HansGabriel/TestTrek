@@ -106,7 +106,14 @@ export const CreateReviewerScreen = ({
     mutate: createReviewer,
     isLoading: isCreatingReviewer,
     reset,
-  } = trpc.reviewer.createReviewer.useMutation();
+  } = trpc.reviewer.createReviewer.useMutation({
+    onError: (error) => {
+      errorToast({
+        title: "Error",
+        message: error.message,
+      });
+    },
+  });
 
   const { mutate: deleteReviewer, isLoading: isDeleting } =
     trpc.reviewer.delete.useMutation({
@@ -334,10 +341,10 @@ export const CreateReviewerScreen = ({
             reset();
             navigation.navigate("MyLibrary");
           },
-          onError: () => {
+          onError: (error) => {
             errorToast({
               title: "Error",
-              message: "An error occurred",
+              message: error.message,
             });
             resetReviewerImage();
           },
