@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
+import { premiumProcedure, router } from "../trpc";
 import { generatePdf } from "../functions/pdfKitHandlers";
 
 export const pdfKitRouter = router({
-  generatePdfByTestId: protectedProcedure
+  generatePdfByTestId: premiumProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const testData = await ctx.prisma.test.findUnique({

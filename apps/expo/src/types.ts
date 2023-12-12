@@ -99,6 +99,7 @@ export type RootStackParamList = {
     questionIndex: number;
   };
   HistoryTest: undefined;
+  Premium: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

@@ -25,6 +25,7 @@ const TestDetailsHeader: FC<Props> = ({
   const goBack = useGoBack();
 
   const { data: isFavorite } = trpc.test.getIsFavorite.useQuery({ testId });
+  const { data: premiumStatus } = trpc.user.getUserPremiumStatus.useQuery();
   const { mutate: toggleFavorite } = trpc.test.toggleFavorite.useMutation({
     onSuccess: () => {
       if (isFavorite === undefined) {
@@ -79,7 +80,13 @@ const TestDetailsHeader: FC<Props> = ({
 
         <View
           className={`flex flex-row items-center justify-between ${
-            showEditIcon ? "w-[30%]" : "w-[20%]"
+            showEditIcon && premiumStatus
+              ? "w-[30%]"
+              : showEditIcon && !premiumStatus
+              ? "w-[20%]"
+              : !showEditIcon && premiumStatus
+              ? "w-[20%]"
+              : "w-[7%]"
           }`}
         >
           {showEditIcon && (
@@ -92,7 +99,7 @@ const TestDetailsHeader: FC<Props> = ({
             {isFavorite ? <SelectedStarIcon /> : <StarIcon />}
           </TouchableOpacity>
 
-          <SaveToPDFButton testId={testId} />
+          {premiumStatus && <SaveToPDFButton testId={testId} />}
         </View>
       </View>
     </>

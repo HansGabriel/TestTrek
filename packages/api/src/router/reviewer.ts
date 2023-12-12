@@ -192,6 +192,38 @@ export const reviewerRouter = router({
       const { title, imageUrl, content, visibility } = input;
       const userId = ctx.auth.userId;
 
+      const isUserPremium = await ctx.prisma.user
+        .findUnique({
+          where: {
+            userId,
+          },
+          select: {
+            isPremium: true,
+          },
+        })
+        .then((user) => user?.isPremium);
+
+      const userReviewersCount = await ctx.prisma.reviewer.count({
+        where: {
+          userId,
+        },
+      });
+
+      if (!isUserPremium && userReviewersCount >= 5) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Create a premium account to create more reviewers.",
+        });
+      }
+
+      if (isUserPremium && userReviewersCount >= 30) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "You have reached the maximum amount of reviewers you can create.",
+        });
+      }
+
       const newReviewer = await ctx.prisma.reviewer.create({
         data: {
           title,

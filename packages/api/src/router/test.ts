@@ -224,6 +224,51 @@ export const testRouter = router({
 
       const userId = ctx.auth.userId;
 
+      const isUserPremium = await ctx.prisma.user
+        .findUnique({
+          where: {
+            userId,
+          },
+          select: {
+            isPremium: true,
+          },
+        })
+        .then((user) => user?.isPremium);
+
+      const userTestCount = await ctx.prisma.test.count({
+        where: {
+          userId,
+        },
+      });
+
+      if (!isUserPremium && userTestCount >= 10) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Create a premium account to create more tests",
+        });
+      }
+
+      if (isUserPremium && userTestCount >= 50) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You have reached the maximum amount of tests",
+        });
+      }
+
+      if (!isUserPremium && questions.length >= 25) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Create a premium account to create more questions",
+        });
+      }
+
+      if (isUserPremium && questions.length >= 50) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You have reached the maximum amount of questions",
+        });
+      }
+
       const test = await ctx.prisma.test.create({
         data: {
           title,
@@ -381,6 +426,31 @@ export const testRouter = router({
       } = input;
 
       const userId = ctx.auth.userId;
+
+      const isUserPremium = await ctx.prisma.user
+        .findUnique({
+          where: {
+            userId,
+          },
+          select: {
+            isPremium: true,
+          },
+        })
+        .then((user) => user?.isPremium);
+
+      if (!isUserPremium && questions.length > 25) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Create a premium account to create more questions",
+        });
+      }
+
+      if (isUserPremium && questions.length > 50) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You have reached the maximum amount of questions",
+        });
+      }
 
       await ctx.prisma.test.update({
         where: {
