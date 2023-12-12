@@ -30,6 +30,7 @@ interface QuestionCardProps {
     questionId: string,
     questionIndex: number,
   ) => () => void;
+  borderType?: "success" | "error";
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
@@ -38,7 +39,14 @@ const QuestionCard: FC<QuestionCardProps> = ({
   type = "create",
   goToEditQuestion,
   goToQuestionHistory,
+  borderType,
 }) => {
+  const borderStyle = match(borderType)
+    .with("success", () => "border-green-500")
+    .with("error", () => "border-red-500")
+    .with(undefined, () => "border-zinc-200")
+    .exhaustive();
+
   return (
     <TouchableOpacity
       className="my-2 flex h-[105px] items-center justify-start"
@@ -50,7 +58,9 @@ const QuestionCard: FC<QuestionCardProps> = ({
         )
         .exhaustive()}
     >
-      <View className="flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border border-zinc-200 bg-white">
+      <View
+        className={`flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border ${borderStyle} bg-white`}
+      >
         <View className="relative w-[140px] self-stretch">
           <ImageBackground
             source={{
@@ -60,10 +70,10 @@ const QuestionCard: FC<QuestionCardProps> = ({
               borderTopLeftRadius: 12,
               borderBottomLeftRadius: 12,
             }}
-            className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+            className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
           />
         </View>
-        <Text className="w-ful font-nunito-bold absolute left-40 top-2 text-lg leading-[28.80px] text-neutral-800">
+        <Text className="font-nunito-bold absolute left-40 top-2 w-full text-lg leading-[28.80px] text-neutral-800">
           {index + 1} -{" "}
           {match(question.type)
             .with("multiple_choice", () => "Multiple Choice")

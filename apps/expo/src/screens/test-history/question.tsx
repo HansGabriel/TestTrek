@@ -21,6 +21,7 @@ import {
   getSelectedChoices,
   choiceStyles,
 } from "../play-test/TestCard";
+import CountdownTimerDecoy from "../../components/CountDownTimerDecoy";
 
 import type { FC } from "react";
 import type { ModifiedChoice } from "../play-test/TestCard";
@@ -114,7 +115,26 @@ export const QuestionHistoryScreen: FC<QuestionHistoryProps> = ({
           screenName={"Question " + (questionIndex + 1).toString()}
           backIcon={<Feather name="x" size={24} color="black" />}
           handleExit={() => navigation.goBack()}
+          optionIcon={
+            <Text>
+              {question.pointsEarned > 0 ? (
+                <Text className="font-nunito-bold text-2xl text-emerald-600">
+                  {question.pointsEarned} / {question.points}
+                </Text>
+              ) : (
+                <Text className="font-nunito-bold text-2xl text-rose-500">
+                  {question.pointsEarned} / {question.points}
+                </Text>
+              )}
+            </Text>
+          }
         />
+        <View className=" mb-5 ml-5 w-[90%] items-center">
+          <CountdownTimerDecoy
+            timeInSeconds={question.time}
+            totalSecondsRemaining={question.time - question.timeElapsed}
+          />
+        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="mx-6">
             {question.image && (
