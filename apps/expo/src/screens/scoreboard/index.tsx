@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   BackHandler,
+  ScrollView,
 } from "react-native";
 import PodiumComponent from "./PodiumComponent";
 import ConfettiCannon from "react-native-confetti-cannon";
@@ -16,12 +17,12 @@ import { trpc } from "../../utils/trpc";
 import { RootStackScreenProps } from "../../types";
 import { truncateString } from "@acme/utils/src/strings";
 import congrats from "../../../assets/sounds/congratulations.mp3";
-
 import type { FC } from "react";
 import { Audio } from "expo-av";
 import { useMusicStore } from "../../stores/useMusicStore";
 import { playEffects } from "../../services/audioService";
 import { useIsFocused } from "@react-navigation/native";
+import { AppButton } from "../../components/buttons/AppButton";
 
 export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
   navigation,
@@ -43,6 +44,10 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
   const goToHome = () => {
     setIsScoreboardScreen(false);
     navigation.navigate("Home");
+  };
+
+  const goToLibrary = () => {
+    navigation.navigate("MyLibrary");
   };
 
   useEffect(() => {
@@ -181,7 +186,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           <PodiumComponent width={"90%"} style={{ alignSelf: "center" }} />
 
           {remainingTrekers.length > 0 && (
-            <View className="flex h-[200px] w-full flex-col bg-white px-4">
+            <ScrollView className="flex h-[200px] w-full flex-col bg-white px-4">
               <FlashList
                 data={remainingTrekers}
                 showsVerticalScrollIndicator={false}
@@ -211,8 +216,23 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 }}
                 estimatedItemSize={7}
               />
-            </View>
+            </ScrollView>
           )}
+        </View>
+
+        <View className="absolute top-[91%] w-full">
+          <AppButton
+            buttonColor="white"
+            text="Go To Library"
+            textColor="violet-600"
+            onPress={goToLibrary}
+            classNameValue="mb-5 mt-5"
+            borderShadowColor="indigo-800"
+            borderRadius="large"
+            fontStyle="bold"
+            TOwidth="[95%]"
+            Vwidth="full"
+          />
         </View>
       </View>
 

@@ -106,6 +106,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         });
       },
     });
+  const { mutate: updateTotalPoints } =
+    trpc.user.updateTotalPoints.useMutation();
 
   const singleQuestion = testDetails?.test.questions[index];
   const questionChoices = singleQuestion
@@ -403,6 +405,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
         time,
         questions: questionHistories,
       });
+
+      updateTotalPoints(points);
 
       return;
     } else {
