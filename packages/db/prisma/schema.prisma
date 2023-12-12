@@ -20,6 +20,8 @@ model User {
     imageUrl      String?              @map("user_image_url")
     about         String?              @map("user_about") @db.Text
     totalPoints   Int                  @default(0) @map("user_total_points")
+    badges        String[]             @map("user_badges")
+    isPremium     Boolean              @default(false) @map("user_is_premium")
     createdAt     DateTime             @default(now()) @map("user_created_at")
     updatedAt     DateTime             @updatedAt @map("user_updated_at")
     tests         Test[]

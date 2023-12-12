@@ -12,6 +12,37 @@ import { trpc } from "../utils/trpc";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BronzeBadge from "../icons/badges/BronzeBadge";
+import SilverBadge from "../icons/badges/SilverBadge";
+import GoldBadge from "../icons/badges/GoldBadge";
+
+const BadgeIcon = ({ type }: { type: string }) => {
+  switch (type) {
+    case "bronze":
+      return (
+        <View className="items-center">
+          <BronzeBadge />
+          <Text className="font-nunito-medium text-xs">20,000 Points</Text>
+        </View>
+      );
+    case "silver":
+      return (
+        <View className="items-center">
+          <SilverBadge />
+          <Text className="font-nunito-medium text-xs">50,000 Points</Text>
+        </View>
+      );
+    case "gold":
+      return (
+        <View className="items-center">
+          <GoldBadge />
+          <Text className="font-nunito-medium text-xs">100,000 Points</Text>
+        </View>
+      );
+    default:
+      return null;
+  }
+};
 
 export const MyStatistics = () => {
   const { height, width } = Dimensions.get("window");
@@ -27,6 +58,9 @@ export const MyStatistics = () => {
 
   const { data: scores, isLoading: weeklyScoreLoading } =
     trpc.user.getUserWeeklyAndDailyScores.useQuery();
+
+  const { data: badgesList, isLoading: badgesLoading } =
+    trpc.user.getBadges.useQuery();
 
   const data = [
     {
@@ -62,7 +96,8 @@ export const MyStatistics = () => {
     testLoading ||
     scoreLoading ||
     playsLoading ||
-    weeklyScoreLoading
+    weeklyScoreLoading ||
+    badgesLoading
   ) {
     return (
       <SafeAreaView
@@ -165,6 +200,17 @@ export const MyStatistics = () => {
                   My Achievements
                 </Text>
               </View>
+              {badgesList && badgesList.badges.length >= 1 && (
+                <View className="mx-2 mt-4 h-[15%] flex-row items-center justify-evenly rounded-2xl border border-zinc-200">
+                  {badgesList?.badges.map((badge, index) => (
+                    <View key={index} className="flex-1">
+                      {badge === "bronze" && <BadgeIcon type="bronze" />}
+                      {badge === "silver" && <BadgeIcon type="silver" />}
+                      {badge === "gold" && <BadgeIcon type="gold" />}
+                    </View>
+                  ))}
+                </View>
+              )}
               <View className="flex-1 " style={{ height: 300 }}>
                 <FlashList
                   data={data}
