@@ -208,13 +208,33 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     (challengeName === "correct-streak" || challengeName === "wrong-streak") &&
     shouldMultiplyScore;
 
+  const calculatePartialPoints = (points: number) => {
+    let elapsedTime = countdownTimerRef.current?.elapsedTime;
+    const questionTime = question?.time;
+    if (!elapsedTime || !questionTime) {
+      return 0;
+    }
+    if (elapsedTime < 0) {
+      elapsedTime = 0;
+    }
+    let timePercentage = (questionTime - elapsedTime) / questionTime;
+    if (timePercentage === 0) {
+      timePercentage = 0.1;
+    }
+    if (timePercentage >= 0.9) {
+      timePercentage = 1;
+    }
+    const partialPoints = Math.ceil(points * scoreMultiplier * timePercentage);
+    return partialPoints;
+  };
+
   const correctChoiceMultiplyAndReset = (points: number) => {
     if (shouldMultiplyAndReset) {
-      setPoints((prevPoints) => prevPoints + points * scoreMultiplier);
+      setPoints((prevPoints) => prevPoints + calculatePartialPoints(points));
       setCorrectAnswerCounter(0);
       setShouldMultiplyScore(false);
     } else {
-      setPoints((prevPoints) => prevPoints + points);
+      setPoints((prevPoints) => prevPoints + calculatePartialPoints(points));
       setCorrectAnswerCounter((prevCounter) => prevCounter + 1);
       setScoreMultiplier(1);
     }
@@ -292,7 +312,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           title: question.title,
           type: question.type,
           choices: mappedChoices,
-          pointsEarned: selectedChoice?.isCorrect ? question.points : 0,
+          pointsEarned: selectedChoice?.isCorrect
+            ? calculatePartialPoints(question.points)
+            : 0,
           timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
         },
       ]);
@@ -353,7 +375,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           title: question.title,
           type: question.type,
           choices: mappedChoices,
-          pointsEarned: allCorrect ? question.points : 0,
+          pointsEarned: allCorrect
+            ? calculatePartialPoints(question.points)
+            : 0,
           timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
         },
       ]);
@@ -421,7 +445,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                   isChosen: true,
                 },
               ]),
-          pointsEarned: isCorrectAnswer ? question.points : 0,
+          pointsEarned: isCorrectAnswer
+            ? calculatePartialPoints(question.points)
+            : 0,
           timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
         },
       ]);
@@ -556,7 +582,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
                     isChosen: true,
                   },
                 ]),
-            pointsEarned: isCorrectAnswer ? question.points : 0,
+            pointsEarned: isCorrectAnswer
+              ? calculatePartialPoints(question.points)
+              : 0,
             timeElapsed:
               countdownTimerRef.current?.elapsedTime ?? question.time,
           },
@@ -604,7 +632,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             title: question.title,
             type: question.type,
             choices: mappedChoices,
-            pointsEarned: allCorrect ? question.points : 0,
+            pointsEarned: allCorrect
+              ? calculatePartialPoints(question.points)
+              : 0,
             timeElapsed:
               countdownTimerRef.current?.elapsedTime ?? question.time,
           },
@@ -656,7 +686,9 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           title: question.title,
           type: question.type,
           choices: mappedChoices,
-          pointsEarned: selectedChoice?.isCorrect ? question.points : 0,
+          pointsEarned: selectedChoice?.isCorrect
+            ? calculatePartialPoints(question.points)
+            : 0,
           timeElapsed: countdownTimerRef.current?.elapsedTime ?? question.time,
         },
       ]);
@@ -805,7 +837,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
           return (
             <UpperBar
               type="correct"
-              value={(question?.points ?? 0) * scoreMultiplier}
+              value={calculatePartialPoints(question?.points ?? 0)}
               ref={upperBarRef}
             />
           );
