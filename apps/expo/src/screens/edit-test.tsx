@@ -112,6 +112,12 @@ export const EditTestScreen: FC<RootStackScreenProps<"EditTest">> = ({
         trpcUtils.test.invalidate();
         trpcUtils.user.getTop.invalidate();
       },
+      onError: (error) => {
+        errorToast({
+          title: "Error",
+          message: error.message,
+        });
+      },
     });
 
   const submitTestDetails = async (data: FormProps) => {

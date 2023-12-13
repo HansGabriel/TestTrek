@@ -24,6 +24,42 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   });
 });
 
+const isPremium = t.middleware(async ({ next, ctx }) => {
+  const userId = ctx.auth.userId;
+
+  if (!userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authenticated",
+    });
+  }
+
+  const userIsPremium = await ctx.prisma.user
+    .findUnique({
+      where: {
+        userId,
+      },
+      select: {
+        isPremium: true,
+      },
+    })
+    .then((user) => user?.isPremium);
+
+  if (!userIsPremium) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authorized",
+    });
+  }
+
+  return next({
+    ctx: {
+      isPremium: userIsPremium,
+    },
+  });
+});
+
 export const router = t.router;
 export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const premiumProcedure = t.procedure.use(isAuthed).use(isPremium);
