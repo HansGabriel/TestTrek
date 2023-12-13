@@ -6,7 +6,6 @@ import {
   Text,
   TouchableOpacity,
   BackHandler,
-  ScrollView,
 } from "react-native";
 import PodiumComponent from "./PodiumComponent";
 import ConfettiCannon from "react-native-confetti-cannon";
@@ -186,7 +185,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           <PodiumComponent width={"90%"} style={{ alignSelf: "center" }} />
 
           {remainingTrekers.length > 0 && (
-            <ScrollView className="flex h-[200px] w-full flex-col bg-white px-4">
+            <View className="flex h-[200px] w-full flex-col bg-white px-4">
               <FlashList
                 data={remainingTrekers}
                 showsVerticalScrollIndicator={false}
@@ -216,7 +215,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
                 }}
                 estimatedItemSize={7}
               />
-            </ScrollView>
+            </View>
           )}
         </View>
 

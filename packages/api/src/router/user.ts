@@ -6,6 +6,10 @@ import pMap from "p-map";
 import { updateUserInAlgolia } from "../services/algoliaApiHandlers/algoliaCudHandlers";
 
 import type { _PlayersHighscore } from "../types";
+import {
+  getPointsBadge,
+  verifyAcquiredPointsBadge,
+} from "../functions/pointsBadgeHandlers";
 
 export const useRouter = router({
   getTop: protectedProcedure
@@ -220,6 +224,59 @@ export const useRouter = router({
       });
 
       return user;
+    }),
+
+  getNewBadges: protectedProcedure
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const userPoints = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        select: {
+          totalPoints: true,
+        },
+      });
+
+      const userBadges = await ctx.prisma.user.findUnique({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        select: {
+          badges: true,
+        },
+      });
+
+      const totalPoints = userPoints?.totalPoints ?? 0;
+
+      const currentBadges = userBadges?.badges ?? [];
+
+      const passedBadge = getPointsBadge(totalPoints);
+
+      console.log(
+        "===================================",
+        totalPoints,
+        passedBadge,
+        currentBadges,
+      );
+
+      const hasNewBadge = verifyAcquiredPointsBadge(passedBadge, currentBadges);
+
+      if (hasNewBadge) {
+        await ctx.prisma.user.update({
+          where: {
+            userId: ctx.auth.userId,
+          },
+          data: {
+            badges: [...currentBadges, ...[passedBadge]],
+          },
+        });
+      }
+
+      console.log({ hasNewBadge: hasNewBadge, acquiredBadge: passedBadge });
+
+      return { hasNewBadge: hasNewBadge, acquiredBadge: passedBadge };
     }),
 
   updateTotalPoints: protectedProcedure

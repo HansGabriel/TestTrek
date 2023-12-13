@@ -41,8 +41,7 @@ const ViewAllScreenHeader: FC<Props> = ({
             onChange={updateQuery}
             onClose={closeSearchBar}
             clicked={isSearchVisible}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            setClicked={() => {}}
+            setClicked={() => setIsSearchVisible(true)}
             currentViewAllScreen={props.viewAllScreenType}
           />
         </View>

@@ -25,6 +25,7 @@ interface ContentProps {
   toggleCategory: (category: string) => void;
   fixedTypeFilter?: "test" | "user" | "collection" | "reviewer";
   isLoading: boolean;
+  includedCategories?: string[];
 }
 
 interface CombinedItem {
@@ -53,6 +54,7 @@ export const SearchContent: FC<ContentProps> = ({
   toggleCategory,
   fixedTypeFilter,
   isLoading,
+  includedCategories,
 }) => {
   const navigation = useNavigation();
 
@@ -147,29 +149,34 @@ export const SearchContent: FC<ContentProps> = ({
     }
   };
 
-  const categoryButtons = Object.keys(selectedCategories).map((category) => (
-    <TouchableOpacity
-      key={category}
-      onPress={() => toggleCategory(category)}
-      className="m-1"
-    >
-      <View
-        className={`items-center justify-center rounded-lg 
+  const categoryButtons = Object.keys(selectedCategories)
+    .filter(
+      (category) =>
+        !includedCategories || includedCategories.includes(category),
+    )
+    .map((category) => (
+      <TouchableOpacity
+        key={category}
+        onPress={() => toggleCategory(category)}
+        className="m-1"
+      >
+        <View
+          className={`items-center justify-center rounded-lg 
                     ${
                       selectedCategories[category]
                         ? "border-violet-600 bg-violet-600"
                         : "border-gray-400 bg-gray-400"
                     } 
                     border-2`}
-      >
-        <Text className="font-nunito-semibold text-s m-1 mx-2 text-white">
-          {categoryDisplayNames[
-            category as keyof typeof categoryDisplayNames
-          ] || capitalizeFirstLetter(category)}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  ));
+        >
+          <Text className="font-nunito-semibold text-s m-1 mx-2 text-white">
+            {categoryDisplayNames[
+              category as keyof typeof categoryDisplayNames
+            ] || capitalizeFirstLetter(category)}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    ));
 
   return (
     <View>

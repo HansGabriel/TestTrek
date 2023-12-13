@@ -105,7 +105,7 @@ export const MyLibraryScreen = () => {
 
   const handlePressed = () => {
     setIsSearchPressed(!isSearchPressed);
-    setIsClicked(false);
+    setIsClicked(!isSearchPressed);
   };
 
   useEffect(() => {
@@ -133,8 +133,9 @@ export const MyLibraryScreen = () => {
               onChange={updateQuery}
               onClose={() => setIsSearchPressed(false)}
               clicked={isClicked}
-              setClicked={() => setIsClicked(!isClicked)}
+              setClicked={() => setIsClicked(true)}
               filterByCurrentUser={true}
+              includedCategories={["tests", "collections", "reviewers"]}
             />
           </View>
         ) : (
