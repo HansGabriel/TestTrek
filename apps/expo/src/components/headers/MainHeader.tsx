@@ -31,7 +31,7 @@ const MainHeader: FC = ({}) => {
             onChange={updateQuery}
             onClose={() => setIsPressed(false)}
             clicked={isClicked}
-            setClicked={() => setIsClicked(!isClicked)}
+            setClicked={() => setIsClicked(true)}
           />
         </View>
       ) : (

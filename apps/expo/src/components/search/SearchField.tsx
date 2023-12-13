@@ -15,6 +15,7 @@ interface FieldProps {
   setClicked: () => void;
   filterByCurrentUser?: boolean;
   currentViewAllScreen?: "test" | "user" | "collection" | "reviewer";
+  includedCategories?: string[];
 }
 
 export const SearchField: FC<FieldProps> = ({
@@ -25,6 +26,7 @@ export const SearchField: FC<FieldProps> = ({
   setClicked,
   filterByCurrentUser = false,
   currentViewAllScreen,
+  includedCategories,
 }) => {
   const fieldBgColor = clicked ? "rgb(237 233 254)" : "lightgray";
   const fieldBorderColor = clicked ? "rgba(105, 73, 255, 1)" : "lightgray";
@@ -146,6 +148,7 @@ export const SearchField: FC<FieldProps> = ({
             toggleCategory={toggleCategory}
             fixedTypeFilter={currentViewAllScreen}
             isLoading={isLoading}
+            includedCategories={includedCategories}
           />
         </View>
       ) : (
