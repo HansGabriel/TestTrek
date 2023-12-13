@@ -6,7 +6,6 @@ import ViewAllScreenHeader from "../components/headers/ViewAllScreenHeader";
 import { CollectionTestHeaderAndContent } from "../components/collection-details/CollectionTestHeaderAndContent";
 import { SkeletonLoader } from "../components/loaders/SkeletonLoader";
 import { ReusableHeader } from "../components/headers/ReusableHeader";
-import SearchIcon from "../icons/SearchIcon";
 import useGoBack from "../hooks/useGoBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -36,7 +35,6 @@ export const CollectionDetailsScreen = ({
         >
           <ReusableHeader
             screenName={"Collection Details"}
-            optionIcon={<SearchIcon />}
             handleExit={goBack}
           />
           <SafeAreaView className="flex-1">
@@ -63,7 +61,10 @@ export const CollectionDetailsScreen = ({
       className="flex-1 flex-col items-center"
       style={{ height: height, width: width }}
     >
-      <ViewAllScreenHeader title={collectionDetails.title} />
+      <ViewAllScreenHeader
+        title={collectionDetails.title}
+        displaySearchBar={false}
+      />
       <Image
         className="h-[30%] w-[90%] rounded-2xl"
         source={{ uri: collectionDetails.imageUrl }}

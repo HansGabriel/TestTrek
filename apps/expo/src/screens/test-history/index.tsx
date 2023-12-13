@@ -14,7 +14,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 import { AlertModal } from "../../components/modals/AlertModal";
-import { getPointsBadge } from "../../functions/pointsBadgeHandlers";
 import BadgeOverlay from "../../components/AcquiredBadgeOverlay";
 import { IMAGE_PLACEHOLDER } from "../../constants";
 
@@ -29,55 +28,29 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
 }) => {
   const { height, width } = Dimensions.get("window");
   const { historyId, testId } = route.params;
-  const goBack = useGoBack();
-  const [openHomeAlert, setOpenHomeAlert] = useState(false);
   const { data: testHistory, isLoading: isFetchingUser } =
     trpc.testHistory.getUserHistoryById.useQuery({
       historyId,
     });
-  const { data: userPoints, isLoading: isLoadingPoints } =
-    trpc.user.getTotalPoints.useQuery();
-  const totalPoints = userPoints?.totalPoints;
 
-  const { data: currentUserBadges, isLoading: isLoadingBadges } =
-    trpc.user.getBadges.useQuery();
+  const { data: newBadge } = trpc.user.getNewBadges.useQuery();
 
-  const verifyAcquiredPointsBadge = (badgeName: string) => {
-    const currentBadges = currentUserBadges?.badges;
+  const [openHomeAlert, setOpenHomeAlert] = useState(false);
+  const [showBadgeOverlay, setShowBadgeOverlay] = useState(false);
 
-    return currentBadges?.includes(badgeName);
-  };
-
-  const acquiredPointsBadge = totalPoints
-    ? getPointsBadge(totalPoints)
-    : getPointsBadge(0);
-
-  const hasNewBadge =
-    acquiredPointsBadge !== "none" &&
-    !verifyAcquiredPointsBadge(acquiredPointsBadge);
-
-  const [dataLoaded, setDataLoaded] = useState(false);
-  const [showBadgeOverlay, setShowBadgeOverlay] = useState(hasNewBadge);
-
-  const { mutate: updateBadges } = trpc.user.updateBadges.useMutation();
+  const goBack = useGoBack();
 
   useEffect(() => {
-    if (!isLoadingPoints && !isLoadingBadges) {
-      setDataLoaded(true);
-    }
-  }, [isLoadingPoints, isLoadingBadges]);
-
-  useEffect(() => {
-    if (dataLoaded) {
-      const badge = getPointsBadge(userPoints?.totalPoints || 0);
-      const hasNewBadge = badge !== "none" && !verifyAcquiredPointsBadge(badge);
-
-      if (hasNewBadge) {
+    if (newBadge) {
+      if (newBadge?.hasNewBadge === true) {
         setShowBadgeOverlay(true);
-        updateBadges([badge]);
+      } else {
+        setShowBadgeOverlay(false);
       }
+    } else {
+      setShowBadgeOverlay(false);
     }
-  }, [dataLoaded, userPoints?.totalPoints, currentUserBadges?.badges]);
+  }, [newBadge]);
 
   const statsData = [
     { number: testHistory?.score ?? 0, label: "Points Earned" },
@@ -257,7 +230,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
         </SafeAreaView>
       </ScrollView>
       {testId && (
-        <View className="mb-4 mt-10 w-[90%] flex-row items-center justify-evenly self-center">
+        <View className="mt-2 w-[90%] flex-row items-center justify-evenly self-center">
           <AppButton
             text="Go to Scoreboard"
             buttonColor="violet-600"
@@ -290,7 +263,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
 
       <BadgeOverlay
         isVisible={showBadgeOverlay}
-        badgeName={acquiredPointsBadge}
+        badgeName={newBadge?.acquiredBadge || ""}
         onClose={() => setShowBadgeOverlay(false)}
       />
     </SafeAreaView>
