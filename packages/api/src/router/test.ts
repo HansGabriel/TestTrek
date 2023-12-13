@@ -244,7 +244,7 @@ export const testRouter = router({
       if (!isUserPremium && userTestCount >= 10) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Create a premium account to create more tests",
+          message: "Subscribe to our premium account to create more tests",
         });
       }
 
@@ -258,7 +258,7 @@ export const testRouter = router({
       if (!isUserPremium && questions.length >= 25) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Create a premium account to create more questions",
+          message: "Subscribe to our premium account to create more questions",
         });
       }
 
@@ -441,7 +441,7 @@ export const testRouter = router({
       if (!isUserPremium && questions.length > 25) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Create a premium account to create more questions",
+          message: "Subscribe to our premium account to create more questions",
         });
       }
 

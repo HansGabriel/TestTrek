@@ -212,7 +212,7 @@ export const reviewerRouter = router({
       if (!isUserPremium && userReviewersCount >= 5) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Create a premium account to create more reviewers.",
+          message: "Subscribe to our premium account to create more reviewers.",
         });
       }
 
