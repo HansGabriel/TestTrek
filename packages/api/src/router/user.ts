@@ -502,4 +502,60 @@ export const useRouter = router({
 
       return editedUser;
     }),
+
+  getUserPremiumStatus: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/premium",
+      },
+    })
+    .input(z.void())
+    .output(z.any())
+    .query(async ({ ctx }) => {
+      const userIsPremium = await ctx.prisma.user
+        .findUnique({
+          where: {
+            userId: ctx.auth.userId,
+          },
+          select: {
+            isPremium: true,
+          },
+        })
+        .then((user) => user?.isPremium);
+
+      return userIsPremium;
+    }),
+
+  toggleUserPremiumStatus: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/users/me/premium",
+      },
+    })
+    .output(z.any())
+    .mutation(async ({ ctx }) => {
+      const premiumStatus = await ctx.prisma.user
+        .findUnique({
+          where: {
+            userId: ctx.auth.userId,
+          },
+          select: {
+            isPremium: true,
+          },
+        })
+        .then((user) => user?.isPremium);
+
+      const editedUser = await ctx.prisma.user.update({
+        where: {
+          userId: ctx.auth.userId,
+        },
+        data: {
+          isPremium: premiumStatus ? false : true,
+        },
+      });
+
+      return editedUser;
+    }),
 });

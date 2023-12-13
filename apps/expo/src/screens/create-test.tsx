@@ -7,7 +7,6 @@ import useImageStore from "../stores/useImageStore";
 import { useNavigation } from "@react-navigation/native";
 import type { FC } from "react";
 import type { TestInput } from "@acme/schema/src/types";
-import { mapZodError } from "../utils/helpers/zod";
 import {
   errorToast,
   successToast,
@@ -31,6 +30,9 @@ export const CreateTestScreen: FC = () => {
       onSuccess: () => {
         trpcUtils.test.invalidate();
         trpcUtils.user.getTop.invalidate();
+      },
+      onError: (error) => {
+        errorToast({ title: "Error", message: error.message });
       },
     });
 
@@ -60,8 +62,7 @@ export const CreateTestScreen: FC = () => {
         },
         onError: (error) => {
           setIsUploading(false);
-          const errorMessage = mapZodError(error);
-          errorToast({ title: "Error", message: errorMessage });
+          errorToast({ title: "Error", message: error.message });
         },
       },
     );

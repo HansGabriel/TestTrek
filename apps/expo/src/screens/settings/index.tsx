@@ -4,9 +4,13 @@ import { Dimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SettingsHeader from "../../components/headers/SettingsHeader";
 import SettingsButtons from "../../components/settings/SettingsButtons";
+import PremiumBanner from "../../components/settings/PremiumBanner";
 import { LogoutModal } from "./LogoutModal";
+import { useNavigation } from "@react-navigation/native";
 
 export const SettingsScreen = () => {
+  const navigation = useNavigation();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -22,6 +26,10 @@ export const SettingsScreen = () => {
       bottomSheetRef.current?.forceClose();
     }
   }, []);
+
+  const goToPremiumScreen = () => {
+    navigation.navigate("Premium");
+  };
 
   const { height, width } = Dimensions.get("window");
 
@@ -39,6 +47,7 @@ export const SettingsScreen = () => {
         pointerEvents={`${isModalOpen ? "none" : "auto"}`}
       >
         <SettingsHeader screenName={"Settings"} />
+        <PremiumBanner onPress={goToPremiumScreen} />
         <SettingsButtons openBottomSheet={openBottomSheet} />
       </View>
       {isModalOpen && (
