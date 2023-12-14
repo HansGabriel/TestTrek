@@ -6,7 +6,7 @@ import {
 } from "../gptHandlers";
 import { describe, it, expect } from "vitest";
 
-describe.skip("parseMultipleChoiceResponse", () => {
+describe("parseMultipleChoiceResponse", () => {
   it("should correctly parse a well-formatted multiple choice response", () => {
     const generatedMessage = `
       Question: What is the capital of France?

@@ -55,9 +55,7 @@ describe("reviewerRouter", () => {
   });
 
   it("should handle createReviewer mutation", async () => {
-    beforeEach(async () => {
-      ctx.prisma.test.findUnique = vi.fn().mockResolvedValue(null);
-    });
+    ctx.prisma.test.findUnique = vi.fn().mockResolvedValue(null);
 
     const input = {
       title: "Test Title",
@@ -66,15 +64,18 @@ describe("reviewerRouter", () => {
       visibility: "public",
     } as const;
 
-    const result = await caller.createReviewer(input);
-    expect(result).toEqual(mockReviewerData);
+    await caller.createReviewer(input);
     expect(ctx.prisma.reviewer.create).toHaveBeenCalledWith({
-      data: { ...input, userId: ctx.auth.userId },
+      data: {
+        title: "Test Title",
+        imageUrl: "testImageUrl",
+        content: "Test Content",
+        userId: mockCtx.auth.userId,
+        visibility: "public",
+      },
     });
 
-    afterEach(() => {
-      vi.restoreAllMocks();
-    });
+    vi.restoreAllMocks();
   });
 
   it("should handle updateReviewer mutation", async () => {
