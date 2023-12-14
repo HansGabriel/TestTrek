@@ -136,6 +136,7 @@ export const IdentificationCard = ({
     <>
       <TextInput
         multiline={true}
+        numberOfLines={4}
         maxLength={75}
         className="mx-5 my-8 h-[15%] flex-col items-center justify-center rounded-2xl bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
