@@ -27,4 +27,5 @@ export const multipleQuestionsPromptInput = z.object({
 export const multipleRandomQuestionsPromptInput = z.object({
   message: z.string(),
   numOfQuestions: z.number(),
+  messageType: z.enum(["batch-messages", "generate-topics"]).optional(),
 });

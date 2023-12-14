@@ -97,6 +97,14 @@ Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
 };
 
+export const generateTopicsPrompt = (
+  message: string,
+  numTopics?: number,
+): string => {
+  return `Create a list of topics (should be of length ${numTopics} topics) based on: "${message}". Format as:
+  [Topic 1] | [Topic 2] | [Topic 3] | ... | [Topic ${numTopics}]`;
+};
+
 export const generatePromptForType = (
   message: string,
   questionType: keyof typeof promptGenerators,
@@ -199,7 +207,7 @@ export const parseMultiselectResponse = (
           };
         }
       }
-    } else if (line.startsWith("Correct Answers: Options")) {
+    } else if (line.startsWith("All Correct Answers: Options")) {
       const correctIndicesMatch = line.match(/\d+/g);
       if (correctIndicesMatch) {
         correctIndicesMatch.forEach((indexMatch) => {

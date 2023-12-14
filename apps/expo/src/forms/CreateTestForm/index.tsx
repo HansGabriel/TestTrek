@@ -331,6 +331,7 @@ const CreateTestForm: FC<Props> = ({
         {
           message: inputMessage,
           numOfQuestions: numOfQuestions,
+          messageType: "batch-messages",
         },
         {
           onSuccess: (data) => {

@@ -22,51 +22,40 @@ export const pointsSchema = z
     return n;
   });
 
+export const choicesSchema = z
+  .array(
+    z.object({
+      isCorrect: z.boolean(),
+      text: z.string(),
+    }),
+  )
+  .refine((choices) => choices.some((choice) => choice.isCorrect));
+
 export const questionSchema = z.discriminatedUnion("type", [
   z.object({
     question: z.string(),
-    choices: z.array(
-      z.object({
-        isCorrect: z.boolean(),
-        text: z.string(),
-      }),
-    ),
+    choices: choicesSchema,
     type: z.literal("multipleChoice"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,
   }),
   z.object({
     question: z.string(),
-    choices: z.array(
-      z.object({
-        isCorrect: z.boolean(),
-        text: z.string(),
-      }),
-    ),
+    choices: choicesSchema,
     type: z.literal("identification"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,
   }),
   z.object({
     question: z.string(),
-    choices: z.array(
-      z.object({
-        isCorrect: z.boolean(),
-        text: z.string(),
-      }),
-    ),
+    choices: choicesSchema,
     type: z.literal("multiselect"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,
   }),
   z.object({
     question: z.string(),
-    choices: z.array(
-      z.object({
-        isCorrect: z.boolean(),
-        text: z.string(),
-      }),
-    ),
+    choices: choicesSchema,
     type: z.literal("trueOrFalse"),
     timeLimit: timeLimitSchema,
     points: pointsSchema,

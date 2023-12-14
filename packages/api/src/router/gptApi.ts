@@ -5,6 +5,7 @@ import {
   parseMultiselectResponse,
   parseTrueOrFalseResponse,
   generatePromptForType,
+  generateTopicsPrompt,
 } from "../functions/gptHandlers";
 import "dotenv/config";
 import { questionSchema, questionsSchema } from "@acme/schema/src/question";
@@ -22,9 +23,10 @@ import {
 } from "../../../schema/src/gpt";
 import { fetchGPT } from "../services/gptApiHandlers";
 import {
-  generateCombinedQuestionPrompts,
-  processGeneratedQuestions,
+  parseTopicsList,
+  divideStringIntoChunks,
 } from "../functions/randomQuestionsHandlers";
+import { generateCombinedQuestions } from "../functions/randomQuestionsHandlers";
 
 export const gptApiRouter = router({
   generateQuestion: protectedProcedure
@@ -122,30 +124,56 @@ export const gptApiRouter = router({
   generateMultipleRandomQuestions: protectedProcedure
     .input(multipleRandomQuestionsPromptInput)
     .mutation(async ({ input }) => {
-      const { message, numOfQuestions } = input;
+      const { message, numOfQuestions, messageType } = input;
 
-      const promptText = generateCombinedQuestionPrompts(
-        numOfQuestions,
-        message,
-      );
+      let topics: string[] = [];
 
-      const generatedMessage = await fetchGPT(promptText);
+      if (messageType === "generate-topics") {
+        const topicsPrompt = generateTopicsPrompt(message);
 
-      const processedQuestions = processGeneratedQuestions(
-        generatedMessage,
-        numOfQuestions,
-      );
+        const topicsResponse = await fetchGPT(topicsPrompt);
 
-      if (processedQuestions.length < numOfQuestions) {
-        const regenerateMessage = await fetchGPT(promptText);
-        const reprocessedQuestions = processGeneratedQuestions(
-          regenerateMessage,
-          numOfQuestions,
-        );
-
-        return reprocessedQuestions;
+        topics = parseTopicsList(topicsResponse);
+      } else if (messageType === "batch-messages") {
+        topics = divideStringIntoChunks(message);
       }
 
-      return processedQuestions;
+      let partialQuestions = await generateCombinedQuestions(
+        !messageType ? message : topics,
+        numOfQuestions,
+      );
+
+      const remainingQuestionsLength = numOfQuestions - partialQuestions.length;
+
+      if (remainingQuestionsLength > 0) {
+        const remainingQuestions = await generateCombinedQuestions(
+          message,
+          remainingQuestionsLength,
+          1,
+        );
+
+        partialQuestions = [...partialQuestions, ...remainingQuestions];
+      }
+
+      return partialQuestions;
+
+      // const partialQuestions = await Promise.all(
+      //   topics.map(async (topic) => {
+      //     const promptText = generateQuestionPrompt({
+      //       content: topic,
+      //       type: "multipleChoice",
+      //       numOfQuestions: 1,
+      //       numOfChoicesPerQuestion: 4,
+      //       maxCharsPerQuestion: 100,
+      //       maxCharsPerChoice: 68,
+      //     });
+
+      //     const generatedMessage = await fetchGPT(promptText);
+
+      //     const answer = parseMultipleChoiceQuestions(generatedMessage);
+
+      //     return answer;
+      //   }),
+      // );
     }),
 });
