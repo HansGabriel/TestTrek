@@ -134,10 +134,13 @@ export const IdentificationCard = ({
 
   return (
     <>
+      <Text className="font-nunito-extrabold mt-5 text-center text-sm leading-[38.40px] text-neutral-800">
+        Type your answer in the box below
+      </Text>
       <TextInput
-        multiline={true}
+        multiline={false}
         maxLength={75}
-        className="mx-5 my-8 h-[15%] flex-col items-center justify-center rounded-2xl bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
+        className="mx-5 mb-8 h-[15%] flex-col items-center justify-center rounded-2xl bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
         value={answer}
         onChangeText={setAnswer}
@@ -274,6 +277,9 @@ export const MultiSelectCards = ({
 
   return (
     <View className="mt-5 flex w-full flex-col items-center space-y-2 self-center">
+      <Text className="font-nunito-extrabold mt-5 text-center text-sm leading-[38.40px] text-neutral-800">
+        You can select more than one answer
+      </Text>
       <View>
         <MultiSelectCard
           isSelected={choiceStatus[0]}
