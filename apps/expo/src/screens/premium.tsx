@@ -2,11 +2,12 @@ import React from "react";
 import {
   ImageBackground,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   Text,
   View,
+  Dimensions,
 } from "react-native";
+
 import { AppButton } from "../components/buttons/AppButton";
 import {
   successToast,
@@ -20,10 +21,12 @@ import PdfIcon from "../icons/premium/PdfIcon";
 import { trpc } from "../utils/trpc";
 
 import { RootStackScreenProps } from "../types";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const PremiumScreen = ({
   navigation,
 }: RootStackScreenProps<"Premium">) => {
+  const { height, width } = Dimensions.get("window");
   const trpcUtils = trpc.useContext();
 
   const goBack = () => {
@@ -37,6 +40,7 @@ export const PremiumScreen = ({
     trpc.user.toggleUserPremiumStatus.useMutation({
       onSuccess: () => {
         trpcUtils.user.getUserPremiumStatus.invalidate();
+        navigation.navigate("Home");
         successToast({
           title: "Success",
           message: !premiumStatus
@@ -62,16 +66,24 @@ export const PremiumScreen = ({
       source={require("../../assets/images/premium.png")}
       style={{ flex: 1 }}
     >
-      <SafeAreaView className="mx-5 my-7 flex-1">
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <TouchableOpacity onPress={goBack} className="sticky">
+      <SafeAreaView className="mx-5 flex-1">
+        <View className="w-full flex-row self-center py-3">
+          <TouchableOpacity onPress={goBack} className="self-center">
             <XIcon colorFill="white" />
           </TouchableOpacity>
-          <Text className="font-nunito-semibold mt-3 text-center text-[32px] font-bold leading-[51.20px] text-white">
+          <Text className="font-nunito-semibold ml-2 self-center text-center text-2xl font-bold leading-[51.20px] text-white">
             PREMIUM BENEFITS
           </Text>
+        </View>
 
-          <View className="my-5 inline-flex  w-full flex-col items-start justify-start rounded-[20px] bg-white p-6">
+        <View className=" inline-flex  w-full flex-col items-start justify-start rounded-[20px] bg-white p-6">
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{
+              height: height * 0.65,
+              width: width * 0.7,
+            }}
+          >
             <View className="flex w-full items-start justify-start gap-y-3">
               <View className="inline-flex shrink grow basis-0 flex-row items-center justify-center gap-x-3">
                 <TestIcon className="my-auto" width={50} height={50} />
@@ -136,25 +148,24 @@ export const PremiumScreen = ({
                 </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
-        <View className="sticky mt-5">
-          <View>
-            <AppButton
-              text={!premiumStatus ? "GO PREMIUM NOW" : "CANCEL PREMIUM"}
-              buttonColor="white"
-              borderShadowColor="white"
-              borderRadius="full"
-              fontStyle="bold"
-              textColor="violet-600"
-              TOwidth="full"
-              Vwidth="full"
-              Vheight="16"
-              onPress={handleTogglePremiumStatus}
-              isLoading={isGettingPremiumStatus || isTogglingPremiumStatus}
-              disabled={isGettingPremiumStatus || isTogglingPremiumStatus}
-            />
-          </View>
+          </ScrollView>
+        </View>
+
+        <View className="my-auto w-[70%] self-center">
+          <AppButton
+            text={!premiumStatus ? "GO PREMIUM NOW" : "CANCEL PREMIUM"}
+            buttonColor="white"
+            borderShadowColor="white"
+            borderRadius="full"
+            fontStyle="bold"
+            textColor="violet-600"
+            TOwidth="full"
+            Vwidth="full"
+            Vheight="16"
+            onPress={handleTogglePremiumStatus}
+            isLoading={isGettingPremiumStatus || isTogglingPremiumStatus}
+            disabled={isGettingPremiumStatus || isTogglingPremiumStatus}
+          />
         </View>
       </SafeAreaView>
     </ImageBackground>
