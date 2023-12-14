@@ -223,7 +223,7 @@ describe("parseMultiselectResponse", () => {
         Option 2: Car
         Option 3: Banana
         Option 4: Bus
-        Correct Answers: Options 1,3
+        All Correct Answers: Options 1,3
         Time Limit: 30
         Points: 100
       `;
@@ -246,7 +246,7 @@ describe("parseMultiselectResponse", () => {
     const generatedMessageWithoutQuestion = `
         Option 1: Apple
         Option 2: Car
-        Correct Answers: Options 1
+        All Correct Answers: Options 1
         Time Limit: 45
         Points: 50
       `;
@@ -268,7 +268,7 @@ describe("parseMultiselectResponse", () => {
         Question: Choose the fruits.
         Option 1: Apple
         Option 2: Car
-        Correct Answers: Options 1
+        All Correct Answers: Options 1
       `;
     const result = parseMultiselectResponse(generatedMessageWithoutTimePoints);
     expect(result).toEqual({
@@ -290,7 +290,7 @@ describe("parseMultiselectResponse", () => {
         Option 1: Apple
         Option 4: Bus
         Option 2: Car
-        Correct Answers: Options 1,3
+        All Correct Answers: Options 1,3
         Time Limit: 60
         Points: 150
       `;
