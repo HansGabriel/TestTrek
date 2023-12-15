@@ -48,7 +48,7 @@ Option 1: [Choice 1]
 Option 2: [Choice 2]
 Option 3: [Choice 3]
 Option 4: [Choice 4]
-Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
+All Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
     );
   });

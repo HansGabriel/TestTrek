@@ -1,4 +1,7 @@
 import { generateChoicesPrompt, timeAndPointsPrompt } from "./gptHandlers";
+import { fetchGPT } from "../services/gptApiHandlers";
+import { chunk } from "lodash";
+import { questionsSchema } from "@acme/schema/src/question";
 import {
   parseMultipleChoiceResponse,
   parseMultiselectResponse,
@@ -10,7 +13,7 @@ import {
   TrueOrFalsePrompt,
 } from "./gptHandlers";
 
-type ParsedQuestion =
+export type ParsedQuestion =
   | MultipleChoicePrompt
   | MultiselectPrompt
   | IdentificationPrompt
@@ -63,6 +66,21 @@ export const questionFormatGenerators: {
 
   trueOrFalse: (maxCharsForQuestion = 100) =>
     `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [True/False] ${timeAndPointsPrompt}`,
+};
+
+export const parseTopicsList = (topicsList: string): string[] => {
+  const topics = topicsList.split("|").map((topic) => topic.trim());
+
+  return topics;
+};
+
+export const divideStringIntoChunks = (
+  string: string,
+  chunkSize = 3000,
+): string[] => {
+  const chunks = chunk(string.split("\n"), chunkSize);
+
+  return chunks.map((chunk) => chunk.join("\n"));
 };
 
 export const generateCombinedQuestionPrompts = (
@@ -122,4 +140,90 @@ export const processGeneratedQuestions = (
   const sliceParsedQuestions = parsedQuestions.slice(0, numOfQuestions);
 
   return sliceParsedQuestions;
+};
+
+export const generateCombinedQuestions = async (
+  messages: string | string[],
+  numOfQuestions: number,
+  BATCH_SIZE = 2,
+  RETRY_LIMIT = 5,
+) => {
+  const arrayLength = Math.floor(numOfQuestions / BATCH_SIZE);
+
+  if (typeof messages === "string") {
+    const processedQuestions = await Promise.all(
+      Array.from({ length: arrayLength }, async () => {
+        let retryCount = 0;
+        let finalProcessedQuestions: ParsedQuestion[] = [];
+        let hasOneAnswer = false;
+
+        while (!hasOneAnswer && retryCount < RETRY_LIMIT) {
+          const promptText = generateCombinedQuestionPrompts(
+            BATCH_SIZE,
+            messages,
+          );
+
+          const generatedMessage = await fetchGPT(promptText);
+
+          const processedQuestions = processGeneratedQuestions(
+            generatedMessage,
+            BATCH_SIZE,
+          );
+
+          const parseResult = questionsSchema.safeParse(processedQuestions);
+
+          if (parseResult.success) {
+            hasOneAnswer = true;
+            finalProcessedQuestions = processedQuestions;
+          }
+
+          retryCount++;
+        }
+
+        return finalProcessedQuestions;
+      }),
+    );
+
+    return processedQuestions.flat();
+  }
+  if (Array.isArray(messages)) {
+    const processedQuestions = await Promise.all(
+      messages.map(async (_, index) => {
+        let retryCount = 0;
+        let finalProcessedQuestions: ParsedQuestion[] = [];
+        let hasOneAnswer = false;
+
+        while (!hasOneAnswer && retryCount < RETRY_LIMIT) {
+          const promptText = generateCombinedQuestionPrompts(
+            BATCH_SIZE,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            messages[index] ??
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              messages[Math.floor(Math.random() * messages.length)]!,
+          );
+
+          const generatedMessage = await fetchGPT(promptText);
+
+          const processedQuestions = processGeneratedQuestions(
+            generatedMessage,
+            BATCH_SIZE,
+          );
+
+          const parseResult = questionsSchema.safeParse(processedQuestions);
+
+          if (parseResult.success) {
+            hasOneAnswer = true;
+            finalProcessedQuestions = processedQuestions;
+          }
+
+          retryCount++;
+        }
+
+        return finalProcessedQuestions;
+      }),
+    );
+    return processedQuestions.flat();
+  }
+
+  return [];
 };
