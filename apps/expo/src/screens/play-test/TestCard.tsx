@@ -88,12 +88,14 @@ export const TrueOrFalseCard = ({
     ? "border-emerald-600 bg-emerald-500"
     : "border-rose-500 bg-rose-600";
 
+  const choiceColors = choice.text === "True" ? "bg-blue-500" : "bg-rose-600";
+
   return (
     <TouchableOpacity
       key={choice.id}
       disabled={isDone}
       className={`h-full w-full flex-1 items-center self-center rounded-2xl ${
-        isDone ? doneStyle : choice.styles
+        isDone ? doneStyle : choiceColors
       } p-5`}
       onPress={handlePressChoice(choice.id)}
     >
