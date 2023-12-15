@@ -28,7 +28,7 @@ const BadgeIcon = ({ type }: { type: string }) => {
       );
     case "silver":
       return (
-        <View className="items-center">
+        <View className="h-full items-center justify-center self-center">
           <SilverBadge />
           <Text className="font-nunito-extrabold text-xs">Silver Badge</Text>
           <Text className="font-nunito-medium text-xs">50,000 Points</Text>
@@ -36,7 +36,7 @@ const BadgeIcon = ({ type }: { type: string }) => {
       );
     case "gold":
       return (
-        <View className="items-center">
+        <View className="h-full items-center justify-center self-center">
           <GoldBadge />
           <Text className="font-nunito-extrabold text-xs">Gold Badge</Text>
           <Text className="font-nunito-medium text-xs">100,000 Points</Text>
