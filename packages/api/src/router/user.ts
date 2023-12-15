@@ -259,8 +259,6 @@ export const useRouter = router({
         currentBadges,
       );
 
-      console.log("newBadges", newBadges, "currentBadges", currentBadges);
-
       if (newBadges.length > 0) {
         await ctx.prisma.user.update({
           where: {
