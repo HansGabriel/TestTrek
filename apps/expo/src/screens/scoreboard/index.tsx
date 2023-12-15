@@ -185,7 +185,7 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
           <PodiumComponent width={"90%"} style={{ alignSelf: "center" }} />
 
           {remainingTrekers.length > 0 && (
-            <View className="flex h-[200px] w-full flex-col bg-white px-4">
+            <View className="flex h-44 w-[90%] flex-col self-center bg-white px-4 rounded-3xl">
               <FlashList
                 data={remainingTrekers}
                 showsVerticalScrollIndicator={false}
@@ -217,21 +217,20 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
               />
             </View>
           )}
-        </View>
-
-        <View className="absolute top-[91%] w-full">
-          <AppButton
-            buttonColor="white"
-            text="Go To Library"
-            textColor="violet-600"
-            onPress={goToLibrary}
-            classNameValue="mb-5 mt-5"
-            borderShadowColor="indigo-800"
-            borderRadius="large"
-            fontStyle="bold"
-            TOwidth="[95%]"
-            Vwidth="full"
-          />
+          <View className="my-3 w-[60%] self-center">
+            <AppButton
+              text="Take a different test"
+              buttonColor="white"
+              borderShadowColor="indigo-800"
+              borderRadius="full"
+              fontStyle="bold"
+              textColor="violet-600"
+              TOwidth="full"
+              Vwidth="full"
+              Vheight="12"
+              onPress={goToLibrary}
+            />
+          </View>
         </View>
       </View>
 
