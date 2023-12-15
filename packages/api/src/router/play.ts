@@ -3,6 +3,47 @@ import { protectedProcedure, router } from "../trpc";
 import { shuffle } from "lodash";
 
 export const playRouter = router({
+  getPlayDetails: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/play/details/{playId}",
+      },
+    })
+    .input(
+      z.object({
+        playId: z.string(),
+      }),
+    )
+    .output(z.any())
+    .query(({ ctx, input }) => {
+      return ctx.prisma.play
+        .findFirstOrThrow({
+          where: {
+            id: input.playId,
+          },
+          select: {
+            id: true,
+            player: {
+              select: {
+                userId: true,
+                firstName: true,
+                imageUrl: true,
+              },
+            },
+            score: true,
+            createdAt: true,
+          },
+        })
+        .then((playDetails) => ({
+          id: playDetails.id,
+          playerId: playDetails.player.userId,
+          firstName: playDetails.player.firstName,
+          imageUrl: playDetails.player.imageUrl ?? "",
+          createdAt: playDetails.createdAt,
+          score: playDetails.score ?? 0,
+        }));
+    }),
   getTest: protectedProcedure
     .meta({
       openapi: {

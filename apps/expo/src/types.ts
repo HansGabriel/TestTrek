@@ -80,6 +80,7 @@ export type RootStackParamList = {
     testId: string;
   };
   Scoreboard: {
+    playId?: string;
     testId: string;
   };
   MusicAndEffects: undefined;
@@ -91,6 +92,7 @@ export type RootStackParamList = {
       }
     | undefined;
   TestHistory: {
+    playId?: string;
     historyId: string;
     testId?: string;
   };

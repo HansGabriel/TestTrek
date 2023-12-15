@@ -112,6 +112,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     trpc.testHistory.createTestHistory.useMutation({
       onSuccess: (testHistoryId) => {
         navigation.navigate("TestHistory", {
+          playId,
           historyId: testHistoryId,
           testId,
         });

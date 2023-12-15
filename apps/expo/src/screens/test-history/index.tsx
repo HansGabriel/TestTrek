@@ -27,7 +27,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
   route,
 }) => {
   const { height, width } = Dimensions.get("window");
-  const { historyId, testId } = route.params;
+  const { historyId, testId, playId } = route.params;
   const { data: testHistory, isLoading: isFetchingUser } =
     trpc.testHistory.getUserHistoryById.useQuery({
       historyId,
@@ -83,6 +83,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
   const goToScoreBoard = () => {
     if (!testId) return;
     navigation.navigate("Scoreboard", {
+      playId,
       testId,
     });
   };
