@@ -254,13 +254,6 @@ export const useRouter = router({
 
       const passedBadge = getPointsBadge(totalPoints);
 
-      console.log(
-        "===================================",
-        totalPoints,
-        passedBadge,
-        currentBadges,
-      );
-
       const hasNewBadge = verifyAcquiredPointsBadge(passedBadge, currentBadges);
 
       if (hasNewBadge) {
@@ -273,8 +266,6 @@ export const useRouter = router({
           },
         });
       }
-
-      console.log({ hasNewBadge: hasNewBadge, acquiredBadge: passedBadge });
 
       return { hasNewBadge: hasNewBadge, acquiredBadge: passedBadge };
     }),

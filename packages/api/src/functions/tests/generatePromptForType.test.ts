@@ -2,13 +2,13 @@ import { generatePromptForType } from "../gptHandlers";
 import { describe, it, expect } from "vitest";
 import { timeAndPointsPrompt } from "../gptHandlers";
 
-describe.skip("generatePromptForType", () => {
+describe("generatePromptForType", () => {
   const message = "sample message";
 
   it("should generate prompt for multipleChoice with default number of choices", () => {
     const result = generatePromptForType(message, "multipleChoice");
     expect(result).toEqual(
-      `Create a multiple choice question (maximum of 100 characters) about: "${message}" with 4 choices. Each choice must not exceed 68 characters. Format as:
+      `Create a multiple choice question (maximum of 100 characters) about: "${message}" with 4 choices. Each choice must not exceed 68 characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
 Option 1: [Choice 1]
 Option 2: [Choice 2]
@@ -42,7 +42,7 @@ ${timeAndPointsPrompt}`,
   it("should generate prompt for multiselect with default number of choices", () => {
     const result = generatePromptForType(message, "multiselect");
     expect(result).toEqual(
-      `Create a multiselect question (maximum of 100 characters) about: "${message}" with 4 choices. The choices must not exceed 68 characters. Multiple answers can be correct. Format as:
+      `Create a multiselect question (maximum of 100 characters) about: "${message}" with 4 choices. The choices must not exceed 68 characters and there must be atleast 1 correct answer. Multiple answers can be correct. Format as:
 Question: [Your question here]
 Option 1: [Choice 1]
 Option 2: [Choice 2]
@@ -62,7 +62,7 @@ ${timeAndPointsPrompt}`,
   it("should generate prompt for multipleChoice with custom number of choices and max characters", () => {
     const result = generatePromptForType(message, "multipleChoice", 3, 80, 50);
     expect(result).toEqual(
-      `Create a multiple choice question (maximum of 80 characters) about: "${message}" with 3 choices. Each choice must not exceed 50 characters. Format as:
+      `Create a multiple choice question (maximum of 80 characters) about: "${message}" with 3 choices. Each choice must not exceed 50 characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
 Option 1: [Choice 1]
 Option 2: [Choice 2]

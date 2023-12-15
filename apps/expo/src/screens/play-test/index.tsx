@@ -753,34 +753,44 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
           {match(question?.type)
             .with("multiple_choice", () => (
-              <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
-                <View className="space-y-4">
-                  <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
-                  <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
+              <>
+                <Text className="font-nunito-extrabold mt-5 text-center text-sm leading-[38.40px] text-neutral-800">
+                  Select one answer from the choices below
+                </Text>
+                <View className="mt-5 flex w-[100%] flex-row items-center justify-evenly self-center">
+                  <View className="space-y-4">
+                    <View>{choices[0] ? renderChoice(choices[0]) : <></>}</View>
+                    <View>{choices[1] ? renderChoice(choices[1]) : <></>}</View>
+                  </View>
+                  <View className="space-y-4">
+                    <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
+                    <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
+                  </View>
                 </View>
-                <View className="space-y-4">
-                  <View>{choices[2] ? renderChoice(choices[2]) : <></>}</View>
-                  <View>{choices[3] ? renderChoice(choices[3]) : <></>}</View>
-                </View>
-              </View>
+              </>
             ))
             .with("true_or_false", () => (
-              <View className="mt-14 flex w-full flex-row items-center justify-evenly self-center">
-                <View className="h-36 w-36">
-                  <TrueOrFalseCard
-                    choice={choices[0]}
-                    isDone={isDone}
-                    handlePressChoice={handlePressChoice}
-                  />
+              <>
+                <Text className="font-nunito-extrabold mt-12 text-center text-sm leading-[38.40px] text-neutral-800">
+                  Select if the answer if true or false
+                </Text>
+                <View className="mt-4 flex w-full flex-row items-center justify-evenly self-center">
+                  <View className="h-36 w-36">
+                    <TrueOrFalseCard
+                      choice={choices[0]}
+                      isDone={isDone}
+                      handlePressChoice={handlePressChoice}
+                    />
+                  </View>
+                  <View className="h-36 w-36">
+                    <TrueOrFalseCard
+                      choice={choices[1]}
+                      isDone={isDone}
+                      handlePressChoice={handlePressChoice}
+                    />
+                  </View>
                 </View>
-                <View className="h-36 w-36">
-                  <TrueOrFalseCard
-                    choice={choices[1]}
-                    isDone={isDone}
-                    handlePressChoice={handlePressChoice}
-                  />
-                </View>
-              </View>
+              </>
             ))
             .with("multi_select", () => (
               <>

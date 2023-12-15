@@ -1,6 +1,8 @@
 import { collectionRouter } from "../collection";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MockCtxType, mockCtx } from "./mockCtx";
+import { OrderBy } from "unsplash-js";
+import { Visibility } from "@acme/db";
 
 describe("collectionRouter", () => {
   const ctx: MockCtxType = mockCtx;
@@ -104,6 +106,17 @@ describe("collectionRouter", () => {
       expect(result).toHaveLength(3);
       const collection = result[0];
       expect(collection).toHaveProperty("id", "collectionId1");
+      expect(ctx.prisma.collection.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderBy: {
+            createdAt: "desc",
+          },
+          where: {
+            userId: "userId1",
+            visibility: "public",
+          },
+        }),
+      );
     });
 
     it("should handle getByUserId query for collections", async () => {
@@ -112,6 +125,16 @@ describe("collectionRouter", () => {
       expect(result).toHaveLength(3);
       const collection = result[0];
       expect(collection).toHaveProperty("id", "collectionId1");
+      expect(ctx.prisma.collection.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            userId: mockCtx.auth.userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+      );
     });
 
     it("should handle getByCollectionId query for a specific collection", async () => {
@@ -123,7 +146,6 @@ describe("collectionRouter", () => {
     describe("getTestsInCollection query", () => {
       const testSortTypes = (
         sortType: "newest" | "oldest" | "alphabetical",
-        orderBy: object,
       ) => {
         it(`should handle getTestsInCollection query with sortType: ${sortType}`, async () => {
           const input = { collectionId: "collectionId1", sortType };
@@ -131,12 +153,28 @@ describe("collectionRouter", () => {
           expect(result).toHaveLength(3);
           const test = result[0];
           expect(test).toHaveProperty("test.id", "testId1");
+          expect(ctx.prisma.testOnCollection.findMany).toHaveBeenCalledWith(
+            expect.objectContaining({
+              orderBy: ((): any => {
+                switch (input.sortType) {
+                  case "newest":
+                    return { test: { createdAt: "desc" } };
+                  case "oldest":
+                    return { test: { createdAt: "asc" } };
+                  case "alphabetical":
+                    return { test: { title: "asc" } };
+                  default:
+                    return { test: { createdAt: "desc" } };
+                }
+              })(),
+            }),
+          );
         });
       };
 
-      testSortTypes("newest", { test: { createdAt: "desc" } });
-      testSortTypes("oldest", { test: { createdAt: "asc" } });
-      testSortTypes("alphabetical", { test: { title: "asc" } });
+      testSortTypes("newest");
+      testSortTypes("oldest");
+      testSortTypes("alphabetical");
     });
 
     it("should handle create mutation for a new collection", async () => {
@@ -146,16 +184,7 @@ describe("collectionRouter", () => {
         visibility: "public" as "public" | "private",
       };
 
-      const result = await caller.create(input);
-
-      expect(result).toHaveProperty("id", "newCollectionId");
-      expect(result).toHaveProperty("title", "New Collection");
-      expect(result).toHaveProperty(
-        "imageUrl",
-        "https://example.com/new-image.jpg",
-      );
-      expect(result).toHaveProperty("userId", "userId1");
-      expect(result).toHaveProperty("visibility", "public");
+      await caller.create(input);
 
       expect(ctx.prisma.collection.create).toHaveBeenCalledWith({
         data: {

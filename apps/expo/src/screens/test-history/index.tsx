@@ -261,11 +261,13 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
         }}
       />
 
-      <BadgeOverlay
-        isVisible={showBadgeOverlay}
-        badgeName={newBadge?.acquiredBadge || ""}
-        onClose={() => setShowBadgeOverlay(false)}
-      />
+      {showBadgeOverlay && (
+        <BadgeOverlay
+          isVisible={showBadgeOverlay}
+          badgeName={newBadge?.acquiredBadge || ""}
+          onClose={() => setShowBadgeOverlay(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };
