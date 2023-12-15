@@ -17,7 +17,9 @@ import { transformer } from "@acme/api/transformer";
 import { useAuth } from "@clerk/clerk-expo";
 
 const SERVER_URL = Constants.expoConfig?.extra?.SERVER_URL;
-const SERVER_ENV = Constants.expoConfig?.extra?.SERVER_ENV;
+const SERVER_ENV = Constants.expoConfig?.extra?.SERVER_ENV as
+  | "development"
+  | "production";
 
 /**
  * A set of typesafe hooks for consuming your API.
