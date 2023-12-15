@@ -2,6 +2,8 @@ import { ExpoConfig, ConfigContext } from "@expo/config";
 
 const CLERK_PUBLISHABLE_KEY =
   "pk_test_Z3Jvd2luZy1kb2Jlcm1hbi04OC5jbGVyay5hY2NvdW50cy5kZXYk";
+const SERVER_URL = "https://test-trek-prod.vercel.app";
+const SERVER_ENV = "development";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "TestTrek",
@@ -40,6 +42,8 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
       projectId: "07bbeb73-37eb-4c3e-8e52-f1a1ffb4665b",
     },
     CLERK_PUBLISHABLE_KEY,
+    SERVER_URL,
+    SERVER_ENV,
   },
   plugins: ["./expo-plugins/with-modify-gradle.js"],
 });
