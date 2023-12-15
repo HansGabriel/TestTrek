@@ -156,7 +156,20 @@ export const testRouter = router({
     })
     .input(z.object({ testId: z.string() }))
     .output(z.any())
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.auth.userId;
+
+      const isOwnerOfTest = await ctx.prisma.test
+        .findFirst({
+          where: {
+            id: input.testId,
+          },
+          select: {
+            userId: true,
+          },
+        })
+        .then((test) => test?.userId === userId);
+
       return ctx.prisma.test.findUnique({
         where: {
           id: input.testId,
@@ -188,23 +201,25 @@ export const testRouter = router({
           },
           createdAt: true,
           updatedAt: true,
-          questions: {
-            select: {
-              choices: {
+          questions: isOwnerOfTest
+            ? {
                 select: {
+                  choices: {
+                    select: {
+                      id: true,
+                      isCorrect: true,
+                      text: true,
+                    },
+                  },
                   id: true,
-                  isCorrect: true,
-                  text: true,
+                  image: true,
+                  points: true,
+                  time: true,
+                  title: true,
+                  type: true,
                 },
-              },
-              id: true,
-              image: true,
-              points: true,
-              time: true,
-              title: true,
-              type: true,
-            },
-          },
+              }
+            : undefined,
         },
       });
     }),
