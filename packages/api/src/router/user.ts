@@ -525,6 +525,7 @@ export const useRouter = router({
         path: "/users/me/premium",
       },
     })
+    .input(z.void())
     .output(z.any())
     .mutation(async ({ ctx }) => {
       const premiumStatus = await ctx.prisma.user

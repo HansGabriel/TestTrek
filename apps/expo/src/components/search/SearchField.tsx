@@ -108,7 +108,6 @@ export const SearchField: FC<FieldProps> = ({
           containerStyle={{
             backgroundColor: "transparent",
             borderBottomColor: "transparent",
-            borderTopColor: "transparent",
             borderLeftColor: "transparent",
             borderRightColor: "transparent",
             width: "80%", // Adjusted width

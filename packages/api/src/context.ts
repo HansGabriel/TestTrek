@@ -20,7 +20,7 @@ type AuthContextProps = {
  */
 export const createContextInner = async ({ auth }: AuthContextProps) => {
   return {
-    auth: isTest ? mockAuthContext : auth,
+    auth,
     prisma,
   };
 };
@@ -30,6 +30,12 @@ export const createContextInner = async ({ auth }: AuthContextProps) => {
  * @link https://trpc.io/docs/context
  **/
 export const createContext = async (opts: CreateNextContextOptions) => {
+  if (isTest) {
+    return {
+      auth: mockAuthContext,
+      prisma,
+    };
+  }
   return await createContextInner({ auth: getAuth(opts.req) });
 };
 
