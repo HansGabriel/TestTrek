@@ -93,7 +93,7 @@ ${timeAndPointsPrompt}`,
     `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters and there must be atleast 1 correct answer. Multiple answers can be correct. Format as:
 Question: [Your question here]
 ${generateChoicesPrompt(numChoices)}
-Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
+All Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
 };
 
