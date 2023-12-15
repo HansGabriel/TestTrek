@@ -16,6 +16,7 @@ import RightArrowIcon from "../../icons/RightArrowIcon";
 
 import type { FC } from "react";
 import type { RouterOutputs } from "../../utils/trpc";
+import type { QuestionType } from "@prisma/client";
 import { ScrollView } from "react-native-gesture-handler";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
 import { FlashList } from "@shopify/flash-list";
@@ -30,6 +31,22 @@ const screenHeight = Dimensions.get("window").height;
 interface Props {
   testDetails: RouterOutputs["test"]["getById"];
 }
+
+type Questions =
+  | {
+      type: QuestionType;
+      title: string;
+      image: string | null;
+      time: number;
+      points: number;
+      choices: {
+        text: string;
+        isCorrect: boolean;
+        id: string;
+      }[];
+      id: string;
+    }[]
+  | undefined;
 
 const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const navigation = useNavigation();
@@ -78,9 +95,9 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
   const { isOwner, totalQuestions, totalPlays, totalFavorites, notOwner } =
     testStatistics;
 
-  const { questions } = testDetails;
+  const questions = testDetails.questions as unknown as Questions;
 
-  const firstTenQuestions = questions.slice(0, 10);
+  const firstTenQuestions = questions?.slice(0, 10) ?? [];
 
   const statsData = [
     { number: totalQuestions, label: "Questions" },
@@ -233,7 +250,7 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
           {testDetails?.description ?? "N/A"}
         </Text>
 
-        {isOwner && questions.length > 0 ? (
+        {isOwner && questions && questions.length > 0 ? (
           <View className="mb-10 h-full flex-1 flex-col">
             <View className="mb-6 flex flex-row items-center justify-between">
               <Text className="text-xl font-bold leading-loose text-neutral-800">
