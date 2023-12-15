@@ -13,5 +13,5 @@ export const verifyAcquiredPointsBadge = (
   badgeName: string,
   currentBadges: string[],
 ) => {
-  return !currentBadges.includes(badgeName);
+  return badgeName !== "" && !currentBadges.includes(badgeName);
 };

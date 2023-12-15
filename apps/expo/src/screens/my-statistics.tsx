@@ -20,8 +20,9 @@ const BadgeIcon = ({ type }: { type: string }) => {
   switch (type) {
     case "bronze":
       return (
-        <View className="items-center">
+        <View className="h-full items-center justify-center self-center">
           <BronzeBadge />
+          <Text className="font-nunito-extrabold text-xs">Bronze Badge</Text>
           <Text className="font-nunito-medium text-xs">20,000 Points</Text>
         </View>
       );
@@ -29,6 +30,7 @@ const BadgeIcon = ({ type }: { type: string }) => {
       return (
         <View className="items-center">
           <SilverBadge />
+          <Text className="font-nunito-extrabold text-xs">Silver Badge</Text>
           <Text className="font-nunito-medium text-xs">50,000 Points</Text>
         </View>
       );
@@ -36,6 +38,7 @@ const BadgeIcon = ({ type }: { type: string }) => {
       return (
         <View className="items-center">
           <GoldBadge />
+          <Text className="font-nunito-extrabold text-xs">Gold Badge</Text>
           <Text className="font-nunito-medium text-xs">100,000 Points</Text>
         </View>
       );
@@ -69,7 +72,7 @@ export const MyStatistics = () => {
       value: totalTests?._count.userId,
     },
     {
-      name: "Total Score",
+      name: "Total Points",
       icon: <CoinIcon />,
       value: totalScore?.totalPoints,
     },
@@ -201,7 +204,12 @@ export const MyStatistics = () => {
                 </Text>
               </View>
               {badgesList && badgesList.badges.length >= 1 && (
-                <SafeAreaView className="mx-2 mt-4 h-[15%] flex-row items-center justify-evenly rounded-2xl border border-zinc-200">
+                <View
+                  style={{
+                    height: height * 0.12,
+                  }}
+                  className="mt-4 w-[100%] flex-1 flex-row items-center justify-evenly self-center rounded-2xl border border-zinc-200"
+                >
                   {badgesList?.badges.map((badge, index) => (
                     <View key={index} className="flex-1">
                       {badge === "bronze" && <BadgeIcon type="bronze" />}
@@ -209,7 +217,7 @@ export const MyStatistics = () => {
                       {badge === "gold" && <BadgeIcon type="gold" />}
                     </View>
                   ))}
-                </SafeAreaView>
+                </View>
               )}
               <View className="flex-1 " style={{ height: 300 }}>
                 <FlashList
