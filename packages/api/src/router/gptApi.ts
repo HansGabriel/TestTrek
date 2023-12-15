@@ -143,9 +143,9 @@ export const gptApiRouter = router({
         numOfQuestions,
       );
 
-      const remainingQuestionsLength = numOfQuestions - partialQuestions.length;
+      let remainingQuestionsLength = numOfQuestions - partialQuestions.length;
 
-      if (remainingQuestionsLength > 0) {
+      while (remainingQuestionsLength > 0) {
         const remainingQuestions = await generateCombinedQuestions(
           message,
           remainingQuestionsLength,
@@ -153,27 +153,9 @@ export const gptApiRouter = router({
         );
 
         partialQuestions = [...partialQuestions, ...remainingQuestions];
+        remainingQuestionsLength = numOfQuestions - partialQuestions.length;
       }
 
       return partialQuestions;
-
-      // const partialQuestions = await Promise.all(
-      //   topics.map(async (topic) => {
-      //     const promptText = generateQuestionPrompt({
-      //       content: topic,
-      //       type: "multipleChoice",
-      //       numOfQuestions: 1,
-      //       numOfChoicesPerQuestion: 4,
-      //       maxCharsPerQuestion: 100,
-      //       maxCharsPerChoice: 68,
-      //     });
-
-      //     const generatedMessage = await fetchGPT(promptText);
-
-      //     const answer = parseMultipleChoiceQuestions(generatedMessage);
-
-      //     return answer;
-      //   }),
-      // );
     }),
 });
