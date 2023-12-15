@@ -42,7 +42,6 @@ export const SettingsScreen = () => {
         });
       },
       onError: (err) => {
-        console.log(err);
         errorToast({
           title: "Error",
           message: err.message,
