@@ -252,22 +252,28 @@ export const useRouter = router({
 
       const currentBadges = userBadges?.badges ?? [];
 
-      const passedBadge = getPointsBadge(totalPoints);
+      const eligibleBadges = getPointsBadge(totalPoints);
 
-      const hasNewBadge = verifyAcquiredPointsBadge(passedBadge, currentBadges);
+      const newBadges = verifyAcquiredPointsBadge(
+        eligibleBadges,
+        currentBadges,
+      );
 
-      if (hasNewBadge) {
+      if (newBadges.length > 0) {
         await ctx.prisma.user.update({
           where: {
             userId: ctx.auth.userId,
           },
           data: {
-            badges: [...currentBadges, ...[passedBadge]],
+            badges: [...currentBadges, ...newBadges],
           },
         });
       }
 
-      return { hasNewBadge: hasNewBadge, acquiredBadge: passedBadge };
+      return {
+        hasNewBadge: newBadges.length > 0,
+        acquiredBadge: newBadges.length > 0 ? newBadges[0] : "",
+      };
     }),
 
   updateTotalPoints: protectedProcedure
