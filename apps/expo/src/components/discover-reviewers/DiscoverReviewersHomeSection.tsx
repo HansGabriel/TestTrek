@@ -38,7 +38,7 @@ const DiscoverReviewersHomeSection: FC = () => {
 
   if (!data.length) {
     return (
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="w-full flex-1 self-center">
         <HomeEmptyReviewer />
       </SafeAreaView>
     );

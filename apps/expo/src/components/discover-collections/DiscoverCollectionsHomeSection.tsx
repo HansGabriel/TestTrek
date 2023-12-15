@@ -36,7 +36,7 @@ const TopCollectionsHomeSection: FC = () => {
 
   if (!topCollections.length) {
     return (
-      <SafeAreaView className="flex-1">
+      <SafeAreaView className="w-full flex-1 self-center">
         <HomeEmptyCollection />
       </SafeAreaView>
     );
