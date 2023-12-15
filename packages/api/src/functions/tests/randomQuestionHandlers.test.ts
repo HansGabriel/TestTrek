@@ -10,7 +10,7 @@ import { generateChoicesPrompt, timeAndPointsPrompt } from "../gptHandlers";
 describe("questionFormatGenerators", () => {
   it("It should generate format for multiple choice question/s", () => {
     const mcqFormat = questionFormatGenerators["multipleChoice"];
-    const output = `separator\nQuestion: [Your question here, max 100 characters]
+    const output = `separator\nQuestion: [Your question here, max 100 characters, and each choice below must not exceed 68 characters]
   ${generateChoicesPrompt(
     4,
   )}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`;
@@ -21,7 +21,7 @@ describe("questionFormatGenerators", () => {
   it("It should generate format for multiselect question/s", () => {
     const multiselectFormat = questionFormatGenerators["multiselect"];
 
-    const output = `separator\nQuestion: [Your question here, max 100 characters]
+    const output = `separator\nQuestion: [Your question here, max 100 characters, and each choice below must not exceed 68 characters]
   ${generateChoicesPrompt(
     4,
   )}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`;
