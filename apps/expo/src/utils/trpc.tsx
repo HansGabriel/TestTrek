@@ -16,11 +16,15 @@ import { httpBatchLink } from "@trpc/client";
 import { transformer } from "@acme/api/transformer";
 import { useAuth } from "@clerk/clerk-expo";
 
+const SERVER_URL = Constants.expoConfig?.extra?.SERVER_URL;
+const SERVER_ENV = Constants.expoConfig?.extra?.SERVER_ENV as
+  | "development"
+  | "production";
+
 /**
  * A set of typesafe hooks for consuming your API.
  */
 export const trpc = createTRPCReact<AppRouter>();
-const VERCEL_URL = "https://test-trek-backend.vercel.app";
 
 const getBaseUrl = (environment?: "development" | "production") => {
   /**
@@ -30,7 +34,7 @@ const getBaseUrl = (environment?: "development" | "production") => {
    */
 
   if (environment === "production") {
-    return VERCEL_URL;
+    return SERVER_URL;
   }
   const localhost = Constants.manifest?.debuggerHost?.split(":")[0];
   if (!localhost)
@@ -54,7 +58,7 @@ export const TRPCProvider: React.FC<{
               Authorization: authToken ?? undefined,
             };
           },
-          url: `${getBaseUrl("development")}/api/trpc`,
+          url: `${getBaseUrl(SERVER_ENV)}/api/trpc`,
         }),
       ],
     }),
