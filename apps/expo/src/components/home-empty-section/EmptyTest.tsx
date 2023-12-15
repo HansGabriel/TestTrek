@@ -11,9 +11,9 @@ const HomeEmptyTest: FC = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="flex-1">
       <View className="h-[75%] items-center">
-        <HomeEmptyTestBanner />
+        <HomeEmptyTestBanner width={"90%"} />
       </View>
 
       <View className="bottom-8 left-9 h-[23%] w-[30%]">
