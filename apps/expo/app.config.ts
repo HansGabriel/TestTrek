@@ -1,10 +1,13 @@
 import { ExpoConfig, ConfigContext } from "@expo/config";
 
+type ENV = "development" | "production";
+
 const CLERK_PUBLISHABLE_KEY =
   "pk_test_Z3Jvd2luZy1kb2Jlcm1hbi04OC5jbGVyay5hY2NvdW50cy5kZXYk";
 const SERVER_URL = "https://test-trek-prod.vercel.app";
-const SERVER_ENV: "development" | "production" = "production";
+const SERVER_ENV: ENV = "development";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   name: "TestTrek",
   slug: "testtrek",

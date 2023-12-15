@@ -1,7 +1,10 @@
 import { prisma } from "@acme/db";
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { mockAuthContext } from "./mocks/clerk";
 import { getAuth } from "@clerk/nextjs/server";
+
+const isTest = process.env.SERVER_ENV === "test";
 
 /**
  * Replace this with an object if you want to pass things to createContextInner
@@ -17,7 +20,7 @@ type AuthContextProps = {
  */
 export const createContextInner = async ({ auth }: AuthContextProps) => {
   return {
-    auth,
+    auth: isTest ? mockAuthContext : auth,
     prisma,
   };
 };
