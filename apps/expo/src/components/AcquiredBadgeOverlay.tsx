@@ -1,6 +1,5 @@
-// BadgeOverlay.js
 import React, { FC } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { Overlay } from "@rneui/base";
 import BronzeBadgeLarge from "../icons/badges/BronzeBadgeLarge";
 import SilverBadgeLarge from "../icons/badges/SilverBadgeLarge";
@@ -59,19 +58,14 @@ const BadgeOverlay: FC<BadgeOverlayProps> = ({
       <View className="items-center">
         {getBadgeComponent()}
         <Text className="font-nunito-extrabold text-center text-2xl text-white">
-          Congrats!
+          CONGRATS!
         </Text>
-        <Text className="font-nunito-extrabold text-center text-lg text-white">
-          You Reached {getBadgePointsText()} Total Points
+        <Text className="font-nunito-bold text-center text-lg text-white">
+          You received the {badgeName.toUpperCase()} badge
         </Text>
-        <Text className="font-nunito-extrabold text-center text-lg text-white">
-          Acquired The {badgeName.toUpperCase()} Badge!
+        <Text className="font-nunito-bold text-center text-lg text-white">
+          for reaching {getBadgePointsText()} total points!
         </Text>
-        <TouchableOpacity onPress={onClose}>
-          <Text className="font-nunito-bold mt-8 text-lg text-violet-300">
-            Close
-          </Text>
-        </TouchableOpacity>
       </View>
     </Overlay>
   );

@@ -403,8 +403,9 @@ export const useRouter = router({
         };
       });
 
-      const dailyScores = await Promise.all(
-        days.map(async (day) => {
+      const dailyScores = await pMap(
+        days,
+        async (day) => {
           const dailyScore = await ctx.prisma.play.aggregate({
             _sum: {
               score: true,
@@ -419,7 +420,8 @@ export const useRouter = router({
           });
 
           return dailyScore._sum.score || 0;
-        }),
+        },
+        { concurrency: 5 },
       );
 
       const weeklyScore = await ctx.prisma.play.aggregate({
