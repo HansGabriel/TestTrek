@@ -3,7 +3,7 @@ import { Collections } from "@acme/schema/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { FC, useState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Octicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -203,7 +203,13 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
       <SafeAreaView className="flex-1" style={{ height: height, width: width }}>
         <ReusableHeader
           screenName="Edit Collection"
-          optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+          optionIcon={
+            <MaterialCommunityIcons
+              name="book-plus-multiple"
+              size={25}
+              color="rgb(79 70 229)"
+            />
+          }
           onIconPress={() => setIsSidebarOpen(true)}
           backIcon={<Feather name="x" size={24} color="black" />}
           handleExit={handleExitScreen}
@@ -235,7 +241,13 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
     >
       <ReusableHeader
         screenName="Edit Collection"
-        optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+        optionIcon={
+          <MaterialCommunityIcons
+            name="book-plus-multiple"
+            size={25}
+            color="rgb(79 70 229)"
+          />
+        }
         onIconPress={() => setIsSidebarOpen(true)}
         backIcon={<Feather name="x" size={24} color="black" />}
         handleExit={handleExitScreen}
@@ -286,6 +298,7 @@ export const EditCollection: FC<RootStackScreenProps<"EditCollection">> = ({
                   placeholder: "Enter Title",
                   onChangeText: onChange,
                   value,
+                  maxLength: 50,
                 }}
               />
             )}

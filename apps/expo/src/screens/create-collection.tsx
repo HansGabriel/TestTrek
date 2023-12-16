@@ -199,6 +199,7 @@ export const CreateCollection = () => {
                   placeholder: "Enter Title",
                   onChangeText: onChange,
                   value,
+                  maxLength: 50,
                 }}
               />
             )}

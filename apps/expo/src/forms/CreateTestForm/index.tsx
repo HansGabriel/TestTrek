@@ -31,11 +31,10 @@ import AppPicker, {
 import useImageStore from "../../stores/useImageStore";
 import { trpc } from "../../utils/trpc";
 import { truncateString } from "@acme/utils/src/strings";
-import { Octicons } from "@expo/vector-icons";
 import RightSidebar from "./RightSidebar";
 import { RouterOutputs } from "../../utils/trpc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { Foundation } from "@expo/vector-icons";
 import type { TestInput } from "@acme/schema/src/types";
 import type { FC } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -447,7 +446,13 @@ const CreateTestForm: FC<Props> = ({
     <SafeAreaView>
       <ReusableHeader
         screenName={testTitle}
-        optionIcon={<Octicons name="three-bars" size={24} color="black" />}
+        optionIcon={
+          <MaterialCommunityIcons
+            name="clipboard-plus"
+            size={30}
+            color="rgb(79 70 229)"
+          />
+        }
         onIconPress={() => setIsSidebarOpen(true)}
         backIcon={
           questions.length > 0 || testTitle === "Create Test" ? (
@@ -502,6 +507,7 @@ const CreateTestForm: FC<Props> = ({
                     placeholder: "Enter Title",
                     onChangeText: onChange,
                     value,
+                    maxLength: 50,
                   }}
                 />
               )}
@@ -545,6 +551,7 @@ const CreateTestForm: FC<Props> = ({
                       label="Keyword"
                       textInputProps={{
                         placeholder: "Type keyword and enter",
+                        maxLength: 20,
                       }}
                       texts={value}
                       onChangeTexts={onChange}
@@ -567,6 +574,7 @@ const CreateTestForm: FC<Props> = ({
                       onBlur,
                       onChangeText: onChange,
                       value,
+                      maxLength: 1000,
                     }}
                   />
                 )}
@@ -616,8 +624,8 @@ const CreateTestForm: FC<Props> = ({
           )}
 
           <View className="mb-10 h-full flex-1 flex-col">
-            {questions.length > 0 && (
-              <View className="mb-6 flex flex-row items-center justify-between">
+            {questions.length > 0 ? (
+              <View className="my-auto flex flex-row items-center justify-between">
                 <Text className="text-xl font-bold leading-loose text-neutral-800">
                   Question ({questions.length})
                 </Text>
@@ -630,6 +638,20 @@ const CreateTestForm: FC<Props> = ({
                   </Text>
                   <RightArrowIcon />
                 </TouchableOpacity>
+              </View>
+            ) : (
+              <View className="h-full w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
+                <View className="mt-2">
+                  <Foundation name="lightbulb" size={30} color="#7c3aed" />
+                </View>
+                <View className="my-2">
+                  <Text className="font-nunito-bold self-center text-center text-lg">
+                    Just a tip!
+                  </Text>
+                  <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
+                    Please create at least one (1) question to save the test!
+                  </Text>
+                </View>
               </View>
             )}
 
@@ -730,6 +752,7 @@ const CreateTestForm: FC<Props> = ({
 
       <PromptModal
         isVisible={openCreationChoice}
+        isXIconVisible={true}
         modalIcon={
           <MaterialCommunityIcons name="robot" size={40} color="#7c3aed" />
         }
@@ -738,6 +761,7 @@ const CreateTestForm: FC<Props> = ({
         confirmButtonText={"Yes"}
         isCancelButtonVisible={true}
         cancelButtonText={"Manual Input"}
+        onXIconPressed={handleCloseCreationChoice}
         onCancel={() => {
           handleCloseCreationChoice();
           openBottomSheet();
@@ -751,7 +775,7 @@ const CreateTestForm: FC<Props> = ({
       />
 
       <ChoiceModal
-        title="No. of questions you want to generate"
+        title="No. of questions you want to generate?"
         selectButtonText={
           !selectedReviewer?.content ? "Select Reviewer" : "Generate Questions"
         }
