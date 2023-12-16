@@ -31,7 +31,10 @@ export const userStoredSchema = z.object({
         message: "Username is required",
       }),
     })
-    .min(1, "Username is required"),
+    .min(5, "Username is required")
+    .max(50, {
+      message: "Username must be at most 50 characters",
+    }),
   firstName: z.string().min(1, "First Name is required").max(50, {
     message: "First Name must be at most 50 characters",
   }),

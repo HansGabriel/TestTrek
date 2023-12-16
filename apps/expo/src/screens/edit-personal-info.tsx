@@ -206,6 +206,7 @@ export const EditPersonalInfoScreen = () => {
                     value,
                     editable: edit,
                     style: { color: !edit ? "#6b7280" : "black" },
+                    maxLength: 50,
                   }}
                 />
               )}
@@ -227,6 +228,7 @@ export const EditPersonalInfoScreen = () => {
                     value,
                     editable: edit,
                     style: { color: !edit ? "#6b7280" : "black" },
+                    maxLength: 50,
                   }}
                 />
               )}
@@ -248,6 +250,7 @@ export const EditPersonalInfoScreen = () => {
                     value,
                     editable: edit,
                     style: { color: !edit ? "#6b7280" : "black" },
+                    maxLength: 50,
                   }}
                 />
               )}
@@ -296,6 +299,7 @@ export const EditPersonalInfoScreen = () => {
                         color: !edit ? "#6b7280" : "black",
                         textAlignVertical: "top",
                       },
+                      maxLength: 500,
                     }}
                   />
                 )}

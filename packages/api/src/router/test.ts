@@ -259,28 +259,28 @@ export const testRouter = router({
       if (!isUserPremium && userTestCount >= 10) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Subscribe to our premium account to create more tests",
+          message: "Subscribe to create more tests",
         });
       }
 
       if (isUserPremium && userTestCount >= 50) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You have reached the maximum amount of tests",
+          message: "Maximum amount of tests reached",
         });
       }
 
       if (!isUserPremium && questions.length >= 25) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Subscribe to our premium account to create more questions",
+          message: "Subscribe to create more questions",
         });
       }
 
       if (isUserPremium && questions.length >= 50) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You have reached the maximum amount of questions",
+          message: "Maximum amount of questions reached",
         });
       }
 
@@ -456,14 +456,14 @@ export const testRouter = router({
       if (!isUserPremium && questions.length > 25) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Subscribe to our premium account to create more questions",
+          message: "Subscribe to create more questions",
         });
       }
 
       if (isUserPremium && questions.length > 50) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "You have reached the maximum amount of questions",
+          message: "Maximum amount of questions reached",
         });
       }
 
