@@ -87,7 +87,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {truncateString(question.title, 25)}
+          {truncateString(question.title, 20)}
         </Text>
       </View>
     </TouchableOpacity>
