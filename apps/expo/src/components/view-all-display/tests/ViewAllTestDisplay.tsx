@@ -13,7 +13,6 @@ import { trpc } from "../../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { RouterOutputs } from "../../../utils/trpc";
 import { match } from "ts-pattern";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
 import { Visibility } from "../../../../../../packages/db";
@@ -224,16 +223,20 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
             >
               <View className="flex w-[100%] shrink grow basis-0 items-center rounded-xl border border-zinc-200 bg-white">
                 <View className=" w-[100%]">
-                  <ImageBackground
-                    source={{
-                      uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                    }}
-                    imageStyle={{
-                      borderTopLeftRadius: 12,
-                      borderBottomLeftRadius: 12,
-                    }}
-                    className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
-                  />
+                  {question.image ? (
+                    <ImageBackground
+                      source={{
+                        uri: question.image,
+                      }}
+                      imageStyle={{
+                        borderTopLeftRadius: 12,
+                        borderBottomLeftRadius: 12,
+                      }}
+                      className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
+                    />
+                  ) : (
+                    <View className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl bg-[#6949FF]" />
+                  )}
                 </View>
                 <View className=" h-full w-[55%] self-end">
                   <Text

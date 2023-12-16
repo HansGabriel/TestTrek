@@ -1,7 +1,6 @@
 import { match } from "ts-pattern";
 import { truncateString } from "@acme/utils/src/strings";
 import { TouchableOpacity, View, Text, ImageBackground } from "react-native";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 
 import type { FC } from "react";
 import type { PartialQuestion } from "../../stores/useQuestionStore";
@@ -62,16 +61,20 @@ const QuestionCard: FC<QuestionCardProps> = ({
         className={`flex shrink grow basis-0 items-center justify-start self-stretch rounded-xl border ${borderStyle} bg-white`}
       >
         <View className="relative w-[140px] self-stretch">
-          <ImageBackground
-            source={{
-              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-            }}
-            imageStyle={{
-              borderTopLeftRadius: 12,
-              borderBottomLeftRadius: 12,
-            }}
-            className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
-          />
+          {question.image ? (
+            <ImageBackground
+              source={{
+                uri: question.image,
+              }}
+              imageStyle={{
+                borderTopLeftRadius: 12,
+                borderBottomLeftRadius: 12,
+              }}
+              className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
+            />
+          ) : (
+            <View className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl bg-[#6949FF]" />
+          )}
         </View>
         <Text className="font-nunito-bold absolute left-40 top-2 w-full text-lg leading-[28.80px] text-neutral-800">
           {index + 1} -{" "}
