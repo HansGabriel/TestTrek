@@ -22,6 +22,20 @@ export const AboutTestTrekScreen = () => {
           TestTrek v1.0
         </Text>
       </View>
+      <View className=" my-auto h-[45%] w-[90%] self-center">
+        <View className="mb-5 items-center">
+          <Text className=" font-nunito-bold text-xl">What is TestTrek?</Text>
+        </View>
+        <View className="items-center self-center">
+          <Text className=" font-nunito-medium text-center text-xl">
+            TestTrek is a mobile application dedicated to streamline test and
+            reviewer creation for students. By combining artificial
+            intelligence, optical character recognition, and gamification
+            elements, TestTrek is an all-in-one solution at the palm of your
+            hand.
+          </Text>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
