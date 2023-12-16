@@ -54,7 +54,6 @@ ${generateChoicesPrompt(
   numChoices,
   maxCharsForChoice,
 )}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`,
-
   multiselect: (
     numChoices = 4,
     maxCharsForQuestion = 100,
@@ -64,10 +63,8 @@ ${generateChoicesPrompt(
   numChoices,
   maxCharsForChoice,
 )}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`,
-
   identification: (maxCharsForQuestion = 100, maxCharsForChoice = 50) =>
     `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [Your answer here, max ${maxCharsForChoice} characters, and the answer should be concise and straight to the point and must not include unnesessary words or phrases] ${timeAndPointsPrompt}`,
-
   trueOrFalse: (maxCharsForQuestion = 100) =>
     `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [True/False] ${timeAndPointsPrompt}`,
 };
