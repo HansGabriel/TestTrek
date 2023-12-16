@@ -10,10 +10,10 @@ import { generateChoicesPrompt, timeAndPointsPrompt } from "../gptHandlers";
 describe("questionFormatGenerators", () => {
   it("It should generate format for multiple choice question/s", () => {
     const mcqFormat = questionFormatGenerators["multipleChoice"];
-    const output = `separator\nQuestion: [Your question here, max 100 characters, and each choice below must not exceed 68 characters]
-  ${generateChoicesPrompt(
-    4,
-  )}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`;
+    const output = `separator\nQuestion: [Your question here, max 100 characters]
+${generateChoicesPrompt(
+  4,
+)}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`;
 
     expect(mcqFormat()).toEqual(output);
   });
@@ -21,10 +21,10 @@ describe("questionFormatGenerators", () => {
   it("It should generate format for multiselect question/s", () => {
     const multiselectFormat = questionFormatGenerators["multiselect"];
 
-    const output = `separator\nQuestion: [Your question here, max 100 characters, and each choice below must not exceed 68 characters]
-  ${generateChoicesPrompt(
-    4,
-  )}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`;
+    const output = `separator\nQuestion: [Your question here, max 100 characters]
+${generateChoicesPrompt(
+  4,
+)}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`;
 
     expect(multiselectFormat()).toEqual(output);
   });
@@ -32,7 +32,7 @@ describe("questionFormatGenerators", () => {
   it("It should generate format for identification question/s", () => {
     const identicationFormat = questionFormatGenerators["identification"];
 
-    const output = `separator\nQuestion: [Your question here, max 100 characters]\nAnswer: [Your answer here, max 68 characters] ${timeAndPointsPrompt}`;
+    const output = `separator\nQuestion: [Your question here, max 100 characters]\nAnswer: [Your answer here, max 50 characters, and the answer should be concise and straight to the point and must not include unnesessary words or phrases] ${timeAndPointsPrompt}`;
 
     expect(identicationFormat()).toEqual(output);
   });
