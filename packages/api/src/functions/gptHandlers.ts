@@ -60,7 +60,7 @@ export const promptGenerators: {
     message,
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
     `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
@@ -71,14 +71,14 @@ ${timeAndPointsPrompt}`,
   identification: (
     message,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
     `Create an identification question (maximum of ${maxCharsForQuestion} characters) based on: "${message}". The answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [Your answer here]
 ${timeAndPointsPrompt}`,
 
-  trueOrFalse: (message, maxCharsForQuestion = 100, maxCharsForChoice = 68) =>
+  trueOrFalse: (message, maxCharsForQuestion = 100, maxCharsForChoice = 50) =>
     `Based on the information "${message}", generate a true or false question (maximum of ${maxCharsForQuestion} characters). The answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [True/False]
@@ -88,7 +88,7 @@ ${timeAndPointsPrompt}`,
     message,
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
     `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters and there must be atleast 1 correct answer. Multiple answers can be correct. Format as:
 Question: [Your question here]
