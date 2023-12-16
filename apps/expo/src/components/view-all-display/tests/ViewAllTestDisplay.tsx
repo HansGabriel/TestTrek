@@ -223,20 +223,20 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
             >
               <View className="flex w-[100%] shrink grow basis-0 items-center rounded-xl border border-zinc-200 bg-white">
                 <View className=" w-[100%]">
-                  {question.image ? (
-                    <ImageBackground
-                      source={{
-                        uri: question.image,
-                      }}
-                      imageStyle={{
-                        borderTopLeftRadius: 12,
-                        borderBottomLeftRadius: 12,
-                      }}
-                      className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
-                    />
-                  ) : (
-                    <View className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl bg-[#6949FF]" />
-                  )}
+                  <ImageBackground
+                    source={
+                      question.image
+                        ? {
+                            uri: question.image,
+                          }
+                        : require("../../../../assets/images/choice-placeholder.png")
+                    }
+                    imageStyle={{
+                      borderTopLeftRadius: 12,
+                      borderBottomLeftRadius: 12,
+                    }}
+                    className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
+                  />
                 </View>
                 <View className=" h-full w-[55%] self-end">
                   <Text
