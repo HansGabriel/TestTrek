@@ -77,7 +77,7 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
             onPress={() =>
               navigation.navigate("TestDetails", { testId: item.id })
             }
-            className=" my-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100"
+            className="mb-5 h-28 w-full flex-row overflow-hidden rounded-xl border-2 border-gray-100"
           >
             <View className=" w-32 items-center justify-center bg-violet-600">
               <Image
@@ -89,7 +89,7 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
               />
             </View>
             <View className=" ml-3 w-full justify-around">
-              <View className="w-[55%]">
+              <View className="-mb-4 w-[55%]">
                 <Text
                   className=" font-nunito-bold text-lg"
                   numberOfLines={2}
@@ -99,10 +99,20 @@ export const LibraryTabs: FC<ContentProps> = ({ tabData }) => {
                 </Text>
               </View>
               <View className="flex-row">
-                <Text className=" mr-2">{dayjs(item.createdAt).fromNow()}</Text>
-                <Text className=" mr-2">.</Text>
+                <Text className="mr-2">
+                  {((fromNow) =>
+                    fromNow.charAt(0).toUpperCase() + fromNow.slice(1))(
+                    dayjs(item.createdAt).fromNow(),
+                  )}
+                </Text>
+
                 <Text className=" mr-2">
-                  {item.plays ? item.plays.length : 0} plays
+                  • {item.plays ? item.plays.length : 0}{" "}
+                  {item.plays
+                    ? item.plays.length > 1
+                      ? "plays"
+                      : "play"
+                    : "play"}
                 </Text>
               </View>
 

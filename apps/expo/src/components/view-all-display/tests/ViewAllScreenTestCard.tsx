@@ -60,7 +60,7 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {props.plays} plays
+              {props.plays} {props.plays <= 1 ? "play" : "plays"}
             </Text>
           </View>
           <View className="mt-3 flex-row items-center">
