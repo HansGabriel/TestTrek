@@ -369,7 +369,7 @@ export const CreateReviewerScreen = ({
         {
           message: inputMessage,
           numOfQuestions: numOfQuestions,
-          messageType: "generate-topics",
+          messageType: "batch-messages",
         },
         {
           onSuccess: (data) => {

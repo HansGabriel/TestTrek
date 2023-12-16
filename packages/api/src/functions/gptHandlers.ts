@@ -104,8 +104,7 @@ export const generateTopicsPrompt = (
   message: string,
   numTopics?: number,
 ): string => {
-  return `Create a list of topics (should be of length ${numTopics} topics) based on: "${message}". Format as:
-  [Topic 1] | [Topic 2] | [Topic 3] | ... | [Topic ${numTopics}]`;
+  return `Create a list of topics (should be of length ${numTopics} topics) based on: "${message}". Format as: [Topic 1] | [Topic 2] | [Topic 3] | ... | [Topic ${numTopics}]`;
 };
 
 export const generatePromptForType = (

@@ -129,7 +129,7 @@ export const gptApiRouter = router({
       let topics: string[] = [];
 
       if (messageType === "generate-topics") {
-        const topicsPrompt = generateTopicsPrompt(message);
+        const topicsPrompt = generateTopicsPrompt(message, numOfQuestions);
 
         const topicsResponse = await fetchGPT(topicsPrompt);
 
@@ -147,7 +147,7 @@ export const gptApiRouter = router({
 
       while (remainingQuestionsLength > 0) {
         const remainingQuestions = await generateCombinedQuestions(
-          message,
+          !messageType ? message : topics,
           remainingQuestionsLength,
           1,
         );

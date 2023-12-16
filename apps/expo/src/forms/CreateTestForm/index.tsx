@@ -313,7 +313,10 @@ const CreateTestForm: FC<Props> = ({
     setBottomSheetOpen(false);
   };
 
-  const createMultipleQuestions = (inputMessage: string) => {
+  const createMultipleQuestions = (
+    inputMessage: string,
+    messageType: "batch-messages" | "generate-topics",
+  ) => {
     const numOfQuestions =
       numberOfQuestionOptions.find((option) => option.isSelected)?.value ?? 5;
 
@@ -331,7 +334,7 @@ const CreateTestForm: FC<Props> = ({
         {
           message: inputMessage,
           numOfQuestions: numOfQuestions,
-          messageType: "batch-messages",
+          messageType,
         },
         {
           onSuccess: (data) => {
@@ -772,7 +775,10 @@ const CreateTestForm: FC<Props> = ({
             setIsSidebarOpen(true);
           } else {
             const reviewerContent = selectedReviewer.content;
-            createMultipleQuestions(extractHighlightedText(reviewerContent));
+            createMultipleQuestions(
+              extractHighlightedText(reviewerContent),
+              "batch-messages",
+            );
           }
         }}
       />
@@ -782,7 +788,9 @@ const CreateTestForm: FC<Props> = ({
         aiQuestion={aiQuestion}
         setAiQuestion={setAiQuestion}
         isGenerating={isGenerating}
-        handleQuestionGeneration={() => createMultipleQuestions(aiQuestion)}
+        handleQuestionGeneration={() =>
+          createMultipleQuestions(aiQuestion, "generate-topics")
+        }
         handleClose={() => {
           setAiQuestion("");
           setErrorInAIQuestion(false);
