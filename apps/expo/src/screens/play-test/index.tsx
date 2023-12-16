@@ -391,7 +391,8 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     }
 
     const isCorrectAnswer = question.choices.some(
-      (choice) => choice.text === answer,
+      (choice) =>
+        choice.text.trim().toLowerCase() === answer.trim().toLowerCase(),
     );
 
     if (question.type === "identification") {
@@ -536,8 +537,10 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
 
     if (question.type === "identification") {
       const isCorrectAnswer = question.choices.some(
-        (choice) => choice.text === answer,
+        (choice) =>
+          choice.text.trim().toLowerCase() === answer.trim().toLowerCase(),
       );
+
       if (isCorrectAnswer) {
         const elapsedTime =
           countdownTimerRef.current?.elapsedTime ?? question.time;
