@@ -781,7 +781,7 @@ export const CreateQuestionScreen: FC = () => {
                 placeholderTextColor={"#757575"}
                 onFocus={handleTextInputFocus}
                 multiline
-                maxLength={200}
+                maxLength={150}
               />
             </>
           </View>
