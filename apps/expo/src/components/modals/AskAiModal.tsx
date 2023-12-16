@@ -41,7 +41,7 @@ export const AskAiModal = ({
                     What is your question?
                   </Text>
                 </View>
-                <View className=" m-2 self-start ">
+                <View className="absolute right-1 top-1">
                   <TouchableOpacity
                     onPress={handleClose}
                     disabled={isGenerating}

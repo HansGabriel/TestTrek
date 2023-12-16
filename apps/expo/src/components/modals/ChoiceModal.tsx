@@ -75,14 +75,13 @@ const ChoiceModal: FC<Props> = ({
         <View className="absolute inset-0 h-[100%] w-[100%] flex-1 bg-black/70">
           <View className="flex-1 items-center justify-center bg-opacity-50 shadow shadow-black/80">
             <View className="flex h-[60%] w-[90%] flex-col items-center justify-evenly rounded-2xl bg-white">
-              <TouchableOpacity
-                className="-mt-[9%] mr-2 self-end"
-                onPress={setIsVisible}
-              >
-                <XIcon className="self-end" />
-              </TouchableOpacity>
+              <View className="absolute right-1 top-1">
+                <TouchableOpacity onPress={setIsVisible}>
+                  <XIcon />
+                </TouchableOpacity>
+              </View>
 
-              <View className="-mt-7 w-[90%]">
+              <View className=" w-[90%]">
                 <Text className="self-center px-5 text-center text-2xl font-bold">
                   {title}
                 </Text>
