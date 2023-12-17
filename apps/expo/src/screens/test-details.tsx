@@ -64,6 +64,7 @@ export const TestDetailsScreen = ({
         showEditIcon={isOwner}
         testId={testId}
         goToEditTest={goToEditTest}
+        testName={testDetails.title}
       />
       <TestDetailsContent testDetails={testDetails} />
     </SafeAreaView>

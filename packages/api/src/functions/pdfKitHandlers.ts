@@ -76,16 +76,19 @@ export const generatePdf = async (test: CustomTest): Promise<Buffer> => {
       .text("Answer Sheet", { align: "center" })
       .moveDown();
 
+    let answersText = ``;
+
     test.questions.forEach((question, index) => {
       const correctAnswers = getCorrectAnswers(question);
       if (correctAnswers) {
-        doc
-          .fontSize(12)
-          .font("Helvetica")
-          .text(`${index + 1}. ${correctAnswers}`);
-        doc.moveDown(1.5);
+        answersText += `${index + 1}. ${correctAnswers.join(", ")}\n\n`;
       }
     });
+
+    doc
+      .fontSize(12)
+      .font("Helvetica")
+      .text(answersText, { align: "left", columns: 3 });
 
     doc.end();
   });

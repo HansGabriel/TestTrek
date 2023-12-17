@@ -12,6 +12,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 type DownloadPdfButtonProps = {
   testId: string;
+  testName?: string;
 };
 
 export const SaveToPDFButton: FC<DownloadPdfButtonProps> = (props) => {
@@ -58,7 +59,9 @@ export const SaveToPDFButton: FC<DownloadPdfButtonProps> = (props) => {
     try {
       const result = await generatePdfMutation(props.testId);
       const base64pdf = result.pdfBuffer;
-      const filename = `test-${Date.now()}.pdf`;
+      const filename = `test-${
+        props.testName ? props.testName : ""
+      }${Date.now()}.pdf`;
       const localUri = FileSystem.documentDirectory + filename;
 
       await FileSystem.writeAsStringAsync(localUri, base64pdf, {
