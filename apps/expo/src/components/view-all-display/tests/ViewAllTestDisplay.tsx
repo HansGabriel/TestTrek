@@ -13,7 +13,6 @@ import { trpc } from "../../../utils/trpc";
 import { useNavigation } from "@react-navigation/native";
 import { RouterOutputs } from "../../../utils/trpc";
 import { match } from "ts-pattern";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../../constants";
 
 import type { PartialQuestion } from "../../../stores/useQuestionStore";
 import { Visibility } from "../../../../../../packages/db";
@@ -55,6 +54,8 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
         imageUrl: string;
         createdAt: Date;
         updatedAt: Date;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        plays: any;
       }[]
     | undefined = undefined;
   let headerTitle = "";
@@ -65,14 +66,6 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
     const { data } = trpc.test.getDiscoverTests.useQuery();
     fetchedTestData = data;
     headerTitle = "Discover Tests";
-  } else if (props.testsFor == "trending") {
-    const { data } = trpc.test.getTrendingTests.useQuery();
-    fetchedTestData = data;
-    headerTitle = "Trending";
-  } else if (props.testsFor == "topPicks") {
-    const { data } = trpc.test.getTopPicks.useQuery();
-    fetchedTestData = data;
-    headerTitle = "Top Picks";
   } else if (props.testsFor == "questions") {
     const { type } = props;
     headerTitle = "Questions";
@@ -186,13 +179,14 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
                         title={item.title}
                         questions={item.questions.length}
                         date={new Date(item.createdAt)}
-                        plays={0}
+                        plays={item.plays.length}
                         userImageSource={{
                           uri:
                             item.user.imageUrl ??
                             "https://example.com/dummy-image.jpg",
                         }}
                         userName={fullName}
+                        displayPlays={true}
                       />
                     </TouchableOpacity>
                   );
@@ -225,14 +219,18 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
               <View className="flex w-[100%] shrink grow basis-0 items-center rounded-xl border border-zinc-200 bg-white">
                 <View className=" w-[100%]">
                   <ImageBackground
-                    source={{
-                      uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-                    }}
+                    source={
+                      question.image
+                        ? {
+                            uri: question.image,
+                          }
+                        : require("../../../../assets/images/choice-placeholder.png")
+                    }
                     imageStyle={{
                       borderTopLeftRadius: 12,
                       borderBottomLeftRadius: 12,
                     }}
-                    className="absolute left-0 top-0 h-[105px] w-[140px] rounded-l-xl"
+                    className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
                   />
                 </View>
                 <View className=" h-full w-[55%] self-end">

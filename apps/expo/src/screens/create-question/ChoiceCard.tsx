@@ -321,7 +321,7 @@ export const MultiSelectCard: FC<MultiSelectCardProps> = ({
     <>
       <TouchableOpacity
         key={choice.id}
-        className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
+        className={`flex w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
           errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
@@ -334,11 +334,11 @@ export const MultiSelectCard: FC<MultiSelectCardProps> = ({
               <CheckboxIcon />
             </View>
           )}
-          <View className="h-full w-full items-center justify-center">
+          <View className="w-full items-center justify-center">
             <Text
               className={`self-center text-center ${getTextSize(
                 choice.text ? choice.text : "Add answer",
-              )} font-bold text-white`}
+              )} w-[83%] font-bold text-white`}
             >
               {choice.text ? choice.text : "Add answer"}
             </Text>
@@ -433,7 +433,7 @@ export const IdentificationCard: FC<IdentificationCardProps> = ({
     <>
       <TouchableOpacity
         key={choice.id}
-        className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
+        className={`flex w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
           choice.styles
         } ${
           errorState.choicesError[choice.id]?.length !== undefined ? "" : ""
@@ -441,7 +441,7 @@ export const IdentificationCard: FC<IdentificationCardProps> = ({
         onPress={handleOpenModal(choice.id)}
       >
         <>
-          <View className="h-full w-full items-center justify-center">
+          <View className="w-full items-center justify-center">
             <Text
               className={`self-center text-center ${getTextSize(
                 choice.text ? choice.text : "Add answer",

@@ -1,17 +1,20 @@
 export const getPointsBadge = (points: number) => {
+  const badges = [];
   if (points >= 100000) {
-    return "gold";
-  } else if (points >= 50000) {
-    return "silver";
-  } else if (points >= 20000) {
-    return "bronze";
+    badges.push("gold");
   }
-  return "";
+  if (points >= 50000) {
+    badges.push("silver");
+  }
+  if (points >= 20000) {
+    badges.push("bronze");
+  }
+  return badges;
 };
 
 export const verifyAcquiredPointsBadge = (
-  badgeName: string,
+  badgeNames: string[],
   currentBadges: string[],
 ) => {
-  return !currentBadges.includes(badgeName);
+  return badgeNames.filter((badge) => !currentBadges.includes(badge));
 };

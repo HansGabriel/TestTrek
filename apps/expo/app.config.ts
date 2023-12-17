@@ -19,7 +19,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   splash: {
     image: "./assets/icon.png",
     resizeMode: "contain",
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -28,15 +28,15 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.mathbasher.testtrek",
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     buildNumber: "1",
   },
   android: {
     package: "com.mathbasher.testtrek",
     versionCode: 1,
     adaptiveIcon: {
-      foregroundImage: "./assets/icon.png",
-      backgroundColor: "#fff",
+      foregroundImage: "./assets/testtrek-adaptive-icon.png",
+      backgroundColor: "#ffffff",
     },
     permissions: ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
   },

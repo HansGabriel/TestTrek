@@ -1,6 +1,5 @@
 import { generateChoicesPrompt, timeAndPointsPrompt } from "./gptHandlers";
 import { fetchGPT } from "../services/gptApiHandlers";
-import { chunk } from "lodash";
 import { questionsSchema } from "@acme/schema/src/question";
 import {
   parseMultipleChoiceResponse,
@@ -48,24 +47,23 @@ export const questionFormatGenerators: {
   multipleChoice: (
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
-  ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters, and each choice below must not exceed ${maxCharsForChoice} characters]
-  ${generateChoicesPrompt(
-    numChoices,
-  )}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`,
-
+    maxCharsForChoice = 50,
+  ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]
+${generateChoicesPrompt(
+  numChoices,
+  maxCharsForChoice,
+)}\nCorrect Answer: Option [Correct option number and only 1 correct answer] ${timeAndPointsPrompt}`,
   multiselect: (
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
-  ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters, and each choice below must not exceed ${maxCharsForChoice} characters]
-  ${generateChoicesPrompt(
-    numChoices,
-  )}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`,
-
-  identification: (maxCharsForQuestion = 100, maxCharsForChoice = 68) =>
-    `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [Your answer here, max ${maxCharsForChoice} characters] ${timeAndPointsPrompt}`,
-
+    maxCharsForChoice = 50,
+  ) => `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]
+${generateChoicesPrompt(
+  numChoices,
+  maxCharsForChoice,
+)}\nAll Correct Answers: Options [Correct option numbers separated by commas (e.g., 1,3) and at least one correct answer] ${timeAndPointsPrompt}`,
+  identification: (maxCharsForQuestion = 100, maxCharsForChoice = 50) =>
+    `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [Your answer here, max ${maxCharsForChoice} characters, and the answer should be concise and straight to the point and must not include unnesessary words or phrases] ${timeAndPointsPrompt}`,
   trueOrFalse: (maxCharsForQuestion = 100) =>
     `separator\nQuestion: [Your question here, max ${maxCharsForQuestion} characters]\nAnswer: [True/False] ${timeAndPointsPrompt}`,
 };
@@ -78,11 +76,29 @@ export const parseTopicsList = (topicsList: string): string[] => {
 
 export const divideStringIntoChunks = (
   string: string,
-  chunkSize = 3000,
+  chunkSize = 1000,
 ): string[] => {
-  const chunks = chunk(string.split("\n"), chunkSize);
+  const sentences = string.split(/\.(?!\d)/); // Split sentences based on period not followed by a digit
 
-  return chunks.map((chunk) => chunk.join("\n"));
+  let currentBatch = "";
+  const batches: string[] = [];
+
+  for (const sentence of sentences) {
+    const potentialBatch = currentBatch + sentence + ".";
+
+    if (potentialBatch.length <= chunkSize) {
+      currentBatch = potentialBatch;
+    } else {
+      batches.push(currentBatch.trim());
+      currentBatch = sentence + ".";
+    }
+  }
+
+  if (currentBatch.trim() !== "") {
+    batches.push(currentBatch.trim());
+  }
+
+  return batches;
 };
 
 export const generateCombinedQuestionPrompts = (
@@ -190,7 +206,7 @@ export const generateCombinedQuestions = async (
   }
   if (Array.isArray(messages)) {
     const processedQuestions = await Promise.all(
-      messages.map(async (_, index) => {
+      Array.from({ length: arrayLength }).map(async (_, index) => {
         let retryCount = 0;
         let finalProcessedQuestions: ParsedQuestion[] = [];
         let hasOneAnswer = false;

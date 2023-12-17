@@ -82,7 +82,12 @@ export const ReviewerTabs: FC<ContentProps> = ({ tabData }) => {
                 </Text>
               </View>
               <View className="flex-row">
-                <Text className=" mr-2">{dayjs(item.createdAt).fromNow()}</Text>
+                <Text className=" mr-2">
+                  {((fromNow) =>
+                    fromNow.charAt(0).toUpperCase() + fromNow.slice(1))(
+                    dayjs(item.createdAt).fromNow(),
+                  )}
+                </Text>
               </View>
 
               <View className="w-[55%] flex-row justify-between">

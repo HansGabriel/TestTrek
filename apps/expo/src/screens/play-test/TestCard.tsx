@@ -141,7 +141,7 @@ export const IdentificationCard = ({
       </Text>
       <TextInput
         multiline={false}
-        maxLength={75}
+        maxLength={65}
         className="mx-5 mb-8 h-[15%] flex-col items-center justify-center rounded-2xl bg-emerald-500 p-2 text-center text-lg font-bold leading-[28.80px] text-white"
         selectionColor="white"
         value={answer}
@@ -162,9 +162,9 @@ export const IdentificationCard = ({
               .map((choice) => (
                 <View
                   key={choice.id}
-                  className={`inline-flex h-[50px] w-[85%] flex-col items-center justify-center rounded-2xl ${choice.styles}`}
+                  className={`inline-flex w-[85%] flex-col items-center justify-center rounded-2xl ${choice.styles}`}
                 >
-                  <Text className="font-nunito-extrabold self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
+                  <Text className="font-nunito-extrabold mx-4 self-stretch text-center text-sm font-bold leading-[28.80px] text-white">
                     {choice.text}
                   </Text>
                 </View>
@@ -228,7 +228,7 @@ export const MultiSelectCard = ({
     <TouchableOpacity
       key={choice.id}
       disabled={isDone}
-      className={`flex h-16 w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
+      className={`flex w-[85vw] flex-col flex-wrap items-center justify-evenly self-center rounded-2xl ${
         isDone ? doneStyle : choice.styles
       } p-5`}
       onPress={handlePressChoice(choice.id)}
@@ -243,9 +243,9 @@ export const MultiSelectCard = ({
           {isSelected ? <CheckIcon /> : ""}
         </View>
       ) : null}
-      <View className="h-full w-full items-center justify-center">
+      <View className="w-full items-center justify-center">
         <Text
-          className={`self-center text-center ${getTextSize(
+          className={`w-[83%] self-center text-center ${getTextSize(
             choice.text || "",
           )} font-bold text-white`}
         >

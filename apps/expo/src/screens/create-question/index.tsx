@@ -781,7 +781,7 @@ export const CreateQuestionScreen: FC = () => {
                 placeholderTextColor={"#757575"}
                 onFocus={handleTextInputFocus}
                 multiline
-                maxLength={300}
+                maxLength={150}
               />
             </>
           </View>
@@ -883,7 +883,7 @@ export const CreateQuestionScreen: FC = () => {
                     </Text>
                     <TextInput
                       multiline={true}
-                      maxLength={150}
+                      maxLength={65}
                       className={`mx-5 mt-5 h-[50%] flex-col items-center justify-center rounded-2xl ${selectedChoice?.styles} p-2 text-center text-lg font-bold leading-[28.80px] text-white`}
                       selectionColor="white"
                       value={selectedChoice?.text}
@@ -894,9 +894,9 @@ export const CreateQuestionScreen: FC = () => {
                       placeholderTextColor="#FFFFFF"
                     />
                     {selectedChoice?.text &&
-                    selectedChoice?.text.length >= 150 ? (
+                    selectedChoice?.text.length >= 65 ? (
                       <Text className="mt-2 text-center text-red-500 ">
-                        You've reached the maximum of 150 characters.
+                        You've reached the maximum of 65 characters.
                       </Text>
                     ) : null}
 

@@ -252,22 +252,28 @@ export const useRouter = router({
 
       const currentBadges = userBadges?.badges ?? [];
 
-      const passedBadge = getPointsBadge(totalPoints);
+      const eligibleBadges = getPointsBadge(totalPoints);
 
-      const hasNewBadge = verifyAcquiredPointsBadge(passedBadge, currentBadges);
+      const newBadges = verifyAcquiredPointsBadge(
+        eligibleBadges,
+        currentBadges,
+      );
 
-      if (hasNewBadge) {
+      if (newBadges.length > 0) {
         await ctx.prisma.user.update({
           where: {
             userId: ctx.auth.userId,
           },
           data: {
-            badges: [...currentBadges, ...[passedBadge]],
+            badges: [...currentBadges, ...newBadges],
           },
         });
       }
 
-      return { hasNewBadge: hasNewBadge, acquiredBadge: passedBadge };
+      return {
+        hasNewBadge: newBadges.length > 0,
+        acquiredBadge: newBadges.length > 0 ? newBadges[0] : "",
+      };
     }),
 
   updateTotalPoints: protectedProcedure
@@ -403,8 +409,9 @@ export const useRouter = router({
         };
       });
 
-      const dailyScores = await Promise.all(
-        days.map(async (day) => {
+      const dailyScores = await pMap(
+        days,
+        async (day) => {
           const dailyScore = await ctx.prisma.play.aggregate({
             _sum: {
               score: true,
@@ -419,7 +426,8 @@ export const useRouter = router({
           });
 
           return dailyScore._sum.score || 0;
-        }),
+        },
+        { concurrency: 5 },
       );
 
       const weeklyScore = await ctx.prisma.play.aggregate({

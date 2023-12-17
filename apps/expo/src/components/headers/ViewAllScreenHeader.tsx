@@ -46,21 +46,21 @@ const ViewAllScreenHeader: FC<Props> = ({
           />
         </View>
       ) : (
-        <View className="sticky z-50 mx-3 flex flex-row justify-between bg-white py-5">
-          <View className="flex-row self-center">
+        <View className="sticky z-50 mx-3 flex flex-row justify-between self-center bg-white py-5">
+          <View className="w-[90%] flex-row space-x-4 self-center">
             <TouchableOpacity
               className="flex flex-row items-center gap-2 self-center"
               onPress={goBack}
             >
               <LeftArrowIcon />
-              <Text
-                className="font-nunito-bold w-4/5 text-2xl leading-[38.40px] text-neutral-800"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {props.title}
-              </Text>
             </TouchableOpacity>
+            <Text
+              className="font-nunito-bold w-4/5 text-2xl leading-[38.40px] text-neutral-800"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {props.title}
+            </Text>
           </View>
           {displaySearchBar && (
             <TouchableOpacity className="self-center" onPress={openSearchBar}>

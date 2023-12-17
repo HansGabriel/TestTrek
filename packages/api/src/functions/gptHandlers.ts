@@ -40,10 +40,13 @@ Points: [Select from the following options based on how difficult you think the 
   (points) => points.title,
 ).join(", ")}]`;
 
-export const generateChoicesPrompt = (numChoices: number) => {
+export const generateChoicesPrompt = (
+  numChoices: number,
+  maxCharsForChoice = 50,
+) => {
   let choicesPrompt = "";
   for (let i = 1; i <= numChoices; i++) {
-    choicesPrompt += `Option ${i}: [Choice ${i}]\n`;
+    choicesPrompt += `Option ${i}: [Choice ${i}, must not exceed ${maxCharsForChoice} characters]\n`;
   }
   return choicesPrompt.trim();
 };
@@ -60,25 +63,25 @@ export const promptGenerators: {
     message,
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
     `Create a multiple choice question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. Each choice must not exceed ${maxCharsForChoice} characters and there must be only 1 correct answer. Format as:
 Question: [Your question here]
-${generateChoicesPrompt(numChoices)}
+${generateChoicesPrompt(numChoices, maxCharsForChoice)}
 Correct Answer: Option [Correct option number]
 ${timeAndPointsPrompt}`,
 
   identification: (
     message,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
-    `Create an identification question (maximum of ${maxCharsForQuestion} characters) based on: "${message}". The answer must not exceed ${maxCharsForChoice} characters. Format as:
+    `Create an identification question (maximum of ${maxCharsForQuestion} characters) based on: "${message}". The answer should be concise and straight to the point and must not include unnesessary words or phrases, and must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [Your answer here]
 ${timeAndPointsPrompt}`,
 
-  trueOrFalse: (message, maxCharsForQuestion = 100, maxCharsForChoice = 68) =>
+  trueOrFalse: (message, maxCharsForQuestion = 100, maxCharsForChoice = 50) =>
     `Based on the information "${message}", generate a true or false question (maximum of ${maxCharsForQuestion} characters). The answer must not exceed ${maxCharsForChoice} characters. Format as:
 Question: [Your question here]
 Answer: [True/False]
@@ -88,11 +91,11 @@ ${timeAndPointsPrompt}`,
     message,
     numChoices = 4,
     maxCharsForQuestion = 100,
-    maxCharsForChoice = 68,
+    maxCharsForChoice = 50,
   ) =>
     `Create a multiselect question (maximum of ${maxCharsForQuestion} characters) about: "${message}" with ${numChoices} choices. The choices must not exceed ${maxCharsForChoice} characters and there must be atleast 1 correct answer. Multiple answers can be correct. Format as:
 Question: [Your question here]
-${generateChoicesPrompt(numChoices)}
+${generateChoicesPrompt(numChoices, maxCharsForChoice)}
 All Correct Answers: Options [Correct option numbers separated by commas, e.g., 1,3]
 ${timeAndPointsPrompt}`,
 };
@@ -101,8 +104,7 @@ export const generateTopicsPrompt = (
   message: string,
   numTopics?: number,
 ): string => {
-  return `Create a list of topics (should be of length ${numTopics} topics) based on: "${message}". Format as:
-  [Topic 1] | [Topic 2] | [Topic 3] | ... | [Topic ${numTopics}]`;
+  return `Create a list of topics (should be of length ${numTopics} topics) based on: "${message}". Format as: [Topic 1] | [Topic 2] | [Topic 3] | ... | [Topic ${numTopics}]`;
 };
 
 export const generatePromptForType = (

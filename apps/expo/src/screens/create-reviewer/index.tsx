@@ -107,6 +107,9 @@ export const CreateReviewerScreen = ({
     isLoading: isCreatingReviewer,
     reset,
   } = trpc.reviewer.createReviewer.useMutation({
+    onSuccess: () => {
+      trpcUtils.reviewer.invalidate();
+    },
     onError: (error) => {
       errorToast({
         title: "Error",
@@ -137,7 +140,17 @@ export const CreateReviewerScreen = ({
     });
 
   const { mutate: updateReviewer, isLoading: isUpdatingReviewer } =
-    trpc.reviewer.updateReviewer.useMutation();
+    trpc.reviewer.updateReviewer.useMutation({
+      onSuccess: () => {
+        trpcUtils.reviewer.invalidate();
+      },
+      onError: (error) => {
+        errorToast({
+          title: "Error",
+          message: error.message,
+        });
+      },
+    });
 
   const getDisplayImage = () => {
     if (reviewerImage) {
@@ -369,7 +382,7 @@ export const CreateReviewerScreen = ({
         {
           message: inputMessage,
           numOfQuestions: numOfQuestions,
-          messageType: "generate-topics",
+          messageType: "batch-messages",
         },
         {
           onSuccess: (data) => {

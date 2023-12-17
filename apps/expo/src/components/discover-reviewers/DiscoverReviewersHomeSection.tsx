@@ -5,8 +5,8 @@ import { trpc } from "../../utils/trpc";
 import type { FC } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { SkeletonLoader } from "../loaders/SkeletonLoader";
-import HomeEmptyTest from "../home-empty-section/EmptyTest";
 import DiscoverReviewersHomeDisplayCard from "./DiscoverReviewersHomeCard";
+import HomeEmptyReviewer from "../home-empty-section/EmptyReviewer";
 
 const DiscoverReviewersHomeSection: FC = () => {
   const { data } = trpc.reviewer.getDiscoverReviewers.useQuery({
@@ -38,8 +38,8 @@ const DiscoverReviewersHomeSection: FC = () => {
 
   if (!data.length) {
     return (
-      <SafeAreaView className="flex-1">
-        <HomeEmptyTest />
+      <SafeAreaView className="w-full flex-1 self-center">
+        <HomeEmptyReviewer />
       </SafeAreaView>
     );
   }

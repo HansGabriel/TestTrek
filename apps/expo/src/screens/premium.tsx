@@ -42,14 +42,15 @@ export const PremiumScreen = ({
         trpcUtils.user.getUserPremiumStatus.invalidate();
         navigation.navigate("Home");
         successToast({
-          title: "Success",
+          title: !premiumStatus
+            ? "Subscribed to Premium"
+            : "Unsubscribed to Premium",
           message: !premiumStatus
-            ? "You are now a premium user"
-            : "You are no longer a premium user",
+            ? "Enjoy your premium features!"
+            : "Please subscribe again!",
         });
       },
       onError: (err) => {
-        console.log(err);
         errorToast({
           title: "Error",
           message: err.message,

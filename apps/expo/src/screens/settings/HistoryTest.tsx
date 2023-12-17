@@ -64,11 +64,12 @@ export const HistoryTestScreen = () => {
                 title={testHistory.title}
                 questions={testHistory.questions.length}
                 date={new Date(testHistory.createdAt)}
-                plays={0}
                 userImageSource={{
                   uri: testHistory.creatorImage ?? IMAGE_PLACEHOLDER,
                 }}
                 userName={fullName}
+                plays={0}
+                displayPlays={false}
               />
             </TouchableOpacity>
           );

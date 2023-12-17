@@ -1,7 +1,6 @@
 import { match } from "ts-pattern";
 import { truncateString } from "@acme/utils/src/strings";
 import { TouchableOpacity, View, Text, ImageBackground } from "react-native";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 
 import type { FC } from "react";
 import type { PartialQuestion } from "../../stores/useQuestionStore";
@@ -63,9 +62,13 @@ const QuestionCard: FC<QuestionCardProps> = ({
       >
         <View className="relative w-[140px] self-stretch">
           <ImageBackground
-            source={{
-              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-            }}
+            source={
+              question.image
+                ? {
+                    uri: question.image,
+                  }
+                : require("../../../assets/images/choice-placeholder.png")
+            }
             imageStyle={{
               borderTopLeftRadius: 12,
               borderBottomLeftRadius: 12,
@@ -73,7 +76,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
             className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
           />
         </View>
-        <Text className="font-nunito-bold absolute left-40 top-2 w-full text-lg leading-[28.80px] text-neutral-800">
+        <Text
+          className="font-nunito-bold absolute left-40 top-2 w-[50%] text-lg leading-[28.80px] text-neutral-800"
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
           {index + 1} -{" "}
           {match(question.type)
             .with("multiple_choice", () => "Multiple Choice")
@@ -83,11 +90,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
             .exhaustive()}
         </Text>
         <Text
-          className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700"
+          className="font-nunito-semibold absolute left-40 top-10 w-[50%] text-base leading-snug tracking-tight text-neutral-700"
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {truncateString(question.title, 25)}
+          {truncateString(question.title, 20)}
         </Text>
       </View>
     </TouchableOpacity>
