@@ -81,7 +81,7 @@ export const userWebhookSchema = z
     first_name: z.string(),
     id: z.string(),
     image_url: z.string().optional(),
-    last_name: z.string(),
+    last_name: z.string().nullish(),
   })
   .transform((val) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -32,15 +32,20 @@ export default async function handler(
     const userWebhookData = userWebhookSchema.parse(evt.data);
     const { id, email, first_name, last_name, image_url } = userWebhookData;
 
-    const firstName = first_name.trim().replace(/\s+/g, "_").toLowerCase();
-    const lastName = last_name.trim().replace(/\s+/g, "_").toLowerCase();
-    const username = firstName.concat("_", lastName);
+    const firstName = first_name.trim().replaceAll(/\s+/g, "_").toLowerCase();
+    const lastName = last_name?.trim()?.replaceAll(/\s+/g, "_")?.toLowerCase();
+
+    let username = firstName;
+
+    if (lastName) {
+      username = `${firstName}_${lastName}`;
+    }
 
     await prisma.user.upsert({
       create: {
         email: email,
         firstName: first_name,
-        lastName: last_name,
+        lastName: last_name ?? "",
         userId: id,
         imageUrl: image_url,
         username: username,
@@ -48,7 +53,7 @@ export default async function handler(
       update: {
         email: email,
         firstName: first_name,
-        lastName: last_name,
+        lastName: last_name ?? "",
         userId: id,
         imageUrl: image_url,
         username: username,
