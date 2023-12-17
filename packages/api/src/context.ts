@@ -24,6 +24,8 @@ export const createContextInner = async ({ auth }: AuthContextProps) => {
   };
 };
 
+type ContextInner = inferAsyncReturnType<typeof createContextInner>;
+
 /**
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
@@ -35,7 +37,7 @@ export const createContext = async (opts: CreateNextContextOptions) => {
         userId: opts.req.headers["authorization"],
       },
       prisma,
-    };
+    } as ContextInner;
   }
   return await createContextInner({ auth: getAuth(opts.req) });
 };
