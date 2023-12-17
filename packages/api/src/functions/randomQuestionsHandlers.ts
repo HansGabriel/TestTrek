@@ -1,6 +1,5 @@
 import { generateChoicesPrompt, timeAndPointsPrompt } from "./gptHandlers";
 import { fetchGPT } from "../services/gptApiHandlers";
-import { chunk } from "lodash";
 import { questionsSchema } from "@acme/schema/src/question";
 import {
   parseMultipleChoiceResponse,
@@ -77,11 +76,29 @@ export const parseTopicsList = (topicsList: string): string[] => {
 
 export const divideStringIntoChunks = (
   string: string,
-  chunkSize = 3000,
+  chunkSize = 1000,
 ): string[] => {
-  const chunks = chunk(string.split("\n"), chunkSize);
+  const sentences = string.split(/\.(?!\d)/); // Split sentences based on period not followed by a digit
 
-  return chunks.map((chunk) => chunk.join("\n"));
+  let currentBatch = "";
+  const batches: string[] = [];
+
+  for (const sentence of sentences) {
+    const potentialBatch = currentBatch + sentence + ".";
+
+    if (potentialBatch.length <= chunkSize) {
+      currentBatch = potentialBatch;
+    } else {
+      batches.push(currentBatch.trim());
+      currentBatch = sentence + ".";
+    }
+  }
+
+  if (currentBatch.trim() !== "") {
+    batches.push(currentBatch.trim());
+  }
+
+  return batches;
 };
 
 export const generateCombinedQuestionPrompts = (
@@ -189,7 +206,7 @@ export const generateCombinedQuestions = async (
   }
   if (Array.isArray(messages)) {
     const processedQuestions = await Promise.all(
-      messages.map(async (_, index) => {
+      Array.from({ length: arrayLength }).map(async (_, index) => {
         let retryCount = 0;
         let finalProcessedQuestions: ParsedQuestion[] = [];
         let hasOneAnswer = false;
