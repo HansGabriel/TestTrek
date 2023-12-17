@@ -64,7 +64,7 @@ export const useRouter = router({
     .meta({
       openapi: {
         method: "GET",
-        path: "/users/me",
+        path: "/users/me/details",
       },
     })
     .input(z.void())
@@ -210,6 +210,12 @@ export const useRouter = router({
     }),
 
   getTotalPoints: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/points",
+      },
+    })
     .input(z.void())
     .output(z.any())
     .query(async ({ ctx }) => {
@@ -227,6 +233,12 @@ export const useRouter = router({
     }),
 
   getNewBadges: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/badges/new",
+      },
+    })
     .input(z.void())
     .output(z.any())
     .query(async ({ ctx }) => {
@@ -306,6 +318,12 @@ export const useRouter = router({
     }),
 
   getBadges: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/users/me/badges",
+      },
+    })
     .input(z.void())
     .output(z.any())
     .query(async ({ ctx }) => {
@@ -533,6 +551,7 @@ export const useRouter = router({
         path: "/users/me/premium",
       },
     })
+    .input(z.void())
     .output(z.any())
     .mutation(async ({ ctx }) => {
       const premiumStatus = await ctx.prisma.user

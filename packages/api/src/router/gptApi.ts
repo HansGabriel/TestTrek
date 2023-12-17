@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 import {
   parseMultipleChoiceResponse,
@@ -122,7 +123,14 @@ export const gptApiRouter = router({
     }),
 
   generateMultipleRandomQuestions: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/gpt/random-questions",
+      },
+    })
     .input(multipleRandomQuestionsPromptInput)
+    .output(z.any())
     .mutation(async ({ input }) => {
       const { message, numOfQuestions, messageType } = input;
 

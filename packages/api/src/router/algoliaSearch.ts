@@ -9,12 +9,12 @@ import {
 
 export const algoliaSearch = router({
   algoliaSearch: protectedProcedure
-    // .meta({
-    //   openapi: {
-    //     method: "POST",
-    //     path: "/algolia/search",
-    //   },
-    // })
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/algolia/search",
+      },
+    })
     .input(algoliaQueries)
     .output(z.any())
     .query(async ({ ctx, input }) => {

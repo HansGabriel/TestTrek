@@ -3,6 +3,8 @@ import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getAuth } from "@clerk/nextjs/server";
 
+const isTest = process.env.SERVER_ENV === "test";
+
 /**
  * Replace this with an object if you want to pass things to createContextInner
  */
@@ -22,11 +24,21 @@ export const createContextInner = async ({ auth }: AuthContextProps) => {
   };
 };
 
+type ContextInner = inferAsyncReturnType<typeof createContextInner>;
+
 /**
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
  **/
 export const createContext = async (opts: CreateNextContextOptions) => {
+  if (isTest) {
+    return {
+      auth: {
+        userId: opts.req.headers["authorization"],
+      },
+      prisma,
+    } as ContextInner;
+  }
   return await createContextInner({ auth: getAuth(opts.req) });
 };
 

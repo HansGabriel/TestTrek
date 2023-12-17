@@ -13,6 +13,12 @@ import {
 
 export const reviewerRouter = router({
   getDiscoverReviewers: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/reviewers/discover",
+      },
+    })
     .input(highLightReviewersInput)
     .output(z.any())
     .query(({ ctx, input }) => {
@@ -219,8 +225,7 @@ export const reviewerRouter = router({
       if (isUserPremium && userReviewersCount >= 30) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message:
-            "Maximum amount of reviewers reached.",
+          message: "Maximum amount of reviewers reached.",
         });
       }
 

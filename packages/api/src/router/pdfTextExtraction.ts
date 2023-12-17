@@ -77,12 +77,19 @@ const processOcrResult = (data: any) => {
 
 export const textExtractionRouter = router({
   extractText: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/text-extraction",
+      },
+    })
     .input(
       z.object({
         file: z.string(),
         fileType: z.string(),
       }),
     )
+    .output(z.any())
     .mutation(async ({ input }) => {
       const { file, fileType } = input;
       let ocrResult = "";

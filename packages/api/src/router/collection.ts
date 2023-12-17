@@ -369,6 +369,13 @@ export const collectionRouter = router({
 
       const userId = ctx.auth.userId;
 
+      if (!userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to create a collection",
+        });
+      }
+
       const newCollection = await ctx.prisma.collection.create({
         data: {
           title,
