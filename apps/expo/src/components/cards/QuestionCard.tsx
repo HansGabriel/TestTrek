@@ -1,7 +1,6 @@
 import { match } from "ts-pattern";
 import { truncateString } from "@acme/utils/src/strings";
 import { TouchableOpacity, View, Text, ImageBackground } from "react-native";
-import { IMAGE_PLACEHOLDER_LARGE } from "../../constants";
 
 import type { FC } from "react";
 import type { PartialQuestion } from "../../stores/useQuestionStore";
@@ -63,9 +62,13 @@ const QuestionCard: FC<QuestionCardProps> = ({
       >
         <View className="relative w-[140px] self-stretch">
           <ImageBackground
-            source={{
-              uri: question.image ?? IMAGE_PLACEHOLDER_LARGE,
-            }}
+            source={
+              question.image
+                ? {
+                    uri: question.image,
+                  }
+                : require("../../../assets/images/choice-placeholder.png")
+            }
             imageStyle={{
               borderTopLeftRadius: 12,
               borderBottomLeftRadius: 12,
