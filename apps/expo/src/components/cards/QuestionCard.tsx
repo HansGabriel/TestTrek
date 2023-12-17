@@ -73,7 +73,11 @@ const QuestionCard: FC<QuestionCardProps> = ({
             className="absolute left-0 top-0 h-[103px] w-[140px] rounded-l-xl"
           />
         </View>
-        <Text className="font-nunito-bold absolute left-40 top-2 w-full text-lg leading-[28.80px] text-neutral-800">
+        <Text
+          className="font-nunito-bold absolute left-40 top-2 w-[50%] text-lg leading-[28.80px] text-neutral-800"
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
           {index + 1} -{" "}
           {match(question.type)
             .with("multiple_choice", () => "Multiple Choice")
@@ -83,7 +87,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
             .exhaustive()}
         </Text>
         <Text
-          className="font-nunito-semibold absolute left-40 top-10 text-base leading-snug tracking-tight text-neutral-700"
+          className="font-nunito-semibold absolute left-40 top-10 w-[50%] text-base leading-snug tracking-tight text-neutral-700"
           numberOfLines={1}
           ellipsizeMode="tail"
         >

@@ -55,6 +55,8 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
         imageUrl: string;
         createdAt: Date;
         updatedAt: Date;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        plays: any;
       }[]
     | undefined = undefined;
   let headerTitle = "";
@@ -65,14 +67,6 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
     const { data } = trpc.test.getDiscoverTests.useQuery();
     fetchedTestData = data;
     headerTitle = "Discover Tests";
-  } else if (props.testsFor == "trending") {
-    const { data } = trpc.test.getTrendingTests.useQuery();
-    fetchedTestData = data;
-    headerTitle = "Trending";
-  } else if (props.testsFor == "topPicks") {
-    const { data } = trpc.test.getTopPicks.useQuery();
-    fetchedTestData = data;
-    headerTitle = "Top Picks";
   } else if (props.testsFor == "questions") {
     const { type } = props;
     headerTitle = "Questions";
@@ -186,7 +180,7 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
                         title={item.title}
                         questions={item.questions.length}
                         date={new Date(item.createdAt)}
-                        plays={0}
+                        plays={item.plays.length}
                         userImageSource={{
                           uri:
                             item.user.imageUrl ??
