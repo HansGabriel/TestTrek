@@ -1,8 +1,8 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import type { ImageSourcePropType } from "react-native";
-import { getTimeAgo } from "../../../functions/timeAgo";
 import { FC } from "react";
+import dayjs from "dayjs";
 
 interface Props {
   imageSource: ImageSourcePropType;
@@ -13,8 +13,6 @@ interface Props {
 }
 
 const ViewAllScreenReviewerCard: FC<Props> = (props) => {
-  const timeAgo = getTimeAgo(new Date(props.date), new Date());
-
   return (
     <View className="w-90 mx-3 h-28 flex-row items-center">
       <View className="h-28 flex-1 flex-row items-center overflow-hidden rounded-lg bg-white">
@@ -40,9 +38,11 @@ const ViewAllScreenReviewerCard: FC<Props> = (props) => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {timeAgo}
+              {((fromNow) =>
+                fromNow.charAt(0).toUpperCase() + fromNow.slice(1))(
+                dayjs(props.date).fromNow(),
+              )}
             </Text>
-            <Text className="mx-1 text-xs font-medium text-gray-400">•</Text>
           </View>
           <View className="mt-3 flex-row items-center">
             <Image

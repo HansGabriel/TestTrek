@@ -12,6 +12,7 @@ interface Props {
   plays: number;
   userImageSource: ImageSourcePropType;
   userName: string;
+  displayPlays?: boolean;
 }
 
 const ViewAllScreenTestCard: FC<Props> = (props) => {
@@ -54,14 +55,21 @@ const ViewAllScreenTestCard: FC<Props> = (props) => {
             >
               {timeAgo}
             </Text>
-            <Text className="mx-1 text-xs font-medium text-gray-400">•</Text>
-            <Text
-              className="overflow-hidden truncate text-xs font-medium text-gray-400"
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {props.plays} plays
-            </Text>
+            {props.displayPlays && (
+              <>
+                <Text className="mx-1 text-xs font-medium text-gray-400">
+                  •
+                </Text>
+
+                <Text
+                  className="overflow-hidden truncate text-xs font-medium text-gray-400"
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {props.plays} {props.plays <= 1 ? "play" : "plays"}
+                </Text>
+              </>
+            )}
           </View>
           <View className="mt-3 flex-row items-center">
             <Image
