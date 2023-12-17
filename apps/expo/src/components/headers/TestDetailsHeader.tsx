@@ -12,6 +12,7 @@ import { SaveToPDFButton } from "../../device-file-saving/SaveToPDFButton";
 
 interface Props {
   testId: string;
+  testName?: string;
   showEditIcon?: boolean;
   goToEditTest: () => void;
 }
@@ -20,6 +21,7 @@ const TestDetailsHeader: FC<Props> = ({
   testId,
   showEditIcon = false,
   goToEditTest,
+  testName,
 }) => {
   const trpcUtils = trpc.useContext();
   const goBack = useGoBack();
@@ -99,7 +101,9 @@ const TestDetailsHeader: FC<Props> = ({
             {isFavorite ? <SelectedStarIcon /> : <StarIcon />}
           </TouchableOpacity>
 
-          {premiumStatus && <SaveToPDFButton testId={testId} />}
+          {premiumStatus && (
+            <SaveToPDFButton testId={testId} testName={testName} />
+          )}
         </View>
       </View>
     </>

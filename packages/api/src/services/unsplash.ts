@@ -6,7 +6,7 @@ const accessKey = process.env.UNSPLASH_ACCESS_KEY;
 
 export async function getUnsplashImages(
   query: string,
-  count = 50,
+  count = 20,
 ): Promise<StockImages> {
   let url: string;
 
