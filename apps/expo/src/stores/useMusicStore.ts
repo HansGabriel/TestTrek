@@ -9,6 +9,8 @@ interface MusicStore {
   setIsPlayTestScreen: (state: boolean) => void;
   isScoreboardScreen: boolean;
   setIsScoreboardScreen: (state: boolean) => void;
+  isTestHistoryScreen: boolean;
+  setIsTestHistoryScreen: (state: boolean) => void;
 }
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -22,4 +24,6 @@ export const useMusicStore = create<MusicStore>((set) => ({
   setIsPlayTestScreen: (state) => set({ isPlayTestScreen: state }),
   isScoreboardScreen: false,
   setIsScoreboardScreen: (state) => set({ isScoreboardScreen: state }),
+  isTestHistoryScreen: false,
+  setIsTestHistoryScreen: (state) => set({ isTestHistoryScreen: state }),
 }));

@@ -273,7 +273,13 @@ const TestDetailsContent: FC<Props> = ({ testDetails }) => {
                 data={firstTenQuestions}
                 showsVerticalScrollIndicator={true}
                 renderItem={({ item: question, index }) => {
-                  return <QuestionCard question={question} index={index} />;
+                  return (
+                    <QuestionCard
+                      disabled={true}
+                      question={question}
+                      index={index}
+                    />
+                  );
                 }}
               />
             </SafeAreaView>

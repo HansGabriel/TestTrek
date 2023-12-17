@@ -628,75 +628,75 @@ const CreateTestForm: FC<Props> = ({
 
           <View className="mb-10 h-full flex-1 flex-col">
             {questions.length > 0 ? (
-              <View className="my-auto flex flex-row items-center justify-between">
-                <Text className="text-xl font-bold leading-loose text-neutral-800">
-                  Question ({questions.length})
-                </Text>
-                <TouchableOpacity
-                  className="flex flex-row items-center gap-1"
-                  onPress={goToViewAllQuestions}
-                >
-                  <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
-                    View All
+              <>
+                <View className="my-auto flex flex-row items-center justify-between">
+                  <Text className="text-xl font-bold leading-loose text-neutral-800">
+                    Question ({questions.length})
                   </Text>
-                  <RightArrowIcon />
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    className="flex flex-row items-center gap-1"
+                    onPress={goToViewAllQuestions}
+                  >
+                    <Text className="font-nunito-bold w-70 text-right text-lg font-semibold leading-6 text-[#6949FF]">
+                      View All
+                    </Text>
+                    <RightArrowIcon />
+                  </TouchableOpacity>
+                </View>
+                <SafeAreaView className="min-h-full flex-1">
+                  <FlashList
+                    estimatedItemSize={10}
+                    data={readyQuestions}
+                    showsVerticalScrollIndicator={true}
+                    renderItem={({ item: question, index }) => {
+                      return (
+                        <QuestionCard
+                          question={question}
+                          index={index}
+                          goToEditQuestion={goToEditQuestion}
+                        />
+                      );
+                    }}
+                  />
+                </SafeAreaView>
+              </>
             ) : (
-              <View className="h-full w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
-                <View className="mt-2">
-                  <Foundation name="lightbulb" size={30} color="#7c3aed" />
-                </View>
-                <View className="my-2">
-                  <Text className="font-nunito-bold self-center text-center text-lg">
-                    Just a tip!
-                  </Text>
-                  <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
-                    Please create at least one (1) question to save the test!
-                  </Text>
-                </View>
-              </View>
+              <>
+                {isLoading ? (
+                  <View className="h-[50%] w-full flex-col justify-between self-center">
+                    <View className="my-7">
+                      <SkeletonLoader
+                        isCircular={true}
+                        width={"100%"}
+                        height={75}
+                      />
+                    </View>
+                    <View className="my-7">
+                      <SkeletonLoader
+                        isCircular={true}
+                        width={"100%"}
+                        height={75}
+                      />
+                    </View>
+                  </View>
+                ) : (
+                  <View className="h-full w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
+                    <View className="mt-2">
+                      <Foundation name="lightbulb" size={30} color="#7c3aed" />
+                    </View>
+                    <View className="my-2">
+                      <Text className="font-nunito-bold self-center text-center text-lg">
+                        Just a tip!
+                      </Text>
+                      <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
+                        Please create at least one (1) question to save the
+                        test!
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </>
             )}
-
-            <SafeAreaView className="min-h-full flex-1">
-              {isLoading ? (
-                <View className="h-[50%] w-full flex-col justify-between self-center">
-                  <View className="my-7">
-                    <SkeletonLoader
-                      isCircular={true}
-                      width={"100%"}
-                      height={75}
-                    />
-                  </View>
-                  <View className="my-7">
-                    <SkeletonLoader
-                      isCircular={true}
-                      width={"100%"}
-                      height={75}
-                    />
-                  </View>
-                </View>
-              ) : (
-                <>
-                  {questions.length > 0 && (
-                    <FlashList
-                      estimatedItemSize={10}
-                      data={readyQuestions}
-                      showsVerticalScrollIndicator={true}
-                      renderItem={({ item: question, index }) => {
-                        return (
-                          <QuestionCard
-                            question={question}
-                            index={index}
-                            goToEditQuestion={goToEditQuestion}
-                          />
-                        );
-                      }}
-                    />
-                  )}
-                </>
-              )}
-            </SafeAreaView>
           </View>
 
           <View className="mb-24 flex flex-row items-center justify-between">

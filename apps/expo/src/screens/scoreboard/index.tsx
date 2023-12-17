@@ -50,8 +50,20 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
   };
 
   const goToLibrary = () => {
+    setIsScoreboardScreen(false);
     navigation.navigate("MyLibrary");
   };
+
+  useEffect(() => {
+    if (isFocused) {
+      setIsScoreboardScreen(true);
+      if (isEffectsPlaying && _topTrekersList) {
+        playEffects({ sound: congratsInstance, music: congrats });
+      }
+    } else {
+      setIsScoreboardScreen(false);
+    }
+  }, [isEffectsPlaying, isFocused, _topTrekersList]);
 
   useEffect(() => {
     setIsShowingConfetti(true);
@@ -73,17 +85,6 @@ export const ScoreboardScreen: FC<RootStackScreenProps<"Scoreboard">> = ({
 
     return () => backHandler.remove();
   }, []);
-
-  useEffect(() => {
-    if (isFocused) {
-      setIsScoreboardScreen(true);
-      if (isEffectsPlaying && _topTrekersList) {
-        playEffects({ sound: congratsInstance, music: congrats });
-      }
-    } else {
-      setIsScoreboardScreen(false);
-    }
-  }, [isEffectsPlaying, isFocused]);
 
   if (!playTest || !_topTrekersList) {
     return <></>;

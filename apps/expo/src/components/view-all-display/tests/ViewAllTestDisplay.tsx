@@ -152,7 +152,6 @@ export const ViewAllTestDisplay: FC<Props> = (props) => {
 
           if (testsFor === "questions" && props.type === "questions") {
             const questionsData = fetchedData as PartialQuestion[];
-            console.log(questionsData);
             return (
               <>
                 <QuestionsList questions={questionsData} />
@@ -224,7 +223,7 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
                         ? {
                             uri: question.image,
                           }
-                        : require("../../../../assets/images/choice-placeholder.png")
+                        : require("../../../../assets/images/no-image-cropped-placeholder.png")
                     }
                     imageStyle={{
                       borderTopLeftRadius: 12,

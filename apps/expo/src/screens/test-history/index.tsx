@@ -16,6 +16,7 @@ import { SkeletonLoader } from "../../components/loaders/SkeletonLoader";
 import { AlertModal } from "../../components/modals/AlertModal";
 import BadgeOverlay from "../../components/AcquiredBadgeOverlay";
 import { IMAGE_PLACEHOLDER } from "../../constants";
+import { useMusicStore } from "../../stores/useMusicStore";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -34,6 +35,10 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
     });
 
   const { data: newBadge } = trpc.user.getNewBadges.useQuery();
+  const setIsTestHistoryScreen = useMusicStore(
+    (state) => state.setIsTestHistoryScreen,
+  );
+  const setIsScoreboardScreen = useMusicStore((state) => state.setIsScoreboardScreen);
 
   const [openHomeAlert, setOpenHomeAlert] = useState(false);
   const [showBadgeOverlay, setShowBadgeOverlay] = useState(false);
@@ -82,6 +87,8 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
 
   const goToScoreBoard = () => {
     if (!testId) return;
+    setIsTestHistoryScreen(false);
+    setIsScoreboardScreen(true);
     navigation.navigate("Scoreboard", {
       playId,
       testId,
@@ -264,6 +271,7 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
           setOpenHomeAlert(false);
         }}
         onConfirm={() => {
+          setIsTestHistoryScreen(false);
           navigation.navigate("Home");
         }}
       />
