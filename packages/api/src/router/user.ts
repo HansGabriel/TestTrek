@@ -64,7 +64,7 @@ export const useRouter = router({
     .meta({
       openapi: {
         method: "GET",
-        path: "/users/me",
+        path: "/users/me/details",
       },
     })
     .input(z.void())
