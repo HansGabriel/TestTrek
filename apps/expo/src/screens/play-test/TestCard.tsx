@@ -280,7 +280,7 @@ export const MultiSelectCards = ({
   return (
     <View className="mt-5 flex w-full flex-col items-center space-y-2 self-center">
       <Text className="font-nunito-extrabold mt-5 text-center text-sm leading-[38.40px] text-neutral-800">
-        You can select more than one answer
+        Select all correct answers
       </Text>
       <View>
         <MultiSelectCard

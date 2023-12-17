@@ -776,7 +776,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
             .with("true_or_false", () => (
               <>
                 <Text className="font-nunito-extrabold mt-12 text-center text-sm leading-[38.40px] text-neutral-800">
-                  Select if the answer if true or false
+                  Select if the answer is true or false
                 </Text>
                 <View className="mt-4 flex w-full flex-row items-center justify-evenly self-center">
                   <View className="h-36 w-36">
