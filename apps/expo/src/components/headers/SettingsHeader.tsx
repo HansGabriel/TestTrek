@@ -15,7 +15,8 @@ const SettingsHeader: FC<HeaderProps> = ({ screenName }) => {
         <View className="w-[90%] flex-row gap-4 self-center">
           <TouchableOpacity
             onPress={goBack}
-            className="flex flex-row items-center self-center"
+            className="flex flex-row items-center self-center p-1"
+            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
           >
             <LeftArrowIcon />
           </TouchableOpacity>

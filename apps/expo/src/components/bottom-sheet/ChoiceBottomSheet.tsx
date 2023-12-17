@@ -5,7 +5,6 @@ import {
   ChatIcon,
   CheckboxIcon,
 } from "../../icons/bottom-sheet";
-import { Foundation } from "@expo/vector-icons";
 
 import type { FC } from "react";
 import type { QuestionType } from "../../stores/useQuestionStore";
@@ -30,23 +29,17 @@ const ChoiceBottomSheet: FC<Props> = ({
   return (
     <View className="flex-1 bg-white pt-2 shadow shadow-black">
       <View className="mx-6 my-4 flex flex-row">
-        <View className=" w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
-          <View className="mt-2">
-            <Foundation name="lightbulb" size={30} color="#7c3aed" />
-          </View>
+        <View className="w-full items-center justify-evenly self-center rounded-2xl border border-zinc-100 bg-white">
           <View className="my-2">
-            <Text className="font-nunito-bold self-center text-center text-lg">
-              Just a tip!
-            </Text>
-            <Text className="font-nunito-semibold self-center px-8 text-center text-sm">
-              Please create at least one (1) question to save the test!
+            <Text className="font-nunito-bold self-center text-center text-xl">
+              Please choose your question type!
             </Text>
           </View>
         </View>
       </View>
 
       {/* Horizontal Line */}
-      <View className="mb-3 h-[0px] w-[382px] self-center border border-zinc-100" />
+      <View className="my-5 h-[0px] w-[382px] self-center border border-zinc-100" />
 
       {/* Cards Choices */}
       <ScrollView showsVerticalScrollIndicator={false}>

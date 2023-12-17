@@ -35,10 +35,12 @@ export const SettingsScreen = () => {
         trpcUtils.user.getUserPremiumStatus.invalidate();
         setIsAlertModalOpen(false);
         successToast({
-          title: "Success",
+          title: !premiumStatus
+            ? "Subscribed to Premium"
+            : "Unsubscribed to Premium",
           message: !premiumStatus
-            ? "You are now a premium user"
-            : "You are no longer a premium user",
+            ? "Enjoy your premium features!"
+            : "Please subscribe again!",
         });
       },
       onError: (err) => {
@@ -86,9 +88,13 @@ export const SettingsScreen = () => {
       >
         <SettingsHeader screenName={"Settings"} />
         {!premiumStatus ? (
-          <GoPremiumBanner onPress={goToPremiumScreen} />
+          <View className="my-2 w-[90%] items-center self-center">
+            <GoPremiumBanner onPress={goToPremiumScreen} />
+          </View>
         ) : (
-          <CancelPremiumBanner onPress={() => setIsAlertModalOpen(true)} />
+          <View className="my-2 w-[90%] items-center self-center">
+            <CancelPremiumBanner onPress={() => setIsAlertModalOpen(true)} />
+          </View>
         )}
         <SettingsButtons openBottomSheet={openBottomSheet} />
       </View>
