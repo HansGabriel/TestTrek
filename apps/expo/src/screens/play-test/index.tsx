@@ -72,6 +72,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const setIsPlayTestScreen = useMusicStore(
     (state) => state.setIsPlayTestScreen,
   );
+  const setIsTestHistoryScreen = useMusicStore((state) => state.setIsTestHistoryScreen);
 
   const correctSoundInstance = new Audio.Sound();
   const wrongSoundInstance = new Audio.Sound();
@@ -107,10 +108,11 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   const [shouldMultiplyScore, setShouldMultiplyScore] = useState(false);
   const [scoreMultiplier, setScoreMultiplier] = useState(1);
 
-  const { data: testDetails } = trpc.play.getTest.useQuery({ testId });
+  const { data: testDetails, isLoading: isFetching } = trpc.play.getTest.useQuery({ testId });
   const { mutate: saveTestHistory, isLoading: isSavingTestHistory } =
     trpc.testHistory.createTestHistory.useMutation({
       onSuccess: (testHistoryId) => {
+        setIsTestHistoryScreen(true)
         navigation.navigate("TestHistory", {
           playId,
           historyId: testHistoryId,
@@ -131,7 +133,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
   useEffect(() => {
     if (isFocused) {
       setIsPlayTestScreen(true);
-      if (isMusicPlaying && testDetails) {
+      if (isMusicPlaying && testDetails && !isFetching) {
         playSound({ sound: gameMusicInstance, music: gameMusic });
       }
     } else {
@@ -141,7 +143,7 @@ export const PlayTestScreen: FC<RootStackScreenProps<"PlayTest">> = ({
     return () => {
       unloadAudio({ sound: gameMusicInstance });
     };
-  }, [isMusicPlaying, testDetails, isFocused]);
+  }, [isMusicPlaying, testDetails, isFocused, isFetching]);
 
   useEffect(() => {
     const questions = testDetails?.test.questions;

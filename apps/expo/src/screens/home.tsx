@@ -21,6 +21,9 @@ export const HomeScreen = () => {
   const isMusicPlaying = useMusicStore((state) => state.isMusicPlaying);
   const isPlayTestScreen = useMusicStore((state) => state.isPlayTestScreen);
   const isScoreboardScreen = useMusicStore((state) => state.isScoreboardScreen);
+  const isTestHistoryScreen = useMusicStore(
+    (state) => state.isTestHistoryScreen,
+  );
 
   const generalMusicInstance = new Audio.Sound();
 
@@ -34,7 +37,7 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     if (isMusicPlaying) {
-      if (!isPlayTestScreen && !isScoreboardScreen) {
+      if (!isPlayTestScreen && !isScoreboardScreen && !isTestHistoryScreen) {
         playSound({ music: bgMusic, sound: generalMusicInstance });
       }
     }
@@ -42,7 +45,12 @@ export const HomeScreen = () => {
     return () => {
       unloadAudio({ sound: generalMusicInstance });
     };
-  }, [isMusicPlaying, isPlayTestScreen, isScoreboardScreen]);
+  }, [
+    isMusicPlaying,
+    isPlayTestScreen,
+    isScoreboardScreen,
+    isTestHistoryScreen,
+  ]);
 
   return (
     <SafeAreaView style={{ flex: 1, height: height, width: width }}>

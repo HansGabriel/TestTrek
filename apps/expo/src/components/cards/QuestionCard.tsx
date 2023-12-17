@@ -30,6 +30,7 @@ interface QuestionCardProps {
     questionIndex: number,
   ) => () => void;
   borderType?: "success" | "error";
+  disabled?: boolean;
 }
 
 const QuestionCard: FC<QuestionCardProps> = ({
@@ -39,6 +40,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
   goToEditQuestion,
   goToQuestionHistory,
   borderType,
+  disabled = false,
 }) => {
   const borderStyle = match(borderType)
     .with("success", () => "border-green-500")
@@ -49,6 +51,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
   return (
     <TouchableOpacity
       className="my-2 flex h-[105px] items-center justify-start"
+      disabled={disabled}
       key={index}
       onPress={match(type)
         .with("create", () => goToEditQuestion?.(index))
@@ -67,7 +70,7 @@ const QuestionCard: FC<QuestionCardProps> = ({
                 ? {
                     uri: question.image,
                   }
-                : require("../../../assets/images/choice-placeholder.png")
+                : require("../../../assets/images/no-image-cropped-placeholder.png")
             }
             imageStyle={{
               borderTopLeftRadius: 12,

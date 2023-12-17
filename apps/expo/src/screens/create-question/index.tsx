@@ -11,9 +11,9 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Switch,
-  Image,
   StyleSheet,
   Dimensions,
+  ImageBackground,
 } from "react-native";
 import useGoBack from "../../hooks/useGoBack";
 import TestImagePicker from "../../components/ImagePicker";
@@ -975,22 +975,25 @@ export const CreateQuestionScreen: FC = () => {
                     onPress={handleClickQuestion(idx)}
                   >
                     {question.image ? (
-                      <Image
+                      <ImageBackground
                         source={{ uri: question.image }}
-                        className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                        resizeMode="cover"
+                        className={`absolute left-0 top-0 h-[58px] w-24 overflow-hidden rounded-lg ${
                           idx === selectedIndex
                             ? "border-4 border-violet-600"
-                            : "border border-violet-600"
+                            : "border border-zinc-400"
                         }`}
                       />
                     ) : (
-                      <View
-                        className={`absolute left-0 top-0 h-[58px] w-24 rounded-lg ${
+                      <ImageBackground
+                        source={require("../../../assets/images/no-image-placeholder.png")}
+                        resizeMode="contain"
+                        className={`absolute h-[58px] w-24 overflow-hidden rounded-lg ${
                           idx === selectedIndex
                             ? "border-4 border-violet-600"
-                            : "border border-violet-600"
-                        } bg-neutral-100`}
-                      ></View>
+                            : "border border-zinc-400"
+                        } `}
+                      />
                     )}
                     <View className="absolute left-0 top-0 inline-flex h-8 w-8 flex-col items-center justify-center rounded-br-lg border border-violet-600 bg-violet-600 p-1">
                       <Text className="text-center text-[10px] font-bold text-white">
