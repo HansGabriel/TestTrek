@@ -634,8 +634,8 @@ export const testRouter = router({
     })
     .input(highlightTestsInput)
     .output(z.any())
-    .query(({ ctx, input }) => {
-      return ctx.prisma.test.findMany({
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.test.findMany({
         ...(input && input.amountOfTests
           ? { take: input.amountOfTests }
           : { take: 50 }),
@@ -647,6 +647,11 @@ export const testRouter = router({
           title: true,
           description: true,
           imageUrl: true,
+          plays: {
+            select: {
+              isFinished: true,
+            },
+          },
           keywords: {
             select: {
               id: true,

@@ -143,7 +143,10 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          <Text className="font-nunito-bold w-[382px] text-2xl font-bold leading-[38.40px] text-neutral-800">
+          <Text
+            className="font-nunito-bold w-[382px] text-2xl font-bold leading-[38.40px] text-neutral-800"
+            ellipsizeMode="tail"
+          >
             {testHistory.title}
           </Text>
         </Text>
@@ -202,7 +205,10 @@ export const TestHistoryScreen: FC<TestHistoryProps> = ({
         <Text className="font-nunito-bold mt-3 break-words text-xl font-bold leading-[32px] text-[#212121]">
           Description
         </Text>
-        <Text className="font-nunito text-m mb-6 break-words font-medium leading-[25.20px] tracking-tight text-[#424242]">
+        <Text
+          className="font-nunito text-m mb-6 break-words font-medium leading-[25.20px] tracking-tight text-[#424242]"
+          ellipsizeMode="tail"
+        >
           {testHistory?.description ?? "N/A"}
         </Text>
         <View className="mt-6 flex flex-row items-center justify-between">
