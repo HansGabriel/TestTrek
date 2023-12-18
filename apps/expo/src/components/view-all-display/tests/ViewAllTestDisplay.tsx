@@ -211,7 +211,7 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
         showsVerticalScrollIndicator={true}
         renderItem={({ item: question, index }) => {
           return (
-            <TouchableOpacity
+            <View
               className="mx-5 my-2 flex h-[105px] items-center justify-start"
               key={index}
             >
@@ -255,7 +255,7 @@ const QuestionsList: FC<QuestionsListProps> = ({ questions }) => {
                   </Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           );
         }}
       />
